@@ -170,6 +170,17 @@ namespace NUS_Downloader
                 WriteStatus("Common Key detected.");
             }
 
+            // Check for Wii KOR common key bin file...
+            if (File.Exists(currentdir + "kkey.bin") == false)
+            {
+                //WriteStatus("Korean Common Key (kkey.bin) missing! Decryption disabled!");
+                //decryptbox.Visible = false;
+            }
+            else
+            {
+                WriteStatus("Korean Common Key detected.");
+            }
+
             // Check for DSi common key bin file...
             if (File.Exists(currentdir + "dskey.bin") == false)
             {
@@ -640,10 +651,28 @@ namespace NUS_Downloader
                     iv[i+8] = 0x00;
 			    }
 
+                // Standard/Korea
+                bool koreankey = false;
+                WriteStatus("0x01F1: " + Convert.ToString(cetkbuf[0x01F1]));
+                if (cetkbuf[0x01F1] == 0x01)
+                {
+                    WriteStatus("Key Type: Korean");
+                    koreankey = true;
+                }
+                else
+                {
+                    WriteStatus("Key Type: Standard");
+                }
+
                 // Common Key
                 byte[] keyBytes;
                 if (wiimode)
-                    keyBytes = LoadCommonKey(@"\key.bin");
+                {
+                    if (koreankey)
+                        keyBytes = LoadCommonKey(@"\kkey.bin");
+                    else
+                        keyBytes = LoadCommonKey(@"\key.bin");
+                }
                 else
                     keyBytes = LoadCommonKey(@"\dskey.bin");
 
@@ -779,7 +808,7 @@ namespace NUS_Downloader
                     {
                         WriteStatus("  - Hash Check: Fail");
                         WriteStatus("    - True Hash: " + DisplayBytes(hash));
-                        WriteStatus("    - You Got: " + DisplayBytes(ComputeSHA(Decrypt(contbuf))));
+                        WriteStatus("    - You Have: " + DisplayBytes(ComputeSHA(Decrypt(contbuf))));
                     }
                 }
 
@@ -1084,6 +1113,15 @@ namespace NUS_Downloader
                 WriteStatus("Wii Decryption: OK");
             }
 
+            if (File.Exists(currentdir + "kkey.bin") == false)
+            {
+                WriteStatus("Wii Korea Decryption: Need (kkey.bin)");
+            }
+            else
+            {
+                WriteStatus("Wii Korea Decryption: OK");
+            }
+
             if (File.Exists(currentdir + "dskey.bin") == false)
             {
                 WriteStatus("DSi Decryption: Need (dskey.bin)");
@@ -1092,11 +1130,21 @@ namespace NUS_Downloader
             {
                 WriteStatus("DSi Decryption: OK");
             }
+
+            if (File.Exists(currentdir + "database.xml") == false)
+            {
+                WriteStatus("Database: Need (database.xml)");
+            }
+            else
+            {
+                WriteStatus("Database: OK");
+            }
             
             WriteStatus("");
             WriteStatus("Special thanks to:");
             WriteStatus(" * Crediar for his wadmaker tool + source, and for the advice!");
             WriteStatus(" * SquidMan/Galaxy/comex for advice/sources.");
+            WriteStatus(" * Pasta for database compilation assistance.");
             WriteStatus(" * #WiiDev for general assistance whenever I had questions.");
         }
 
@@ -1251,18 +1299,15 @@ namespace NUS_Downloader
         private void titleversion_TextChanged(object sender, EventArgs e)
         {
             // Change WAD name if applicable
-            if (packbox.Checked == true)
+            if ((titleidbox.Enabled == true) && (packbox.Checked == true))
             {
-                if (titleidbox.Enabled == true)
+                if (titleversion.Text != "")
                 {
-                    if (titleversion.Text != "")
-                    {
-                        wadnamebox.Text = titleidbox.Text + "-NUS-v" + titleversion.Text + ".wad";
-                    }
-                    else
-                    {
-                        wadnamebox.Text = titleidbox.Text + "-NUS-[v]" + titleversion.Text + ".wad";
-                    }
+                    wadnamebox.Text = titleidbox.Text + "-NUS-v" + titleversion.Text + ".wad";
+                }
+                else
+                {
+                    wadnamebox.Text = titleidbox.Text + "-NUS-[v]" + titleversion.Text + ".wad";
                 }
             }
         }
@@ -1602,7 +1647,7 @@ namespace NUS_Downloader
         { 
             /* Typical Region XML
              * <REGIONS>
-		            <region index=0>41 (All/System)</region>
+		            <region index="0">41 (All/System)</region>
 		            <region index=1>44 (German)</region>
 		            <region index=2>45 (USA/NTSC)</region>
 		            <region index=3>46 (French)</region>
