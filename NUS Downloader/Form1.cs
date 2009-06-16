@@ -685,6 +685,7 @@ namespace NUS_Downloader
             // Read the tmd as a stream...
             FileStream fs = File.OpenRead(titledirectory + tmdfull);
             byte[] tmd = ReadFully(fs, 20);
+            fs.Close();
 
             // Read Title Version...
             string tmdversion = "";
@@ -817,6 +818,34 @@ namespace NUS_Downloader
 
             WriteStatus("NUS Download Finished.");
 
+            // Trucha signing...
+            if ((truchabox.Checked == true) && (wiimode == true))
+            {
+                WriteStatus("Trucha Signing TMD...");
+                Array.Resize(ref tmd, 484 + (Convert.ToInt32(contentstrnum) * 36)); 
+                tmd = ZeroSignature(tmd);
+                tmd = TruchaSign(tmd);
+
+                FileStream testtmd = new FileStream(titledirectory + tmdfull, FileMode.Open);
+                testtmd.Write(tmd, 0, tmd.Length);
+                testtmd.Close();
+
+                WriteStatus("Trucha Signing Ticket...");
+
+                // Create ticket file holder
+                FileStream cetkf = File.OpenRead(titledirectory + @"\cetk");
+                byte[] cetkbuff = ReadFully(cetkf, 20);
+                cetkf.Close();
+
+                Array.Resize(ref cetkbuff, 0x2A4);
+                cetkbuff = ZeroSignature(cetkbuff);
+                cetkbuff = TruchaSign(cetkbuff);
+
+                FileStream testtik = new FileStream(titledirectory + "cetk", FileMode.Open);
+                testtik.Write(cetkbuff, 0, cetkbuff.Length);
+                testtik.Close();
+            }
+
             if ((packbox.Checked == true) && (wiimode == true))
             {
                 PackWAD(titleid, tmdfull, tmdcontents.Length, tmdcontents, tmdsizes, titledirectory);
@@ -935,11 +964,6 @@ namespace NUS_Downloader
             wad.WadType = 0x49730000;
             wad.CertChainSize = 0xA00;
 
-            // TMDSize is length of buffer.
-            wad.TMDSize = tmdbuf.Length;
-            // TicketSize is length of cetkbuf.
-            wad.TicketSize = cetkbuf.Length;
-
             // Write cert[] to 0x40.
             wadfs.Seek(0x40, SeekOrigin.Begin);
             wadfs.Write(certsbuf, 0, certsbuf.Length);
@@ -958,6 +982,7 @@ namespace NUS_Downloader
             wadfs.Seek(ByteBoundary(Convert.ToInt32(wadfs.Length)), SeekOrigin.Begin);
 
             // Write TMD at this point...
+            wad.TMDSize = 484 + (contentcount * 36);
             wadfs.Write(tmdbuf, 0, 484 + (contentcount * 36));
             WriteStatus("TMD wrote (0x" + Convert.ToString((wadfs.Length - (484 + (contentcount * 36))), 16) + ")");
 
@@ -1699,6 +1724,68 @@ namespace NUS_Downloader
         {
             if (titleidbox.Text.Length == 16)
                 titleidbox.Text = titleidbox.Text.Substring(0, 14) + e.ClickedItem.Text.Substring(0, 2);
+        }
+
+        private byte[] ZeroSignature(byte[] tmdortik)
+        { 
+            // Write all 0x00 to signature...
+            // Sig starts at 0x04 in both TMD/TIK
+            for (int i = 0; i < 256; i++)
+            {
+                tmdortik[i + 4] = 0x00;
+            }
+
+            WriteStatus(" - Signature Emptied...");
+            return tmdortik;
+        }
+
+        private byte[] TruchaSign(byte[] tmdortik)
+        {
+            // Loop through 2 bytes worth of numbers until hash starts with 0x00...
+            // Padding starts at 0x104 in both TMD/TIK, seems like a good place to me...
+
+            byte[] payload = new byte[2];
+            byte[] hashobject = new byte[tmdortik.Length - 0x104];
+
+            for (int i = 0; i < 65535; i++)
+            {
+                payload = incrementAtIndex(payload, 1);
+
+                tmdortik[0x104] = payload[0];
+                tmdortik[0x105] = payload[1];
+
+                for (int x = 0; x < (tmdortik.Length - 0x104); x++)
+                {
+                    hashobject[x] = tmdortik[0x104 + x];
+                }
+
+                if (ComputeSHA(hashobject)[0] == 0x00)
+                {
+                    // DEBUG:
+                    //WriteStatus(DisplayBytes(ComputeSHA(hashobject)));
+                    WriteStatus(" - Successfully Trucha Signed.");
+                    return tmdortik;
+                }
+            }
+
+            WriteStatus(" - Sign FAIL!");
+            return tmdortik;
+        }
+
+        static public byte[] incrementAtIndex(byte[] array, int index)
+        {
+            if (array[index] == byte.MaxValue)
+            {
+                array[index] = 0;
+                if (index > 0)
+                    incrementAtIndex(array, index - 1);
+            }
+            else
+            {
+                array[index]++;
+            }
+
+            return array;
         }
     }
 }
