@@ -67,6 +67,7 @@
             this.WiiWareMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.RegionCodesList = new System.Windows.Forms.ToolStripMenuItem();
+            this.truchabox = new System.Windows.Forms.CheckBox();
             this.databaseStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -151,9 +152,9 @@
             this.localuse.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.localuse.Location = new System.Drawing.Point(12, 468);
             this.localuse.Name = "localuse";
-            this.localuse.Size = new System.Drawing.Size(175, 17);
+            this.localuse.Size = new System.Drawing.Size(167, 17);
             this.localuse.TabIndex = 8;
-            this.localuse.Text = "Use/Keep Local Files if Present";
+            this.localuse.Text = "Use/Keep Present Local Files";
             this.localuse.UseVisualStyleBackColor = true;
             // 
             // NUSDownloader
@@ -222,9 +223,9 @@
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button2.Location = new System.Drawing.Point(193, 465);
+            this.button2.Location = new System.Drawing.Point(184, 390);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(69, 20);
+            this.button2.Size = new System.Drawing.Size(78, 20);
             this.button2.TabIndex = 14;
             this.button2.Text = "About";
             this.button2.UseVisualStyleBackColor = true;
@@ -419,18 +420,30 @@
             this.RegionCodesList.Text = "Region Codes";
             this.RegionCodesList.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.RegionCodesList_DropDownItemClicked);
             // 
+            // truchabox
+            // 
+            this.truchabox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.truchabox.AutoSize = true;
+            this.truchabox.Location = new System.Drawing.Point(184, 468);
+            this.truchabox.Name = "truchabox";
+            this.truchabox.Size = new System.Drawing.Size(60, 17);
+            this.truchabox.TabIndex = 21;
+            this.truchabox.Text = "Trucha";
+            this.truchabox.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(274, 496);
+            this.Controls.Add(this.truchabox);
             this.Controls.Add(this.databaseButton);
             this.Controls.Add(this.decryptbox);
             this.Controls.Add(this.ignoreticket);
             this.Controls.Add(this.wadnamebox);
             this.Controls.Add(this.getcerts);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.titleversion);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.radioButton1);
@@ -492,6 +505,7 @@
         private System.Windows.Forms.ToolStripMenuItem TurboGrafxCDMenuList;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem RegionCodesList;
+        private System.Windows.Forms.CheckBox truchabox;
     }
 }
 
