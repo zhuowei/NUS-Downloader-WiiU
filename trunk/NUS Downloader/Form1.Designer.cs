@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.TMDButton = new System.Windows.Forms.Button();
             this.titleidbox = new System.Windows.Forms.TextBox();
-            this.button3 = new System.Windows.Forms.Button();
+            this.downloadstartbtn = new System.Windows.Forms.Button();
             this.statusbox = new System.Windows.Forms.TextBox();
             this.packbox = new System.Windows.Forms.CheckBox();
             this.dlprogress = new System.Windows.Forms.ProgressBar();
@@ -68,7 +68,36 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.RegionCodesList = new System.Windows.Forms.ToolStripMenuItem();
             this.truchabox = new System.Windows.Forms.CheckBox();
+            this.tmdgpbox = new System.Windows.Forms.GroupBox();
+            this.tmdversiontrucha = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.newtitleidbox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.requiredIOSbox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ticketgpbox = new System.Windows.Forms.GroupBox();
+            this.timelimitsecs = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.timelimitenabledcb = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.ckeyindexcb = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.dlcamntbox = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.titleIDIV = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.titlekeybox = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.shamelessvariablelabel = new System.Windows.Forms.Label();
             this.databaseStrip.SuspendLayout();
+            this.tmdgpbox.SuspendLayout();
+            this.ticketgpbox.SuspendLayout();
             this.SuspendLayout();
             // 
             // TMDButton
@@ -84,8 +113,6 @@
             // 
             // titleidbox
             // 
-            this.titleidbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.titleidbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.titleidbox.Location = new System.Drawing.Point(12, 38);
             this.titleidbox.MaxLength = 16;
@@ -95,24 +122,19 @@
             this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.titleidbox.TextChanged += new System.EventHandler(this.titleidbox_TextChanged);
             // 
-            // button3
+            // downloadstartbtn
             // 
-            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button3.Location = new System.Drawing.Point(12, 64);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(250, 25);
-            this.button3.TabIndex = 4;
-            this.button3.Text = "Start NUS Download!";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.downloadstartbtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.downloadstartbtn.Location = new System.Drawing.Point(12, 64);
+            this.downloadstartbtn.Name = "downloadstartbtn";
+            this.downloadstartbtn.Size = new System.Drawing.Size(250, 25);
+            this.downloadstartbtn.TabIndex = 4;
+            this.downloadstartbtn.Text = "Start NUS Download!";
+            this.downloadstartbtn.UseVisualStyleBackColor = true;
+            this.downloadstartbtn.Click += new System.EventHandler(this.button3_Click);
             // 
             // statusbox
             // 
-            this.statusbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.statusbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.statusbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusbox.Location = new System.Drawing.Point(12, 116);
@@ -123,7 +145,6 @@
             // 
             // packbox
             // 
-            this.packbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.packbox.AutoSize = true;
             this.packbox.Location = new System.Drawing.Point(12, 422);
             this.packbox.Name = "packbox";
@@ -135,8 +156,6 @@
             // 
             // dlprogress
             // 
-            this.dlprogress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.dlprogress.Location = new System.Drawing.Point(12, 95);
             this.dlprogress.Name = "dlprogress";
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
@@ -145,7 +164,6 @@
             // 
             // localuse
             // 
-            this.localuse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.localuse.AutoSize = true;
             this.localuse.Checked = true;
             this.localuse.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -163,7 +181,6 @@
             // 
             // titleversion
             // 
-            this.titleversion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.titleversion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.titleversion.Location = new System.Drawing.Point(204, 38);
             this.titleversion.MaxLength = 8;
@@ -175,7 +192,6 @@
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Location = new System.Drawing.Point(194, 45);
@@ -195,7 +211,6 @@
             // 
             // radioButton2
             // 
-            this.radioButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.radioButton2.Image = global::NUS_Downloader.Properties.Resources.dsi;
             this.radioButton2.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.radioButton2.Location = new System.Drawing.Point(78, 385);
@@ -207,7 +222,6 @@
             // 
             // radioButton1
             // 
-            this.radioButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.radioButton1.BackColor = System.Drawing.Color.Transparent;
             this.radioButton1.Checked = true;
             this.radioButton1.Image = global::NUS_Downloader.Properties.Resources.wilolgoi;
@@ -221,7 +235,6 @@
             // 
             // button2
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button2.Location = new System.Drawing.Point(184, 390);
             this.button2.Name = "button2";
@@ -233,9 +246,6 @@
             // 
             // getcerts
             // 
-            this.getcerts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.getcerts.BackColor = System.Drawing.Color.Bisque;
             this.getcerts.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.getcerts.Location = new System.Drawing.Point(48, 246);
@@ -248,7 +258,6 @@
             // 
             // wadnamebox
             // 
-            this.wadnamebox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.wadnamebox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.wadnamebox.Enabled = false;
             this.wadnamebox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -260,7 +269,6 @@
             // 
             // ignoreticket
             // 
-            this.ignoreticket.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ignoreticket.AutoSize = true;
             this.ignoreticket.Location = new System.Drawing.Point(12, 445);
             this.ignoreticket.Name = "ignoreticket";
@@ -271,7 +279,6 @@
             // 
             // decryptbox
             // 
-            this.decryptbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.decryptbox.AutoSize = true;
             this.decryptbox.Location = new System.Drawing.Point(154, 445);
             this.decryptbox.Name = "decryptbox";
@@ -282,8 +289,6 @@
             // 
             // databaseButton
             // 
-            this.databaseButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.databaseButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.databaseButton.Location = new System.Drawing.Point(184, 12);
             this.databaseButton.Name = "databaseButton";
@@ -422,7 +427,6 @@
             // 
             // truchabox
             // 
-            this.truchabox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.truchabox.AutoSize = true;
             this.truchabox.Location = new System.Drawing.Point(184, 468);
             this.truchabox.Name = "truchabox";
@@ -431,11 +435,306 @@
             this.truchabox.Text = "Trucha";
             this.truchabox.UseVisualStyleBackColor = true;
             // 
+            // tmdgpbox
+            // 
+            this.tmdgpbox.Controls.Add(this.tmdversiontrucha);
+            this.tmdgpbox.Controls.Add(this.label5);
+            this.tmdgpbox.Controls.Add(this.newtitleidbox);
+            this.tmdgpbox.Controls.Add(this.label4);
+            this.tmdgpbox.Controls.Add(this.requiredIOSbox);
+            this.tmdgpbox.Controls.Add(this.label3);
+            this.tmdgpbox.Location = new System.Drawing.Point(278, 12);
+            this.tmdgpbox.Name = "tmdgpbox";
+            this.tmdgpbox.Size = new System.Drawing.Size(249, 77);
+            this.tmdgpbox.TabIndex = 22;
+            this.tmdgpbox.TabStop = false;
+            this.tmdgpbox.Text = "Fake (Trucha) TMD Signing...";
+            // 
+            // tmdversiontrucha
+            // 
+            this.tmdversiontrucha.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tmdversiontrucha.Location = new System.Drawing.Point(181, 24);
+            this.tmdversiontrucha.MaxLength = 6;
+            this.tmdversiontrucha.Name = "tmdversiontrucha";
+            this.tmdversiontrucha.Size = new System.Drawing.Size(62, 20);
+            this.tmdversiontrucha.TabIndex = 5;
+            this.tmdversiontrucha.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(130, 28);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(45, 13);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "Version:";
+            // 
+            // newtitleidbox
+            // 
+            this.newtitleidbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.newtitleidbox.Location = new System.Drawing.Point(80, 50);
+            this.newtitleidbox.MaxLength = 16;
+            this.newtitleidbox.Name = "newtitleidbox";
+            this.newtitleidbox.Size = new System.Drawing.Size(163, 20);
+            this.newtitleidbox.TabIndex = 3;
+            this.newtitleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 54);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(69, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "New Title ID:";
+            // 
+            // requiredIOSbox
+            // 
+            this.requiredIOSbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.requiredIOSbox.Location = new System.Drawing.Point(80, 24);
+            this.requiredIOSbox.MaxLength = 3;
+            this.requiredIOSbox.Name = "requiredIOSbox";
+            this.requiredIOSbox.Size = new System.Drawing.Size(44, 20);
+            this.requiredIOSbox.TabIndex = 1;
+            this.requiredIOSbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 28);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(73, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Requires IOS:";
+            // 
+            // ticketgpbox
+            // 
+            this.ticketgpbox.Controls.Add(this.timelimitsecs);
+            this.ticketgpbox.Controls.Add(this.label11);
+            this.ticketgpbox.Controls.Add(this.timelimitenabledcb);
+            this.ticketgpbox.Controls.Add(this.label10);
+            this.ticketgpbox.Controls.Add(this.ckeyindexcb);
+            this.ticketgpbox.Controls.Add(this.label9);
+            this.ticketgpbox.Controls.Add(this.dlcamntbox);
+            this.ticketgpbox.Controls.Add(this.label8);
+            this.ticketgpbox.Controls.Add(this.titleIDIV);
+            this.ticketgpbox.Controls.Add(this.label7);
+            this.ticketgpbox.Controls.Add(this.titlekeybox);
+            this.ticketgpbox.Controls.Add(this.label6);
+            this.ticketgpbox.Location = new System.Drawing.Point(278, 127);
+            this.ticketgpbox.Name = "ticketgpbox";
+            this.ticketgpbox.Size = new System.Drawing.Size(249, 125);
+            this.ticketgpbox.TabIndex = 23;
+            this.ticketgpbox.TabStop = false;
+            this.ticketgpbox.Text = "Fake (Trucha) Ticket Signing...";
+            // 
+            // timelimitsecs
+            // 
+            this.timelimitsecs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.timelimitsecs.Location = new System.Drawing.Point(95, 99);
+            this.timelimitsecs.MaxLength = 200;
+            this.timelimitsecs.Name = "timelimitsecs";
+            this.timelimitsecs.Size = new System.Drawing.Size(62, 20);
+            this.timelimitsecs.TabIndex = 15;
+            this.timelimitsecs.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(7, 101);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(84, 13);
+            this.label11.TabIndex = 14;
+            this.label11.Text = "Time (Seconds):";
+            // 
+            // timelimitenabledcb
+            // 
+            this.timelimitenabledcb.FormattingEnabled = true;
+            this.timelimitenabledcb.Items.AddRange(new object[] {
+            "0 - Disabled",
+            "1 - Enabled"});
+            this.timelimitenabledcb.Location = new System.Drawing.Point(95, 72);
+            this.timelimitenabledcb.Name = "timelimitenabledcb";
+            this.timelimitenabledcb.Size = new System.Drawing.Size(149, 21);
+            this.timelimitenabledcb.TabIndex = 13;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(7, 75);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(57, 13);
+            this.label10.TabIndex = 12;
+            this.label10.Text = "Time Limit:";
+            // 
+            // ckeyindexcb
+            // 
+            this.ckeyindexcb.FormattingEnabled = true;
+            this.ckeyindexcb.Items.AddRange(new object[] {
+            "0 - Standard Key",
+            "1 - Korean Key"});
+            this.ckeyindexcb.Location = new System.Drawing.Point(95, 45);
+            this.ckeyindexcb.Name = "ckeyindexcb";
+            this.ckeyindexcb.Size = new System.Drawing.Size(149, 21);
+            this.ckeyindexcb.TabIndex = 11;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(7, 48);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(72, 13);
+            this.label9.TabIndex = 10;
+            this.label9.Text = "Common Key:";
+            // 
+            // dlcamntbox
+            // 
+            this.dlcamntbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.dlcamntbox.Location = new System.Drawing.Point(95, 19);
+            this.dlcamntbox.MaxLength = 6;
+            this.dlcamntbox.Name = "dlcamntbox";
+            this.dlcamntbox.Size = new System.Drawing.Size(62, 20);
+            this.dlcamntbox.TabIndex = 9;
+            this.dlcamntbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(7, 21);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(82, 13);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "Amount of DLC:";
+            // 
+            // titleIDIV
+            // 
+            this.titleIDIV.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.titleIDIV.Location = new System.Drawing.Point(64, 145);
+            this.titleIDIV.MaxLength = 16;
+            this.titleIDIV.Name = "titleIDIV";
+            this.titleIDIV.Size = new System.Drawing.Size(149, 20);
+            this.titleIDIV.TabIndex = 7;
+            this.titleIDIV.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titleIDIV.Visible = false;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(7, 152);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(65, 13);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "Title ID / IV:";
+            this.label7.Visible = false;
+            // 
+            // titlekeybox
+            // 
+            this.titlekeybox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.titlekeybox.Location = new System.Drawing.Point(64, 125);
+            this.titlekeybox.MaxLength = 16;
+            this.titlekeybox.Name = "titlekeybox";
+            this.titlekeybox.Size = new System.Drawing.Size(149, 20);
+            this.titlekeybox.TabIndex = 5;
+            this.titlekeybox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titlekeybox.Visible = false;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 127);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(51, 13);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Title Key:";
+            this.label6.Visible = false;
+            // 
+            // button1
+            // 
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button1.Location = new System.Drawing.Point(350, 95);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(177, 26);
+            this.button1.TabIndex = 24;
+            this.button1.Text = "Write Changes to TMD...";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // button4
+            // 
+            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button4.Location = new System.Drawing.Point(350, 258);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(177, 26);
+            this.button4.TabIndex = 25;
+            this.button4.Text = "Write Changes to Ticket...";
+            this.button4.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button5.Location = new System.Drawing.Point(278, 258);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(66, 26);
+            this.button5.TabIndex = 26;
+            this.button5.Text = "Revert";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button6
+            // 
+            this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button6.Location = new System.Drawing.Point(278, 95);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(66, 26);
+            this.button6.TabIndex = 27;
+            this.button6.Text = "Revert";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button7
+            // 
+            this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.Location = new System.Drawing.Point(278, 290);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(249, 27);
+            this.button7.TabIndex = 28;
+            this.button7.Text = "Continue Operations...";
+            this.button7.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            this.label12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label12.Location = new System.Drawing.Point(278, 335);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(249, 148);
+            this.label12.TabIndex = 29;
+            this.label12.Text = resources.GetString("label12.Text");
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // shamelessvariablelabel
+            // 
+            this.shamelessvariablelabel.AutoSize = true;
+            this.shamelessvariablelabel.Location = new System.Drawing.Point(285, 322);
+            this.shamelessvariablelabel.Name = "shamelessvariablelabel";
+            this.shamelessvariablelabel.Size = new System.Drawing.Size(0, 13);
+            this.shamelessvariablelabel.TabIndex = 30;
+            this.shamelessvariablelabel.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(274, 496);
+            this.ClientSize = new System.Drawing.Size(539, 492);
+            this.Controls.Add(this.shamelessvariablelabel);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.button6);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.button7);
+            this.Controls.Add(this.ticketgpbox);
+            this.Controls.Add(this.button5);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.tmdgpbox);
             this.Controls.Add(this.truchabox);
             this.Controls.Add(this.databaseButton);
             this.Controls.Add(this.decryptbox);
@@ -452,15 +751,22 @@
             this.Controls.Add(this.dlprogress);
             this.Controls.Add(this.packbox);
             this.Controls.Add(this.statusbox);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.downloadstartbtn);
             this.Controls.Add(this.titleidbox);
             this.Controls.Add(this.TMDButton);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(290, 534);
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(545, 520);
+            this.MinimumSize = new System.Drawing.Size(280, 520);
             this.Name = "Form1";
             this.Text = "NUSD";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.databaseStrip.ResumeLayout(false);
+            this.tmdgpbox.ResumeLayout(false);
+            this.tmdgpbox.PerformLayout();
+            this.ticketgpbox.ResumeLayout(false);
+            this.ticketgpbox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -470,7 +776,7 @@
 
         private System.Windows.Forms.Button TMDButton;
         private System.Windows.Forms.TextBox titleidbox;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button downloadstartbtn;
         private System.Windows.Forms.TextBox statusbox;
         private System.Windows.Forms.CheckBox packbox;
         private System.Windows.Forms.ProgressBar dlprogress;
@@ -506,6 +812,33 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem RegionCodesList;
         private System.Windows.Forms.CheckBox truchabox;
+        private System.Windows.Forms.GroupBox tmdgpbox;
+        private System.Windows.Forms.GroupBox ticketgpbox;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox newtitleidbox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox requiredIOSbox;
+        private System.Windows.Forms.TextBox tmdversiontrucha;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox dlcamntbox;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox titleIDIV;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox titlekeybox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox timelimitenabledcb;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox ckeyindexcb;
+        private System.Windows.Forms.TextBox timelimitsecs;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label shamelessvariablelabel;
     }
 }
 
