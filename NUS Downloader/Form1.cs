@@ -120,6 +120,7 @@ namespace NUS_Downloader
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Text = "NUSD - " + version + " - WB3000";
+            this.Size = this.MinimumSize;
         }
 
         private bool BootChecks()
@@ -540,10 +541,10 @@ namespace NUS_Downloader
             // Preparations for Downloading
             Control.CheckForIllegalCrossThreadCalls = false;
             WriteStatus("Starting NUS Download. Please be patient!");
-            button3.Enabled = false;
+            downloadstartbtn.Enabled = false;
             titleidbox.Enabled = false;
             titleversion.Enabled = false;
-            button3.Text = "Starting NUS Download!";
+            downloadstartbtn.Text = "Starting NUS Download!";
 
             // Current directory...
             string currentdir = Application.StartupPath;
@@ -569,7 +570,7 @@ namespace NUS_Downloader
             else
                 titledirectory = currentdir + titleid + "v" + titleversion.Text + @"\";
 
-            button3.Text = "Prerequisites: (0/2)";
+            downloadstartbtn.Text = "Prerequisites: (0/2)";
 
             // Download TMD before the rest...
             string tmdfull = "tmd";
@@ -584,15 +585,15 @@ namespace NUS_Downloader
                 
                 WriteStatus("Download Failed: " + tmdfull);
                 WriteStatus(" - Reason: " + ex.Message.ToString().Replace("The remote server returned an error: ", ""));
-                button3.Enabled = true;
+                downloadstartbtn.Enabled = true;
                 titleidbox.Enabled = true;
                 titleversion.Enabled = true;
-                button3.Text = "Start NUS Download!";
+                downloadstartbtn.Text = "Start NUS Download!";
                 dlprogress.Value = 0;
                 DeleteTitleDirectory();
                 return;
             }
-            button3.Text = "Prerequisites: (1/2)";
+            downloadstartbtn.Text = "Prerequisites: (1/2)";
             dlprogress.Value = 50;
 
             // Download CETK after tmd...
@@ -609,7 +610,7 @@ namespace NUS_Downloader
                     WriteStatus("You may be able to retrieve the contents by Ignoring the Ticket (Check below)");
                     titleidbox.Enabled = true;
                     titleversion.Enabled = true;
-                    button3.Text = "Start NUS Download!";
+                    downloadstartbtn.Text = "Start NUS Download!";
                     dlprogress.Value = 0;
                     DeleteTitleDirectory();
                     return;
@@ -621,7 +622,7 @@ namespace NUS_Downloader
                     decryptbox.Checked = false;
                 }
             }
-            button3.Text = "Prerequisites: (2/2)";
+            downloadstartbtn.Text = "Prerequisites: (2/2)";
             dlprogress.Value = 100;
 
             // Obtain TitleKey
@@ -710,7 +711,7 @@ namespace NUS_Downloader
                 contentstrnum += TrimLeadingZeros(Convert.ToString(tmd[x]));
             }
             WriteStatus("Content #: " + contentstrnum);
-            button3.Text = "Content: (0/" + contentstrnum + ")";
+            downloadstartbtn.Text = "Content: (0/" + contentstrnum + ")";
             dlprogress.Value = 0;
 
             // Gather information...
@@ -746,17 +747,17 @@ namespace NUS_Downloader
                 {
                     WriteStatus("Download Failed: " + tmdcontents[i]);
                     WriteStatus(" - Reason: " + ex.Message.ToString().Replace("The remote server returned an error: ", ""));
-                    button3.Enabled = true;
+                    downloadstartbtn.Enabled = true;
                     titleidbox.Enabled = true;
                     titleversion.Enabled = true;
-                    button3.Text = "Start NUS Download!";
+                    downloadstartbtn.Text = "Start NUS Download!";
                     dlprogress.Value = 0;
                     DeleteTitleDirectory();
                     return;
                 }
 
                 // Progress reporting advances...
-                button3.Text = "Content: (" + (i + 1) + @"/" + contentstrnum + ")";
+                downloadstartbtn.Text = "Content: (" + (i + 1) + @"/" + contentstrnum + ")";
                 currentcontentlocation += int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber);
 
                 // Decrypt stuff...
@@ -821,8 +822,83 @@ namespace NUS_Downloader
             // Trucha signing...
             if ((truchabox.Checked == true) && (wiimode == true))
             {
+                // Read information from TMD into signing GUI...
+                requiredIOSbox.Text = Convert.ToString(tmd[0x18B]);
+                tmdversiontrucha.Text = TrimLeadingZeros(Convert.ToString(tmd[0x1DC]) + Convert.ToString(tmd[0x1DD]));
+                newtitleidbox.Text = titleid;
+
+                // Read information from TIK into signing GUI...
+                // Create ticket file holder
+                FileStream cetkf = File.OpenRead(titledirectory + @"\cetk");
+                byte[] cetkbuff = ReadFully(cetkf, 20);
+                cetkf.Close();
+
+                // Titlekey
+                for (int i = 0; i < 16; i++)
+                {
+                    titlekey[i] = cetkbuff[0x1BF + i];
+                }
+                //titlekeybox.Text = DisplayBytes(titlekey).Replace(" ", "");
+                titlekeybox.Text = System.Text.Encoding.UTF7.GetString(titlekey);
+
+                // IV (TITLEID+00000000s)
+                byte[] iv = new byte[16];
+                for (int i = 0; i < 8; i++)
+                {
+                    iv[i] = cetkbuff[0x1DC + i];
+                }
+                for (int i = 0; i < 8; i++)
+                {
+                    iv[i + 8] = 0x00;
+                }
+                titleIDIV.Text = DisplayBytes(iv).Replace(" ", "");
+
+                //DLC
+                dlcamntbox.Text = TrimLeadingZeros(Convert.ToString(cetkbuff[0x1E6]) + Convert.ToString(cetkbuff[0x1E7]));
+
+                //keyindex
+                if (cetkbuff[0x1F1] == 0x00)
+                    ckeyindexcb.SelectedIndex = 0;
+                else if (cetkbuff[0x1F1] == 0x01)
+                    ckeyindexcb.SelectedIndex = 1;
+                else
+                    ckeyindexcb.SelectedIndex = 0;
+
+                //time enabled
+                if (cetkbuff[0x247] == 0x00)
+                    timelimitenabledcb.SelectedIndex = 0;
+                else if (cetkbuff[0x247] == 0x01)
+                    timelimitenabledcb.SelectedIndex = 1;
+                else
+                    timelimitenabledcb.SelectedIndex = 0;
+
+                //time in seconds
+                byte[] timelimit = new byte[4];
+                for (int i = 0; i < timelimit.Length; i++)
+                {
+                    timelimit[i] = cetkbuff[0x248 + 1];
+                }
+                timelimitsecs.Text = Convert.ToString(System.BitConverter.ToInt32(timelimit, 0));
+
+
+                // Resize form to max to show trucha options...
+                this.Size = this.MaximumSize;
+
+                shamelessvariablelabel.Text = String.Format("{0},{1}", titledirectory, tmdfull); 
+
+                // Loop until finished...
+                while (this.Size == this.MaximumSize)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                }
+
+                /*
                 WriteStatus("Trucha Signing TMD...");
-                Array.Resize(ref tmd, 484 + (Convert.ToInt32(contentstrnum) * 36)); 
+                Array.Resize(ref tmd, 484 + (Convert.ToInt32(contentstrnum) * 36));
+
+                // DEBUG: Mii Channel Test...
+                tmd[0x18F] = 0x01;
+
                 tmd = ZeroSignature(tmd);
                 tmd = TruchaSign(tmd);
 
@@ -838,12 +914,16 @@ namespace NUS_Downloader
                 cetkf.Close();
 
                 Array.Resize(ref cetkbuff, 0x2A4);
+
+                // DEBUG: Mii Channel Test...
+                cetkbuff[0x1DF] = 0x01;
+
                 cetkbuff = ZeroSignature(cetkbuff);
                 cetkbuff = TruchaSign(cetkbuff);
 
                 FileStream testtik = new FileStream(titledirectory + "cetk", FileMode.Open);
                 testtik.Write(cetkbuff, 0, cetkbuff.Length);
-                testtik.Close();
+                testtik.Close(); */
             }
 
             if ((packbox.Checked == true) && (wiimode == true))
@@ -851,10 +931,10 @@ namespace NUS_Downloader
                 PackWAD(titleid, tmdfull, tmdcontents.Length, tmdcontents, tmdsizes, titledirectory);
             }
 
-            button3.Enabled = true;
+            downloadstartbtn.Enabled = true;
             titleidbox.Enabled = true;
             titleversion.Enabled = true;
-            button3.Text = "Start NUS Download!";
+            downloadstartbtn.Text = "Start NUS Download!";
             dlprogress.Value = 0;
 
         }
@@ -890,17 +970,12 @@ namespace NUS_Downloader
         private void DeleteTitleDirectory()
         {
             string currentdir = Application.StartupPath;
-
-            /*if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
-                currentdir += @"\"; */
-
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
                 currentdir += Path.DirectorySeparatorChar;
 
             // Get placement directory early...
             string titledirectory;
             if (titleversion.Text == "")
-                //titledirectory = currentdir + titleidbox.Text + @"\";
                 titledirectory = Path.Combine(currentdir, titleidbox.Text + Path.DirectorySeparatorChar);
             else
                 titledirectory = Path.Combine(currentdir, titleidbox.Text + "v" + titleversion.Text + Path.DirectorySeparatorChar);
@@ -1026,7 +1101,7 @@ namespace NUS_Downloader
 
             // Write CertChainLength
             wadfs.Seek(0x08, SeekOrigin.Begin);
-            byte[] chainsize = InttoByteArray(wad.CertChainSize);
+            byte[] chainsize = InttoByteArray(wad.CertChainSize, 4);
             wadfs.Write(chainsize, 0, 4);
 
             // Write res
@@ -1041,13 +1116,13 @@ namespace NUS_Downloader
 
             // Write tmdsize
             int strippedtmd = 484 + (contentcount * 36);
-            byte[] tmdsize = InttoByteArray(strippedtmd);
+            byte[] tmdsize = InttoByteArray(strippedtmd, 4);
             wadfs.Seek(0x14, SeekOrigin.Begin);
             wadfs.Write(tmdsize, 0, 4);
 
             // Write data size
             wadfs.Seek(0x18, SeekOrigin.Begin);
-            byte[] datasize = InttoByteArray(wad.DataSize);
+            byte[] datasize = InttoByteArray(wad.DataSize, 4);
             wadfs.Write(datasize, 0, 4);
 
             // Finished.
@@ -1075,11 +1150,11 @@ namespace NUS_Downloader
             return (long)thelength;
         }
 
-        private byte[] InttoByteArray(int size)
+        private byte[] InttoByteArray(int inte, int arraysize)
         {
             // Take integer and make into byte array
-            byte[] b = new byte[4];
-            b = BitConverter.GetBytes(size);
+            byte[] b = new byte[arraysize];
+            b = BitConverter.GetBytes(inte);
 
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(b);
@@ -1168,7 +1243,7 @@ namespace NUS_Downloader
             WriteStatus("");
             WriteStatus("Special thanks to:");
             WriteStatus(" * Crediar for his wadmaker tool + source, and for the advice!");
-            WriteStatus(" * SquidMan/Galaxy/comex for advice/sources.");
+            WriteStatus(" * SquidMan/Galaxy/comex/Xuzz for advice/sources.");
             WriteStatus(" * Pasta for database compilation assistance.");
             WriteStatus(" * #WiiDev for general assistance whenever I had questions.");
         }
@@ -1786,6 +1861,88 @@ namespace NUS_Downloader
             }
 
             return array;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            // Revert to TMD information...
+            string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+
+            // Read the tmd as a stream...
+            FileStream fs = File.OpenRead(fileinfo[0] + fileinfo[1]);
+            byte[] tmd = ReadFully(fs, 20);
+            fs.Close();
+
+            // Read information from TMD into signing GUI...
+            requiredIOSbox.Text = Convert.ToString(tmd[0x18B]);
+            tmdversiontrucha.Text = TrimLeadingZeros(Convert.ToString(tmd[0x1DC]) + Convert.ToString(tmd[0x1DD]));
+            newtitleidbox.Text = titleidbox.Text;
+
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            // Revert to Ticket information...
+            string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+
+            // Create ticket file holder
+            FileStream cetkf = File.OpenRead(fileinfo[0] + @"\cetk");
+            byte[] cetkbuff = ReadFully(cetkf, 20);
+            cetkf.Close();
+
+            // Titlekey
+            byte[] titlekey = new byte[16];
+            for (int i = 0; i < 16; i++)
+            {
+                titlekey[i] = cetkbuff[0x1BF + i];
+            }
+            //titlekeybox.Text = DisplayBytes(titlekey).Replace(" ", "");
+            titlekeybox.Text = System.Text.Encoding.UTF7.GetString(titlekey);
+
+            // IV (TITLEID+00000000s)
+            byte[] iv = new byte[16];
+            for (int i = 0; i < 8; i++)
+            {
+                iv[i] = cetkbuff[0x1DC + i];
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                iv[i + 8] = 0x00;
+            }
+            titleIDIV.Text = DisplayBytes(iv).Replace(" ", "");
+
+            //DLC
+            dlcamntbox.Text = TrimLeadingZeros(Convert.ToString(cetkbuff[0x1E6]) + Convert.ToString(cetkbuff[0x1E7]));
+
+            //keyindex
+            if (cetkbuff[0x1F1] == 0x00)
+                ckeyindexcb.SelectedIndex = 0;
+            else if (cetkbuff[0x1F1] == 0x01)
+                ckeyindexcb.SelectedIndex = 1;
+            else
+                ckeyindexcb.SelectedIndex = 0;
+
+            //time enabled
+            if (cetkbuff[0x247] == 0x00)
+                timelimitenabledcb.SelectedIndex = 0;
+            else if (cetkbuff[0x247] == 0x01)
+                timelimitenabledcb.SelectedIndex = 1;
+            else
+                timelimitenabledcb.SelectedIndex = 0;
+
+            //time in seconds
+            byte[] timelimit = new byte[4];
+            for (int i = 0; i < timelimit.Length; i++)
+            {
+                timelimit[i] = cetkbuff[0x248 + 1];
+            }
+            timelimitsecs.Text = Convert.ToString(System.BitConverter.ToInt32(timelimit, 0));
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            // Write Trucha changes to TMD...
         }
     }
 }
