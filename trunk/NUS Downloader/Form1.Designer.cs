@@ -95,6 +95,7 @@
             this.button7 = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
             this.shamelessvariablelabel = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
@@ -236,9 +237,9 @@
             // button2
             // 
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button2.Location = new System.Drawing.Point(184, 390);
+            this.button2.Location = new System.Drawing.Point(154, 390);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(78, 20);
+            this.button2.Size = new System.Drawing.Size(53, 20);
             this.button2.TabIndex = 14;
             this.button2.Text = "About";
             this.button2.UseVisualStyleBackColor = true;
@@ -668,6 +669,7 @@
             this.button4.TabIndex = 25;
             this.button4.Text = "Write Changes to Ticket...";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click_1);
             // 
             // button5
             // 
@@ -699,8 +701,9 @@
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(249, 27);
             this.button7.TabIndex = 28;
-            this.button7.Text = "Continue Operations...";
+            this.button7.Text = "Finished with Trucha Changes...";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // label12
             // 
@@ -710,7 +713,7 @@
             this.label12.Size = new System.Drawing.Size(249, 148);
             this.label12.TabIndex = 29;
             this.label12.Text = resources.GetString("label12.Text");
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // shamelessvariablelabel
             // 
@@ -721,11 +724,23 @@
             this.shamelessvariablelabel.TabIndex = 30;
             this.shamelessvariablelabel.Visible = false;
             // 
+            // button3
+            // 
+            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button3.Location = new System.Drawing.Point(213, 383);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(49, 27);
+            this.button3.TabIndex = 31;
+            this.button3.Text = "Clear";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 492);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.shamelessvariablelabel);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.button6);
@@ -742,8 +757,8 @@
             this.Controls.Add(this.wadnamebox);
             this.Controls.Add(this.getcerts);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.titleversion);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.radioButton2);
@@ -839,6 +854,7 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label shamelessvariablelabel;
+        private System.Windows.Forms.Button button3;
     }
 }
 

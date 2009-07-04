@@ -55,6 +55,7 @@ namespace NUS_Downloader
 
             // Vars
             bool startnow = false;
+            bool endafter = false;
 
             // Fix'd
             localuse.Checked = false;
@@ -78,6 +79,9 @@ namespace NUS_Downloader
                         break;
                     case "-s":
                         startnow = true;
+                        break;
+                    case "-close":
+                        endafter = true;
                         break;
                     case "-d":
                         decryptbox.Checked = true;
@@ -114,7 +118,16 @@ namespace NUS_Downloader
                 NUSDownloader.RunWorkerAsync();
             }
 
+            // Close if specified
+            while (NUSDownloader.IsBusy)
+            { 
+                // Do nothing...
+            }
 
+            if ((NUSDownloader.IsBusy == false) && (endafter == true))
+            {
+                Application.Exit();
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -827,6 +840,12 @@ namespace NUS_Downloader
                 tmdversiontrucha.Text = TrimLeadingZeros(Convert.ToString(tmd[0x1DC]) + Convert.ToString(tmd[0x1DD]));
                 newtitleidbox.Text = titleid;
 
+                // Setup for NO IOS
+                if (requiredIOSbox.Text == "0")
+                    requiredIOSbox.Enabled = false;
+                else
+                    requiredIOSbox.Enabled = true;
+
                 // Read information from TIK into signing GUI...
                 // Create ticket file holder
                 FileStream cetkf = File.OpenRead(titledirectory + @"\cetk");
@@ -884,7 +903,7 @@ namespace NUS_Downloader
                 // Resize form to max to show trucha options...
                 this.Size = this.MaximumSize;
 
-                shamelessvariablelabel.Text = String.Format("{0},{1}", titledirectory, tmdfull); 
+                shamelessvariablelabel.Text = String.Format("{0},{1},{2}", titledirectory, tmdfull, contentstrnum); 
 
                 // Loop until finished...
                 while (this.Size == this.MaximumSize)
@@ -1878,6 +1897,12 @@ namespace NUS_Downloader
             tmdversiontrucha.Text = TrimLeadingZeros(Convert.ToString(tmd[0x1DC]) + Convert.ToString(tmd[0x1DD]));
             newtitleidbox.Text = titleidbox.Text;
 
+            // Setup for NO IOS
+            if (requiredIOSbox.Text == "0")
+                requiredIOSbox.Enabled = false;
+            else
+                requiredIOSbox.Enabled = true;
+
 
         }
 
@@ -1935,7 +1960,7 @@ namespace NUS_Downloader
             byte[] timelimit = new byte[4];
             for (int i = 0; i < timelimit.Length; i++)
             {
-                timelimit[i] = cetkbuff[0x248 + 1];
+                timelimit[i] = cetkbuff[0x248 + i];
             }
             timelimitsecs.Text = Convert.ToString(System.BitConverter.ToInt32(timelimit, 0));
         }
@@ -1943,6 +1968,128 @@ namespace NUS_Downloader
         private void button1_Click_1(object sender, EventArgs e)
         {
             // Write Trucha changes to TMD...
+            WriteStatus("Trucha Signing TMD...");
+
+            // Cheezy file info
+            string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+
+            // Read the tmd as a stream...
+            FileStream fs = File.OpenRead(fileinfo[0] + fileinfo[1]);
+            byte[] tmd = ReadFully(fs, 20);
+            fs.Close();
+
+            // Resize to just TMD...
+            Array.Resize(ref tmd, 484 + (Convert.ToInt32(fileinfo[2]) * 36));
+
+            // Change Required IOS
+            if (requiredIOSbox.Text != "0")
+            {
+                tmd[0x18B] = Convert.ToByte(requiredIOSbox.Text);
+            }
+
+            // Change Title Version
+            byte[] version = new byte[2];
+            version = InttoByteArray(Convert.ToInt32(tmdversiontrucha.Text), version.Length);
+            tmd[0x1DC] = version[version.Length - 2];
+            tmd[0x1DD] = version[version.Length - 1];
+
+            // Change Title ID
+            tmd[0x18C] = byte.Parse(newtitleidbox.Text.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+            tmd[0x18D] = byte.Parse(newtitleidbox.Text.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+            tmd[0x18E] = byte.Parse(newtitleidbox.Text.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+            tmd[0x18F] = byte.Parse(newtitleidbox.Text.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+            tmd[0x190] = byte.Parse(newtitleidbox.Text.Substring(8, 2), System.Globalization.NumberStyles.HexNumber);
+            tmd[0x191] = byte.Parse(newtitleidbox.Text.Substring(10, 2), System.Globalization.NumberStyles.HexNumber);
+            tmd[0x192] = byte.Parse(newtitleidbox.Text.Substring(12, 2), System.Globalization.NumberStyles.HexNumber);
+            tmd[0x193] = byte.Parse(newtitleidbox.Text.Substring(14, 2), System.Globalization.NumberStyles.HexNumber);
+
+            tmd = ZeroSignature(tmd);
+            tmd = TruchaSign(tmd);
+
+            FileStream testtmd = new FileStream(fileinfo[0] + fileinfo[1], FileMode.Open);
+            testtmd.Write(tmd, 0, tmd.Length);
+            testtmd.Close();
         }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            // Write Trucha changes to Ticket...
+            WriteStatus("Trucha Signing Ticket...");
+
+            // Cheezy file info
+            string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+
+            // Create ticket file holder
+            FileStream cetkf = File.OpenRead(fileinfo[0] + @"\cetk");
+            byte[] cetkbuff = ReadFully(cetkf, 20);
+            cetkf.Close();
+
+            // Resize Ticket to actual size.
+            Array.Resize(ref cetkbuff, 0x2A4);
+
+            // TODO: Title Key and IV changes!
+
+            // Write DLC Amount.
+            byte[] dlcamount = new byte[2];
+            dlcamount = InttoByteArray(Convert.ToInt32(dlcamntbox.Text), dlcamount.Length);
+            cetkbuff[0x1E6] = dlcamount[dlcamount.Length - 2];
+            cetkbuff[0x1E7] = dlcamount[dlcamount.Length - 1];
+
+            // Common Key index.
+            if (ckeyindexcb.SelectedIndex == 0)
+                cetkbuff[0x1F1] = 0x00;
+            else if (ckeyindexcb.SelectedIndex == 1)
+                cetkbuff[0x1F1] = 0x01;
+            else
+                cetkbuff[0x1F1] = 0x00;
+
+            // Time limit enable.
+            if (timelimitenabledcb.SelectedIndex == 0)
+                cetkbuff[0x247] = 0x00;
+            else if (timelimitenabledcb.SelectedIndex == 1)
+                cetkbuff[0x247] = 0x01;
+            else
+                cetkbuff[0x247] = 0x00;
+
+            // The amount of time for the limit.
+            byte[] limitseconds = new byte[4];
+            limitseconds = InttoByteArray(Convert.ToInt32(timelimitsecs.Text), 4);
+            //DEBUG
+            WriteStatus(DisplayBytes(limitseconds));
+            for (int i = 0; i < 4; i++)
+            {
+                cetkbuff[0x248 + i] = limitseconds[i];
+            }
+
+            // Trucha (Fake) Sign
+            cetkbuff = ZeroSignature(cetkbuff);
+            cetkbuff = TruchaSign(cetkbuff);
+
+            // Write changes to cetk.
+            FileStream testtik = new FileStream(fileinfo[0] + "cetk", FileMode.Open);
+            testtik.Write(cetkbuff, 0, cetkbuff.Length);
+            testtik.Close();
+        }
+
+        // C# to convert a string to a byte array.
+        public static byte[] StrToByteArray(string str)
+        {
+            System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+            return encoding.GetBytes(str);
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            // Proceed with process (BG worker waits for form to resize)
+            WriteStatus("Trucha modifications complete.");
+            this.Size = this.MinimumSize;
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            // Clear Statusbox.text
+            statusbox.Text = "";
+        }
+
     }
 }
