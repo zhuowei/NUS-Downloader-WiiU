@@ -11,7 +11,7 @@ namespace NUS_Downloader
     {
         const string NUSURL = "http://nus.cdn.shop.wii.com/ccs/download/";
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
-        string version = "v1.2";
+        string version = "v1.2 Beta";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
@@ -554,9 +554,7 @@ namespace NUS_Downloader
             // Preparations for Downloading
             Control.CheckForIllegalCrossThreadCalls = false;
             WriteStatus("Starting NUS Download. Please be patient!");
-            downloadstartbtn.Enabled = false;
-            titleidbox.Enabled = false;
-            titleversion.Enabled = false;
+            SetEnableforDownload(false);
             downloadstartbtn.Text = "Starting NUS Download!";
 
             // Current directory...
@@ -598,9 +596,7 @@ namespace NUS_Downloader
                 
                 WriteStatus("Download Failed: " + tmdfull);
                 WriteStatus(" - Reason: " + ex.Message.ToString().Replace("The remote server returned an error: ", ""));
-                downloadstartbtn.Enabled = true;
-                titleidbox.Enabled = true;
-                titleversion.Enabled = true;
+                SetEnableforDownload(true);
                 downloadstartbtn.Text = "Start NUS Download!";
                 dlprogress.Value = 0;
                 DeleteTitleDirectory();
@@ -621,8 +617,7 @@ namespace NUS_Downloader
                     WriteStatus("Download Failed: cetk");
                     WriteStatus(" - Reason: " + ex.Message.ToString().Replace("The remote server returned an error: ", ""));
                     WriteStatus("You may be able to retrieve the contents by Ignoring the Ticket (Check below)");
-                    titleidbox.Enabled = true;
-                    titleversion.Enabled = true;
+                    SetEnableforDownload(true);
                     downloadstartbtn.Text = "Start NUS Download!";
                     dlprogress.Value = 0;
                     DeleteTitleDirectory();
@@ -760,9 +755,7 @@ namespace NUS_Downloader
                 {
                     WriteStatus("Download Failed: " + tmdcontents[i]);
                     WriteStatus(" - Reason: " + ex.Message.ToString().Replace("The remote server returned an error: ", ""));
-                    downloadstartbtn.Enabled = true;
-                    titleidbox.Enabled = true;
-                    titleversion.Enabled = true;
+                    SetEnableforDownload(true);
                     downloadstartbtn.Text = "Start NUS Download!";
                     dlprogress.Value = 0;
                     DeleteTitleDirectory();
@@ -837,7 +830,7 @@ namespace NUS_Downloader
             {
                 // Read information from TMD into signing GUI...
                 requiredIOSbox.Text = Convert.ToString(tmd[0x18B]);
-                tmdversiontrucha.Text = TrimLeadingZeros(Convert.ToString(tmd[0x1DC]) + Convert.ToString(tmd[0x1DD]));
+                tmdversiontrucha.Text = Convert.ToString((tmd[0x1DC]*256) + tmd[0x1DD]);
                 newtitleidbox.Text = titleid;
 
                 // Setup for NO IOS
@@ -873,7 +866,7 @@ namespace NUS_Downloader
                 titleIDIV.Text = DisplayBytes(iv).Replace(" ", "");
 
                 //DLC
-                dlcamntbox.Text = TrimLeadingZeros(Convert.ToString(cetkbuff[0x1E6]) + Convert.ToString(cetkbuff[0x1E7]));
+                dlcamntbox.Text = Convert.ToString((cetkbuff[0x1E6]*256) + cetkbuff[0x1E7]);
 
                 //keyindex
                 if (cetkbuff[0x1F1] == 0x00)
@@ -905,7 +898,7 @@ namespace NUS_Downloader
 
                 shamelessvariablelabel.Text = String.Format("{0},{1},{2}", titledirectory, tmdfull, contentstrnum); 
 
-                // Loop until finished...
+                // Loop until user is finished...
                 while (this.Size == this.MaximumSize)
                 {
                     System.Threading.Thread.Sleep(1000);
@@ -950,9 +943,7 @@ namespace NUS_Downloader
                 PackWAD(titleid, tmdfull, tmdcontents.Length, tmdcontents, tmdsizes, titledirectory);
             }
 
-            downloadstartbtn.Enabled = true;
-            titleidbox.Enabled = true;
-            titleversion.Enabled = true;
+            SetEnableforDownload(true);
             downloadstartbtn.Text = "Start NUS Download!";
             dlprogress.Value = 0;
 
@@ -1894,7 +1885,8 @@ namespace NUS_Downloader
 
             // Read information from TMD into signing GUI...
             requiredIOSbox.Text = Convert.ToString(tmd[0x18B]);
-            tmdversiontrucha.Text = TrimLeadingZeros(Convert.ToString(tmd[0x1DC]) + Convert.ToString(tmd[0x1DD]));
+            // Lulzy cheap way of getting version... *256
+            tmdversiontrucha.Text = Convert.ToString(((tmd[0x1DC]*256) + tmd[0x1DD]));
             newtitleidbox.Text = titleidbox.Text;
 
             // Setup for NO IOS
@@ -1938,7 +1930,7 @@ namespace NUS_Downloader
             titleIDIV.Text = DisplayBytes(iv).Replace(" ", "");
 
             //DLC
-            dlcamntbox.Text = TrimLeadingZeros(Convert.ToString(cetkbuff[0x1E6]) + Convert.ToString(cetkbuff[0x1E7]));
+            dlcamntbox.Text = Convert.ToString((cetkbuff[0x1E6]*256) + cetkbuff[0x1E7]);
 
             //keyindex
             if (cetkbuff[0x1F1] == 0x00)
@@ -2089,6 +2081,15 @@ namespace NUS_Downloader
         {
             // Clear Statusbox.text
             statusbox.Text = "";
+        }
+
+        private void SetEnableforDownload(bool enabled)
+        {
+            downloadstartbtn.Enabled = enabled;
+            titleidbox.Enabled = enabled;
+            titleversion.Enabled = enabled;
+            TMDButton.Enabled = enabled;
+            databaseButton.Enabled = enabled;
         }
 
     }
