@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Xml;
+using System.Drawing;
 
 namespace NUS_Downloader
 {
@@ -11,10 +12,18 @@ namespace NUS_Downloader
     {
         const string NUSURL = "http://nus.cdn.shop.wii.com/ccs/download/";
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
+        // TODO: Always remember to change version!
         string version = "v1.2 Beta";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
+
+        // Images do not compare unless globalized...
+        Image green = Properties.Resources.bullet_green;
+        Image orange = Properties.Resources.bullet_orange;
+        Image redorb = Properties.Resources.bullet_red;
+        Image redgreen = Properties.Resources.bullet_redgreen;
+        Image redorange = Properties.Resources.bullet_redorange;
 
         public struct WADHeader
         {
@@ -196,7 +205,7 @@ namespace NUS_Downloader
             }
 
             // Check for DSi common key bin file...
-            if (File.Exists(currentdir + "dskey.bin") == false)
+            if (File.Exists(currentdir + "dsikey.bin") == false)
             {
                 // Do not pester about DSi key
             }
@@ -228,6 +237,7 @@ namespace NUS_Downloader
                 ClearDatabaseStrip();
                 FillDatabaseStrip();
                 LoadRegionCodes();
+                ShowInnerToolTips(false);
             }
 
             return result;
@@ -544,6 +554,10 @@ namespace NUS_Downloader
                 WriteStatus("Please enter SOME info...");
                 return;
             }
+            else
+            {
+                statusbox.Text = " --- " + titleidbox.Text + " ---";
+            }
 
             // Running Downloads in background so no form freezing
             NUSDownloader.RunWorkerAsync();
@@ -662,7 +676,7 @@ namespace NUS_Downloader
 
                 // Standard/Korea
                 bool koreankey = false;
-                WriteStatus("0x01F1: " + Convert.ToString(cetkbuf[0x01F1]));
+                //WriteStatus("0x01F1: " + Convert.ToString(cetkbuf[0x01F1]));
                 if (cetkbuf[0x01F1] == 0x01)
                 {
                     WriteStatus("Key Type: Korean");
@@ -683,7 +697,7 @@ namespace NUS_Downloader
                         keyBytes = LoadCommonKey(@"\key.bin");
                 }
                 else
-                    keyBytes = LoadCommonKey(@"\dskey.bin");
+                    keyBytes = LoadCommonKey(@"\dsikey.bin");
 
                 initCrypt(iv, keyBytes);
 
@@ -703,6 +717,16 @@ namespace NUS_Downloader
                 tmdversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[x])));
             }
             titleversion.Text = Convert.ToString(int.Parse(tmdversion, System.Globalization.NumberStyles.HexNumber));
+
+            // Read System Version (Needed IOS)
+            string sysversion = "";
+            for (int i = 0; i < 8; i++)
+            {
+                sysversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[0x184 + i])));
+            }
+            sysversion = Convert.ToString(int.Parse(sysversion.Substring(14, 2), System.Globalization.NumberStyles.HexNumber));
+            if (sysversion != "0")
+                WriteStatus("Requires: IOS" + sysversion);
 
             // Renaming would be ideal, but gives too many errors...
             /*if ((currentdir + titleid + "v" + titleversion.Text + @"\") != titledirectory)
@@ -1232,9 +1256,9 @@ namespace NUS_Downloader
                 WriteStatus("Wii Korea Decryption: OK");
             }
 
-            if (File.Exists(currentdir + "dskey.bin") == false)
+            if (File.Exists(currentdir + "dsikey.bin") == false)
             {
-                WriteStatus("DSi Decryption: Need (dskey.bin)");
+                WriteStatus("DSi Decryption: Need (dsikey.bin)");
             }
             else
             {
@@ -1255,7 +1279,9 @@ namespace NUS_Downloader
             WriteStatus(" * Crediar for his wadmaker tool + source, and for the advice!");
             WriteStatus(" * SquidMan/Galaxy/comex/Xuzz for advice/sources.");
             WriteStatus(" * Pasta for database compilation assistance.");
-            WriteStatus(" * #WiiDev for general assistance whenever I had questions.");
+            WriteStatus(" * #WiiDev for answering the tough questions.");
+            WriteStatus(" * Anyone who helped beta test on GBATemp!");
+            WriteStatus(" * Famfamfam for the Silk Icon Set.");
         }
 
         private void getcerts_Click(object sender, EventArgs e)
@@ -1557,7 +1583,9 @@ namespace NUS_Downloader
                     string titleID = "";
                     string descname = "";
                     string stticket = "";
-
+                    bool dangerous = false;
+                    bool ticket = true;
+                    
                     // Lol.
                     XmlNodeList ChildrenOfTheNode = XMLSpecificNodeTypeList[x].ChildNodes;
 
@@ -1604,15 +1632,21 @@ namespace NUS_Downloader
                             default:
                                 break;
                             case "ticket":
-                                bool ticket = Convert.ToBoolean(ChildrenOfTheNode[z].InnerText);
-                                if (!ticket)
+                                ticket = Convert.ToBoolean(ChildrenOfTheNode[z].InnerText);
+                                /*if (!ticket)
                                     stticket += "(-)";
                                 else
-                                    stticket += "(+)";
+                                    stticket += "(+)"; */
+                                break;
+                            case "danger":
+                                dangerous = true;
+                                string dangertext = ChildrenOfTheNode[z].InnerText;
+                                XMLToolStripItem.ToolTipText = dangertext;
                                 break;
                         }
+                        XMLToolStripItem.Image = SelectItemImage(ticket, dangerous);
                         XMLToolStripItem.Text = titleID + " " + stticket + " " + descname;
-                        XMLToolStripItem.Text = String.Format("{0} {1} {2}", titleID, stticket, descname);
+                        XMLToolStripItem.Text = String.Format("{0} - {1}", titleID, descname);
                     }
                     AddToolStripItemToStrip(i, XMLToolStripItem, XMLAttributes);
                 }
@@ -1626,10 +1660,10 @@ namespace NUS_Downloader
             {
                 switch (attributes[0].Value)
                 {
-                    case "Commodore 64":
+                    case "C64":
                         C64MenuList.DropDownItems.Add(additionitem);
                         break;
-                    case "NeoGeo":
+                    case "NEO":
                         NeoGeoMenuList.DropDownItems.Add(additionitem);
                         break;
                     case "NES":
@@ -1641,10 +1675,10 @@ namespace NUS_Downloader
                     case "N64":
                         N64MenuList.DropDownItems.Add(additionitem);
                         break;
-                    case "TurboGrafx16":
+                    case "TG16":
                         TurboGrafx16MenuList.DropDownItems.Add(additionitem);
                         break;
-                    case "TurboGrafxCD":
+                    case "TGCD":
                         TurboGrafxCDMenuList.DropDownItems.Add(additionitem);
                         break;
                     case "MSX":
@@ -1653,10 +1687,10 @@ namespace NUS_Downloader
                     case "SMS":
                         SegaMSMenuList.DropDownItems.Add(additionitem);
                         break;
-                    case "Genesis":
+                    case "GEN":
                         GenesisMenuList.DropDownItems.Add(additionitem);
                         break;
-                    case "VCArcade":
+                    case "ARC":
                         VCArcadeMenuList.DropDownItems.Add(additionitem);
                         break;
                     default:
@@ -1690,7 +1724,12 @@ namespace NUS_Downloader
             titleidbox.Text = e.ClickedItem.OwnerItem.Text.Substring(0, 16);
             titleversion.Text = "";
             titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.Text.Substring(0, 2));
-            if (e.ClickedItem.OwnerItem.Text.Contains("(-)"))
+
+            // Prepare StatusBox...
+            statusbox.Text = " --- " + e.ClickedItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.Text.Length - 19)) + " ---";
+   
+            // Check if a ticket is present...
+            if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
             {
                 ignoreticket.Checked = true;
                 WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
@@ -1700,6 +1739,12 @@ namespace NUS_Downloader
             else
             {
                 ignoreticket.Checked = false;
+            }
+
+            // Check for danger item
+            if ((e.ClickedItem.OwnerItem.Image) == (redgreen) || (e.ClickedItem.OwnerItem.Image) == (redorange))
+            {
+                WriteStatus("\r\n" + e.ClickedItem.OwnerItem.ToolTipText);
             }
         }
 
@@ -1725,7 +1770,11 @@ namespace NUS_Downloader
             {
                 titleversion.Text = "";
             }
-            if (e.ClickedItem.OwnerItem.Text.Contains("(-)"))
+
+            // Prepare StatusBox...
+            statusbox.Text = " --- " + e.ClickedItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.Text.Length - 19)) + " ---";
+
+            if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
             {
                 ignoreticket.Checked = true;
                 WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
@@ -1735,6 +1784,12 @@ namespace NUS_Downloader
             else
             {
                 ignoreticket.Checked = false;
+            }
+
+            // Check for danger item
+            if ((e.ClickedItem.OwnerItem.Image) == (redgreen) || (e.ClickedItem.OwnerItem.Image) == (redorange))
+            {
+                WriteStatus("\n" + e.ClickedItem.OwnerItem.ToolTipText);
             }
         }
 
@@ -2085,12 +2140,56 @@ namespace NUS_Downloader
 
         private void SetEnableforDownload(bool enabled)
         {
+            // Disable things the user should not mess with during download...
             downloadstartbtn.Enabled = enabled;
             titleidbox.Enabled = enabled;
             titleversion.Enabled = enabled;
             TMDButton.Enabled = enabled;
             databaseButton.Enabled = enabled;
+            packbox.Enabled = enabled;
+            localuse.Enabled = enabled;
+            ignoreticket.Enabled = enabled;
+            truchabox.Enabled = enabled;
+            decryptbox.Enabled = enabled;
         }
 
+        private void ShowInnerToolTips(bool enabled)
+        {
+            // Force tooltips to GTFO in sub menus...
+            foreach (ToolStripItem item in databaseStrip.Items)
+            {
+                try
+                {
+                    ToolStripMenuItem menuitem = (ToolStripMenuItem)item;
+                    menuitem.DropDown.ShowItemToolTips = false;
+                }
+                catch (Exception)
+                {
+                    // Do nothing, some objects will not cast.
+                }
+
+            }
+        }
+
+        private System.Drawing.Image SelectItemImage(bool ticket, bool danger)
+        {
+            // All is good, go green...
+            if ((ticket) && (!danger))
+                return green;
+
+            // There's no ticket, but danger is clear...
+            if ((!ticket) && (!danger))
+                return orange;
+
+            // DANGER WILL ROBINSON...
+            if ((ticket) && (danger))
+                return redgreen;
+
+            // Double bad...
+            if ((!ticket) && (danger))
+                return redorange;
+
+            return null;
+        }
     }
 }
