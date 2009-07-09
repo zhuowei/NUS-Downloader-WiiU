@@ -41,8 +41,6 @@
             this.titleversion = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.button2 = new System.Windows.Forms.Button();
             this.getcerts = new System.Windows.Forms.Button();
             this.wadnamebox = new System.Windows.Forms.TextBox();
@@ -96,6 +94,8 @@
             this.label12 = new System.Windows.Forms.Label();
             this.shamelessvariablelabel = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
@@ -210,30 +210,6 @@
             this.label2.TabIndex = 11;
             this.label2.Text = "Enter a Title ID Below:";
             // 
-            // radioButton2
-            // 
-            this.radioButton2.Image = global::NUS_Downloader.Properties.Resources.dsi;
-            this.radioButton2.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.radioButton2.Location = new System.Drawing.Point(78, 385);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(74, 31);
-            this.radioButton2.TabIndex = 13;
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.BackColor = System.Drawing.Color.Transparent;
-            this.radioButton1.Checked = true;
-            this.radioButton1.Image = global::NUS_Downloader.Properties.Resources.wilolgoi;
-            this.radioButton1.Location = new System.Drawing.Point(12, 385);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(60, 31);
-            this.radioButton1.TabIndex = 12;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.UseVisualStyleBackColor = false;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
-            // 
             // button2
             // 
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -309,7 +285,8 @@
             this.toolStripSeparator1,
             this.RegionCodesList});
             this.databaseStrip.Name = "databaseStrip";
-            this.databaseStrip.Size = new System.Drawing.Size(155, 120);
+            this.databaseStrip.ShowItemToolTips = false;
+            this.databaseStrip.Size = new System.Drawing.Size(155, 142);
             // 
             // SystemMenuList
             // 
@@ -328,16 +305,16 @@
             // 
             this.VCMenuList.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.C64MenuList,
+            this.GenesisMenuList,
+            this.MSXMenuList,
+            this.N64MenuList,
             this.NeoGeoMenuList,
             this.NESMenuList,
-            this.SNESMenuList,
-            this.N64MenuList,
-            this.MSXMenuList,
-            this.TurboGrafx16MenuList,
             this.SegaMSMenuList,
-            this.GenesisMenuList,
-            this.VCArcadeMenuList,
-            this.TurboGrafxCDMenuList});
+            this.SNESMenuList,
+            this.TurboGrafx16MenuList,
+            this.TurboGrafxCDMenuList,
+            this.VCArcadeMenuList});
             this.VCMenuList.Name = "VCMenuList";
             this.VCMenuList.Size = new System.Drawing.Size(154, 22);
             this.VCMenuList.Text = "Virtual Console";
@@ -533,9 +510,9 @@
             // 
             this.timelimitsecs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.timelimitsecs.Location = new System.Drawing.Point(95, 99);
-            this.timelimitsecs.MaxLength = 200;
+            this.timelimitsecs.MaxLength = 10;
             this.timelimitsecs.Name = "timelimitsecs";
-            this.timelimitsecs.Size = new System.Drawing.Size(62, 20);
+            this.timelimitsecs.Size = new System.Drawing.Size(148, 20);
             this.timelimitsecs.TabIndex = 15;
             this.timelimitsecs.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -594,7 +571,7 @@
             this.dlcamntbox.Location = new System.Drawing.Point(95, 19);
             this.dlcamntbox.MaxLength = 6;
             this.dlcamntbox.Name = "dlcamntbox";
-            this.dlcamntbox.Size = new System.Drawing.Size(62, 20);
+            this.dlcamntbox.Size = new System.Drawing.Size(148, 20);
             this.dlcamntbox.TabIndex = 9;
             this.dlcamntbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -734,6 +711,30 @@
             this.button3.Text = "Clear";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.BackColor = System.Drawing.Color.Transparent;
+            this.radioButton1.Checked = true;
+            this.radioButton1.Image = global::NUS_Downloader.Properties.Resources.wilolgoi;
+            this.radioButton1.Location = new System.Drawing.Point(12, 385);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(60, 31);
+            this.radioButton1.TabIndex = 12;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.UseVisualStyleBackColor = false;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.Image = global::NUS_Downloader.Properties.Resources.dsi;
+            this.radioButton2.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.radioButton2.Location = new System.Drawing.Point(78, 385);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(74, 31);
+            this.radioButton2.TabIndex = 13;
+            this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
             // Form1
             // 
