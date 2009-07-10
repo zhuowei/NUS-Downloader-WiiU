@@ -13,10 +13,11 @@ namespace NUS_Downloader
         const string NUSURL = "http://nus.cdn.shop.wii.com/ccs/download/";
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
         // TODO: Always remember to change version!
-        string version = "v1.2 Beta";
+        string version = "v1.2";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
+        const string certs_MD5 = "7677AD47BAA5D6E3E313E72661FBDC16";
 
         // Images do not compare unless globalized...
         Image green = Properties.Resources.bullet_green;
@@ -37,30 +38,21 @@ namespace NUS_Downloader
             public int FooterSize;
         };
 
-        const string certs_MD5 = "7677AD47BAA5D6E3E313E72661FBDC16";
-
+        // This is the standard entry to the GUI
         public Form1()
         {
             InitializeComponent();
             BootChecks();
         }
 
+        // CLI Mode
         public Form1(string[] args)
         {
-            // CLI Mode
             InitializeComponent();
 
             // certs.sys / key.bin
             if (BootChecks() == false)
                 return;
-
-            // DEBUG
-            /*
-            for (int i = 0; i < args.Length; i++)
-            {
-                WriteStatus(i + ": " + args[i]);
-            }
-            */
 
             // Vars
             bool startnow = false;
@@ -122,6 +114,11 @@ namespace NUS_Downloader
                     WriteStatus("Please enter SOME info...");
                     return;
                 }
+                else
+                {
+                    if (!statusbox.Lines[0].StartsWith(" ---"))
+                        statusbox.Text = " --- " + titleidbox.Text + " ---";
+                }
 
                 // Running Downloads in background so no form freezing
                 NUSDownloader.RunWorkerAsync();
@@ -132,7 +129,6 @@ namespace NUS_Downloader
             { 
                 // Do nothing...
             }
-
             if ((NUSDownloader.IsBusy == false) && (endafter == true))
             {
                 Application.Exit();
@@ -252,12 +248,10 @@ namespace NUS_Downloader
             if (opentmd.ShowDialog() != DialogResult.Cancel)
             {
                 // Read the tmd as a stream...
-                FileStream fs = File.OpenRead(opentmd.FileName);
-                byte[] tmd = ReadFully(fs, 20);
+                byte[] tmd = FileLocationToByteArray(opentmd.FileName);
                 WriteStatus("TMD Loaded (" + tmd.Length + " bytes)");
 
                 // Read ID...
-                titleidbox.Text = "";
                 for (int x = 396; x < 404; x++)
                 {
                     titleidbox.Text += MakeProperLength(ConvertToHex(Convert.ToString(tmd[x])));
@@ -307,7 +301,7 @@ namespace NUS_Downloader
                     {
                         hash[x] = tmdhashes[(i*20)+x];
                     }
-                    WriteStatus("  - Hash: " + DisplayBytes(hash));
+                    WriteStatus("  - Hash: " + DisplayBytes(hash, ""));
                     WriteStatus("  - Index: " + tmdindices[i]);
 
                 }
@@ -316,8 +310,7 @@ namespace NUS_Downloader
 
         private void WriteStatus(string Update)
         {
-            // Small thing for writing text to the statusbox...
-
+            // Small function for writing text to the statusbox...
             if (statusbox.Text == "")
                 statusbox.Text = Update;
             else
@@ -391,11 +384,8 @@ namespace NUS_Downloader
         private string ConvertToHex(string decval)
         {
             // Convert text string to unsigned integer
-            int uiDecimal = System.Convert.ToInt32(decval);
-
-            string hexval;
-            hexval = String.Format("{0:x2}", uiDecimal);
-            return hexval;
+            int uiDecimal = System.Convert.ToInt32(decval); 
+            return String.Format("{0:x2}", uiDecimal);
         }
 
         private void ReadIDType(string ttlid)
@@ -528,7 +518,6 @@ namespace NUS_Downloader
                 }
                 startoffset += 36;
             }
-            //WriteStatus(DisplayBytes(contenthashes));
             return contenthashes;
         }
 
@@ -556,7 +545,8 @@ namespace NUS_Downloader
             }
             else
             {
-                statusbox.Text = " --- " + titleidbox.Text + " ---";
+                if (!statusbox.Lines[0].StartsWith(" ---"))
+                    statusbox.Text = " --- " + titleidbox.Text + " ---";
             }
 
             // Running Downloads in background so no form freezing
@@ -652,9 +642,7 @@ namespace NUS_Downloader
             if (decryptbox.Checked == true)
             { 
                 // Create ticket file holder
-                FileStream fs1 = File.OpenRead(titledirectory + @"\cetk");
-                byte[] cetkbuf = ReadFully(fs1, 20);
-                fs1.Close();
+                byte[] cetkbuf = FileLocationToByteArray(titledirectory + @"\cetk");
 
                 // Load TitleKey into it's byte[]
                 // It is currently encrypted...
@@ -674,41 +662,30 @@ namespace NUS_Downloader
                     iv[i+8] = 0x00;
 			    }
 
-                // Standard/Korea
-                bool koreankey = false;
-                //WriteStatus("0x01F1: " + Convert.ToString(cetkbuf[0x01F1]));
+                // Standard/Korea Common Key
+                byte[] keyBytes;
                 if (cetkbuf[0x01F1] == 0x01)
                 {
                     WriteStatus("Key Type: Korean");
-                    koreankey = true;
+                    keyBytes = LoadCommonKey(@"\kkey.bin");
                 }
                 else
                 {
                     WriteStatus("Key Type: Standard");
-                }
-
-                // Common Key
-                byte[] keyBytes;
-                if (wiimode)
-                {
-                    if (koreankey)
-                        keyBytes = LoadCommonKey(@"\kkey.bin");
-                    else
+                    if (wiimode)
                         keyBytes = LoadCommonKey(@"\key.bin");
+                    else
+                        keyBytes = LoadCommonKey(@"\dsikey.bin");
                 }
-                else
-                    keyBytes = LoadCommonKey(@"\dsikey.bin");
-
+           
                 initCrypt(iv, keyBytes);
 
-                WriteStatus("Title Key: " + DisplayBytes(Decrypt(titlekey)));
+                WriteStatus("Title Key: " + DisplayBytes(Decrypt(titlekey), ""));
                 titlekey = Decrypt(titlekey);
             }
 
             // Read the tmd as a stream...
-            FileStream fs = File.OpenRead(titledirectory + tmdfull);
-            byte[] tmd = ReadFully(fs, 20);
-            fs.Close();
+            byte[] tmd = FileLocationToByteArray(titledirectory + tmdfull);
 
             // Read Title Version...
             string tmdversion = "";
@@ -794,14 +771,10 @@ namespace NUS_Downloader
                 if (decryptbox.Checked == true)
                 {
                     // Create content file holder
-                    FileStream cont = File.OpenRead(titledirectory + @"\" + tmdcontents[i]);
-                    byte[] contbuf = ReadFully(cont, 20);
-                    cont.Close();
+                    byte[] contbuf = FileLocationToByteArray(titledirectory + @"\" + tmdcontents[i]);
 
                     // Create ticket file holder
-                    FileStream fs1 = File.OpenRead(titledirectory + @"\cetk");
-                    byte[] cetkbuf = ReadFully(fs1, 20);
-                    fs1.Close();
+                    byte[] cetkbuf = FileLocationToByteArray(titledirectory + @"\cetk");
 
                     // IV (00+IDX+more000)
                     byte[] iv = new byte[16];
@@ -839,8 +812,8 @@ namespace NUS_Downloader
                     else
                     {
                         WriteStatus("  - Hash Check: Fail");
-                        WriteStatus("    - True Hash: " + DisplayBytes(hash));
-                        WriteStatus("    - You Have: " + DisplayBytes(ComputeSHA(Decrypt(contbuf))));
+                        WriteStatus("    - True Hash: " + DisplayBytes(hash, ""));
+                        WriteStatus("    - You Have: " + DisplayBytes(ComputeSHA(Decrypt(contbuf)), ""));
                     }
                 }
 
@@ -865,9 +838,7 @@ namespace NUS_Downloader
 
                 // Read information from TIK into signing GUI...
                 // Create ticket file holder
-                FileStream cetkf = File.OpenRead(titledirectory + @"\cetk");
-                byte[] cetkbuff = ReadFully(cetkf, 20);
-                cetkf.Close();
+                byte[] cetkbuff = FileLocationToByteArray(titledirectory + @"\cetk");
 
                 // Titlekey
                 for (int i = 0; i < 16; i++)
@@ -887,7 +858,7 @@ namespace NUS_Downloader
                 {
                     iv[i + 8] = 0x00;
                 }
-                titleIDIV.Text = DisplayBytes(iv).Replace(" ", "");
+                titleIDIV.Text = DisplayBytes(iv, "");
 
                 //DLC
                 dlcamntbox.Text = Convert.ToString((cetkbuff[0x1E6]*256) + cetkbuff[0x1E7]);
@@ -1047,19 +1018,13 @@ namespace NUS_Downloader
                 currentdir += @"\";
 
             // Create cert file holder
-            FileStream certfs = File.OpenRead(currentdir + @"\cert.sys");
-            byte[] certsbuf = ReadFully(certfs, 20);
-            certfs.Close();
+            byte[] certsbuf = FileLocationToByteArray(currentdir + @"\cert.sys");
 
             // Create ticket file holder
-            FileStream fs1 = File.OpenRead(totaldirectory + @"\cetk");
-            byte[] cetkbuf = ReadFully(fs1, 20);
-            fs1.Close();
+            byte[] cetkbuf = FileLocationToByteArray(totaldirectory + @"\cetk");
 
             // Create tmd file holder
-            FileStream fs2 = File.OpenRead(totaldirectory + @"\" + tmdfilename);
-            byte[] tmdbuf = ReadFully(fs2, 20);
-            fs2.Close();
+            byte[] tmdbuf = FileLocationToByteArray(totaldirectory + @"\" + tmdfilename);
 
             if (wadnamebox.Text.Contains("[v]") == true)
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
@@ -1105,9 +1070,7 @@ namespace NUS_Downloader
                 wadfs.Seek(ByteBoundary(Convert.ToInt32(wadfs.Length)), SeekOrigin.Begin);
 
                 // Create content file holder
-                FileStream cont = File.OpenRead(totaldirectory + @"\" + contentnames[i]);
-                byte[] contbuf = ReadFully(cont, 20);
-                cont.Close();
+                byte[] contbuf = FileLocationToByteArray(totaldirectory + @"\" + contentnames[i]);
 
                 wadfs.Write(contbuf, 0, contbuf.Length);
 
@@ -1301,14 +1264,10 @@ namespace NUS_Downloader
             DownloadNUSFile("0000000100000002", "cetk", currentdir + @"\", 0, true);
 
             // Create ticket file holder
-            FileStream cetk = File.OpenRead(currentdir + "cetk");
-            byte[] cetkbuf = ReadFully(cetk, 20);
-            cetk.Close();
+            byte[] cetkbuf = FileLocationToByteArray(currentdir + "cetk");
 
             // Create tmd file holder
-            FileStream tmd = File.OpenRead(currentdir + "tmd.289");
-            byte[] tmdbuf = ReadFully(tmd, 20);
-            tmd.Close();
+            byte[] tmdbuf = FileLocationToByteArray(currentdir + "tmd.289");
 
             // Write CA cert...
             certsfs.Seek(0, SeekOrigin.Begin);
@@ -1391,20 +1350,7 @@ namespace NUS_Downloader
             {
                 wadnamebox.Enabled = true;
                 // Change WAD name if applicable
-                if (packbox.Checked == true)
-                {
-                    if (titleidbox.Enabled == true)
-                    {
-                        if (titleversion.Text != "")
-                        {
-                            wadnamebox.Text = titleidbox.Text + "-NUS-v" + titleversion.Text + ".wad";
-                        }
-                        else
-                        {
-                            wadnamebox.Text = titleidbox.Text + "-NUS-[v]" + titleversion.Text + ".wad";
-                        }
-                    }
-                }
+                UpdatePackedName();
             }
             else
             {
@@ -1415,37 +1361,12 @@ namespace NUS_Downloader
 
         private void titleidbox_TextChanged(object sender, EventArgs e)
         {
-            // Change WAD name if applicable
-            if (packbox.Checked == true)
-            {
-                if (titleidbox.Enabled == true)
-                { 
-                    if (titleversion.Text != "")
-                    {
-                        wadnamebox.Text = titleidbox.Text + "-NUS-v" + titleversion.Text + ".wad";
-                    }
-                    else
-                    {
-                        wadnamebox.Text = titleidbox.Text + "-NUS-[v]" + titleversion.Text + ".wad";
-                    }
-                }
-            }
+            UpdatePackedName();
         }
 
         private void titleversion_TextChanged(object sender, EventArgs e)
         {
-            // Change WAD name if applicable
-            if ((titleidbox.Enabled == true) && (packbox.Checked == true))
-            {
-                if (titleversion.Text != "")
-                {
-                    wadnamebox.Text = titleidbox.Text + "-NUS-v" + titleversion.Text + ".wad";
-                }
-                else
-                {
-                    wadnamebox.Text = titleidbox.Text + "-NUS-[v]" + titleversion.Text + ".wad";
-                }
-            }
+            UpdatePackedName();
         }
 
         public void initCrypt(byte[] iv, byte[] key)
@@ -1498,12 +1419,12 @@ namespace NUS_Downloader
             }
         }
 
-        public string DisplayBytes(byte[] bytes)
+        public string DisplayBytes(byte[] bytes, string spacer)
         {
             string output = "";
             for (int i = 0; i < bytes.Length; ++i)
             {
-                output += bytes[i].ToString("X2") + " ";
+                output += bytes[i].ToString("X2") + spacer;
             }
             return output;
         }
@@ -1524,11 +1445,8 @@ namespace NUS_Downloader
 
             if (File.Exists(currentdir + keyfile) == true)
             {
-                // Read common key into array
-                FileStream ckey = File.OpenRead(currentdir + keyfile);
-                byte[] ckeybuf = ReadFully(ckey, 16);
-                ckey.Close();
-                return ckeybuf;
+                // Read common key byte[]
+                return FileLocationToByteArray(currentdir + keyfile);
             }
             else
                 return null;
@@ -1538,8 +1456,6 @@ namespace NUS_Downloader
         {
             // Open Database button menu...
             databaseStrip.Show(databaseButton, 2, 2);
-
-            
         }
 
         private void ClearDatabaseStrip()
@@ -1611,15 +1527,6 @@ namespace NUS_Downloader
                                 }
                                 break;
                             case "region":
-                                /* string[] regions = ChildrenOfTheNode[z].InnerText.Split(',');
-                                if (ChildrenOfTheNode[z].InnerText != "")
-                                {
-                                    for (int y = 0; y < regions.Length; y++)
-                                    {
-                                        XMLToolStripItem.DropDownItems.Add(regions[y]);
-                                    }
-                                }
-                                break; */
                                 string[] regions = ChildrenOfTheNode[z].InnerText.Split(',');
                                 if (ChildrenOfTheNode[z].InnerText != "")
                                 {
@@ -1633,15 +1540,10 @@ namespace NUS_Downloader
                                 break;
                             case "ticket":
                                 ticket = Convert.ToBoolean(ChildrenOfTheNode[z].InnerText);
-                                /*if (!ticket)
-                                    stticket += "(-)";
-                                else
-                                    stticket += "(+)"; */
                                 break;
                             case "danger":
                                 dangerous = true;
-                                string dangertext = ChildrenOfTheNode[z].InnerText;
-                                XMLToolStripItem.ToolTipText = dangertext;
+                                XMLToolStripItem.ToolTipText = ChildrenOfTheNode[z].InnerText;
                                 break;
                         }
                         XMLToolStripItem.Image = SelectItemImage(ticket, dangerous);
@@ -1726,7 +1628,8 @@ namespace NUS_Downloader
             titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.Text.Substring(0, 2));
 
             // Prepare StatusBox...
-            statusbox.Text = " --- " + e.ClickedItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.Text.Length - 19)) + " ---";
+            string titlename = e.ClickedItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.Text.Length - 19));
+            statusbox.Text = " --- " + titlename + " ---";
    
             // Check if a ticket is present...
             if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
@@ -1739,6 +1642,17 @@ namespace NUS_Downloader
             else
             {
                 ignoreticket.Checked = false;
+            }
+
+            // Change WAD name if packed is already checked...
+            if (packbox.Checked)
+            {
+                if (titlename.Contains("IOS"))
+                    wadnamebox.Text = titlename + "-64-[v].wad";
+                else
+                    wadnamebox.Text = titlename + "-NUS-[v].wad";
+                if (titleversion.Text != "")
+                    wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
             }
 
             // Check for danger item
@@ -1772,7 +1686,8 @@ namespace NUS_Downloader
             }
 
             // Prepare StatusBox...
-            statusbox.Text = " --- " + e.ClickedItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.Text.Length - 19)) + " ---";
+            string titlename = e.ClickedItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.Text.Length - 19));
+            statusbox.Text = " --- " + titlename + " ---";
 
             if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
             {
@@ -1784,6 +1699,17 @@ namespace NUS_Downloader
             else
             {
                 ignoreticket.Checked = false;
+            }
+
+            // Change WAD name if packed is already checked...
+            if (packbox.Checked)
+            {
+                if (titlename.Contains("IOS"))
+                    wadnamebox.Text = titlename + "-64-[v].wad";
+                else
+                    wadnamebox.Text = titlename + "-NUS-[v].wad";
+                if (titleversion.Text != "")
+                    wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
             }
 
             // Check for danger item
@@ -1934,9 +1860,7 @@ namespace NUS_Downloader
             string[] fileinfo = shamelessvariablelabel.Text.Split(',');
 
             // Read the tmd as a stream...
-            FileStream fs = File.OpenRead(fileinfo[0] + fileinfo[1]);
-            byte[] tmd = ReadFully(fs, 20);
-            fs.Close();
+            byte[] tmd = FileLocationToByteArray(fileinfo[0] + fileinfo[1]);
 
             // Read information from TMD into signing GUI...
             requiredIOSbox.Text = Convert.ToString(tmd[0x18B]);
@@ -1949,8 +1873,6 @@ namespace NUS_Downloader
                 requiredIOSbox.Enabled = false;
             else
                 requiredIOSbox.Enabled = true;
-
-
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -1959,9 +1881,7 @@ namespace NUS_Downloader
             string[] fileinfo = shamelessvariablelabel.Text.Split(',');
 
             // Create ticket file holder
-            FileStream cetkf = File.OpenRead(fileinfo[0] + @"\cetk");
-            byte[] cetkbuff = ReadFully(cetkf, 20);
-            cetkf.Close();
+            byte[] cetkbuff = FileLocationToByteArray(fileinfo[0] + @"\cetk");
 
             // Titlekey
             byte[] titlekey = new byte[16];
@@ -1969,7 +1889,6 @@ namespace NUS_Downloader
             {
                 titlekey[i] = cetkbuff[0x1BF + i];
             }
-            //titlekeybox.Text = DisplayBytes(titlekey).Replace(" ", "");
             titlekeybox.Text = System.Text.Encoding.UTF7.GetString(titlekey);
 
             // IV (TITLEID+00000000s)
@@ -1982,7 +1901,7 @@ namespace NUS_Downloader
             {
                 iv[i + 8] = 0x00;
             }
-            titleIDIV.Text = DisplayBytes(iv).Replace(" ", "");
+            titleIDIV.Text = DisplayBytes(iv, "");
 
             //DLC
             dlcamntbox.Text = Convert.ToString((cetkbuff[0x1E6]*256) + cetkbuff[0x1E7]);
@@ -2021,9 +1940,7 @@ namespace NUS_Downloader
             string[] fileinfo = shamelessvariablelabel.Text.Split(',');
 
             // Read the tmd as a stream...
-            FileStream fs = File.OpenRead(fileinfo[0] + fileinfo[1]);
-            byte[] tmd = ReadFully(fs, 20);
-            fs.Close();
+            byte[] tmd = FileLocationToByteArray(fileinfo[0] + fileinfo[1]);
 
             // Resize to just TMD...
             Array.Resize(ref tmd, 484 + (Convert.ToInt32(fileinfo[2]) * 36));
@@ -2067,9 +1984,7 @@ namespace NUS_Downloader
             string[] fileinfo = shamelessvariablelabel.Text.Split(',');
 
             // Create ticket file holder
-            FileStream cetkf = File.OpenRead(fileinfo[0] + @"\cetk");
-            byte[] cetkbuff = ReadFully(cetkf, 20);
-            cetkf.Close();
+            byte[] cetkbuff = FileLocationToByteArray(fileinfo[0] + @"\cetk");
 
             // Resize Ticket to actual size.
             Array.Resize(ref cetkbuff, 0x2A4);
@@ -2102,7 +2017,7 @@ namespace NUS_Downloader
             byte[] limitseconds = new byte[4];
             limitseconds = InttoByteArray(Convert.ToInt32(timelimitsecs.Text), 4);
             //DEBUG
-            WriteStatus(DisplayBytes(limitseconds));
+            WriteStatus(DisplayBytes(limitseconds, " "));
             for (int i = 0; i < 4; i++)
             {
                 cetkbuff[0x248 + i] = limitseconds[i];
@@ -2190,6 +2105,30 @@ namespace NUS_Downloader
                 return redorange;
 
             return null;
+        }
+
+        private byte[] FileLocationToByteArray(string filename)
+        {
+            FileStream fs = File.OpenRead(filename);
+            byte[] filebytearray = ReadFully(fs, 460);
+            fs.Close();
+            return filebytearray;
+        }
+
+        private void UpdatePackedName()
+        {
+            // Change WAD name if applicable
+            if ((titleidbox.Enabled == true) && (packbox.Checked == true))
+            {
+                if (titleversion.Text != "")
+                {
+                    wadnamebox.Text = titleidbox.Text + "-NUS-v" + titleversion.Text + ".wad";
+                }
+                else
+                {
+                    wadnamebox.Text = titleidbox.Text + "-NUS-[v]" + titleversion.Text + ".wad";
+                }
+            }
         }
     }
 }
