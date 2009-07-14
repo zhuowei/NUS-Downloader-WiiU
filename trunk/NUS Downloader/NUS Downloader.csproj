@@ -102,6 +102,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="direction_down.ico" />
+    <None Include="Resources\bug_add.png" />
+    <None Include="Resources\arrow_down.png" />
+    <None Include="Resources\arrow_up.png" />
+    <None Include="Resources\connect.png" />
+    <None Include="Resources\package_add.png" />
+    <None Include="Resources\package_delete.png" />
+    <None Include="Resources\pencil.png" />
     <None Include="Resources\bullet_redgreen.png" />
     <None Include="Resources\bullet_green.png" />
     <None Include="Resources\bullet_redorange.png" />
