@@ -18,6 +18,8 @@ namespace NUS_Downloader
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
         const string certs_MD5 = "7677AD47BAA5D6E3E313E72661FBDC16";
+        
+
 
         // Images do not compare unless globalized...
         Image green = Properties.Resources.bullet_green;
@@ -270,30 +272,26 @@ namespace NUS_Downloader
                 titleversion.Text = Convert.ToString(int.Parse(tmdversion, System.Globalization.NumberStyles.HexNumber));
 
                 // Read System Version (Needed IOS)
-                string sysversion = "";
-                for (int i = 0; i < 8; i++)
-                {
-                    sysversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[0x184 + i])));
-                }
-                sysversion = Convert.ToString(int.Parse(sysversion.Substring(14, 2), System.Globalization.NumberStyles.HexNumber));
+                string sysversion = IOSNeededFromTMD(tmd);
                 if (sysversion != "0")
                     WriteStatus("Requires: IOS" + sysversion);
 
                 // Read Content #...
-                string contentstrnum = "";
+                int nbr_cont = ContentCount(tmd);
+                /*string contentstrnum = "";
                 for (int x = 478; x < 480; x++)
                 {
                     contentstrnum += TrimLeadingZeros(Convert.ToString(tmd[x]));
-                }
-                WriteStatus("Content Count: " + contentstrnum);
+                }*/
+                WriteStatus("Content Count: " + nbr_cont);
 
-                string[] tmdcontents = GetContentNames(tmd, Convert.ToInt32(contentstrnum));
-                string[] tmdsizes = GetContentSizes(tmd, Convert.ToInt32(contentstrnum));
-                byte[] tmdhashes = GetContentHashes(tmd, Convert.ToInt32(contentstrnum));
-                byte[] tmdindices = GetContentIndices(tmd, Convert.ToInt32(contentstrnum));
+                string[] tmdcontents = GetContentNames(tmd, nbr_cont);
+                string[] tmdsizes = GetContentSizes(tmd, nbr_cont);
+                byte[] tmdhashes = GetContentHashes(tmd, nbr_cont);
+                byte[] tmdindices = GetContentIndices(tmd, nbr_cont);
 
                 // Loop through each content and display name, hash, index
-                for (int i = 0; i < Convert.ToInt32(contentstrnum); i++)
+                for (int i = 0; i < nbr_cont; i++)
                 {
                     WriteStatus("   Content " + (i + 1) + ": " + tmdcontents[i] + " (" + Convert.ToString(int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber)) + " bytes)");
                     byte[] hash = new byte[20];
@@ -306,6 +304,33 @@ namespace NUS_Downloader
 
                 }
             }
+        }
+
+        private string IOSNeededFromTMD(byte[] tmd)
+        {
+            string sysversion = "";
+            for (int i = 0; i < 8; i++)
+            {
+                sysversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[0x184 + i])));
+            }
+            sysversion = Convert.ToString(int.Parse(sysversion.Substring(14, 2), System.Globalization.NumberStyles.HexNumber));
+            return sysversion;
+        }
+
+        private int ContentCount(byte[] tmd)
+        { 
+            // nbr_cont (0xDE) len=0x02
+            int nbr_cont = 0;
+            nbr_cont = (tmd[0x1DE] * 256) + tmd[0x1DF];
+            return nbr_cont;
+        }
+
+        private int BootIndex(byte[] tmd)
+        {
+            // nbr_cont (0xE0) len=0x02
+            int bootidx = 0;
+            bootidx = (tmd[0x1E0] * 256) + tmd[0x1E1];
+            return bootidx;
         }
 
         private void WriteStatus(string Update)
@@ -545,8 +570,15 @@ namespace NUS_Downloader
             }
             else
             {
-                if (!statusbox.Lines[0].StartsWith(" ---"))
+                try
+                {
+                    if (!statusbox.Lines[0].StartsWith(" ---"))
+                        statusbox.Text = " --- " + titleidbox.Text + " ---";
+                }
+                catch // No lines present...
+                {
                     statusbox.Text = " --- " + titleidbox.Text + " ---";
+                }
             }
 
             // Running Downloads in background so no form freezing
@@ -695,13 +727,8 @@ namespace NUS_Downloader
             }
             titleversion.Text = Convert.ToString(int.Parse(tmdversion, System.Globalization.NumberStyles.HexNumber));
 
-            // Read System Version (Needed IOS)
-            string sysversion = "";
-            for (int i = 0; i < 8; i++)
-            {
-                sysversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[0x184 + i])));
-            }
-            sysversion = Convert.ToString(int.Parse(sysversion.Substring(14, 2), System.Globalization.NumberStyles.HexNumber));
+            //Read System Version (Needed IOS)
+            string sysversion = IOSNeededFromTMD(tmd);
             if (sysversion != "0")
                 WriteStatus("Requires: IOS" + sysversion);
 
@@ -792,7 +819,7 @@ namespace NUS_Downloader
 
                     // Create decrypted file
                     string zeros = "000000";
-                    FileStream decfs = new FileStream(titledirectory + @"\" + zeros + i.ToString("X2") + ".app", FileMode.Create);
+                    FileStream decfs = new FileStream(RemoveIllegalCharacters(titledirectory + @"\" + zeros + i.ToString("X2") + ".app"), FileMode.Create);
                     decfs.Write(Decrypt(contbuf), 0, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber));
                     decfs.Close();
                     WriteStatus("  - Decrypted: " + zeros + i.ToString("X2") + ".app");
@@ -829,6 +856,9 @@ namespace NUS_Downloader
                 requiredIOSbox.Text = Convert.ToString(tmd[0x18B]);
                 tmdversiontrucha.Text = Convert.ToString((tmd[0x1DC]*256) + tmd[0x1DD]);
                 newtitleidbox.Text = titleid;
+
+                // Add contents to contentEdit...
+                FillContentInfo(tmd);
 
                 // Setup for NO IOS
                 if (requiredIOSbox.Text == "0")
@@ -1030,7 +1060,7 @@ namespace NUS_Downloader
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
 
             // Create wad file
-            FileStream wadfs = new FileStream(totaldirectory + @"\" + wadnamebox.Text, FileMode.Create);
+            FileStream wadfs = new FileStream(RemoveIllegalCharacters(totaldirectory + @"\" + wadnamebox.Text), FileMode.Create);
 
             // Add wad stuffs
             WADHeader wad = new WADHeader();
@@ -1257,7 +1287,7 @@ namespace NUS_Downloader
                 currentdir += Path.DirectorySeparatorChar;
 
             // Create certs file
-            FileStream certsfs = new FileStream(currentdir + @"\cert.sys", FileMode.Create);
+            FileStream certsfs = new FileStream(RemoveIllegalCharacters(currentdir + @"\cert.sys"), FileMode.Create);
 
             // Getting it from SystemMenu 3.2
             DownloadNUSFile("0000000100000002", "tmd.289", currentdir + @"\", 0, true);
@@ -1498,7 +1528,6 @@ namespace NUS_Downloader
 
                     string titleID = "";
                     string descname = "";
-                    string stticket = "";
                     bool dangerous = false;
                     bool ticket = true;
                     
@@ -1547,7 +1576,7 @@ namespace NUS_Downloader
                                 break;
                         }
                         XMLToolStripItem.Image = SelectItemImage(ticket, dangerous);
-                        XMLToolStripItem.Text = titleID + " " + stticket + " " + descname;
+                        
                         XMLToolStripItem.Text = String.Format("{0} - {1}", titleID, descname);
                     }
                     AddToolStripItemToStrip(i, XMLToolStripItem, XMLAttributes);
@@ -1792,6 +1821,17 @@ namespace NUS_Downloader
                 titleidbox.Text = titleidbox.Text.Substring(0, 14) + e.ClickedItem.Text.Substring(0, 2);
         }
 
+        private string RemoveIllegalCharacters(string databasestr)
+        { 
+            // Database strings must contain filename-legal characters.
+            foreach (char illegalchar in System.IO.Path.GetInvalidFileNameChars())
+            {
+                if (databasestr.Contains(illegalchar.ToString()))
+                    databasestr = databasestr.Replace(illegalchar, '-');
+            }
+            return databasestr;
+        }
+
         private byte[] ZeroSignature(byte[] tmdortik)
         { 
             // Write all 0x00 to signature...
@@ -1970,7 +2010,7 @@ namespace NUS_Downloader
             tmd = ZeroSignature(tmd);
             tmd = TruchaSign(tmd);
 
-            FileStream testtmd = new FileStream(fileinfo[0] + fileinfo[1], FileMode.Open);
+            FileStream testtmd = new FileStream(RemoveIllegalCharacters(fileinfo[0] + fileinfo[1]), FileMode.Open);
             testtmd.Write(tmd, 0, tmd.Length);
             testtmd.Close();
         }
@@ -2017,7 +2057,7 @@ namespace NUS_Downloader
             byte[] limitseconds = new byte[4];
             limitseconds = InttoByteArray(Convert.ToInt32(timelimitsecs.Text), 4);
             //DEBUG
-            WriteStatus(DisplayBytes(limitseconds, " "));
+            //WriteStatus(DisplayBytes(limitseconds, " "));
             for (int i = 0; i < 4; i++)
             {
                 cetkbuff[0x248 + i] = limitseconds[i];
@@ -2028,7 +2068,7 @@ namespace NUS_Downloader
             cetkbuff = TruchaSign(cetkbuff);
 
             // Write changes to cetk.
-            FileStream testtik = new FileStream(fileinfo[0] + "cetk", FileMode.Open);
+            FileStream testtik = new FileStream(RemoveIllegalCharacters(fileinfo[0] + "cetk"), FileMode.Open);
             testtik.Write(cetkbuff, 0, cetkbuff.Length);
             testtik.Close();
         }
@@ -2129,6 +2169,196 @@ namespace NUS_Downloader
                     wadnamebox.Text = titleidbox.Text + "-NUS-[v]" + titleversion.Text + ".wad";
                 }
             }
+            wadnamebox.Text = RemoveIllegalCharacters(wadnamebox.Text);
         }
+
+        // This is WIP code/theory...
+        private byte[] GenerateTicket(byte[] EncTitleKey, byte[] TitleID)
+        { 
+            byte[] Ticket = new byte[0x2A4];
+
+            // RSA Signature Heading...
+            Ticket[1] = 0x01; Ticket[3] = 0x01;
+
+            // Signature Issuer... (Root-CA00000001-XS00000003)
+            byte[] SignatureIssuer = new byte[0x1A] { 0x52, 0x6F, 0x6F, 0x74, 0x2D, 0x43, 0x41, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x31, 0x2D, 0x58, 0x53, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x33 };
+            for (int a = 0; a < 0x40; a++)
+            {
+                Ticket[0x140 + a] = SignatureIssuer[a];
+            }
+
+            // Encrypted TitleKey...
+            for (int b = 0; b < 0x10; b++)
+            {
+                Ticket[0x1BF + b] = EncTitleKey[b];
+            }
+
+            // Ticket ID...
+            for (int c = 0; c < 0x08; c++)
+            {
+                Ticket[0x1D0 + c] = 0x49;
+            }
+
+            // Title ID...
+            for (int d = 0; d < 0x08; d++)
+            {
+                Ticket[0x1DC + d] = TitleID[d];
+            }
+
+            // Misc FF...
+            Ticket[0x1E4] = 0xFF; Ticket[0x1E5] = 0xFF;
+            Ticket[0x1E6] = 0xFF; Ticket[0x1E7] = 0xFF;
+
+            // Unknown 0x01...
+            Ticket[0x221] = 0x01;
+
+            // Misc FF...
+            for (int e = 0; e < 0x20; e++)
+            {
+                Ticket[0x222 + e] = 0xFF;
+            }
+
+            return Ticket;
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            // Read Content info from TMD again (revert)
+            string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+
+            // Read the tmd as a stream...
+            byte[] tmd = FileLocationToByteArray(fileinfo[0] + fileinfo[1]);
+
+            FillContentInfo(tmd);
+        }
+
+        private void FillContentInfo(byte[] tmd)
+        {
+            // Clear anything existing...
+            contentsEdit.Items.Clear();
+
+            // # of Contents and BootIndex
+            int nbr_cont = ContentCount(tmd);
+            int boot_idx = BootIndex(tmd);
+
+            string[] tmdcontents = GetContentNames(tmd, nbr_cont);
+            byte[] tmdindices = GetContentIndices(tmd, nbr_cont);
+
+            // Loop and add contents to listbox...
+            for (int a = 0; a < nbr_cont; a++)
+            {
+                contentsEdit.Items.Add(String.Format("[{0}] [{1}]", tmdindices[a], tmdcontents[a]));
+            }
+
+            // Identify Boot Content...
+            contentsEdit.Items[boot_idx] += " [BOOT]"; 
+
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            // Move selected content upwards (down an index)...
+            if (contentsEdit.SelectedIndex <= 0)
+                return;
+
+            int sel_idx = contentsEdit.SelectedIndex;
+            string sel_item = contentsEdit.Items[sel_idx].ToString();
+            string lower_item = contentsEdit.Items[sel_idx - 1].ToString();
+
+            contentsEdit.Items[sel_idx] = String.Format("[{0}]{1}", sel_idx, lower_item.Substring(3, lower_item.Length - 3));
+            contentsEdit.Items[sel_idx - 1] = String.Format("[{0}]{1}", sel_idx - 1, sel_item.Substring(3, sel_item.Length - 3));
+
+            contentsEdit.SelectedIndex = sel_idx - 1;
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            // Move selected content down (up an index)...
+            if (contentsEdit.SelectedIndex >= contentsEdit.Items.Count - 1)
+                return;
+
+            int sel_idx = contentsEdit.SelectedIndex;
+            string sel_item = contentsEdit.Items[sel_idx].ToString();
+            string upper_item = contentsEdit.Items[sel_idx + 1].ToString();
+
+            contentsEdit.Items[sel_idx] = String.Format("[{0}]{1}", sel_idx, upper_item.Substring(3, upper_item.Length - 3));
+            contentsEdit.Items[sel_idx + 1] = String.Format("[{0}]{1}", sel_idx + 1, sel_item.Substring(3, sel_item.Length - 3));
+
+            contentsEdit.SelectedIndex = sel_idx + 1;
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            // Set a new boot index...
+            if (contentsEdit.SelectedIndex <= 0)
+                return;
+
+            for (int a = 0; a < contentsEdit.Items.Count; a++)
+            {
+                if (contentsEdit.Items[a].ToString().Contains(" [BOOT]"))
+                    contentsEdit.Items[a] = contentsEdit.Items[a].ToString().Substring(0, contentsEdit.Items[a].ToString().Length - 7);
+            }
+
+            contentsEdit.Items[contentsEdit.SelectedIndex] += " [BOOT]";
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            // Add a file to the contents...
+            OpenFileDialog opencont = new OpenFileDialog();
+            opencont.Filter = "All Files|*";
+            opencont.Multiselect = false;
+            opencont.Title = "Locate a Content";
+            if (opencont.ShowDialog() != DialogResult.Cancel)
+            {
+                if ((opencont.SafeFileName.Length != 8) && (OnlyHexInString(opencont.SafeFileName) == false))
+                {
+                    MessageBox.Show("Please locate/rename a file to be (8 HEX CHARACTERS) long!", "Bad!", MessageBoxButtons.OK);
+                    return;
+                }
+
+                for (int i = 0; i < contentsEdit.Items.Count; i++)
+                {
+                    if (contentsEdit.Items[i].ToString().Contains(opencont.SafeFileName))
+                    {
+                        MessageBox.Show("A file already exists in the title with that filename!", "Bad!", MessageBoxButtons.OK);
+                        return;
+                    }
+                }
+
+                // D: TODO?
+                string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+
+                if (fileinfo[0] + opencont.SafeFileName != opencont.FileName)
+                {
+                    // Move the file into the directory...
+                    File.Copy(opencont.FileName, fileinfo[0] + opencont.SafeFileName);
+                }
+                contentsEdit.Items.Add(String.Format("[{0}] [{1}]", contentsEdit.Items.Count, opencont.SafeFileName));
+            }
+        }
+
+        public bool OnlyHexInString(string test)
+        {
+            return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            // Remove a content from the list...
+            if ((contentsEdit.SelectedIndex <= 0) || (contentsEdit.Items.Count <= 1))
+                return;
+
+            string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+            DialogResult question = MessageBox.Show("Delete the actual file as well?", "Delete content?", MessageBoxButtons.YesNoCancel);
+
+            if (question == DialogResult.Yes)
+                File.Delete(fileinfo[0] + contentsEdit.SelectedItem.ToString().Substring(contentsEdit.SelectedItem.ToString().IndexOf("] [") + 3, 8));
+
+            if (question != DialogResult.Cancel)
+                contentsEdit.Items.RemoveAt(contentsEdit.SelectedIndex);
+        }
+
+
     }
 }

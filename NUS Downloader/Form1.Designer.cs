@@ -52,16 +52,16 @@
             this.IOSMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.VCMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.C64MenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.GenesisMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.MSXMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.N64MenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.NeoGeoMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.NESMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.SNESMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.N64MenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.MSXMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.TurboGrafx16MenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.SegaMSMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.GenesisMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.VCArcadeMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.SNESMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.TurboGrafx16MenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.TurboGrafxCDMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.VCArcadeMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.WiiWareMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.RegionCodesList = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,11 +94,22 @@
             this.label12 = new System.Windows.Forms.Label();
             this.shamelessvariablelabel = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
+            this.contentsEdit = new System.Windows.Forms.ListBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button13 = new System.Windows.Forms.Button();
+            this.button15 = new System.Windows.Forms.Button();
+            this.button14 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // TMDButton
@@ -286,7 +297,7 @@
             this.RegionCodesList});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(155, 142);
+            this.databaseStrip.Size = new System.Drawing.Size(155, 120);
             // 
             // SystemMenuList
             // 
@@ -325,6 +336,24 @@
             this.C64MenuList.Size = new System.Drawing.Size(194, 22);
             this.C64MenuList.Text = "Commodore 64";
             // 
+            // GenesisMenuList
+            // 
+            this.GenesisMenuList.Name = "GenesisMenuList";
+            this.GenesisMenuList.Size = new System.Drawing.Size(194, 22);
+            this.GenesisMenuList.Text = "Mega Drive/Genesis";
+            // 
+            // MSXMenuList
+            // 
+            this.MSXMenuList.Name = "MSXMenuList";
+            this.MSXMenuList.Size = new System.Drawing.Size(194, 22);
+            this.MSXMenuList.Text = "MSX";
+            // 
+            // N64MenuList
+            // 
+            this.N64MenuList.Name = "N64MenuList";
+            this.N64MenuList.Size = new System.Drawing.Size(194, 22);
+            this.N64MenuList.Text = "Nintendo 64";
+            // 
             // NeoGeoMenuList
             // 
             this.NeoGeoMenuList.Name = "NeoGeoMenuList";
@@ -337,23 +366,17 @@
             this.NESMenuList.Size = new System.Drawing.Size(194, 22);
             this.NESMenuList.Text = "NES";
             // 
+            // SegaMSMenuList
+            // 
+            this.SegaMSMenuList.Name = "SegaMSMenuList";
+            this.SegaMSMenuList.Size = new System.Drawing.Size(194, 22);
+            this.SegaMSMenuList.Text = "Sega Master System";
+            // 
             // SNESMenuList
             // 
             this.SNESMenuList.Name = "SNESMenuList";
             this.SNESMenuList.Size = new System.Drawing.Size(194, 22);
             this.SNESMenuList.Text = "SNES";
-            // 
-            // N64MenuList
-            // 
-            this.N64MenuList.Name = "N64MenuList";
-            this.N64MenuList.Size = new System.Drawing.Size(194, 22);
-            this.N64MenuList.Text = "Nintendo 64";
-            // 
-            // MSXMenuList
-            // 
-            this.MSXMenuList.Name = "MSXMenuList";
-            this.MSXMenuList.Size = new System.Drawing.Size(194, 22);
-            this.MSXMenuList.Text = "MSX";
             // 
             // TurboGrafx16MenuList
             // 
@@ -361,29 +384,17 @@
             this.TurboGrafx16MenuList.Size = new System.Drawing.Size(194, 22);
             this.TurboGrafx16MenuList.Text = "TruboGrafx-16";
             // 
-            // SegaMSMenuList
+            // TurboGrafxCDMenuList
             // 
-            this.SegaMSMenuList.Name = "SegaMSMenuList";
-            this.SegaMSMenuList.Size = new System.Drawing.Size(194, 22);
-            this.SegaMSMenuList.Text = "Sega Master System";
-            // 
-            // GenesisMenuList
-            // 
-            this.GenesisMenuList.Name = "GenesisMenuList";
-            this.GenesisMenuList.Size = new System.Drawing.Size(194, 22);
-            this.GenesisMenuList.Text = "Mega Drive/Genesis";
+            this.TurboGrafxCDMenuList.Name = "TurboGrafxCDMenuList";
+            this.TurboGrafxCDMenuList.Size = new System.Drawing.Size(194, 22);
+            this.TurboGrafxCDMenuList.Text = "TurboGrafx-CD";
             // 
             // VCArcadeMenuList
             // 
             this.VCArcadeMenuList.Name = "VCArcadeMenuList";
             this.VCArcadeMenuList.Size = new System.Drawing.Size(194, 22);
             this.VCArcadeMenuList.Text = "Virtual Console Arcade";
-            // 
-            // TurboGrafxCDMenuList
-            // 
-            this.TurboGrafxCDMenuList.Name = "TurboGrafxCDMenuList";
-            this.TurboGrafxCDMenuList.Size = new System.Drawing.Size(194, 22);
-            this.TurboGrafxCDMenuList.Text = "TurboGrafx-CD";
             // 
             // WiiWareMenuList
             // 
@@ -674,7 +685,7 @@
             // 
             this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(278, 290);
+            this.button7.Location = new System.Drawing.Point(278, 459);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(249, 27);
             this.button7.TabIndex = 28;
@@ -685,9 +696,9 @@
             // label12
             // 
             this.label12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label12.Location = new System.Drawing.Point(278, 335);
+            this.label12.Location = new System.Drawing.Point(239, 465);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(249, 148);
+            this.label12.Size = new System.Drawing.Size(23, 15);
             this.label12.TabIndex = 29;
             this.label12.Text = resources.GetString("label12.Text");
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -711,6 +722,118 @@
             this.button3.Text = "Clear";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            // 
+            // contentsEdit
+            // 
+            this.contentsEdit.FormattingEnabled = true;
+            this.contentsEdit.Location = new System.Drawing.Point(9, 19);
+            this.contentsEdit.Name = "contentsEdit";
+            this.contentsEdit.Size = new System.Drawing.Size(138, 134);
+            this.contentsEdit.TabIndex = 32;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.button13);
+            this.groupBox1.Controls.Add(this.button15);
+            this.groupBox1.Controls.Add(this.button14);
+            this.groupBox1.Controls.Add(this.button12);
+            this.groupBox1.Controls.Add(this.contentsEdit);
+            this.groupBox1.Controls.Add(this.button8);
+            this.groupBox1.Controls.Add(this.button11);
+            this.groupBox1.Controls.Add(this.button9);
+            this.groupBox1.Controls.Add(this.button10);
+            this.groupBox1.Location = new System.Drawing.Point(278, 290);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(249, 160);
+            this.groupBox1.TabIndex = 41;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Edit Title Contents";
+            // 
+            // button13
+            // 
+            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button13.Image = global::NUS_Downloader.Properties.Resources.bug_add;
+            this.button13.Location = new System.Drawing.Point(217, 53);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(26, 26);
+            this.button13.TabIndex = 43;
+            this.button13.UseVisualStyleBackColor = true;
+            // 
+            // button15
+            // 
+            this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button15.Location = new System.Drawing.Point(153, 95);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(90, 26);
+            this.button15.TabIndex = 42;
+            this.button15.Text = "Revert";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
+            // button14
+            // 
+            this.button14.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button14.Location = new System.Drawing.Point(153, 127);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(90, 26);
+            this.button14.TabIndex = 41;
+            this.button14.Text = "Overwrite";
+            this.button14.UseVisualStyleBackColor = true;
+            // 
+            // button12
+            // 
+            this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button12.Image = global::NUS_Downloader.Properties.Resources.connect;
+            this.button12.Location = new System.Drawing.Point(217, 19);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(26, 26);
+            this.button12.TabIndex = 40;
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // button8
+            // 
+            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button8.Image = global::NUS_Downloader.Properties.Resources.arrow_up;
+            this.button8.Location = new System.Drawing.Point(153, 19);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(26, 26);
+            this.button8.TabIndex = 33;
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button11
+            // 
+            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button11.Image = global::NUS_Downloader.Properties.Resources.package_add;
+            this.button11.Location = new System.Drawing.Point(185, 19);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(26, 26);
+            this.button11.TabIndex = 36;
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // button9
+            // 
+            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button9.Image = global::NUS_Downloader.Properties.Resources.arrow_down;
+            this.button9.Location = new System.Drawing.Point(153, 53);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(26, 26);
+            this.button9.TabIndex = 34;
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button10
+            // 
+            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button10.Image = global::NUS_Downloader.Properties.Resources.package_delete;
+            this.button10.Location = new System.Drawing.Point(185, 53);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(26, 26);
+            this.button10.TabIndex = 35;
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // radioButton1
             // 
@@ -741,18 +864,19 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 492);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.shamelessvariablelabel);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.button7);
             this.Controls.Add(this.ticketgpbox);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.tmdgpbox);
             this.Controls.Add(this.truchabox);
             this.Controls.Add(this.databaseButton);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.decryptbox);
             this.Controls.Add(this.ignoreticket);
             this.Controls.Add(this.wadnamebox);
@@ -783,6 +907,7 @@
             this.tmdgpbox.PerformLayout();
             this.ticketgpbox.ResumeLayout(false);
             this.ticketgpbox.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -856,6 +981,16 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label shamelessvariablelabel;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.ListBox contentsEdit;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.Button button13;
     }
 }
 
