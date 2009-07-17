@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="direction_down.ico" />
+    <None Include="Resources\link.png" />
     <None Include="Resources\bug_add.png" />
     <None Include="Resources\arrow_down.png" />
     <None Include="Resources\arrow_up.png" />

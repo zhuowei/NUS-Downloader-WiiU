@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Xml;
 using System.Drawing;
 
+
 namespace NUS_Downloader
 {
     public partial class Form1 : Form
@@ -19,8 +20,6 @@ namespace NUS_Downloader
         static bool dsidecrypt = false;
         const string certs_MD5 = "7677AD47BAA5D6E3E313E72661FBDC16";
         
-
-
         // Images do not compare unless globalized...
         Image green = Properties.Resources.bullet_green;
         Image orange = Properties.Resources.bullet_orange;
@@ -39,6 +38,19 @@ namespace NUS_Downloader
             public int DataSize;
             public int FooterSize;
         };
+
+        public struct TitleContent
+        {
+            public byte[] ContentID;
+            public byte[] Index;
+            public byte[] Type;
+            public byte[] Size;
+            public byte[] SHAHash;
+        };
+
+        public enum ContentTypes : int {
+            Shared = 0x8001, Normal = 0x0001
+        }
 
         // This is the standard entry to the GUI
         public Form1()
@@ -141,6 +153,8 @@ namespace NUS_Downloader
         {
             this.Text = "NUSD - " + version + " - WB3000";
             this.Size = this.MinimumSize;
+
+            
         }
 
         private bool BootChecks()
@@ -289,6 +303,7 @@ namespace NUS_Downloader
                 string[] tmdsizes = GetContentSizes(tmd, nbr_cont);
                 byte[] tmdhashes = GetContentHashes(tmd, nbr_cont);
                 byte[] tmdindices = GetContentIndices(tmd, nbr_cont);
+                int[] tmdtypes = GetContentTypes(tmd, nbr_cont);
 
                 // Loop through each content and display name, hash, index
                 for (int i = 0; i < nbr_cont; i++)
@@ -299,9 +314,9 @@ namespace NUS_Downloader
                     {
                         hash[x] = tmdhashes[(i*20)+x];
                     }
-                    WriteStatus("  - Hash: " + DisplayBytes(hash, ""));
+                    WriteStatus("  - Hash: " + DisplayBytes(hash, "").Substring(0, 8) + "...");
                     WriteStatus("  - Index: " + tmdindices[i]);
-
+                    WriteStatus("  - Shared: " + (tmdtypes[i] == 0x8001));
                 }
             }
         }
@@ -544,6 +559,26 @@ namespace NUS_Downloader
                 startoffset += 36;
             }
             return contenthashes;
+        }
+
+        // Returns array of shared/normal values for a tmd...
+        private int[] GetContentTypes(byte[] tmdfile, int length)
+        {
+            int[] contenttypes = new int[length];
+            int startoffset = 0x1EA;
+
+            for (int i = 0; i < length; i++)
+            {
+                if (tmdfile[startoffset] == 0x80)
+                    contenttypes[i] = (int)ContentTypes.Shared;
+                else
+                    contenttypes[i] = (int)ContentTypes.Normal;
+                startoffset += 36;
+                // DEBUG:
+                //WriteStatus(contenttypes[i].ToString());
+            }
+
+            return contenttypes;
         }
 
         private byte[] GetContentIndices(byte[] tmdfile, int length)
@@ -805,24 +840,25 @@ namespace NUS_Downloader
 
                     // IV (00+IDX+more000)
                     byte[] iv = new byte[16];
-                    for (int x = 0; x < 8; x++)
+                    for (int x = 0; x < 16; x++)
                     {
                         iv[x] = 0x00;
-                    }
-                    for (int x = 0; x < 7; x++)
-                    {
-                        iv[x + 8] = 0x00;
                     }
                     iv[1] = tmdindices[i];
                     
                     initCrypt(iv, titlekey); 
 
-                    // Create decrypted file
+                    /* Create decrypted file
                     string zeros = "000000";
-                    FileStream decfs = new FileStream(RemoveIllegalCharacters(titledirectory + @"\" + zeros + i.ToString("X2") + ".app"), FileMode.Create);
+                    FileStream decfs = new FileStream(titledirectory + @"\" + zeros + i.ToString("X2") + ".app", FileMode.Create);
                     decfs.Write(Decrypt(contbuf), 0, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber));
                     decfs.Close();
-                    WriteStatus("  - Decrypted: " + zeros + i.ToString("X2") + ".app");
+                    WriteStatus("  - Decrypted: " + zeros + i.ToString("X2") + ".app"); */
+
+                    FileStream decfs = new FileStream(titledirectory + @"\" + tmdcontents[i] + ".app", FileMode.Create);
+                    decfs.Write(Decrypt(contbuf), 0, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber));
+                    decfs.Close();
+                    WriteStatus("  - Decrypted: " + tmdcontents[i] + ".app");
 
                     // Hash Check...
                     byte[] hash = new byte[20];
@@ -1060,7 +1096,7 @@ namespace NUS_Downloader
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
 
             // Create wad file
-            FileStream wadfs = new FileStream(RemoveIllegalCharacters(totaldirectory + @"\" + wadnamebox.Text), FileMode.Create);
+            FileStream wadfs = new FileStream(totaldirectory + @"\" + RemoveIllegalCharacters(wadnamebox.Text), FileMode.Create);
 
             // Add wad stuffs
             WADHeader wad = new WADHeader();
@@ -1232,40 +1268,27 @@ namespace NUS_Downloader
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
                 currentdir += Path.DirectorySeparatorChar;
             if (File.Exists(currentdir + "key.bin") == false)
-            {
                 WriteStatus("Wii Decryption: Need (key.bin)");
-            }
             else
-            {
                 WriteStatus("Wii Decryption: OK");
-            }
 
             if (File.Exists(currentdir + "kkey.bin") == false)
-            {
                 WriteStatus("Wii Korea Decryption: Need (kkey.bin)");
-            }
             else
-            {
                 WriteStatus("Wii Korea Decryption: OK");
-            }
 
             if (File.Exists(currentdir + "dsikey.bin") == false)
-            {
                 WriteStatus("DSi Decryption: Need (dsikey.bin)");
-            }
             else
-            {
                 WriteStatus("DSi Decryption: OK");
-            }
 
             if (File.Exists(currentdir + "database.xml") == false)
-            {
                 WriteStatus("Database: Need (database.xml)");
-            }
             else
-            {
                 WriteStatus("Database: OK");
-            }
+
+            if (IsWin7())
+                WriteStatus("Windows 7 Features: Enabled");
             
             WriteStatus("");
             WriteStatus("Special thanks to:");
@@ -1276,7 +1299,7 @@ namespace NUS_Downloader
             WriteStatus(" * Anyone who helped beta test on GBATemp!");
             WriteStatus(" * Famfamfam for the Silk Icon Set.");
         }
-
+        
         private void getcerts_Click(object sender, EventArgs e)
         {
             // Get a certs.sys from NUS...
@@ -1287,7 +1310,7 @@ namespace NUS_Downloader
                 currentdir += Path.DirectorySeparatorChar;
 
             // Create certs file
-            FileStream certsfs = new FileStream(RemoveIllegalCharacters(currentdir + @"\cert.sys"), FileMode.Create);
+            FileStream certsfs = new FileStream(currentdir + @"\cert.sys", FileMode.Create);
 
             // Getting it from SystemMenu 3.2
             DownloadNUSFile("0000000100000002", "tmd.289", currentdir + @"\", 0, true);
@@ -1699,12 +1722,13 @@ namespace NUS_Downloader
                 if (e.ClickedItem.Text.Contains("v"))
                 {
                     if (e.ClickedItem.Text.Contains(" "))
-                        titleversion.Text = e.ClickedItem.Text.Substring(1, e.ClickedItem.Text.IndexOf(' '));
+                        titleversion.Text = e.ClickedItem.Text.Substring(1, e.ClickedItem.Text.IndexOf(' ') - 1);
                     else
                         titleversion.Text = e.ClickedItem.Text.Substring(1, e.ClickedItem.Text.Length - 1);
                 }
                 else
                 {
+                    // Apparently it's a region code..
                     titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.Text.Substring(0, 2));
                     titleversion.Text = "";
                 }
@@ -2010,7 +2034,7 @@ namespace NUS_Downloader
             tmd = ZeroSignature(tmd);
             tmd = TruchaSign(tmd);
 
-            FileStream testtmd = new FileStream(RemoveIllegalCharacters(fileinfo[0] + fileinfo[1]), FileMode.Open);
+            FileStream testtmd = new FileStream(fileinfo[0] + fileinfo[1], FileMode.Open);
             testtmd.Write(tmd, 0, tmd.Length);
             testtmd.Close();
         }
@@ -2068,7 +2092,7 @@ namespace NUS_Downloader
             cetkbuff = TruchaSign(cetkbuff);
 
             // Write changes to cetk.
-            FileStream testtik = new FileStream(RemoveIllegalCharacters(fileinfo[0] + "cetk"), FileMode.Open);
+            FileStream testtik = new FileStream(fileinfo[0] + "cetk", FileMode.Open);
             testtik.Write(cetkbuff, 0, cetkbuff.Length);
             testtik.Close();
         }
@@ -2243,12 +2267,17 @@ namespace NUS_Downloader
 
             string[] tmdcontents = GetContentNames(tmd, nbr_cont);
             byte[] tmdindices = GetContentIndices(tmd, nbr_cont);
+            int[] tmdtypes = GetContentTypes(tmd, nbr_cont);
 
             // Loop and add contents to listbox...
             for (int a = 0; a < nbr_cont; a++)
             {
                 contentsEdit.Items.Add(String.Format("[{0}] [{1}]", tmdindices[a], tmdcontents[a]));
+
+                if (tmdtypes[a] == 0x8001)
+                    contentsEdit.Items[a] += " [S]";
             }
+
 
             // Identify Boot Content...
             contentsEdit.Items[boot_idx] += " [BOOT]"; 
@@ -2258,7 +2287,7 @@ namespace NUS_Downloader
         private void button8_Click(object sender, EventArgs e)
         {
             // Move selected content upwards (down an index)...
-            if (contentsEdit.SelectedIndex <= 0)
+            if (contentsEdit.SelectedIndex < 0)
                 return;
 
             int sel_idx = contentsEdit.SelectedIndex;
@@ -2290,7 +2319,7 @@ namespace NUS_Downloader
         private void button12_Click(object sender, EventArgs e)
         {
             // Set a new boot index...
-            if (contentsEdit.SelectedIndex <= 0)
+            if (contentsEdit.SelectedIndex < 0)
                 return;
 
             for (int a = 0; a < contentsEdit.Items.Count; a++)
@@ -2306,14 +2335,14 @@ namespace NUS_Downloader
         {
             // Add a file to the contents...
             OpenFileDialog opencont = new OpenFileDialog();
-            opencont.Filter = "All Files|*";
+            opencont.Filter = "Decrypted Contents|*.app|All Files|*";
             opencont.Multiselect = false;
             opencont.Title = "Locate a Content";
             if (opencont.ShowDialog() != DialogResult.Cancel)
             {
-                if ((opencont.SafeFileName.Length != 8) && (OnlyHexInString(opencont.SafeFileName) == false))
+                if ((OnlyHexInString(opencont.SafeFileName.Substring(0,8)) == false))
                 {
-                    MessageBox.Show("Please locate/rename a file to be (8 HEX CHARACTERS) long!", "Bad!", MessageBoxButtons.OK);
+                    MessageBox.Show("Please locate/rename a file to be (8 HEX CHARACTERS) long + (.app) extention!", "Bad!", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -2328,6 +2357,12 @@ namespace NUS_Downloader
 
                 // D: TODO?
                 string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+
+                if (File.Exists(fileinfo[0] + opencont.SafeFileName) )
+                {
+                    MessageBox.Show("Rename the file you are adding, it already exists in the title directory!", "Bad!", MessageBoxButtons.OK);
+                    return;
+                }
 
                 if (fileinfo[0] + opencont.SafeFileName != opencont.FileName)
                 {
@@ -2346,7 +2381,7 @@ namespace NUS_Downloader
         private void button10_Click(object sender, EventArgs e)
         {
             // Remove a content from the list...
-            if ((contentsEdit.SelectedIndex <= 0) || (contentsEdit.Items.Count <= 1))
+            if ((contentsEdit.SelectedIndex < 0) || (contentsEdit.Items.Count <= 1))
                 return;
 
             string[] fileinfo = shamelessvariablelabel.Text.Split(',');
@@ -2359,6 +2394,291 @@ namespace NUS_Downloader
                 contentsEdit.Items.RemoveAt(contentsEdit.SelectedIndex);
         }
 
+        private void button14_Click(object sender, EventArgs e)
+        {
+            // Write changes to TMD of contents...
+            WriteStatus("Updating TMD with content information...");
+            string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+            byte[] ticket = FileLocationToByteArray(fileinfo[0] + "cetk");
+            byte[] etitlekey = new byte[16];
+            for (int a = 0; a < 16; a++)
+            {
+                etitlekey[a] = ticket[0x1BF + a];
+            }
+            // TODO: Add more key support
+            byte[] commonkey = LoadCommonKey(@"\key.bin");
 
+            // IV (TITLEID00000000)
+            byte[] iv = new byte[16];
+            for (int b = 0; b < 8; b++)
+		    {
+                iv[b] = ticket[0x1DC + b];
+		    }
+            for (int c = 0; c < 8; c++)
+		    {
+                iv[c+8] = 0x00;
+		    }
+
+            initCrypt(iv, commonkey);
+            byte[] dtitlekey = Decrypt(etitlekey);
+
+            // Holds all the content data...
+            TitleContent[] contents = new TitleContent[contentsEdit.Items.Count];
+
+            // Previous TMD for analysis
+            byte[] tmd = FileLocationToByteArray(fileinfo[0] + fileinfo[1]);
+
+            for (int c = 0; c < contentsEdit.Items.Count; c++)
+            {
+                string itemstr = contentsEdit.Items[c].ToString();
+                contents[c] = new TitleContent();
+                if (itemstr.Contains(".app"))
+                {
+                    // This is already decrypted, we're going to add it to the TMD...
+                    string filename = itemstr.Substring(5, 12);
+                    byte[] contentbytes = FileLocationToByteArray(fileinfo[0] + filename);
+                    WriteStatus(" - Encrypting " + filename + "...");
+
+                    // Gather the contentID (crappy way to do it)...
+                    contents[c].ContentID = new byte[4];
+                    contents[c].ContentID[0] = byte.Parse(filename.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+                    contents[c].ContentID[1] = byte.Parse(filename.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+                    contents[c].ContentID[2] = byte.Parse(filename.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+                    contents[c].ContentID[3] = byte.Parse(filename.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+
+                    // Grab SHA1/size of file
+                    contents[c].SHAHash = new byte[20];
+                    contents[c].SHAHash = ComputeSHA(contentbytes);
+
+                    contents[c].Size = new byte[8];
+                    // TODOCHECK THIS OVER
+                    contents[c].Size = InttoByteArray(contentbytes.Length, 8);
+                    
+                    contents[c].Index = new byte[2];
+                    contents[c].Index = InttoByteArray(c, 2);
+
+                    contents[c].Type = new byte[2];
+                    contents[c].Type[1] = 0x01;
+                    if (contentsEdit.Items[c].ToString().Contains(" [S]"))
+                        contents[c].Type[0] = 0x80;
+                    else
+                        contents[c].Type[0] = 0x00;
+
+                    // Pad to be 16 byte aligned
+                    contentbytes = AlignByteArray(contentbytes, 16);
+
+                    // Encrypt with correct index IV/titlekey
+                    byte[] ivindex = new byte[16];
+                    for (int d = 0; d < ivindex.Length; d++)
+                    {
+                        ivindex[d] = 0x00;
+                    }
+                    ivindex[0] = contents[c].Index[0];
+                    ivindex[1] = contents[c].Index[1];
+
+                    initCrypt(ivindex, dtitlekey);
+
+                    FileStream encryptwrite = new FileStream(fileinfo[0] + filename.Substring(0, 8), FileMode.Create);
+                    encryptwrite.Write(Encrypt(contentbytes), 0, contentbytes.Length);
+                    encryptwrite.Close();
+
+                    WriteStatus(" - " + filename.Substring(0, 8) + " written!");
+                }
+                else
+                { 
+                    // An encrypted content...it was from the original TMD, leave alone? (hmmm)
+                    string filename = itemstr.Substring(5, 8);
+                    byte[] contentbytes = FileLocationToByteArray(fileinfo[0] + filename);
+                    WriteStatus("Gathering " + filename + " information...");
+
+                    // Grab previous values from TMD...
+                    int nbr_cont = ContentCount(tmd);
+                    string[] tmdoldcontents = GetContentNames(tmd, nbr_cont);
+                    string[] tmdsizes = GetContentSizes(tmd, nbr_cont);
+                    byte[] tmdhashes = GetContentHashes(tmd, nbr_cont);
+
+                    int thiscontentidx = 0;
+
+                    for (int f = 0; f < nbr_cont; f++)
+                    {
+                        if (tmdoldcontents[f] == filename)
+                            thiscontentidx = f;
+                    }
+
+                    if (thiscontentidx != c)
+                    {
+                        // We have to decrypt the content, and then encrypt to keep IV in line...
+                        byte[] ivindex = new byte[16];
+                        for (int d = 0; d < ivindex.Length; d++)
+                        {
+                            ivindex[d] = 0x00;
+                        }
+                        // TODO: Complete this...
+                        ivindex[0] = 0x00;
+                        ivindex[1] = (byte)thiscontentidx;
+
+                        initCrypt(ivindex, dtitlekey);
+
+                        byte[] hash = new byte[20];
+                        for (int x = 0; x < 20; x++)
+                        {
+                            hash[x] = tmdhashes[(thiscontentidx * 20) + x];
+                        }
+
+                        byte[] decContent = Decrypt(contentbytes);
+                        Array.Resize(ref decContent, int.Parse(tmdsizes[c], System.Globalization.NumberStyles.HexNumber));
+                        if ((Convert.ToBase64String(ComputeSHA(decContent))) == Convert.ToBase64String(hash))
+                        {
+                            WriteStatus("  - Hash Check: Content is Unchanged...");
+                            contents[c].SHAHash = hash;
+                        }
+                        else
+                        {
+                            WriteStatus("  - Hash Check: Content changed (probably REALLY BAD)...");
+                            contents[c].SHAHash = ComputeSHA(decContent);
+                        }
+
+                        // Re-encrypt
+                        byte[] newiv = new byte[16];
+                        for (int g = 0; g < newiv.Length; g++)
+                        {
+                            newiv[g] = 0x00;
+                        }
+                        // TODO: Complete this...
+                        ivindex[0] = 0x00;
+                        ivindex[1] = (byte)c;
+
+                        // Pad back to 0x16 alignment
+                        AlignByteArray(decContent, 0x16);
+
+                        initCrypt(newiv, dtitlekey);
+
+                        byte[] encContent = Encrypt(decContent);
+
+                        File.Delete(fileinfo[0] + filename.Substring(0, 8));
+
+                        FileStream encryptwrite = new FileStream(fileinfo[0] + filename.Substring(0, 8), FileMode.OpenOrCreate);
+                        encryptwrite.Write(encContent, 0, encContent.Length);
+                        encryptwrite.Close();
+
+                        WriteStatus(" - Encrypted Content Again!");
+                    }
+                    else
+                    { 
+                        // Hopefully this content has not been touched...
+                        // TODO: um, i'm 12 and what is this?
+                    }
+
+                    contents[c].ContentID = new byte[4];
+                    contents[c].ContentID[0] = byte.Parse(filename.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+                    contents[c].ContentID[1] = byte.Parse(filename.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+                    contents[c].ContentID[2] = byte.Parse(filename.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+                    contents[c].ContentID[3] = byte.Parse(filename.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+                    
+                    contents[c].Index = new byte[2];
+                    contents[c].Index = InttoByteArray(c, 2); // TODOTODOTODO
+                    
+                    contents[c].Type = new byte[2];
+                    contents[c].Type[0] = 0x01;
+                    if (contentsEdit.Items[c].ToString().Contains(" [S]"))
+                        contents[c].Type[0] = 0x80;
+                    else
+                        contents[c].Type[0] = 0x00;
+                    
+                    contents[c].Size = new byte[8];
+                    // TODOCHECK THIS OVER
+                    contents[c].Size = InttoByteArray(contentbytes.Length, 8);
+                }
+
+                // Write all this stuff to the TMD...
+                byte[] contentSection = new byte[contents.Length * 36];
+
+                for (int h = 0; h < contents.Length; h++)
+                {
+                    for (int i = 0; i < contents[h].ContentID.Length; i++)
+                    {
+                        contentSection[(h * 36) + i] = contents[h].ContentID[i];
+                    }
+
+                    for (int j = 0; j < contents[h].Index.Length; j++)
+                    {
+                        contentSection[(h * 36) + (contents[h].ContentID.Length + j)] = contents[h].Index[j];
+                    }
+
+                    for (int k = 0; k < contents[h].Type.Length; k++)
+                    {
+                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + k)] = contents[h].Type[k];
+                    }
+
+                    for (int l = 0; l < contents[h].Size.Length; l++)
+                    {
+                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + l)] = contents[h].Type[l];
+                    }
+
+                    for (int m = 0; m < contents[h].SHAHash.Length; m++)
+                    {
+                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + contents[h].Size.Length + m)] = contents[h].Type[m];
+                    }
+                }
+
+                for (int n = 0; n < contentSection.Length; n++)
+                {
+                    tmd[0x1E4 + n] = contentSection[n];
+                }
+
+                // Fakesign the TMD again...
+                tmd = ZeroSignature(tmd);
+                tmd = TruchaSign(tmd);
+
+                FileStream testtmd = new FileStream(fileinfo[0] + fileinfo[1], FileMode.Open);
+                testtmd.Write(tmd, 0, tmd.Length);
+                testtmd.Close();
+            }
+        }
+
+        // Pad Byte[] to specific alignment...
+        private byte[] AlignByteArray(byte[] content, int alignto)
+        {
+            long thelength = content.Length - 1;
+            long remainder = 1;
+
+            while (remainder != 0)
+            {
+                thelength += 1;
+                remainder = thelength % alignto;
+            }
+
+            Array.Resize(ref content, (int)thelength);
+            return content;
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            // Move groupbox to display title modder...
+            contentModBox.Location = new Point(278, 12);
+            contentModBox.Visible = true;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            // Share/Unshare Contents in the list...
+            if (contentsEdit.SelectedIndex < 0)
+                return;
+
+            if (contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Contains(" [S]"))
+                contentsEdit.Items[contentsEdit.SelectedIndex] = contentsEdit.SelectedItem.ToString().Replace(" [S]", "");
+            else
+            {
+                if (contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Contains(" [BOOT]"))
+                    contentsEdit.Items[contentsEdit.SelectedIndex] = contentsEdit.SelectedItem.ToString().Replace(" [BOOT]", "") + " [S] [BOOT]";
+                else
+                    contentsEdit.Items[contentsEdit.SelectedIndex] = contentsEdit.SelectedItem.ToString() + " [S]";
+            }
+        }
+
+        private bool IsWin7()
+        {
+            return (Environment.OSVersion.VersionString.Contains("6.1") == true);
+        }
     }
 }

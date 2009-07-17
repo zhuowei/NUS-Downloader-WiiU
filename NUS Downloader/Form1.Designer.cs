@@ -95,7 +95,8 @@
             this.shamelessvariablelabel = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.contentsEdit = new System.Windows.Forms.ListBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.contentModBox = new System.Windows.Forms.GroupBox();
+            this.button16 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
@@ -106,10 +107,11 @@
             this.button10 = new System.Windows.Forms.Button();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.button17 = new System.Windows.Forms.Button();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.contentModBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // TMDButton
@@ -685,7 +687,7 @@
             // 
             this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(278, 459);
+            this.button7.Location = new System.Drawing.Point(278, 322);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(249, 27);
             this.button7.TabIndex = 28;
@@ -728,43 +730,57 @@
             this.contentsEdit.FormattingEnabled = true;
             this.contentsEdit.Location = new System.Drawing.Point(9, 19);
             this.contentsEdit.Name = "contentsEdit";
-            this.contentsEdit.Size = new System.Drawing.Size(138, 134);
+            this.contentsEdit.ScrollAlwaysVisible = true;
+            this.contentsEdit.Size = new System.Drawing.Size(198, 173);
             this.contentsEdit.TabIndex = 32;
             // 
-            // groupBox1
+            // contentModBox
             // 
-            this.groupBox1.Controls.Add(this.button13);
-            this.groupBox1.Controls.Add(this.button15);
-            this.groupBox1.Controls.Add(this.button14);
-            this.groupBox1.Controls.Add(this.button12);
-            this.groupBox1.Controls.Add(this.contentsEdit);
-            this.groupBox1.Controls.Add(this.button8);
-            this.groupBox1.Controls.Add(this.button11);
-            this.groupBox1.Controls.Add(this.button9);
-            this.groupBox1.Controls.Add(this.button10);
-            this.groupBox1.Location = new System.Drawing.Point(278, 290);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(249, 160);
-            this.groupBox1.TabIndex = 41;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Edit Title Contents";
+            this.contentModBox.Controls.Add(this.button16);
+            this.contentModBox.Controls.Add(this.button13);
+            this.contentModBox.Controls.Add(this.button15);
+            this.contentModBox.Controls.Add(this.button14);
+            this.contentModBox.Controls.Add(this.button12);
+            this.contentModBox.Controls.Add(this.contentsEdit);
+            this.contentModBox.Controls.Add(this.button8);
+            this.contentModBox.Controls.Add(this.button11);
+            this.contentModBox.Controls.Add(this.button9);
+            this.contentModBox.Controls.Add(this.button10);
+            this.contentModBox.Location = new System.Drawing.Point(268, 208);
+            this.contentModBox.Name = "contentModBox";
+            this.contentModBox.Size = new System.Drawing.Size(249, 272);
+            this.contentModBox.TabIndex = 41;
+            this.contentModBox.TabStop = false;
+            this.contentModBox.Text = "Edit Title Contents";
+            this.contentModBox.Visible = false;
+            // 
+            // button16
+            // 
+            this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button16.Image = global::NUS_Downloader.Properties.Resources.bug_add;
+            this.button16.Location = new System.Drawing.Point(136, 198);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(26, 26);
+            this.button16.TabIndex = 44;
+            this.button16.UseVisualStyleBackColor = true;
             // 
             // button13
             // 
             this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button13.Image = global::NUS_Downloader.Properties.Resources.bug_add;
-            this.button13.Location = new System.Drawing.Point(217, 53);
+            this.button13.Image = global::NUS_Downloader.Properties.Resources.link;
+            this.button13.Location = new System.Drawing.Point(104, 198);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(26, 26);
             this.button13.TabIndex = 43;
             this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // button15
             // 
             this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button15.Location = new System.Drawing.Point(153, 95);
+            this.button15.Location = new System.Drawing.Point(9, 235);
             this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(90, 26);
+            this.button15.Size = new System.Drawing.Size(70, 26);
             this.button15.TabIndex = 42;
             this.button15.Text = "Revert";
             this.button15.UseVisualStyleBackColor = true;
@@ -773,18 +789,19 @@
             // button14
             // 
             this.button14.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button14.Location = new System.Drawing.Point(153, 127);
+            this.button14.Location = new System.Drawing.Point(85, 235);
             this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(90, 26);
+            this.button14.Size = new System.Drawing.Size(158, 26);
             this.button14.TabIndex = 41;
-            this.button14.Text = "Overwrite";
+            this.button14.Text = "Overwrite Title Contents...";
             this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // button12
             // 
             this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button12.Image = global::NUS_Downloader.Properties.Resources.connect;
-            this.button12.Location = new System.Drawing.Point(217, 19);
+            this.button12.Image = ((System.Drawing.Image)(resources.GetObject("button12.Image")));
+            this.button12.Location = new System.Drawing.Point(72, 198);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(26, 26);
             this.button12.TabIndex = 40;
@@ -794,8 +811,8 @@
             // button8
             // 
             this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button8.Image = global::NUS_Downloader.Properties.Resources.arrow_up;
-            this.button8.Location = new System.Drawing.Point(153, 19);
+            this.button8.Image = ((System.Drawing.Image)(resources.GetObject("button8.Image")));
+            this.button8.Location = new System.Drawing.Point(213, 19);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(26, 26);
             this.button8.TabIndex = 33;
@@ -805,8 +822,8 @@
             // button11
             // 
             this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button11.Image = global::NUS_Downloader.Properties.Resources.package_add;
-            this.button11.Location = new System.Drawing.Point(185, 19);
+            this.button11.Image = ((System.Drawing.Image)(resources.GetObject("button11.Image")));
+            this.button11.Location = new System.Drawing.Point(9, 198);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(26, 26);
             this.button11.TabIndex = 36;
@@ -816,8 +833,8 @@
             // button9
             // 
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button9.Image = global::NUS_Downloader.Properties.Resources.arrow_down;
-            this.button9.Location = new System.Drawing.Point(153, 53);
+            this.button9.Image = ((System.Drawing.Image)(resources.GetObject("button9.Image")));
+            this.button9.Location = new System.Drawing.Point(213, 53);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(26, 26);
             this.button9.TabIndex = 34;
@@ -827,8 +844,8 @@
             // button10
             // 
             this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button10.Image = global::NUS_Downloader.Properties.Resources.package_delete;
-            this.button10.Location = new System.Drawing.Point(185, 53);
+            this.button10.Image = ((System.Drawing.Image)(resources.GetObject("button10.Image")));
+            this.button10.Location = new System.Drawing.Point(41, 198);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(26, 26);
             this.button10.TabIndex = 35;
@@ -839,7 +856,7 @@
             // 
             this.radioButton1.BackColor = System.Drawing.Color.Transparent;
             this.radioButton1.Checked = true;
-            this.radioButton1.Image = global::NUS_Downloader.Properties.Resources.wilolgoi;
+            this.radioButton1.Image = ((System.Drawing.Image)(resources.GetObject("radioButton1.Image")));
             this.radioButton1.Location = new System.Drawing.Point(12, 385);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(60, 31);
@@ -850,7 +867,7 @@
             // 
             // radioButton2
             // 
-            this.radioButton2.Image = global::NUS_Downloader.Properties.Resources.dsi;
+            this.radioButton2.Image = ((System.Drawing.Image)(resources.GetObject("radioButton2.Image")));
             this.radioButton2.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.radioButton2.Location = new System.Drawing.Point(78, 385);
             this.radioButton2.Name = "radioButton2";
@@ -859,16 +876,27 @@
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
+            // button17
+            // 
+            this.button17.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button17.Location = new System.Drawing.Point(278, 290);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(249, 26);
+            this.button17.TabIndex = 42;
+            this.button17.Text = "Modify Individual Titles...";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Click += new System.EventHandler(this.button17_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 492);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.contentModBox);
+            this.Controls.Add(this.button17);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.shamelessvariablelabel);
             this.Controls.Add(this.label12);
-            this.Controls.Add(this.button6);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.ticketgpbox);
             this.Controls.Add(this.button5);
@@ -876,8 +904,8 @@
             this.Controls.Add(this.tmdgpbox);
             this.Controls.Add(this.truchabox);
             this.Controls.Add(this.databaseButton);
-            this.Controls.Add(this.button7);
             this.Controls.Add(this.decryptbox);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.ignoreticket);
             this.Controls.Add(this.wadnamebox);
             this.Controls.Add(this.getcerts);
@@ -894,6 +922,7 @@
             this.Controls.Add(this.downloadstartbtn);
             this.Controls.Add(this.titleidbox);
             this.Controls.Add(this.TMDButton);
+            this.Controls.Add(this.button6);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -907,7 +936,7 @@
             this.tmdgpbox.PerformLayout();
             this.ticketgpbox.ResumeLayout(false);
             this.ticketgpbox.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
+            this.contentModBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -987,10 +1016,12 @@
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button12;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox contentModBox;
         private System.Windows.Forms.Button button14;
         private System.Windows.Forms.Button button15;
         private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.Button button16;
+        private System.Windows.Forms.Button button17;
     }
 }
 
