@@ -2287,7 +2287,7 @@ namespace NUS_Downloader
         private void button8_Click(object sender, EventArgs e)
         {
             // Move selected content upwards (down an index)...
-            if (contentsEdit.SelectedIndex < 0)
+            if (contentsEdit.SelectedIndex <= 0)
                 return;
 
             int sel_idx = contentsEdit.SelectedIndex;
@@ -2465,7 +2465,7 @@ namespace NUS_Downloader
                         contents[c].Type[0] = 0x00;
 
                     // Pad to be 16 byte aligned
-                    contentbytes = AlignByteArray(contentbytes, 16);
+                    contentbytes = PadToMultipleOf(contentbytes, 16);
 
                     // Encrypt with correct index IV/titlekey
                     byte[] ivindex = new byte[16];
@@ -2526,15 +2526,16 @@ namespace NUS_Downloader
                         }
 
                         byte[] decContent = Decrypt(contentbytes);
-                        Array.Resize(ref decContent, int.Parse(tmdsizes[c], System.Globalization.NumberStyles.HexNumber));
+                        Array.Resize(ref decContent, int.Parse(tmdsizes[thiscontentidx], System.Globalization.NumberStyles.HexNumber));
                         if ((Convert.ToBase64String(ComputeSHA(decContent))) == Convert.ToBase64String(hash))
                         {
-                            WriteStatus("  - Hash Check: Content is Unchanged...");
+                            WriteStatus(" - Hash Check: Content is Unchanged...");
                             contents[c].SHAHash = hash;
+                            WriteStatus("HASH: " + DisplayBytes(hash, ""));
                         }
                         else
                         {
-                            WriteStatus("  - Hash Check: Content changed (probably REALLY BAD)...");
+                            WriteStatus(" - Hash Check: Content changed (probably REALLY BAD)...");
                             contents[c].SHAHash = ComputeSHA(decContent);
                         }
 
@@ -2549,7 +2550,8 @@ namespace NUS_Downloader
                         ivindex[1] = (byte)c;
 
                         // Pad back to 0x16 alignment
-                        AlignByteArray(decContent, 0x16);
+                        //AlignByteArray(decContent, 0x16
+                        decContent = PadToMultipleOf(decContent, 16);
 
                         initCrypt(newiv, dtitlekey);
 
@@ -2576,10 +2578,10 @@ namespace NUS_Downloader
                     contents[c].ContentID[3] = byte.Parse(filename.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
                     
                     contents[c].Index = new byte[2];
-                    contents[c].Index = InttoByteArray(c, 2); // TODOTODOTODO
+                    contents[c].Index = NewIntegertoByteArray(c, 2);
                     
                     contents[c].Type = new byte[2];
-                    contents[c].Type[0] = 0x01;
+                    contents[c].Type[1] = 0x01;
                     if (contentsEdit.Items[c].ToString().Contains(" [S]"))
                         contents[c].Type[0] = 0x80;
                     else
@@ -2587,12 +2589,13 @@ namespace NUS_Downloader
                     
                     contents[c].Size = new byte[8];
                     // TODOCHECK THIS OVER
-                    contents[c].Size = InttoByteArray(contentbytes.Length, 8);
+                    contents[c].Size = NewIntegertoByteArray(contentbytes.Length, 8);
                 }
 
+            }
                 // Write all this stuff to the TMD...
                 byte[] contentSection = new byte[contents.Length * 36];
-
+            //TODO: At some points we don't have a hash... see above?
                 for (int h = 0; h < contents.Length; h++)
                 {
                     for (int i = 0; i < contents[h].ContentID.Length; i++)
@@ -2612,12 +2615,12 @@ namespace NUS_Downloader
 
                     for (int l = 0; l < contents[h].Size.Length; l++)
                     {
-                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + l)] = contents[h].Type[l];
+                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + l)] = contents[h].Size[l];
                     }
 
                     for (int m = 0; m < contents[h].SHAHash.Length; m++)
                     {
-                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + contents[h].Size.Length + m)] = contents[h].Type[m];
+                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + contents[h].Size.Length + m)] = contents[h].SHAHash[m];
                     }
                 }
 
@@ -2633,30 +2636,46 @@ namespace NUS_Downloader
                 FileStream testtmd = new FileStream(fileinfo[0] + fileinfo[1], FileMode.Open);
                 testtmd.Write(tmd, 0, tmd.Length);
                 testtmd.Close();
-            }
+            
         }
 
-        // Pad Byte[] to specific alignment...
+        /* Pad Byte[] to specific alignment...
         private byte[] AlignByteArray(byte[] content, int alignto)
         {
             long thelength = content.Length - 1;
-            long remainder = 1;
+            long remainder = thelength % alignto;
 
             while (remainder != 0)
             {
                 thelength += 1;
                 remainder = thelength % alignto;
             }
-
+            // DEBUG:
+            WriteStatus("Aligning by: " + alignto + " ... New Length: " + thelength);
+            WriteStatus(" Dif: " + (thelength - content.Length));
             Array.Resize(ref content, (int)thelength);
             return content;
+        } */
+
+        private byte[] PadToMultipleOf(byte[] src, int pad)
+        {
+            int len = (src.Length + pad - 1) / pad * pad;
+      
+            // DEBUG:
+            WriteStatus("New Length: " + len);
+            WriteStatus("Dif: " + (len - src.Length));
+
+            Array.Resize(ref src, len);
+            return src;
         }
+
 
         private void button17_Click(object sender, EventArgs e)
         {
             // Move groupbox to display title modder...
             contentModBox.Location = new Point(278, 12);
             contentModBox.Visible = true;
+            contentModBox.BringToFront();
         }
 
         private void button13_Click(object sender, EventArgs e)
@@ -2679,6 +2698,31 @@ namespace NUS_Downloader
         private bool IsWin7()
         {
             return (Environment.OSVersion.VersionString.Contains("6.1") == true);
+        }
+
+        private byte[] NewIntegertoByteArray(int theInt, int arrayLen)
+        {
+            byte[] resultArray = new byte[arrayLen];
+
+            for(int i = arrayLen - 1 ; i >= 0; i--) 
+            {
+                resultArray[i] = (byte)((theInt >> (8 * i)) & 0xFF);
+
+            }
+            Array.Reverse(resultArray);
+
+            // Fix duplication, rewrite extra to 0x00;
+            if (arrayLen > 4)
+            {
+                for (int i = 0; i < (arrayLen - 4); i++)
+                {
+                    resultArray[i] = 0x00;
+                }
+            }
+
+            // DEBUG
+            WriteStatus("byte[] result: " + DisplayBytes(resultArray, " "));
+            return resultArray;
         }
     }
 }
