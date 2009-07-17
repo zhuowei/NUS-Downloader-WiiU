@@ -91,7 +91,6 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
-            this.label12 = new System.Windows.Forms.Label();
             this.shamelessvariablelabel = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.contentsEdit = new System.Windows.Forms.ListBox();
@@ -695,16 +694,6 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
-            // label12
-            // 
-            this.label12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label12.Location = new System.Drawing.Point(239, 465);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(23, 15);
-            this.label12.TabIndex = 29;
-            this.label12.Text = resources.GetString("label12.Text");
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // shamelessvariablelabel
             // 
             this.shamelessvariablelabel.AutoSize = true;
@@ -896,7 +885,6 @@
             this.Controls.Add(this.button17);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.shamelessvariablelabel);
-            this.Controls.Add(this.label12);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.ticketgpbox);
             this.Controls.Add(this.button5);
@@ -1007,7 +995,6 @@
         private System.Windows.Forms.TextBox timelimitsecs;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label shamelessvariablelabel;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.ListBox contentsEdit;
