@@ -2399,6 +2399,8 @@ namespace NUS_Downloader
             // Write changes to TMD of contents...
             WriteStatus("Updating TMD with content information...");
             string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+
+            WriteStatus(" - Loading Title Key from Ticket...");
             byte[] ticket = FileLocationToByteArray(fileinfo[0] + "cetk");
             byte[] etitlekey = new byte[16];
             for (int a = 0; a < 16; a++)
@@ -2437,6 +2439,7 @@ namespace NUS_Downloader
                     // This is already decrypted, we're going to add it to the TMD...
                     string filename = itemstr.Substring(5, 12);
                     byte[] contentbytes = FileLocationToByteArray(fileinfo[0] + filename);
+                    WriteStatus(filename + " is a decrypted file...");
                     WriteStatus(" - Encrypting " + filename + "...");
 
                     // Gather the contentID (crappy way to do it)...
@@ -2486,10 +2489,11 @@ namespace NUS_Downloader
                 }
                 else
                 { 
-                    // An encrypted content...it was from the original TMD, leave alone? (hmmm)
+                    // An encrypted content...it was from the original TMD
                     string filename = itemstr.Substring(5, 8);
                     byte[] contentbytes = FileLocationToByteArray(fileinfo[0] + filename);
-                    WriteStatus("Gathering " + filename + " information...");
+                    WriteStatus(filename + " is encrypted and from the original TMD...");
+                    WriteStatus(" - Gathering " + filename + " information...");
 
                     // Grab previous values from TMD...
                     int nbr_cont = ContentCount(tmd);
@@ -2505,9 +2509,11 @@ namespace NUS_Downloader
                             thiscontentidx = f;
                     }
 
+                    // if index has been changed...
                     if (thiscontentidx != c)
                     {
                         // We have to decrypt the content, and then encrypt to keep IV in line...
+                        WriteStatus(" - Index altered. Must change IV...");
                         byte[] ivindex = new byte[16];
                         for (int d = 0; d < ivindex.Length; d++)
                         {
@@ -2527,15 +2533,16 @@ namespace NUS_Downloader
 
                         byte[] decContent = Decrypt(contentbytes);
                         Array.Resize(ref decContent, int.Parse(tmdsizes[thiscontentidx], System.Globalization.NumberStyles.HexNumber));
+                        contents[c].Size = NewIntegertoByteArray(decContent.Length, 8);
                         if ((Convert.ToBase64String(ComputeSHA(decContent))) == Convert.ToBase64String(hash))
                         {
                             WriteStatus(" - Hash Check: Content is Unchanged...");
                             contents[c].SHAHash = hash;
-                            WriteStatus("HASH: " + DisplayBytes(hash, ""));
+                            //WriteStatus("HASH: " + DisplayBytes(hash, ""));
                         }
                         else
                         {
-                            WriteStatus(" - Hash Check: Content changed (probably REALLY BAD)...");
+                            WriteStatus(" - Hash Check: Content changed (did you add an encrypted file from another title?)...");
                             contents[c].SHAHash = ComputeSHA(decContent);
                         }
 
@@ -2545,9 +2552,11 @@ namespace NUS_Downloader
                         {
                             newiv[g] = 0x00;
                         }
-                        // TODO: Complete this...
-                        ivindex[0] = 0x00;
-                        ivindex[1] = (byte)c;
+                        byte[] smallix = NewIntegertoByteArray(c, 2);
+                        ivindex[0] = smallix[0];
+                        ivindex[1] = smallix[1];
+
+                        //WriteStatus(" - Old Index: " + thiscontentidx + "; New Index: " + c);
 
                         // Pad back to 0x16 alignment
                         //AlignByteArray(decContent, 0x16
@@ -2568,7 +2577,15 @@ namespace NUS_Downloader
                     else
                     { 
                         // Hopefully this content has not been touched...
-                        // TODO: um, i'm 12 and what is this?
+                        WriteStatus(" - Content has not changed Index.");
+                        byte[] hash = new byte[20];
+                        for (int x = 0; x < 20; x++)
+                        {
+                            hash[x] = tmdhashes[(c * 20) + x];
+                        }
+                        contents[c].SHAHash = hash;
+
+                        contents[c].Size = NewIntegertoByteArray(int.Parse(tmdsizes[c], System.Globalization.NumberStyles.HexNumber), 8);
                     }
 
                     contents[c].ContentID = new byte[4];
@@ -2585,17 +2602,12 @@ namespace NUS_Downloader
                     if (contentsEdit.Items[c].ToString().Contains(" [S]"))
                         contents[c].Type[0] = 0x80;
                     else
-                        contents[c].Type[0] = 0x00;
-                    
-                    contents[c].Size = new byte[8];
-                    // TODOCHECK THIS OVER
-                    contents[c].Size = NewIntegertoByteArray(contentbytes.Length, 8);
+                        contents[c].Type[0] = 0x00;                    
                 }
 
             }
                 // Write all this stuff to the TMD...
                 byte[] contentSection = new byte[contents.Length * 36];
-            //TODO: At some points we don't have a hash... see above?
                 for (int h = 0; h < contents.Length; h++)
                 {
                     for (int i = 0; i < contents[h].ContentID.Length; i++)
@@ -2662,8 +2674,8 @@ namespace NUS_Downloader
             int len = (src.Length + pad - 1) / pad * pad;
       
             // DEBUG:
-            WriteStatus("New Length: " + len);
-            WriteStatus("Dif: " + (len - src.Length));
+            //WriteStatus("New Length: " + len);
+            //WriteStatus("Dif: " + (len - src.Length));
 
             Array.Resize(ref src, len);
             return src;
@@ -2721,7 +2733,7 @@ namespace NUS_Downloader
             }
 
             // DEBUG
-            WriteStatus("byte[] result: " + DisplayBytes(resultArray, " "));
+            //WriteStatus(" - Int->Byte[]: " + DisplayBytes(resultArray, " "));
             return resultArray;
         }
     }
