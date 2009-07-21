@@ -965,6 +965,13 @@ namespace NUS_Downloader
                     System.Threading.Thread.Sleep(1000);
                 }
 
+                // Re-Gather information...
+                byte[] tmdrefresh = FileLocationToByteArray(titledirectory + tmdfull);
+                tmdcontents = GetContentNames(tmd, ContentCount(tmdrefresh));
+                tmdsizes = GetContentSizes(tmd, ContentCount(tmdrefresh));
+                tmdhashes = GetContentHashes(tmd, ContentCount(tmdrefresh));
+                tmdindices = GetContentIndices(tmd, ContentCount(tmdrefresh));
+
                 /*
                 WriteStatus("Trucha Signing TMD...");
                 Array.Resize(ref tmd, 484 + (Convert.ToInt32(contentstrnum) * 36));
@@ -1140,15 +1147,6 @@ namespace NUS_Downloader
 
                 wadfs.Write(contbuf, 0, contbuf.Length);
 
-                /*if (int.Parse(contentsizes[i], System.Globalization.NumberStyles.HexNumber) != contbuf.Length)
-                {
-                    // Content size mismatch
-                    WriteStatus(contentnames[i] + " wrote (0x" + Convert.ToString((wadfs.Length - contbuf.Length), 16) + ") (Mismatch)");
-                }
-                else
-                {
-                    WriteStatus(contentnames[i] + " wrote (0x" + Convert.ToString((wadfs.Length - contbuf.Length), 16) + ")");
-                } */
                 WriteStatus(contentnames[i] + " wrote (0x" + Convert.ToString((wadfs.Length - contbuf.Length), 16) + ")");
                 HandleMismatch(int.Parse(contentsizes[i], System.Globalization.NumberStyles.HexNumber), contbuf.Length);
 
@@ -1262,7 +1260,7 @@ namespace NUS_Downloader
             statusbox.Text = "";
             WriteStatus("NUS Downloader (NUSD)");
             WriteStatus("You are running version: " + version);
-            WriteStatus("This program coded by WB3000");
+            WriteStatus("This application created by WB3000");
             WriteStatus("");
             string currentdir = Application.StartupPath;
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
@@ -1287,8 +1285,8 @@ namespace NUS_Downloader
             else
                 WriteStatus("Database: OK");
 
-            if (IsWin7())
-                WriteStatus("Windows 7 Features: Enabled");
+            /* if (IsWin7())
+                WriteStatus("Windows 7 Features: Enabled"); */
             
             WriteStatus("");
             WriteStatus("Special thanks to:");
@@ -1569,12 +1567,33 @@ namespace NUS_Downloader
                                 break;
                             case "version":
                                 string[] versions = ChildrenOfTheNode[z].InnerText.Split(',');
-                                XMLToolStripItem.DropDownItems.Add("Latest Version");
-                                if (ChildrenOfTheNode[z].InnerText != "")
+                                // Add to region things?
+                                if (XMLToolStripItem.DropDownItems.Count > 0)
                                 {
-                                    for (int y = 0; y < versions.Length; y++)
+                                    for (int b = 0; b < XMLToolStripItem.DropDownItems.Count; b++)
                                     {
-                                        XMLToolStripItem.DropDownItems.Add("v" + versions[y]);
+                                        if (ChildrenOfTheNode[z].InnerText != "")
+                                        {
+                                            ToolStripMenuItem regitem = (ToolStripMenuItem)XMLToolStripItem.DropDownItems[b];
+                                            regitem.DropDownItems.Add("Latest Version");
+                                            for (int y = 0; y < versions.Length; y++)
+                                            {
+                                                regitem.DropDownItems.Add("v" + versions[y]);
+                                            }
+                                            // TODO : wat...
+                                            regitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(wwitem_regionclicked);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    XMLToolStripItem.DropDownItems.Add("Latest Version");
+                                    if (ChildrenOfTheNode[z].InnerText != "")
+                                    {
+                                        for (int y = 0; y < versions.Length; y++)
+                                        {
+                                            XMLToolStripItem.DropDownItems.Add("v" + versions[y]);
+                                        }
                                     }
                                 }
                                 break;
@@ -1717,6 +1736,7 @@ namespace NUS_Downloader
         void sysitem_versionclicked(object sender, ToolStripItemClickedEventArgs e)
         {
             titleidbox.Text = e.ClickedItem.OwnerItem.Text.Substring(0, 16);
+            
             if (e.ClickedItem.Text != "Latest Version")
             {
                 if (e.ClickedItem.Text.Contains("v"))
@@ -1753,7 +1773,7 @@ namespace NUS_Downloader
             {
                 ignoreticket.Checked = false;
             }
-
+            
             // Change WAD name if packed is already checked...
             if (packbox.Checked)
             {
@@ -1770,6 +1790,11 @@ namespace NUS_Downloader
             {
                 WriteStatus("\n" + e.ClickedItem.OwnerItem.ToolTipText);
             }
+
+            // DEBUG:
+            //WriteStatus("item text: " + e.ClickedItem.Text);
+            //WriteStatus("Owner of item: " + e.ClickedItem.OwnerItem.Text);
+            //WriteStatus("Owner of Owner of item: " + e.ClickedItem.OwnerItem.OwnerItem.Text);
         }
 
         void HandleMismatch(int contentsize, int actualsize)
@@ -1778,7 +1803,7 @@ namespace NUS_Downloader
             {
                 if ((contentsize - actualsize) > 16)
                 {
-                    statusbox.Text += " (BAD Mismatch)";
+                    statusbox.Text += " (BAD Mismatch) (Dif: " + (contentsize - actualsize);
                 }
                 else
                 {
@@ -2455,10 +2480,10 @@ namespace NUS_Downloader
 
                     contents[c].Size = new byte[8];
                     // TODOCHECK THIS OVER
-                    contents[c].Size = InttoByteArray(contentbytes.Length, 8);
+                    contents[c].Size = NewIntegertoByteArray(contentbytes.Length, 8);
                     
                     contents[c].Index = new byte[2];
-                    contents[c].Index = InttoByteArray(c, 2);
+                    contents[c].Index = NewIntegertoByteArray(c, 2);
 
                     contents[c].Type = new byte[2];
                     contents[c].Type[1] = 0x01;
@@ -2606,7 +2631,7 @@ namespace NUS_Downloader
                 }
 
             }
-                // Write all this stuff to the TMD...
+                // Collect everything into a single byte[]...
                 byte[] contentSection = new byte[contents.Length * 36];
                 for (int h = 0; h < contents.Length; h++)
                 {
@@ -2645,6 +2670,7 @@ namespace NUS_Downloader
                 tmd = ZeroSignature(tmd);
                 tmd = TruchaSign(tmd);
 
+                // Write all this stuff to the TMD...
                 FileStream testtmd = new FileStream(fileinfo[0] + fileinfo[1], FileMode.Open);
                 testtmd.Write(tmd, 0, tmd.Length);
                 testtmd.Close();
@@ -2735,6 +2761,122 @@ namespace NUS_Downloader
             // DEBUG
             //WriteStatus(" - Int->Byte[]: " + DisplayBytes(resultArray, " "));
             return resultArray;
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            // add trucha bug to content...
+            if (contentsEdit.SelectedIndex < 0)
+                return;
+
+            WriteStatus("Attempting to add 'bugs' back into content...");
+            string[] fileinfo = shamelessvariablelabel.Text.Split(',');
+            byte[] new_hash_check = new byte[] {0x20, 0x07, 0x4B, 0x0B};
+            byte[] old_hash_check = new byte[] {0x20, 0x07, 0x23, 0xA2};
+
+            // If decrypted...
+            //   - check right away for bug...
+            //   - add bug, then end...
+            // if encrypted...
+            //   - decrypt content...
+            //   - find bug/patch...
+            //   - recalculate hash...
+            //   - write back into TMD...
+            //   - trucha sign content...
+
+            if (contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Contains(".app"))
+            {
+                // Content is decrypted/new to the title...
+                string filename = contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Substring(contentsEdit.Items[contentsEdit.SelectedIndex].ToString().IndexOf("] [") + 3, 12);
+                byte[] contentbt = FileLocationToByteArray(fileinfo[0] + filename);
+
+                int[] oldresults = ByteArrayContainsByteArray(contentbt, old_hash_check);
+                int[] newresults = ByteArrayContainsByteArray(contentbt, new_hash_check);
+
+                if (oldresults[0] != 0)
+                {
+                    WriteStatus(String.Format(" - {0} Old-school ES Signing Fix(es) Found...", oldresults[0]));
+                    for (int s = 1; s < oldresults.Length - 1; s++)
+                    {
+                        PatchTrucha(contentbt, oldresults[s]);
+                        WriteStatus(String.Format(" - Bug restored at 0x{0}", int.Parse(oldresults[s].ToString(), System.Globalization.NumberStyles.HexNumber)));
+                    }
+                }
+
+                if (newresults[0] != 0)
+                {
+                    WriteStatus(String.Format(" - {0} New-school ES Signing Fix(es) Found...", newresults[0]));
+                    for (int s = 1; s < newresults.Length - 1; s++)
+                    {
+                        PatchTrucha(contentbt, newresults[s]);
+                        WriteStatus(String.Format("  + Bug restored at 0x{0}.", int.Parse(newresults[s].ToString(), System.Globalization.NumberStyles.HexNumber)));
+                    }
+                }
+            }
+            else
+            { 
+                // Content is part of original TMD and must be decrypted...
+                string filename = contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Substring(contentsEdit.Items[contentsEdit.SelectedIndex].ToString().IndexOf("] [") + 3, 8);
+
+                byte[] ticket = FileLocationToByteArray(fileinfo[0] + "cetk");
+                byte[] etitlekey = new byte[16];
+                for (int a = 0; a < 16; a++)
+                {
+                    etitlekey[a] = ticket[0x1BF + a];
+                }
+
+                // TODO: Add more key support
+                byte[] commonkey = LoadCommonKey(@"\key.bin");
+
+                // IV (TITLEID00000000)
+                byte[] iv = new byte[16];
+                for (int b = 0; b < 8; b++)
+                {
+                    iv[b] = ticket[0x1DC + b];
+                }
+                for (int c = 0; c < 8; c++)
+                {
+                    iv[c + 8] = 0x00;
+                }
+
+                initCrypt(iv, commonkey);
+                byte[] dtitlekey = Decrypt(etitlekey);
+            }
+
+            
+
+        }
+
+        private int[] ByteArrayContainsByteArray(byte[] bigboy, byte[] littleman)
+        { 
+            // bigboy.Contains(littleman);
+            // returns offset          { cnt , ofst };
+            int[] offset = new int[5];
+            for (int a = 0; a < (bigboy.Length - littleman.Length); a++)
+            {
+                int matches = 0;
+                for (int b = 0; b < littleman.Length; b++)
+                {
+                    if (bigboy[a + b] == littleman[b])
+                        matches += 1;
+                }
+                if (matches == littleman.Length)
+                {
+                    offset[offset[0] + 1] = a;
+                    offset[0] += 1;
+                }
+            }
+
+            return offset;
+        }
+
+        private byte[] PatchTrucha(byte[] content, int offset)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                content[offset + i] = 0;
+            }
+            return content;
         }
     }
 }
