@@ -2315,14 +2315,43 @@ namespace NUS_Downloader
             if (contentsEdit.SelectedIndex <= 0)
                 return;
 
-            int sel_idx = contentsEdit.SelectedIndex;
+            int sel_index = contentsEdit.SelectedIndex;
+            object sel_item = contentsEdit.SelectedItem;
+
+            contentsEdit.Items.RemoveAt(sel_index);
+            contentsEdit.Items.Insert(sel_index - 1, sel_item);
+
+            string sel_itm = contentsEdit.Items[sel_index].ToString();
+            string other_itm = contentsEdit.Items[sel_index - 1].ToString();
+
+            sel_itm = sel_itm.Replace("[", ""); sel_itm = sel_itm.Replace("]", "");
+            other_itm = other_itm.Replace("[", ""); other_itm = other_itm.Replace("]", "");
+
+            string[] selarray = sel_itm.Split(' ');
+            string[] otherary = other_itm.Split(' ');
+
+            contentsEdit.Items[sel_index] = String.Format("[{0}]", sel_index);
+            contentsEdit.Items[sel_index - 1] = String.Format("[{0}]", sel_index - 1);
+
+            for (int a = 0; a < selarray.Length; a++)
+            {
+                if (a != 0)
+                    contentsEdit.Items[sel_index] += String.Format(" [{0}]", selarray[a]);
+            }
+
+            for (int b = 0; b < otherary.Length; b++)
+            {
+                if (b != 0)
+                    contentsEdit.Items[sel_index - 1] += String.Format(" [{0}]", otherary[b]);
+            }
+            /*int sel_idx = contentsEdit.SelectedIndex;
             string sel_item = contentsEdit.Items[sel_idx].ToString();
             string lower_item = contentsEdit.Items[sel_idx - 1].ToString();
 
-            contentsEdit.Items[sel_idx] = String.Format("[{0}]{1}", sel_idx, lower_item.Substring(3, lower_item.Length - 3));
-            contentsEdit.Items[sel_idx - 1] = String.Format("[{0}]{1}", sel_idx - 1, sel_item.Substring(3, sel_item.Length - 3));
-
-            contentsEdit.SelectedIndex = sel_idx - 1;
+            contentsEdit.Items[sel_idx] = String.Format("[{0}]{1}", sel_idx, lower_item.Substring(contentsEdit.SelectedItem.ToString().IndexOf(" ["), lower_item.Length - contentsEdit.SelectedItem.ToString().IndexOf(" [")));
+            contentsEdit.Items[sel_idx - 1] = String.Format("[{0}]{1}", sel_idx - 1, sel_item.Substring(contentsEdit.SelectedItem.ToString().IndexOf(" ["), sel_item.Length - contentsEdit.SelectedItem.ToString().IndexOf(" [")));
+            */
+            contentsEdit.SelectedIndex = sel_index - 1;
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -2331,19 +2360,58 @@ namespace NUS_Downloader
             if (contentsEdit.SelectedIndex >= contentsEdit.Items.Count - 1)
                 return;
 
-            int sel_idx = contentsEdit.SelectedIndex;
+            int sel_index = contentsEdit.SelectedIndex;
+            object sel_item = contentsEdit.SelectedItem;
+
+            contentsEdit.Items.RemoveAt(sel_index);
+            contentsEdit.Items.Insert(sel_index + 1, sel_item);
+
+            string sel_itm = contentsEdit.Items[sel_index].ToString();
+            string other_itm = contentsEdit.Items[sel_index + 1].ToString();
+
+            sel_itm = sel_itm.Replace("[", ""); sel_itm = sel_itm.Replace("]", "");
+            other_itm = other_itm.Replace("[", ""); other_itm = other_itm.Replace("]", "");
+
+            string[] selarray = sel_itm.Split(' ');
+            string[] otherary = other_itm.Split(' ');
+
+            contentsEdit.Items[sel_index] = String.Format("[{0}]", sel_index);
+            contentsEdit.Items[sel_index + 1] = String.Format("[{0}]", sel_index + 1);
+
+            for (int a = 0; a < selarray.Length; a++)
+            {
+                if (a != 0)
+                    contentsEdit.Items[sel_index] += String.Format(" [{0}]", selarray[a]);
+            }
+
+            for (int b = 0; b < otherary.Length; b++)
+            {
+                if (b != 0)
+                    contentsEdit.Items[sel_index + 1] += String.Format(" [{0}]", otherary[b]);
+            }
+
+            /*int sel_idx = contentsEdit.SelectedIndex;
             string sel_item = contentsEdit.Items[sel_idx].ToString();
             string upper_item = contentsEdit.Items[sel_idx + 1].ToString();
 
-            contentsEdit.Items[sel_idx] = String.Format("[{0}]{1}", sel_idx, upper_item.Substring(3, upper_item.Length - 3));
-            contentsEdit.Items[sel_idx + 1] = String.Format("[{0}]{1}", sel_idx + 1, sel_item.Substring(3, sel_item.Length - 3));
-
-            contentsEdit.SelectedIndex = sel_idx + 1;
+            contentsEdit.Items[sel_idx] = String.Format("[{0}]{1}", sel_idx, upper_item.Substring(contentsEdit.SelectedItem.ToString().IndexOf(" ["), upper_item.Length - contentsEdit.SelectedItem.ToString().IndexOf(" [")));
+            contentsEdit.Items[sel_idx + 1] = String.Format("[{0}]{1}", sel_idx + 1, sel_item.Substring(contentsEdit.SelectedItem.ToString().IndexOf(" ["), sel_item.Length - contentsEdit.SelectedItem.ToString().IndexOf(" [")));
+            */
+            contentsEdit.SelectedIndex = sel_index + 1;
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
             // Set a new boot index...
+
+            // Handle help info first...
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                WriteStatus("[HELP INFO] Select a content, and press this to make it the 'boot' content. The boot content is the" +
+                    " DOL file which is ran when the channel is started.");
+                return;
+            }
+
             if (contentsEdit.SelectedIndex < 0)
                 return;
 
@@ -2359,12 +2427,27 @@ namespace NUS_Downloader
         private void button11_Click(object sender, EventArgs e)
         {
             // Add a file to the contents...
+
+            // Handle help info first...
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                WriteStatus("[HELP INFO] This button will allow you to add a content to the title. You can browse " +
+                    "and select an .app file (a decrypted content) to insert into the contents list.");
+                return;
+            }
+
             OpenFileDialog opencont = new OpenFileDialog();
             opencont.Filter = "Decrypted Contents|*.app|All Files|*";
             opencont.Multiselect = false;
             opencont.Title = "Locate a Content";
             if (opencont.ShowDialog() != DialogResult.Cancel)
             {
+                // OK WE MUST PREVENT:
+                // - NON HEX NAMING
+                // - FILE EXISTING WITH THE SAME NAME && THAT FILE != NEW FILE
+                // - 
+
+
                 if ((OnlyHexInString(opencont.SafeFileName.Substring(0,8)) == false))
                 {
                     MessageBox.Show("Please locate/rename a file to be (8 HEX CHARACTERS) long + (.app) extention!", "Bad!", MessageBoxButtons.OK);
@@ -2406,6 +2489,15 @@ namespace NUS_Downloader
         private void button10_Click(object sender, EventArgs e)
         {
             // Remove a content from the list...
+
+            // Handle help info first...
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                WriteStatus("[HELP INFO] This button will allow you to remove a content from the title. Be careful, " + 
+                    "as most contents are necessary for proper channel usage!");
+                return;
+            }
+
             if ((contentsEdit.SelectedIndex < 0) || (contentsEdit.Items.Count <= 1))
                 return;
 
@@ -2417,6 +2509,8 @@ namespace NUS_Downloader
 
             if (question != DialogResult.Cancel)
                 contentsEdit.Items.RemoveAt(contentsEdit.SelectedIndex);
+
+            RecalculateIndices();
         }
 
         private void button14_Click(object sender, EventArgs e)
@@ -2462,7 +2556,7 @@ namespace NUS_Downloader
                 if (itemstr.Contains(".app"))
                 {
                     // This is already decrypted, we're going to add it to the TMD...
-                    string filename = itemstr.Substring(5, 12);
+                    string filename = itemstr.Substring(itemstr.IndexOf("] [") + 3, 12);
                     byte[] contentbytes = FileLocationToByteArray(fileinfo[0] + filename);
                     WriteStatus(filename + " is a decrypted file...");
                     WriteStatus(" - Encrypting " + filename + "...");
@@ -2515,7 +2609,7 @@ namespace NUS_Downloader
                 else
                 { 
                     // An encrypted content...it was from the original TMD
-                    string filename = itemstr.Substring(5, 8);
+                    string filename = itemstr.Substring(itemstr.IndexOf("] [") + 3, 8);
                     byte[] contentbytes = FileLocationToByteArray(fileinfo[0] + filename);
                     WriteStatus(filename + " is encrypted and from the original TMD...");
                     WriteStatus(" - Gathering " + filename + " information...");
@@ -2719,6 +2813,14 @@ namespace NUS_Downloader
         private void button13_Click(object sender, EventArgs e)
         {
             // Share/Unshare Contents in the list...
+
+            // Handle help info first...
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                WriteStatus("[HELP INFO] Toggles the shared state of the content.");
+                return;
+            }
+
             if (contentsEdit.SelectedIndex < 0)
                 return;
 
@@ -2766,6 +2868,14 @@ namespace NUS_Downloader
         private void button16_Click(object sender, EventArgs e)
         {
             // add trucha bug to content...
+
+            // Handle help info first...
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                WriteStatus("[HELP INFO] Inserts the trucha bug into the selected content, if the bug was fixed previously.");
+                return;
+            }
+
             if (contentsEdit.SelectedIndex < 0)
                 return;
 
@@ -2877,6 +2987,22 @@ namespace NUS_Downloader
                 content[offset + i] = 0;
             }
             return content;
+        }
+
+        private void RecalculateIndices()
+        {
+            for (int a = 0; a < contentsEdit.Items.Count; a++)
+            {
+                string item = contentsEdit.Items[a].ToString();
+                item = item.Replace("[", ""); item = item.Replace("]", "");
+                string[] itemparts = item.Split(' ');
+                contentsEdit.Items[a] = String.Format("[{0}]", a);
+                for (int b = 0; b < itemparts.Length; b++)
+                {
+                    if (b != 0)
+                        contentsEdit.Items[a] += String.Format(" [{0}]", itemparts[b]);
+                }
+            }
         }
     }
 }
