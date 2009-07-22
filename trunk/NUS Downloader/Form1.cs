@@ -340,12 +340,21 @@ namespace NUS_Downloader
             return nbr_cont;
         }
 
-        private int BootIndex(byte[] tmd)
+        private int GetBootIndex(byte[] tmd)
         {
             // nbr_cont (0xE0) len=0x02
             int bootidx = 0;
             bootidx = (tmd[0x1E0] * 256) + tmd[0x1E1];
             return bootidx;
+        }
+
+        private byte[] SetBootIndex(byte[] tmd, int bootindex)
+        {
+            // nbr_cont (0xE0) len=0x02
+            byte[] bootbytes = NewIntegertoByteArray(bootindex, 2);
+            tmd[0x1E0] = bootbytes[0];
+            tmd[0x1E1] = bootbytes[1];
+            return tmd;
         }
 
         private void WriteStatus(string Update)
@@ -2553,6 +2562,11 @@ namespace NUS_Downloader
             {
                 string itemstr = contentsEdit.Items[c].ToString();
                 contents[c] = new TitleContent();
+                // Set boot index...
+                if (itemstr.Contains(" [BOOT]"))
+                {
+                    tmd = SetBootIndex(tmd, c);
+                }
                 if (itemstr.Contains(".app"))
                 {
                     // This is already decrypted, we're going to add it to the TMD...
@@ -2725,50 +2739,51 @@ namespace NUS_Downloader
                 }
 
             }
-                // Collect everything into a single byte[]...
-                byte[] contentSection = new byte[contents.Length * 36];
-                for (int h = 0; h < contents.Length; h++)
+   
+            // Collect everything into a single byte[]...
+            byte[] contentSection = new byte[contents.Length * 36];
+            for (int h = 0; h < contents.Length; h++)
+            {
+                for (int i = 0; i < contents[h].ContentID.Length; i++)
                 {
-                    for (int i = 0; i < contents[h].ContentID.Length; i++)
-                    {
-                        contentSection[(h * 36) + i] = contents[h].ContentID[i];
-                    }
-
-                    for (int j = 0; j < contents[h].Index.Length; j++)
-                    {
-                        contentSection[(h * 36) + (contents[h].ContentID.Length + j)] = contents[h].Index[j];
-                    }
-
-                    for (int k = 0; k < contents[h].Type.Length; k++)
-                    {
-                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + k)] = contents[h].Type[k];
-                    }
-
-                    for (int l = 0; l < contents[h].Size.Length; l++)
-                    {
-                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + l)] = contents[h].Size[l];
-                    }
-
-                    for (int m = 0; m < contents[h].SHAHash.Length; m++)
-                    {
-                        contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + contents[h].Size.Length + m)] = contents[h].SHAHash[m];
-                    }
+                    contentSection[(h * 36) + i] = contents[h].ContentID[i];
                 }
 
-                for (int n = 0; n < contentSection.Length; n++)
+                for (int j = 0; j < contents[h].Index.Length; j++)
                 {
-                    tmd[0x1E4 + n] = contentSection[n];
+                    contentSection[(h * 36) + (contents[h].ContentID.Length + j)] = contents[h].Index[j];
                 }
 
-                // Fakesign the TMD again...
-                tmd = ZeroSignature(tmd);
-                tmd = TruchaSign(tmd);
+                for (int k = 0; k < contents[h].Type.Length; k++)
+                {
+                    contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + k)] = contents[h].Type[k];
+                }
 
-                // Write all this stuff to the TMD...
-                FileStream testtmd = new FileStream(fileinfo[0] + fileinfo[1], FileMode.Open);
-                testtmd.Write(tmd, 0, tmd.Length);
-                testtmd.Close();
-            
+                for (int l = 0; l < contents[h].Size.Length; l++)
+                {
+                    contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + l)] = contents[h].Size[l];
+                }
+
+                for (int m = 0; m < contents[h].SHAHash.Length; m++)
+                {
+                    contentSection[(h * 36) + (contents[h].ContentID.Length + contents[h].Index.Length + contents[h].Type.Length + contents[h].Size.Length + m)] = contents[h].SHAHash[m];
+                }
+            }
+
+            for (int n = 0; n < contentSection.Length; n++)
+            {
+                tmd[0x1E4 + n] = contentSection[n];
+            }
+
+            // Fakesign the TMD again...
+            tmd = ZeroSignature(tmd);
+            tmd = TruchaSign(tmd);
+
+            // Write all this stuff to the TMD...
+            FileStream testtmd = new FileStream(fileinfo[0] + fileinfo[1], FileMode.Open);
+            testtmd.Write(tmd, 0, tmd.Length);
+            testtmd.Close();
+        
         }
 
         /* Pad Byte[] to specific alignment...
