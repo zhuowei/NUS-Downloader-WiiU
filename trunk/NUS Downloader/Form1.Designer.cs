@@ -174,6 +174,7 @@
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.dlprogress.TabIndex = 7;
+            this.dlprogress.Click += new System.EventHandler(this.dlprogress_Click);
             // 
             // localuse
             // 
@@ -418,12 +419,14 @@
             // truchabox
             // 
             this.truchabox.AutoSize = true;
+            this.truchabox.Enabled = false;
             this.truchabox.Location = new System.Drawing.Point(184, 468);
             this.truchabox.Name = "truchabox";
             this.truchabox.Size = new System.Drawing.Size(60, 17);
             this.truchabox.TabIndex = 21;
             this.truchabox.Text = "Trucha";
             this.truchabox.UseVisualStyleBackColor = true;
+            this.truchabox.Visible = false;
             // 
             // tmdgpbox
             // 
@@ -513,7 +516,7 @@
             this.ticketgpbox.Controls.Add(this.label6);
             this.ticketgpbox.Location = new System.Drawing.Point(278, 127);
             this.ticketgpbox.Name = "ticketgpbox";
-            this.ticketgpbox.Size = new System.Drawing.Size(249, 125);
+            this.ticketgpbox.Size = new System.Drawing.Size(249, 180);
             this.ticketgpbox.TabIndex = 23;
             this.ticketgpbox.TabStop = false;
             this.ticketgpbox.Text = "Fake (Trucha) Ticket Signing...";
@@ -599,34 +602,31 @@
             // titleIDIV
             // 
             this.titleIDIV.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.titleIDIV.Location = new System.Drawing.Point(64, 145);
+            this.titleIDIV.Location = new System.Drawing.Point(95, 151);
             this.titleIDIV.MaxLength = 16;
             this.titleIDIV.Name = "titleIDIV";
-            this.titleIDIV.Size = new System.Drawing.Size(149, 20);
+            this.titleIDIV.Size = new System.Drawing.Size(148, 20);
             this.titleIDIV.TabIndex = 7;
             this.titleIDIV.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titleIDIV.Visible = false;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 152);
+            this.label7.Location = new System.Drawing.Point(7, 153);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(65, 13);
             this.label7.TabIndex = 6;
             this.label7.Text = "Title ID / IV:";
-            this.label7.Visible = false;
             // 
             // titlekeybox
             // 
             this.titlekeybox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.titlekeybox.Location = new System.Drawing.Point(64, 125);
+            this.titlekeybox.Location = new System.Drawing.Point(95, 125);
             this.titlekeybox.MaxLength = 16;
             this.titlekeybox.Name = "titlekeybox";
-            this.titlekeybox.Size = new System.Drawing.Size(149, 20);
+            this.titlekeybox.Size = new System.Drawing.Size(148, 20);
             this.titlekeybox.TabIndex = 5;
             this.titlekeybox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titlekeybox.Visible = false;
             // 
             // label6
             // 
@@ -636,7 +636,6 @@
             this.label6.Size = new System.Drawing.Size(51, 13);
             this.label6.TabIndex = 4;
             this.label6.Text = "Title Key:";
-            this.label6.Visible = false;
             // 
             // button1
             // 
@@ -652,7 +651,7 @@
             // button4
             // 
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button4.Location = new System.Drawing.Point(350, 258);
+            this.button4.Location = new System.Drawing.Point(350, 313);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(177, 26);
             this.button4.TabIndex = 25;
@@ -663,7 +662,7 @@
             // button5
             // 
             this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button5.Location = new System.Drawing.Point(278, 258);
+            this.button5.Location = new System.Drawing.Point(278, 313);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(66, 26);
             this.button5.TabIndex = 26;
@@ -686,9 +685,9 @@
             // 
             this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(278, 322);
+            this.button7.Location = new System.Drawing.Point(278, 377);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(249, 27);
+            this.button7.Size = new System.Drawing.Size(249, 33);
             this.button7.TabIndex = 28;
             this.button7.Text = "Finished with Trucha Changes...";
             this.button7.UseVisualStyleBackColor = true;
@@ -735,9 +734,9 @@
             this.contentModBox.Controls.Add(this.button11);
             this.contentModBox.Controls.Add(this.button9);
             this.contentModBox.Controls.Add(this.button10);
-            this.contentModBox.Location = new System.Drawing.Point(268, 208);
+            this.contentModBox.Location = new System.Drawing.Point(299, 433);
             this.contentModBox.Name = "contentModBox";
-            this.contentModBox.Size = new System.Drawing.Size(249, 272);
+            this.contentModBox.Size = new System.Drawing.Size(249, 327);
             this.contentModBox.TabIndex = 41;
             this.contentModBox.TabStop = false;
             this.contentModBox.Text = "Edit Title Contents";
@@ -770,7 +769,7 @@
             this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button15.Location = new System.Drawing.Point(9, 235);
             this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(70, 26);
+            this.button15.Size = new System.Drawing.Size(230, 26);
             this.button15.TabIndex = 42;
             this.button15.Text = "Revert";
             this.button15.UseVisualStyleBackColor = true;
@@ -779,9 +778,9 @@
             // button14
             // 
             this.button14.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button14.Location = new System.Drawing.Point(85, 235);
+            this.button14.Location = new System.Drawing.Point(9, 268);
             this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(158, 26);
+            this.button14.Size = new System.Drawing.Size(230, 50);
             this.button14.TabIndex = 41;
             this.button14.Text = "Overwrite Title Contents...";
             this.button14.UseVisualStyleBackColor = true;
@@ -869,11 +868,11 @@
             // button17
             // 
             this.button17.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button17.Location = new System.Drawing.Point(278, 290);
+            this.button17.Location = new System.Drawing.Point(278, 345);
             this.button17.Name = "button17";
             this.button17.Size = new System.Drawing.Size(249, 26);
             this.button17.TabIndex = 42;
-            this.button17.Text = "Modify Individual Titles...";
+            this.button17.Text = "Modify Individual Contents...";
             this.button17.UseVisualStyleBackColor = true;
             this.button17.Click += new System.EventHandler(this.button17_Click);
             // 
@@ -883,21 +882,21 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 492);
             this.Controls.Add(this.contentModBox);
-            this.Controls.Add(this.button17);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.shamelessvariablelabel);
             this.Controls.Add(this.button1);
+            this.Controls.Add(this.button17);
             this.Controls.Add(this.ticketgpbox);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button4);
             this.Controls.Add(this.tmdgpbox);
             this.Controls.Add(this.truchabox);
             this.Controls.Add(this.databaseButton);
+            this.Controls.Add(this.button5);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.decryptbox);
-            this.Controls.Add(this.button7);
             this.Controls.Add(this.ignoreticket);
             this.Controls.Add(this.wadnamebox);
             this.Controls.Add(this.getcerts);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.titleversion);
             this.Controls.Add(this.button2);
