@@ -153,7 +153,7 @@ namespace NUS_Downloader
         {
             this.Text = "NUSD - " + version + " - WB3000";
             this.Size = this.MinimumSize;
-
+            
             
         }
 
@@ -652,7 +652,7 @@ namespace NUS_Downloader
             bool wiimode = radioButton1.Checked;
             
             // Set UserAgent to Wii value
-            generalWC.Headers.Add("User-Agent", "Opera/9.30 (Nintendo Wii; U; ; 2071; Wii Shop Channel/16.0(A); en)");
+            generalWC.Headers.Add("User-Agent", "wii libnup/1.0");
 
             // Get placement directory early...
             string titledirectory;
@@ -1590,7 +1590,7 @@ namespace NUS_Downloader
                                                 regitem.DropDownItems.Add("v" + versions[y]);
                                             }
                                             // TODO : wat...
-                                            regitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(wwitem_regionclicked);
+                                            regitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(deepitem_clicked);
                                         }
                                     }
                                 }
@@ -1701,6 +1701,65 @@ namespace NUS_Downloader
             }
         }
 
+        void deepitem_clicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            // DEBUG:
+            //WriteStatus("item text: " + e.ClickedItem.Text);  VERSION
+            //WriteStatus("Owner of item: " + e.ClickedItem.OwnerItem.Text);  REGION
+            //WriteStatus("Owner of Owner of item: " + e.ClickedItem.OwnerItem.OwnerItem.Text);  TITLE ID
+
+            titleidbox.Text = e.ClickedItem.OwnerItem.OwnerItem.Text.Substring(0, 16);
+            titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.OwnerItem.Text.Substring(0, 2));
+
+            if (e.ClickedItem.Text != "Latest Version")
+            {
+                if (e.ClickedItem.Text.Contains("v"))
+                {
+                    if (e.ClickedItem.Text.Contains(" "))
+                        titleversion.Text = e.ClickedItem.Text.Substring(1, e.ClickedItem.Text.IndexOf(' ') - 1);
+                    else
+                        titleversion.Text = e.ClickedItem.Text.Substring(1, e.ClickedItem.Text.Length - 1);
+                }
+            }
+            else
+            {
+                titleversion.Text = "";
+            }
+
+            // Prepare StatusBox...
+            string titlename = e.ClickedItem.OwnerItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.OwnerItem.Text.Length - 19));
+            statusbox.Text = " --- " + titlename + " ---";
+
+            // Check if a ticket is present...
+            if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.OwnerItem.Image) == (redorange))
+            {
+                ignoreticket.Checked = true;
+                WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
+                packbox.Checked = false;
+                decryptbox.Checked = false;
+            }
+            else
+            {
+                ignoreticket.Checked = false;
+            }
+
+            // Change WAD name if packed is already checked...
+            if (packbox.Checked)
+            {
+                if (titlename.Contains("IOS"))
+                    wadnamebox.Text = titlename + "-64-[v].wad";
+                else
+                    wadnamebox.Text = titlename + "-NUS-[v].wad";
+                if (titleversion.Text != "")
+                    wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
+            }
+
+            // Check for danger item
+            if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (redgreen) || (e.ClickedItem.OwnerItem.OwnerItem.Image) == (redorange))
+            {
+                WriteStatus("\r\n" + e.ClickedItem.OwnerItem.OwnerItem.ToolTipText);
+            }
+        }
         void wwitem_regionclicked(object sender, ToolStripItemClickedEventArgs e)
         {
             titleidbox.Text = e.ClickedItem.OwnerItem.Text.Substring(0, 16);
@@ -2088,6 +2147,7 @@ namespace NUS_Downloader
             Array.Resize(ref cetkbuff, 0x2A4);
 
             // TODO: Title Key and IV changes!
+            WriteStatus("Title Key / IV are not available to change in this release :(");
 
             // Write DLC Amount.
             byte[] dlcamount = new byte[2];
@@ -2297,7 +2357,7 @@ namespace NUS_Downloader
 
             // # of Contents and BootIndex
             int nbr_cont = ContentCount(tmd);
-            int boot_idx = BootIndex(tmd);
+            int boot_idx = GetBootIndex(tmd);
 
             string[] tmdcontents = GetContentNames(tmd, nbr_cont);
             byte[] tmdindices = GetContentIndices(tmd, nbr_cont);
@@ -2820,9 +2880,20 @@ namespace NUS_Downloader
         private void button17_Click(object sender, EventArgs e)
         {
             // Move groupbox to display title modder...
-            contentModBox.Location = new Point(278, 12);
-            contentModBox.Visible = true;
-            contentModBox.BringToFront();
+            if (button17.Text == "Modify Individual Contents...")
+            {
+                contentModBox.Location = new Point(278, 12);
+                contentModBox.Visible = true;
+                contentModBox.BringToFront();
+                button17.Text = "Trucha Sign Title...";
+            }
+            else if (button17.Text == "Trucha Sign Title...")
+            {
+                //contentModBox.Location = new Point(300, 300);
+                contentModBox.Visible = false;
+                contentModBox.SendToBack();
+                button17.Text = "Modify Individual Contents...";
+            }
         }
 
         private void button13_Click(object sender, EventArgs e)
@@ -2940,7 +3011,7 @@ namespace NUS_Downloader
             }
             else
             { 
-                // Content is part of original TMD and must be decrypted...
+                /* Content is part of original TMD and must be decrypted...
                 string filename = contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Substring(contentsEdit.Items[contentsEdit.SelectedIndex].ToString().IndexOf("] [") + 3, 8);
 
                 byte[] ticket = FileLocationToByteArray(fileinfo[0] + "cetk");
@@ -2965,7 +3036,9 @@ namespace NUS_Downloader
                 }
 
                 initCrypt(iv, commonkey);
-                byte[] dtitlekey = Decrypt(etitlekey);
+                byte[] dtitlekey = Decrypt(etitlekey); TODO ADD THIS SUPPORT */
+
+                MessageBox.Show("Currently you can only add the bug to decrypted contents. Sorry!");
             }
 
             
@@ -3018,6 +3091,13 @@ namespace NUS_Downloader
                         contentsEdit.Items[a] += String.Format(" [{0}]", itemparts[b]);
                 }
             }
+        }
+
+        private void dlprogress_Click(object sender, EventArgs e)
+        {
+            // Enable BETA stuff?
+            truchabox.Enabled = !(truchabox.Enabled);
+            truchabox.Visible = !(truchabox.Visible);
         }
     }
 }
