@@ -734,7 +734,7 @@
             this.contentModBox.Controls.Add(this.button11);
             this.contentModBox.Controls.Add(this.button9);
             this.contentModBox.Controls.Add(this.button10);
-            this.contentModBox.Location = new System.Drawing.Point(299, 433);
+            this.contentModBox.Location = new System.Drawing.Point(287, 435);
             this.contentModBox.Name = "contentModBox";
             this.contentModBox.Size = new System.Drawing.Size(249, 327);
             this.contentModBox.TabIndex = 41;
@@ -881,9 +881,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 492);
-            this.Controls.Add(this.contentModBox);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.shamelessvariablelabel);
+            this.Controls.Add(this.contentModBox);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button17);
             this.Controls.Add(this.ticketgpbox);
