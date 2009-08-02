@@ -2584,6 +2584,11 @@ namespace NUS_Downloader
 
         private void button14_Click(object sender, EventArgs e)
         {
+            UpdateTMDContents();
+        }
+
+        private void UpdateTMDContents()
+        {
             // Write changes to TMD of contents...
             WriteStatus("Updating TMD with content information...");
             string[] fileinfo = shamelessvariablelabel.Text.Split(',');
@@ -2601,13 +2606,13 @@ namespace NUS_Downloader
             // IV (TITLEID00000000)
             byte[] iv = new byte[16];
             for (int b = 0; b < 8; b++)
-		    {
+            {
                 iv[b] = ticket[0x1DC + b];
-		    }
+            }
             for (int c = 0; c < 8; c++)
-		    {
-                iv[c+8] = 0x00;
-		    }
+            {
+                iv[c + 8] = 0x00;
+            }
 
             initCrypt(iv, commonkey);
             byte[] dtitlekey = Decrypt(etitlekey);
@@ -2649,7 +2654,7 @@ namespace NUS_Downloader
                     contents[c].Size = new byte[8];
                     // TODOCHECK THIS OVER
                     contents[c].Size = NewIntegertoByteArray(contentbytes.Length, 8);
-                    
+
                     contents[c].Index = new byte[2];
                     contents[c].Index = NewIntegertoByteArray(c, 2);
 
@@ -2681,7 +2686,7 @@ namespace NUS_Downloader
                     WriteStatus(" - " + filename.Substring(0, 8) + " written!");
                 }
                 else
-                { 
+                {
                     // An encrypted content...it was from the original TMD
                     string filename = itemstr.Substring(itemstr.IndexOf("] [") + 3, 8);
                     byte[] contentbytes = FileLocationToByteArray(fileinfo[0] + filename);
@@ -2768,7 +2773,7 @@ namespace NUS_Downloader
                         WriteStatus(" - Encrypted Content Again!");
                     }
                     else
-                    { 
+                    {
                         // Hopefully this content has not been touched...
                         WriteStatus(" - Content has not changed Index.");
                         byte[] hash = new byte[20];
@@ -2786,20 +2791,20 @@ namespace NUS_Downloader
                     contents[c].ContentID[1] = byte.Parse(filename.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
                     contents[c].ContentID[2] = byte.Parse(filename.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
                     contents[c].ContentID[3] = byte.Parse(filename.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
-                    
+
                     contents[c].Index = new byte[2];
                     contents[c].Index = NewIntegertoByteArray(c, 2);
-                    
+
                     contents[c].Type = new byte[2];
                     contents[c].Type[1] = 0x01;
                     if (contentsEdit.Items[c].ToString().Contains(" [S]"))
                         contents[c].Type[0] = 0x80;
                     else
-                        contents[c].Type[0] = 0x00;                    
+                        contents[c].Type[0] = 0x00;
                 }
 
             }
-   
+
             // Collect everything into a single byte[]...
             byte[] contentSection = new byte[contents.Length * 36];
             for (int h = 0; h < contents.Length; h++)
@@ -2843,7 +2848,6 @@ namespace NUS_Downloader
             FileStream testtmd = new FileStream(fileinfo[0] + fileinfo[1], FileMode.Open);
             testtmd.Write(tmd, 0, tmd.Length);
             testtmd.Close();
-        
         }
 
         /* Pad Byte[] to specific alignment...
@@ -2998,7 +3002,7 @@ namespace NUS_Downloader
                         WriteStatus(String.Format(" - Bug restored at 0x{0}", int.Parse(oldresults[s].ToString(), System.Globalization.NumberStyles.HexNumber)));
                     }
                 }
-
+                // TODO THIS DOESN't WORK I THINK REWRITE THE FILE>>>
                 if (newresults[0] != 0)
                 {
                     WriteStatus(String.Format(" - {0} New-school ES Signing Fix(es) Found...", newresults[0]));
@@ -3011,10 +3015,10 @@ namespace NUS_Downloader
             }
             else
             { 
-                /* Content is part of original TMD and must be decrypted...
                 string filename = contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Substring(contentsEdit.Items[contentsEdit.SelectedIndex].ToString().IndexOf("] [") + 3, 8);
 
                 byte[] ticket = FileLocationToByteArray(fileinfo[0] + "cetk");
+                byte[] tmd = FileLocationToByteArray(fileinfo[0] + fileinfo[1]);
                 byte[] etitlekey = new byte[16];
                 for (int a = 0; a < 16; a++)
                 {
@@ -3036,9 +3040,87 @@ namespace NUS_Downloader
                 }
 
                 initCrypt(iv, commonkey);
-                byte[] dtitlekey = Decrypt(etitlekey); TODO ADD THIS SUPPORT */
+                byte[] dtitlekey = Decrypt(etitlekey);
 
-                MessageBox.Show("Currently you can only add the bug to decrypted contents. Sorry!");
+                // Decrypt this content (determine index)
+                string[] tmdcontents = GetContentNames(tmd, ContentCount(tmd));
+                byte[] tmdindices = GetContentIndices(tmd, ContentCount(tmd));
+                byte[] tmdhashes = GetContentHashes(tmd, ContentCount(tmd));
+                string[] tmdsizes = GetContentSizes(tmd, ContentCount(tmd));
+
+                iv = new byte[16];
+                for (int e = 0; e < 16; e++)
+                {
+                    iv[e] = 0x00;
+                }
+
+                byte[] hash = new byte[20];
+                for (int d = 0; d < tmdcontents.Length; d++)
+                {
+                    if (tmdcontents[d] == filename)
+                    {
+                        iv[0] = 0x00; // TODO: Add double index byte support
+                        iv[1] = tmdindices[d];
+
+                        for (int x = 0; x < 20; x++)
+                        {
+                            hash[x] = tmdhashes[(d*20) + x];
+                        }
+                    }
+                }
+                initCrypt(iv, commonkey);
+
+                byte[] decContent = Decrypt(FileLocationToByteArray(fileinfo[0] + filename));
+                Array.Resize(ref decContent, int.Parse(tmdsizes[thiscontentidx], System.Globalization.NumberStyles.HexNumber));
+          
+                if ((Convert.ToBase64String(ComputeSHA(decContent))) == Convert.ToBase64String(hash))
+                {
+                    WriteStatus(" - Hash Check: Content is Unchanged...");
+                    contents[c].SHAHash = hash;
+                    //WriteStatus("HASH: " + DisplayBytes(hash, ""));
+                }
+                else
+                {
+                    WriteStatus(" - Hash Check: Content changed (did you add an encrypted file from another title?)...");
+                    contents[c].SHAHash = ComputeSHA(decContent);
+                }
+
+                // TODO PATCH HERE
+                // Re-encrypt
+                byte[] newiv = new byte[16];
+                for (int g = 0; g < newiv.Length; g++)
+                {
+                    newiv[g] = 0x00;
+                }
+                byte[] smallix = NewIntegertoByteArray(c, 2);
+                ivindex[0] = smallix[0];
+                ivindex[1] = smallix[1];
+
+                //WriteStatus(" - Old Index: " + thiscontentidx + "; New Index: " + c);
+
+                // Pad back to 0x16 alignment
+                //AlignByteArray(decContent, 0x16
+                decContent = PadToMultipleOf(decContent, 16);
+
+                initCrypt(newiv, dtitlekey);
+
+                byte[] encContent = Encrypt(decContent);
+
+                File.Delete(fileinfo[0] + filename.Substring(0, 8));
+
+                FileStream encryptwrite = new FileStream(fileinfo[0] + filename.Substring(0, 8), FileMode.OpenOrCreate);
+                encryptwrite.Write(encContent, 0, encContent.Length);
+                encryptwrite.Close();
+
+                WriteStatus(" - Encrypted Content Again!");
+
+                // Patch content
+
+                // Probably leave decrypted
+
+                // Run an update through the TMD to update the contents
+
+                //MessageBox.Show("Currently you can only add the bug to decrypted contents. Sorry!");
             }
 
             
@@ -3091,13 +3173,6 @@ namespace NUS_Downloader
                         contentsEdit.Items[a] += String.Format(" [{0}]", itemparts[b]);
                 }
             }
-        }
-
-        private void dlprogress_Click(object sender, EventArgs e)
-        {
-            // Enable BETA stuff?
-            truchabox.Enabled = !(truchabox.Enabled);
-            truchabox.Visible = !(truchabox.Visible);
         }
     }
 }
