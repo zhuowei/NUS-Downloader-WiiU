@@ -174,7 +174,6 @@
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.dlprogress.TabIndex = 7;
-            this.dlprogress.Click += new System.EventHandler(this.dlprogress_Click);
             // 
             // localuse
             // 
@@ -419,14 +418,12 @@
             // truchabox
             // 
             this.truchabox.AutoSize = true;
-            this.truchabox.Enabled = false;
             this.truchabox.Location = new System.Drawing.Point(184, 468);
             this.truchabox.Name = "truchabox";
             this.truchabox.Size = new System.Drawing.Size(60, 17);
             this.truchabox.TabIndex = 21;
             this.truchabox.Text = "Trucha";
             this.truchabox.UseVisualStyleBackColor = true;
-            this.truchabox.Visible = false;
             // 
             // tmdgpbox
             // 
@@ -734,7 +731,7 @@
             this.contentModBox.Controls.Add(this.button11);
             this.contentModBox.Controls.Add(this.button9);
             this.contentModBox.Controls.Add(this.button10);
-            this.contentModBox.Location = new System.Drawing.Point(287, 435);
+            this.contentModBox.Location = new System.Drawing.Point(268, 153);
             this.contentModBox.Name = "contentModBox";
             this.contentModBox.Size = new System.Drawing.Size(249, 327);
             this.contentModBox.TabIndex = 41;
@@ -883,8 +880,8 @@
             this.ClientSize = new System.Drawing.Size(539, 492);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.shamelessvariablelabel);
-            this.Controls.Add(this.contentModBox);
             this.Controls.Add(this.button1);
+            this.Controls.Add(this.contentModBox);
             this.Controls.Add(this.button17);
             this.Controls.Add(this.ticketgpbox);
             this.Controls.Add(this.tmdgpbox);
