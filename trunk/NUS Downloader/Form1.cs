@@ -5,6 +5,9 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Xml;
 using System.Drawing;
+using System.Text.RegularExpressions;
+using System.ComponentModel;
+using System.Threading;
 
 
 namespace NUS_Downloader
@@ -237,13 +240,9 @@ namespace NUS_Downloader
             }
             else
             {
-                // Read version of Database.xml
-                XmlDocument xDoc = new XmlDocument();
-                xDoc.Load("database.xml");
-                XmlNodeList DatabaseList = xDoc.GetElementsByTagName("database");
-                XmlAttributeCollection Attributes = DatabaseList[0].Attributes;
+                string version = GetDatabaseVersion("database.xml");
                 WriteStatus("Database.xml detected.");
-                WriteStatus(" - Version: " + Attributes[0].Value);
+                WriteStatus(" - Version: " + version);
 
                 // Load it up...
                 ClearDatabaseStrip();
@@ -253,6 +252,19 @@ namespace NUS_Downloader
             }
 
             return result;
+        }
+
+        private string GetDatabaseVersion(string file)
+        {
+            // Read version of Database.xml
+            XmlDocument xDoc = new XmlDocument();
+            if (file.Contains("<"))
+                xDoc.LoadXml(file);
+            else
+                xDoc.Load(file);
+            XmlNodeList DatabaseList = xDoc.GetElementsByTagName("database");
+            XmlAttributeCollection Attributes = DatabaseList[0].Attributes;
+            return Attributes[0].Value;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -3149,6 +3161,60 @@ namespace NUS_Downloader
                         contentsEdit.Items[a] += String.Format(" [{0}]", itemparts[b]);
                 }
             }
+        }
+
+        private string RetrieveNewDatabase()
+        {
+            // Retrieve Wiibrew database page source code
+            WebClient databasedl = new WebClient();
+            string wiibrewsource = databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database");
+
+            // Strip out HTML
+            wiibrewsource = Regex.Replace(wiibrewsource, @"<(.|\n)*?>", "");
+
+            // Shrink to fix only the database
+            string startofdatabase = "&lt;database v";
+            string endofdatabase = "&lt;/database&gt;";
+            wiibrewsource = wiibrewsource.Substring(wiibrewsource.IndexOf(startofdatabase), wiibrewsource.Length - wiibrewsource.IndexOf(startofdatabase));
+            wiibrewsource = wiibrewsource.Substring(0, wiibrewsource.IndexOf(endofdatabase) + endofdatabase.Length);
+
+            // Fix ", <, and >
+            wiibrewsource = wiibrewsource.Replace("&lt;","<");
+            wiibrewsource = wiibrewsource.Replace("&gt;",">");
+            wiibrewsource = wiibrewsource.Replace("&quot;",'"'.ToString());
+            wiibrewsource = wiibrewsource.Replace("&nbsp;", ""); // Shouldn't occur, but they happen...
+
+            // Return parsed xml database...
+            return wiibrewsource;
+        }
+
+        private void updateDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            statusbox.Text = "";
+            WriteStatus("Updating your database.xml from Wiibrew.org");
+            WriteStatus(" - Database successfully parsed!");
+
+            string database = RetrieveNewDatabase();
+            string currentversion = GetDatabaseVersion("database.xml");
+            string onlineversion = GetDatabaseVersion(database);
+            WriteStatus("  - Current Database Version: " + currentversion);
+            WriteStatus("  - Online Database Version: " + onlineversion);
+
+            if (currentversion == onlineversion)
+            {
+                WriteStatus(" - You have the latest database version!");
+                return;
+            }
+
+            WriteStatus(" - Overwriting your current database.xml...");
+            WriteStatus(" - The old database will become 'olddatabase.xml' in case the new one is faulty.");
+
+            string olddatabase = File.ReadAllText("database.xml");
+            File.WriteAllText("olddatabase.xml", olddatabase);
+            File.Delete("database.xml");
+            File.WriteAllText("database.xml", database);
+
+            WriteStatus("Database successfully updated!");
         }
     }
 }
