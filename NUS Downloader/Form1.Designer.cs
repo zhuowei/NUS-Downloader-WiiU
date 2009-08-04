@@ -107,6 +107,8 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.button17 = new System.Windows.Forms.Button();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.updateDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
@@ -295,10 +297,12 @@
             this.VCMenuList,
             this.WiiWareMenuList,
             this.toolStripSeparator1,
-            this.RegionCodesList});
+            this.RegionCodesList,
+            this.toolStripSeparator2,
+            this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(155, 120);
+            this.databaseStrip.Size = new System.Drawing.Size(164, 170);
             // 
             // SystemMenuList
             // 
@@ -310,7 +314,7 @@
             // IOSMenuList
             // 
             this.IOSMenuList.Name = "IOSMenuList";
-            this.IOSMenuList.Size = new System.Drawing.Size(154, 22);
+            this.IOSMenuList.Size = new System.Drawing.Size(163, 22);
             this.IOSMenuList.Text = "IOS";
             // 
             // VCMenuList
@@ -328,7 +332,7 @@
             this.TurboGrafxCDMenuList,
             this.VCArcadeMenuList});
             this.VCMenuList.Name = "VCMenuList";
-            this.VCMenuList.Size = new System.Drawing.Size(154, 22);
+            this.VCMenuList.Size = new System.Drawing.Size(163, 22);
             this.VCMenuList.Text = "Virtual Console";
             // 
             // C64MenuList
@@ -400,18 +404,18 @@
             // WiiWareMenuList
             // 
             this.WiiWareMenuList.Name = "WiiWareMenuList";
-            this.WiiWareMenuList.Size = new System.Drawing.Size(154, 22);
+            this.WiiWareMenuList.Size = new System.Drawing.Size(163, 22);
             this.WiiWareMenuList.Text = "WiiWare";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(151, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(160, 6);
             // 
             // RegionCodesList
             // 
             this.RegionCodesList.Name = "RegionCodesList";
-            this.RegionCodesList.Size = new System.Drawing.Size(154, 22);
+            this.RegionCodesList.Size = new System.Drawing.Size(163, 22);
             this.RegionCodesList.Text = "Region Codes";
             this.RegionCodesList.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.RegionCodesList_DropDownItemClicked);
             // 
@@ -873,6 +877,18 @@
             this.button17.UseVisualStyleBackColor = true;
             this.button17.Click += new System.EventHandler(this.button17_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
+            // 
+            // updateDatabaseToolStripMenuItem
+            // 
+            this.updateDatabaseToolStripMenuItem.Name = "updateDatabaseToolStripMenuItem";
+            this.updateDatabaseToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.updateDatabaseToolStripMenuItem.Text = "Update Database";
+            this.updateDatabaseToolStripMenuItem.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1006,6 +1022,8 @@
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button16;
         private System.Windows.Forms.Button button17;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem updateDatabaseToolStripMenuItem;
     }
 }
 
