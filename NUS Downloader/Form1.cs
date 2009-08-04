@@ -583,8 +583,6 @@ namespace NUS_Downloader
                 else
                     contenttypes[i] = (int)ContentTypes.Normal;
                 startoffset += 36;
-                // DEBUG:
-                //WriteStatus(contenttypes[i].ToString());
             }
 
             return contenttypes;
@@ -985,9 +983,6 @@ namespace NUS_Downloader
                 WriteStatus("Trucha Signing TMD...");
                 Array.Resize(ref tmd, 484 + (Convert.ToInt32(contentstrnum) * 36));
 
-                // DEBUG: Mii Channel Test...
-                tmd[0x18F] = 0x01;
-
                 tmd = ZeroSignature(tmd);
                 tmd = TruchaSign(tmd);
 
@@ -1003,9 +998,6 @@ namespace NUS_Downloader
                 cetkf.Close();
 
                 Array.Resize(ref cetkbuff, 0x2A4);
-
-                // DEBUG: Mii Channel Test...
-                cetkbuff[0x1DF] = 0x01;
 
                 cetkbuff = ZeroSignature(cetkbuff);
                 cetkbuff = TruchaSign(cetkbuff);
@@ -1589,7 +1581,6 @@ namespace NUS_Downloader
                                             {
                                                 regitem.DropDownItems.Add("v" + versions[y]);
                                             }
-                                            // TODO : wat...
                                             regitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(deepitem_clicked);
                                         }
                                     }
@@ -1703,11 +1694,6 @@ namespace NUS_Downloader
 
         void deepitem_clicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            // DEBUG:
-            //WriteStatus("item text: " + e.ClickedItem.Text);  VERSION
-            //WriteStatus("Owner of item: " + e.ClickedItem.OwnerItem.Text);  REGION
-            //WriteStatus("Owner of Owner of item: " + e.ClickedItem.OwnerItem.OwnerItem.Text);  TITLE ID
-
             titleidbox.Text = e.ClickedItem.OwnerItem.OwnerItem.Text.Substring(0, 16);
             titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.OwnerItem.Text.Substring(0, 2));
 
@@ -1858,11 +1844,6 @@ namespace NUS_Downloader
             {
                 WriteStatus("\n" + e.ClickedItem.OwnerItem.ToolTipText);
             }
-
-            // DEBUG:
-            //WriteStatus("item text: " + e.ClickedItem.Text);
-            //WriteStatus("Owner of item: " + e.ClickedItem.OwnerItem.Text);
-            //WriteStatus("Owner of Owner of item: " + e.ClickedItem.OwnerItem.OwnerItem.Text);
         }
 
         void HandleMismatch(int contentsize, int actualsize)
@@ -1984,8 +1965,6 @@ namespace NUS_Downloader
 
                 if (ComputeSHA(hashobject)[0] == 0x00)
                 {
-                    // DEBUG:
-                    //WriteStatus(DisplayBytes(ComputeSHA(hashobject)));
                     WriteStatus(" - Successfully Trucha Signed.");
                     return tmdortik;
                 }
@@ -2174,8 +2153,7 @@ namespace NUS_Downloader
             // The amount of time for the limit.
             byte[] limitseconds = new byte[4];
             limitseconds = InttoByteArray(Convert.ToInt32(timelimitsecs.Text), 4);
-            //DEBUG
-            //WriteStatus(DisplayBytes(limitseconds, " "));
+          
             for (int i = 0; i < 4; i++)
             {
                 cetkbuff[0x248 + i] = limitseconds[i];
@@ -2861,9 +2839,6 @@ namespace NUS_Downloader
                 thelength += 1;
                 remainder = thelength % alignto;
             }
-            // DEBUG:
-            WriteStatus("Aligning by: " + alignto + " ... New Length: " + thelength);
-            WriteStatus(" Dif: " + (thelength - content.Length));
             Array.Resize(ref content, (int)thelength);
             return content;
         } */
@@ -2872,10 +2847,6 @@ namespace NUS_Downloader
         {
             int len = (src.Length + pad - 1) / pad * pad;
       
-            // DEBUG:
-            //WriteStatus("New Length: " + len);
-            //WriteStatus("Dif: " + (len - src.Length));
-
             Array.Resize(ref src, len);
             return src;
         }
@@ -2949,9 +2920,6 @@ namespace NUS_Downloader
                     resultArray[i] = 0x00;
                 }
             }
-
-            // DEBUG
-            //WriteStatus(" - Int->Byte[]: " + DisplayBytes(resultArray, " "));
             return resultArray;
         }
 
@@ -2989,6 +2957,8 @@ namespace NUS_Downloader
                 // Content is decrypted/new to the title...
                 string filename = contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Substring(contentsEdit.Items[contentsEdit.SelectedIndex].ToString().IndexOf("] [") + 3, 12);
                 byte[] contentbt = FileLocationToByteArray(fileinfo[0] + filename);
+                byte[] newvalues = new byte[4];
+                newvalues[1] = 0x00;
 
                 int[] oldresults = ByteArrayContainsByteArray(contentbt, old_hash_check);
                 int[] newresults = ByteArrayContainsByteArray(contentbt, new_hash_check);
@@ -2998,23 +2968,24 @@ namespace NUS_Downloader
                     WriteStatus(String.Format(" - {0} Old-school ES Signing Fix(es) Found...", oldresults[0]));
                     for (int s = 1; s < oldresults.Length - 1; s++)
                     {
-                        PatchTrucha(contentbt, oldresults[s]);
+                        contentbt = PatchBinary(contentbt, oldresults[s], newvalues);
                         WriteStatus(String.Format(" - Bug restored at 0x{0}", int.Parse(oldresults[s].ToString(), System.Globalization.NumberStyles.HexNumber)));
                     }
                 }
-                // TODO THIS DOESN't WORK I THINK REWRITE THE FILE>>>
+               
                 if (newresults[0] != 0)
                 {
                     WriteStatus(String.Format(" - {0} New-school ES Signing Fix(es) Found...", newresults[0]));
                     for (int s = 1; s < newresults.Length - 1; s++)
                     {
-                        PatchTrucha(contentbt, newresults[s]);
+                        contentbt = PatchBinary(contentbt, newresults[s], newvalues);
                         WriteStatus(String.Format("  + Bug restored at 0x{0}.", int.Parse(newresults[s].ToString(), System.Globalization.NumberStyles.HexNumber)));
                     }
                 }
             }
             else
-            { 
+            {
+                WriteStatus(" - The file you selected was encrypted, attempting to decrypt and patch...");
                 string filename = contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Substring(contentsEdit.Items[contentsEdit.SelectedIndex].ToString().IndexOf("] [") + 3, 8);
 
                 byte[] ticket = FileLocationToByteArray(fileinfo[0] + "cetk");
@@ -3049,9 +3020,9 @@ namespace NUS_Downloader
                 string[] tmdsizes = GetContentSizes(tmd, ContentCount(tmd));
 
                 iv = new byte[16];
-                for (int e = 0; e < 16; e++)
+                for (int f = 0; f < 16; f++)
                 {
-                    iv[e] = 0x00;
+                    iv[f] = 0x00;
                 }
 
                 byte[] hash = new byte[20];
@@ -3069,62 +3040,66 @@ namespace NUS_Downloader
                     }
                 }
                 initCrypt(iv, commonkey);
+                //DEBUG
+                WriteStatus(DisplayBytes(iv, " "));
 
                 byte[] decContent = Decrypt(FileLocationToByteArray(fileinfo[0] + filename));
-                Array.Resize(ref decContent, int.Parse(tmdsizes[thiscontentidx], System.Globalization.NumberStyles.HexNumber));
+                Array.Resize(ref decContent, int.Parse(tmdsizes[14], System.Globalization.NumberStyles.HexNumber));
           
                 if ((Convert.ToBase64String(ComputeSHA(decContent))) == Convert.ToBase64String(hash))
                 {
-                    WriteStatus(" - Hash Check: Content is Unchanged...");
-                    contents[c].SHAHash = hash;
-                    //WriteStatus("HASH: " + DisplayBytes(hash, ""));
+                    WriteStatus("  - Hash Check: Content is Unchanged...");
                 }
                 else
                 {
-                    WriteStatus(" - Hash Check: Content changed (did you add an encrypted file from another title?)...");
-                    contents[c].SHAHash = ComputeSHA(decContent);
+                    WriteStatus("  - Hash Check: Content changed (did you add an encrypted file from another title?)...");
+                    WriteStatus("  - Content Hash: " + DisplayBytes(ComputeSHA(decContent), ""));
+                    WriteStatus("  - TMD Hash: " + DisplayBytes(hash, ""));
+                    
                 }
 
-                // TODO PATCH HERE
-                // Re-encrypt
-                byte[] newiv = new byte[16];
-                for (int g = 0; g < newiv.Length; g++)
+                if (File.Exists(fileinfo[0] + filename + ".app"))
                 {
-                    newiv[g] = 0x00;
+                    if (MessageBox.Show(fileinfo[0] + filename + ".app Exists! Delete the current file so we can move on?", "File Conflict", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        File.Delete(fileinfo[0] + filename + ".app");
+                    else
+                        return;
                 }
-                byte[] smallix = NewIntegertoByteArray(c, 2);
-                ivindex[0] = smallix[0];
-                ivindex[1] = smallix[1];
 
-                //WriteStatus(" - Old Index: " + thiscontentidx + "; New Index: " + c);
+                byte[] newvalues = new byte[4];
+                newvalues[1] = 0x00;
 
-                // Pad back to 0x16 alignment
-                //AlignByteArray(decContent, 0x16
-                decContent = PadToMultipleOf(decContent, 16);
+                int[] oldresults = ByteArrayContainsByteArray(decContent, old_hash_check);
+                int[] newresults = ByteArrayContainsByteArray(decContent, new_hash_check);
 
-                initCrypt(newiv, dtitlekey);
+                if (oldresults[0] != 0)
+                {
+                    WriteStatus(String.Format(" - {0} Old-school ES Signing Fix(es) Found...", oldresults[0]));
+                    for (int s = 1; s < oldresults.Length - 1; s++)
+                    {
+                        decContent = PatchBinary(decContent, oldresults[s], newvalues);
+                        WriteStatus(String.Format(" - Bug restored at 0x{0}", int.Parse(oldresults[s].ToString(), System.Globalization.NumberStyles.HexNumber)));
+                    }
+                }
 
-                byte[] encContent = Encrypt(decContent);
+                if (newresults[0] != 0)
+                {
+                    WriteStatus(String.Format(" - {0} New-school ES Signing Fix(es) Found...", newresults[0]));
+                    for (int s = 1; s < newresults.Length - 1; s++)
+                    {
+                        decContent = PatchBinary(decContent, newresults[s], newvalues);
+                        WriteStatus(String.Format("  + Bug restored at 0x{0}.", int.Parse(newresults[s].ToString(), System.Globalization.NumberStyles.HexNumber)));
+                    }
+                }
 
-                File.Delete(fileinfo[0] + filename.Substring(0, 8));
+                File.WriteAllBytes(fileinfo[0] + filename + ".app", decContent);
 
-                FileStream encryptwrite = new FileStream(fileinfo[0] + filename.Substring(0, 8), FileMode.OpenOrCreate);
-                encryptwrite.Write(encContent, 0, encContent.Length);
-                encryptwrite.Close();
+                contentsEdit.Items[contentsEdit.SelectedIndex] = contentsEdit.Items[contentsEdit.SelectedIndex].ToString().Replace(filename, filename + ".app");
 
-                WriteStatus(" - Encrypted Content Again!");
+                UpdateTMDContents();
 
-                // Patch content
-
-                // Probably leave decrypted
-
-                // Run an update through the TMD to update the contents
-
-                //MessageBox.Show("Currently you can only add the bug to decrypted contents. Sorry!");
+                WriteStatus("Trucha signing complete!");
             }
-
-            
-
         }
 
         private int[] ByteArrayContainsByteArray(byte[] bigboy, byte[] littleman)
@@ -3150,11 +3125,12 @@ namespace NUS_Downloader
             return offset;
         }
 
-        private byte[] PatchTrucha(byte[] content, int offset)
+        private byte[] PatchBinary(byte[] content, int offset, byte[] newvalues)
         {
-            for (int i = 0; i < 4; i++)
+            for (int a = 0; a < newvalues.Length; a++)
             {
-                content[offset + i] = 0;
+                if (newvalues[a] >= 0)
+                    content[offset + a] = newvalues[a];
             }
             return content;
         }
