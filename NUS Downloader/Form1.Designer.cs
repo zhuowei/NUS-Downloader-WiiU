@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.TMDButton = new System.Windows.Forms.Button();
+            this.Extrasbtn = new System.Windows.Forms.Button();
             this.titleidbox = new System.Windows.Forms.TextBox();
             this.downloadstartbtn = new System.Windows.Forms.Button();
             this.statusbox = new System.Windows.Forms.TextBox();
@@ -65,6 +65,8 @@
             this.WiiWareMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.RegionCodesList = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.updateDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.truchabox = new System.Windows.Forms.CheckBox();
             this.tmdgpbox = new System.Windows.Forms.GroupBox();
             this.tmdversiontrucha = new System.Windows.Forms.TextBox();
@@ -107,24 +109,31 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.button17 = new System.Windows.Forms.Button();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.updateDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extrasStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.loadInfoFromTMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.emulateUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.uSANTSCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.europePALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.japanNTSCJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.koreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
             this.contentModBox.SuspendLayout();
+            this.extrasStrip.SuspendLayout();
             this.SuspendLayout();
             // 
-            // TMDButton
+            // Extrasbtn
             // 
-            this.TMDButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.TMDButton.Location = new System.Drawing.Point(128, 12);
-            this.TMDButton.Name = "TMDButton";
-            this.TMDButton.Size = new System.Drawing.Size(50, 20);
-            this.TMDButton.TabIndex = 0;
-            this.TMDButton.Text = "TMD...";
-            this.TMDButton.UseVisualStyleBackColor = true;
-            this.TMDButton.Click += new System.EventHandler(this.button1_Click);
+            this.Extrasbtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Extrasbtn.Location = new System.Drawing.Point(125, 12);
+            this.Extrasbtn.Name = "Extrasbtn";
+            this.Extrasbtn.Size = new System.Drawing.Size(55, 20);
+            this.Extrasbtn.TabIndex = 0;
+            this.Extrasbtn.Text = "Extras...";
+            this.Extrasbtn.UseVisualStyleBackColor = true;
+            this.Extrasbtn.Click += new System.EventHandler(this.button1_Click);
             // 
             // titleidbox
             // 
@@ -218,6 +227,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Location = new System.Drawing.Point(9, 16);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(113, 13);
@@ -281,9 +291,9 @@
             // databaseButton
             // 
             this.databaseButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.databaseButton.Location = new System.Drawing.Point(184, 12);
+            this.databaseButton.Location = new System.Drawing.Point(186, 12);
             this.databaseButton.Name = "databaseButton";
-            this.databaseButton.Size = new System.Drawing.Size(78, 20);
+            this.databaseButton.Size = new System.Drawing.Size(76, 20);
             this.databaseButton.TabIndex = 20;
             this.databaseButton.Text = "Database...";
             this.databaseButton.UseVisualStyleBackColor = true;
@@ -302,7 +312,7 @@
             this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(164, 170);
+            this.databaseStrip.Size = new System.Drawing.Size(164, 148);
             // 
             // SystemMenuList
             // 
@@ -418,6 +428,18 @@
             this.RegionCodesList.Size = new System.Drawing.Size(163, 22);
             this.RegionCodesList.Text = "Region Codes";
             this.RegionCodesList.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.RegionCodesList_DropDownItemClicked);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
+            // 
+            // updateDatabaseToolStripMenuItem
+            // 
+            this.updateDatabaseToolStripMenuItem.Name = "updateDatabaseToolStripMenuItem";
+            this.updateDatabaseToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.updateDatabaseToolStripMenuItem.Text = "Update Database";
+            this.updateDatabaseToolStripMenuItem.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
             // 
             // truchabox
             // 
@@ -877,17 +899,63 @@
             this.button17.UseVisualStyleBackColor = true;
             this.button17.Click += new System.EventHandler(this.button17_Click);
             // 
-            // toolStripSeparator2
+            // extrasStrip
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
+            this.extrasStrip.AllowMerge = false;
+            this.extrasStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadInfoFromTMDToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.emulateUpdate});
+            this.extrasStrip.Name = "extrasStrip";
+            this.extrasStrip.Size = new System.Drawing.Size(220, 76);
             // 
-            // updateDatabaseToolStripMenuItem
+            // loadInfoFromTMDToolStripMenuItem
             // 
-            this.updateDatabaseToolStripMenuItem.Name = "updateDatabaseToolStripMenuItem";
-            this.updateDatabaseToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.updateDatabaseToolStripMenuItem.Text = "Update Database";
-            this.updateDatabaseToolStripMenuItem.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
+            this.loadInfoFromTMDToolStripMenuItem.Name = "loadInfoFromTMDToolStripMenuItem";
+            this.loadInfoFromTMDToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.loadInfoFromTMDToolStripMenuItem.Text = "Load Info from TMD";
+            this.loadInfoFromTMDToolStripMenuItem.Click += new System.EventHandler(this.loadInfoFromTMDToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(216, 6);
+            // 
+            // emulateUpdate
+            // 
+            this.emulateUpdate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uSANTSCToolStripMenuItem,
+            this.europePALToolStripMenuItem,
+            this.japanNTSCJToolStripMenuItem,
+            this.koreaToolStripMenuItem});
+            this.emulateUpdate.Name = "emulateUpdate";
+            this.emulateUpdate.Size = new System.Drawing.Size(219, 22);
+            this.emulateUpdate.Text = "Emulate Wii System Update";
+            this.emulateUpdate.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.emulateUpdate_DropDownItemClicked);
+            // 
+            // uSANTSCToolStripMenuItem
+            // 
+            this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
+            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.uSANTSCToolStripMenuItem.Text = "USA (NTSC)";
+            // 
+            // europePALToolStripMenuItem
+            // 
+            this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
+            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.europePALToolStripMenuItem.Text = "Europe (PAL)";
+            // 
+            // japanNTSCJToolStripMenuItem
+            // 
+            this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
+            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.japanNTSCJToolStripMenuItem.Text = "Japan (NTSC-J)";
+            // 
+            // koreaToolStripMenuItem
+            // 
+            this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
+            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.koreaToolStripMenuItem.Text = "Korea";
             // 
             // Form1
             // 
@@ -922,7 +990,7 @@
             this.Controls.Add(this.statusbox);
             this.Controls.Add(this.downloadstartbtn);
             this.Controls.Add(this.titleidbox);
-            this.Controls.Add(this.TMDButton);
+            this.Controls.Add(this.Extrasbtn);
             this.Controls.Add(this.button6);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -938,6 +1006,7 @@
             this.ticketgpbox.ResumeLayout(false);
             this.ticketgpbox.PerformLayout();
             this.contentModBox.ResumeLayout(false);
+            this.extrasStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -945,7 +1014,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button TMDButton;
+        private System.Windows.Forms.Button Extrasbtn;
         private System.Windows.Forms.TextBox titleidbox;
         private System.Windows.Forms.Button downloadstartbtn;
         private System.Windows.Forms.TextBox statusbox;
@@ -1024,6 +1093,14 @@
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem updateDatabaseToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip extrasStrip;
+        private System.Windows.Forms.ToolStripMenuItem loadInfoFromTMDToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem emulateUpdate;
+        private System.Windows.Forms.ToolStripMenuItem uSANTSCToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem europePALToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem japanNTSCJToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem koreaToolStripMenuItem;
     }
 }
 

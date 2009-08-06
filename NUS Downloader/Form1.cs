@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Threading;
+using System.Text;
 
 
 namespace NUS_Downloader
@@ -17,7 +18,7 @@ namespace NUS_Downloader
         const string NUSURL = "http://nus.cdn.shop.wii.com/ccs/download/";
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
         // TODO: Always remember to change version!
-        string version = "v1.2";
+        string version = "v1.3";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
@@ -156,8 +157,6 @@ namespace NUS_Downloader
         {
             this.Text = "NUSD - " + version + " - WB3000";
             this.Size = this.MinimumSize;
-            
-            
         }
 
         private bool BootChecks()
@@ -235,8 +234,8 @@ namespace NUS_Downloader
             {
                 WriteStatus("Database.xml not found. Title database not usable!");
                 databaseButton.Visible = false;
-                TMDButton.Size = new System.Drawing.Size(134, 20);
-                TMDButton.Anchor = AnchorStyles.Right;
+                Extrasbtn.Size = new System.Drawing.Size(134, 20);
+                Extrasbtn.Anchor = AnchorStyles.Right;
             }
             else
             {
@@ -268,6 +267,12 @@ namespace NUS_Downloader
         }
 
         private void button1_Click(object sender, EventArgs e)
+        {
+            // Show extras menu
+            extrasStrip.Show(Extrasbtn, 2, 2);
+        }
+
+        private void LoadTitleFromTMD()
         {
             // Show dialog for opening TMD file...
             OpenFileDialog opentmd = new OpenFileDialog();
@@ -324,7 +329,7 @@ namespace NUS_Downloader
                     byte[] hash = new byte[20];
                     for (int x = 0; x < 20; x++)
                     {
-                        hash[x] = tmdhashes[(i*20)+x];
+                        hash[x] = tmdhashes[(i * 20) + x];
                     }
                     WriteStatus("  - Hash: " + DisplayBytes(hash, "").Substring(0, 8) + "...");
                     WriteStatus("  - Index: " + tmdindices[i]);
@@ -2207,7 +2212,7 @@ namespace NUS_Downloader
             downloadstartbtn.Enabled = enabled;
             titleidbox.Enabled = enabled;
             titleversion.Enabled = enabled;
-            TMDButton.Enabled = enabled;
+            Extrasbtn.Enabled = enabled;
             databaseButton.Enabled = enabled;
             packbox.Enabled = enabled;
             localuse.Enabled = enabled;
@@ -3167,7 +3172,9 @@ namespace NUS_Downloader
         {
             // Retrieve Wiibrew database page source code
             WebClient databasedl = new WebClient();
+            statusbox.Refresh();
             string wiibrewsource = databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database");
+            statusbox.Refresh();
 
             // Strip out HTML
             wiibrewsource = Regex.Replace(wiibrewsource, @"<(.|\n)*?>", "");
@@ -3178,11 +3185,11 @@ namespace NUS_Downloader
             wiibrewsource = wiibrewsource.Substring(wiibrewsource.IndexOf(startofdatabase), wiibrewsource.Length - wiibrewsource.IndexOf(startofdatabase));
             wiibrewsource = wiibrewsource.Substring(0, wiibrewsource.IndexOf(endofdatabase) + endofdatabase.Length);
 
-            // Fix ", <, and >
+            // Fix ", <, >, and spaces
             wiibrewsource = wiibrewsource.Replace("&lt;","<");
             wiibrewsource = wiibrewsource.Replace("&gt;",">");
             wiibrewsource = wiibrewsource.Replace("&quot;",'"'.ToString());
-            wiibrewsource = wiibrewsource.Replace("&nbsp;", ""); // Shouldn't occur, but they happen...
+            wiibrewsource = wiibrewsource.Replace("&nbsp;", " "); // Shouldn't occur, but they happen...
 
             // Return parsed xml database...
             return wiibrewsource;
@@ -3192,13 +3199,13 @@ namespace NUS_Downloader
         {
             statusbox.Text = "";
             WriteStatus("Updating your database.xml from Wiibrew.org");
-            WriteStatus(" - Database successfully parsed!");
 
             string database = RetrieveNewDatabase();
             string currentversion = GetDatabaseVersion("database.xml");
             string onlineversion = GetDatabaseVersion(database);
-            WriteStatus("  - Current Database Version: " + currentversion);
-            WriteStatus("  - Online Database Version: " + onlineversion);
+            WriteStatus(" - Database successfully parsed!");
+            WriteStatus("   - Current Database Version: " + currentversion);
+            WriteStatus("   - Online Database Version: " + onlineversion);
 
             if (currentversion == onlineversion)
             {
@@ -3215,6 +3222,115 @@ namespace NUS_Downloader
             File.WriteAllText("database.xml", database);
 
             WriteStatus("Database successfully updated!");
+        }
+
+        private void loadInfoFromTMDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Extras menu -> Load TMD...
+            LoadTitleFromTMD();
+        }
+
+        public string SendSOAPRequest(string soap_xml)
+        {
+            System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://nus.shop.wii.com:80/nus/services/NetUpdateSOAP");
+            req.Method = "POST";
+            req.UserAgent = "wii libnup/1.0";
+            req.Headers.Add("SOAPAction", '"' + "urn:nus.wsapi.broadon.com/" + '"');
+            Stream writeStream = req.GetRequestStream();
+
+            UTF8Encoding encoding = new UTF8Encoding();
+            byte[] bytes = encoding.GetBytes(soap_xml);
+            req.ContentType = "text/xml; charset=utf-8";
+            //req.ContentLength = bytes.Length;
+            writeStream.Write(bytes, 0, bytes.Length);
+            writeStream.Close();
+            Application.DoEvents();
+            try
+            {
+                string result;
+                System.Net.HttpWebResponse resp = (System.Net.HttpWebResponse)req.GetResponse();
+
+                using (Stream responseStream = resp.GetResponseStream())
+                {
+                    using (StreamReader readStream = new StreamReader(responseStream, Encoding.UTF8))
+                    {
+                        result = readStream.ReadToEnd();
+                    }
+                }
+                req.Abort();
+                Application.DoEvents();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                req.Abort();
+
+                return ex.Message.ToString();
+            }
+           
+        }
+
+        private void emulateUpdate_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            // Begin Wii System Update
+            WriteStatus("Starting Wii System Update...");
+
+            extrasStrip.Close();
+
+            string deviceID = "4362227770";
+            string messageID = "13198105123219138";
+            string attr = "2";
+            string RegionID = "USA";
+            string CountryCode = "US";
+
+            // TODO: Specific region/ccodes
+
+            string soap_req = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"" +
+            " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"" +
+            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+            "<soapenv:Body>\n<GetSystemUpdateRequest xmlns=\"urn:nus.wsapi.broadon.com\">\n" +
+            "<Version>1.0</Version>\n<MessageId>" + messageID + "</MessageId>\n<DeviceId>" + deviceID + "</DeviceId>\n" +
+            "<RegionId>" + RegionID + "</RegionId>\n<CountryCode>" + CountryCode + "</CountryCode>\n<TitleVersion>\n<TitleId>0000000100000001</TitleId>\n" +
+            "<Version>2</Version>\n</TitleVersion>\n<TitleVersion>\n<TitleId>0000000100000002</TitleId>\n" +
+            "<Version>33</Version>\n</TitleVersion>\n<TitleVersion>\n<TitleId>0000000100000009</TitleId>\n" +
+            "<Version>516</Version>\n</TitleVersion>\n<Attribute>" + attr + "</Attribute>\n<AuditData></AuditData>\n" +
+            "</GetSystemUpdateRequest>\n</soapenv:Body>\n</soapenv:Envelope>";
+
+            WriteStatus(" - Sending SOAP Request to NUS...");
+            string update_xml = SendSOAPRequest(soap_req);
+            if (update_xml != null)
+                WriteStatus("   - Recieved Update Info!");
+            else
+            {
+                WriteStatus("   - Fail.");
+                return;
+            }
+
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.LoadXml(update_xml);
+            XmlNodeList TitleList = xDoc.GetElementsByTagName("TitleVersion");
+            for (int a = 0; a < TitleList.Count; a++)
+            {
+                XmlNodeList TitleInfo = TitleList[a].ChildNodes;
+                string TitleID = "";
+                string Version = "";
+
+                for (int b = 0; b < TitleInfo.Count; b++)
+                {
+                    switch (TitleInfo[b].Name)
+                    {
+                        case "TitleId":
+                            TitleID = TitleInfo[b].InnerText;
+                            break;
+                        case "Version":
+                            Version = TitleInfo[b].InnerText;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                WriteStatus(String.Format("{0}v{1}", TitleID, Version));
+            }
         }
     }
 }
