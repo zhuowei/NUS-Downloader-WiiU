@@ -31,6 +31,17 @@ namespace NUS_Downloader
         Image redgreen = Properties.Resources.bullet_redgreen;
         Image redorange = Properties.Resources.bullet_redorange;
 
+        // Certs storage
+        byte[] cert_CA = new byte[0x400];
+        byte[] cert_CACP = new byte[0x300];
+        byte[] cert_CAXS = new byte[0x300];
+
+        byte[] cert_CA_sha1 = new byte[20] {0x5B, 0x7D, 0x3E, 0xE2, 0x87, 0x06, 0xAD, 0x8D, 0xA2, 0xCB, 0xD5, 0xA6, 0xB7, 0x5C, 0x15, 0xD0, 0xF9, 0xB6, 0xF3, 0x18};
+        byte[] cert_CACP_sha1 = new byte[20] {0x68, 0x24, 0xD6, 0xDA, 0x4C, 0x25, 0x18, 0x4F, 0x0D, 0x6D, 0xAF, 0x6E, 0xDB, 0x9C, 0x0F, 0xC5, 0x75, 0x22, 0xA4, 0x1C};
+        byte[] cert_CAXS_sha1 = new byte[20] {0x09, 0x78, 0x70, 0x45, 0x03, 0x71, 0x21, 0x47, 0x78, 0x24, 0xBC, 0x6A, 0x3E, 0x5E, 0x07, 0x61, 0x56, 0x57, 0x3F, 0x8A};
+
+        byte[] cert_total_sha1 = new byte[20] {0xAC, 0xE0, 0xF1, 0x5D, 0x2A, 0x85, 0x1C, 0x38, 0x3F, 0xE4, 0x65, 0x7A, 0xFC, 0x38, 0x40, 0xD6, 0xFF, 0xE3, 0x0A, 0xD0};
+
         public struct WADHeader
         {
             public int HeaderSize;
@@ -67,6 +78,7 @@ namespace NUS_Downloader
         public Form1(string[] args)
         {
             InitializeComponent();
+            Application.DoEvents();
 
             // certs.sys / key.bin
             if (BootChecks() == false)
@@ -144,8 +156,8 @@ namespace NUS_Downloader
 
             // Close if specified
             while (NUSDownloader.IsBusy)
-            { 
-                // Do nothing...
+            {
+                Thread.Sleep(1000);
             }
             if ((NUSDownloader.IsBusy == false) && (endafter == true))
             {
@@ -169,7 +181,7 @@ namespace NUS_Downloader
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
                 currentdir += Path.DirectorySeparatorChar;
 
-            // Check for certs file
+            /* Check for certs file
             if (File.Exists(currentdir + "cert.sys") == false)
             {
                 foreach (Control ctrl in this.Controls)
@@ -194,7 +206,7 @@ namespace NUS_Downloader
             {
                 getcerts.Visible = false;
                 WriteStatus("Certs file is present and intact.");
-            }
+            }*/
 
             // Check for Wii common key bin file...
             if (File.Exists(currentdir + "key.bin") == false)
@@ -728,13 +740,13 @@ namespace NUS_Downloader
             downloadstartbtn.Text = "Prerequisites: (2/2)";
             dlprogress.Value = 100;
 
+            // Create ticket file holder
+            byte[] cetkbuf = FileLocationToByteArray(titledirectory + @"\cetk");
+
             // Obtain TitleKey
             byte[] titlekey = new byte[16];
             if (decryptbox.Checked == true)
             { 
-                // Create ticket file holder
-                byte[] cetkbuf = FileLocationToByteArray(titledirectory + @"\cetk");
-
                 // Load TitleKey into it's byte[]
                 // It is currently encrypted...
                 for (int i = 0; i < 16; i++)
@@ -777,6 +789,17 @@ namespace NUS_Downloader
 
             // Read the tmd as a stream...
             byte[] tmd = FileLocationToByteArray(titledirectory + tmdfull);
+
+            // Locate Certs **************************************
+            if (!(CertsValid()))
+            {
+                WriteStatus("Searching for certs...");
+                ScanForCerts(tmd);
+                ScanForCerts(cetkbuf);
+            }
+            else
+                WriteStatus("Using cached certs...");
+            // /Locate Cert **************************************
 
             // Read Title Version...
             string tmdversion = "";
@@ -859,9 +882,6 @@ namespace NUS_Downloader
                     // Create content file holder
                     byte[] contbuf = FileLocationToByteArray(titledirectory + @"\" + tmdcontents[i]);
 
-                    // Create ticket file holder
-                    byte[] cetkbuf = FileLocationToByteArray(titledirectory + @"\cetk");
-
                     // IV (00+IDX+more000)
                     byte[] iv = new byte[16];
                     for (int x = 0; x < 16; x++)
@@ -927,13 +947,10 @@ namespace NUS_Downloader
                     requiredIOSbox.Enabled = true;
 
                 // Read information from TIK into signing GUI...
-                // Create ticket file holder
-                byte[] cetkbuff = FileLocationToByteArray(titledirectory + @"\cetk");
-
                 // Titlekey
                 for (int i = 0; i < 16; i++)
                 {
-                    titlekey[i] = cetkbuff[0x1BF + i];
+                    titlekey[i] = cetkbuf[0x1BF + i];
                 }
                 //titlekeybox.Text = DisplayBytes(titlekey).Replace(" ", "");
                 titlekeybox.Text = System.Text.Encoding.UTF7.GetString(titlekey);
@@ -942,7 +959,7 @@ namespace NUS_Downloader
                 byte[] iv = new byte[16];
                 for (int i = 0; i < 8; i++)
                 {
-                    iv[i] = cetkbuff[0x1DC + i];
+                    iv[i] = cetkbuf[0x1DC + i];
                 }
                 for (int i = 0; i < 8; i++)
                 {
@@ -951,20 +968,20 @@ namespace NUS_Downloader
                 titleIDIV.Text = DisplayBytes(iv, "");
 
                 //DLC
-                dlcamntbox.Text = Convert.ToString((cetkbuff[0x1E6]*256) + cetkbuff[0x1E7]);
+                dlcamntbox.Text = Convert.ToString((cetkbuf[0x1E6]*256) + cetkbuf[0x1E7]);
 
                 //keyindex
-                if (cetkbuff[0x1F1] == 0x00)
+                if (cetkbuf[0x1F1] == 0x00)
                     ckeyindexcb.SelectedIndex = 0;
-                else if (cetkbuff[0x1F1] == 0x01)
+                else if (cetkbuf[0x1F1] == 0x01)
                     ckeyindexcb.SelectedIndex = 1;
                 else
                     ckeyindexcb.SelectedIndex = 0;
 
                 //time enabled
-                if (cetkbuff[0x247] == 0x00)
+                if (cetkbuf[0x247] == 0x00)
                     timelimitenabledcb.SelectedIndex = 0;
-                else if (cetkbuff[0x247] == 0x01)
+                else if (cetkbuf[0x247] == 0x01)
                     timelimitenabledcb.SelectedIndex = 1;
                 else
                     timelimitenabledcb.SelectedIndex = 0;
@@ -973,7 +990,7 @@ namespace NUS_Downloader
                 byte[] timelimit = new byte[4];
                 for (int i = 0; i < timelimit.Length; i++)
                 {
-                    timelimit[i] = cetkbuff[0x248 + 1];
+                    timelimit[i] = cetkbuf[0x248 + 1];
                 }
                 timelimitsecs.Text = Convert.ToString(System.BitConverter.ToInt32(timelimit, 0));
 
@@ -1103,13 +1120,37 @@ namespace NUS_Downloader
 
         public void PackWAD(string titleid, string tmdfilename, int contentcount, string[] contentnames, string[] contentsizes, string totaldirectory)
         {
+            WriteStatus("Beginning WAD Pack...");
             // Directory stuff
             string currentdir = Application.StartupPath;
             if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
                 currentdir += @"\";
 
             // Create cert file holder
-            byte[] certsbuf = FileLocationToByteArray(currentdir + @"\cert.sys");
+            //byte[] certsbuf = FileLocationToByteArray(currentdir + @"\cert.sys");
+            byte[] certsbuf = new byte[0xA00];
+            if (!(CertsValid()))
+            {
+                WriteStatus("Error: NUSD could not locate cached certs!");
+                return;
+            }
+            for (int c = 0; c < cert_CA.Length; c++)
+            {
+                certsbuf[c] = cert_CA[c];
+            }
+            for (int c = 0; c < cert_CACP.Length; c++)
+            {
+                certsbuf[c + 0x400] = cert_CACP[c];
+            }
+            for (int c = 0; c < cert_CAXS.Length; c++)
+            {
+                certsbuf[c + 0x700] = cert_CAXS[c];
+            }
+            if (!(TotalCertValid(certsbuf)))
+            {
+                WriteStatus("Error: Cert array did not hash properly!");
+                return;
+            }
 
             // Create ticket file holder
             byte[] cetkbuf = FileLocationToByteArray(totaldirectory + @"\cetk");
@@ -1132,7 +1173,7 @@ namespace NUS_Downloader
             // Write cert[] to 0x40.
             wadfs.Seek(0x40, SeekOrigin.Begin);
             wadfs.Write(certsbuf, 0, certsbuf.Length);
-            WriteStatus("Cert wrote (0x" + Convert.ToString(64, 16) + ")");
+            WriteStatus(" - Certs wrote (0x" + Convert.ToString(64, 16) + ")");
 
             // Need 64 byte boundary...
             wadfs.Seek(2624, SeekOrigin.Begin);
@@ -1141,7 +1182,7 @@ namespace NUS_Downloader
             // Write ticket at this point...
             wad.TicketSize = 0x2A4;
             wadfs.Write(cetkbuf, 0, wad.TicketSize);
-            WriteStatus("Ticket wrote (0x" + Convert.ToString((wadfs.Length - 0x2A4), 16) + ")");
+            WriteStatus(" - Ticket wrote (0x" + Convert.ToString((wadfs.Length - 0x2A4), 16) + ")");
 
             // Need 64 byte boundary...
             wadfs.Seek(ByteBoundary(Convert.ToInt32(wadfs.Length)), SeekOrigin.Begin);
@@ -1149,7 +1190,7 @@ namespace NUS_Downloader
             // Write TMD at this point...
             wad.TMDSize = 484 + (contentcount * 36);
             wadfs.Write(tmdbuf, 0, 484 + (contentcount * 36));
-            WriteStatus("TMD wrote (0x" + Convert.ToString((wadfs.Length - (484 + (contentcount * 36))), 16) + ")");
+            WriteStatus(" - TMD wrote (0x" + Convert.ToString((wadfs.Length - (484 + (contentcount * 36))), 16) + ")");
 
             // Preliminary data size of wad file.
             wad.DataSize = 0;
@@ -1165,7 +1206,7 @@ namespace NUS_Downloader
 
                 wadfs.Write(contbuf, 0, contbuf.Length);
 
-                WriteStatus(contentnames[i] + " wrote (0x" + Convert.ToString((wadfs.Length - contbuf.Length), 16) + ")");
+                WriteStatus(" - " + contentnames[i] + " wrote (0x" + Convert.ToString((wadfs.Length - contbuf.Length), 16) + ")");
                 HandleMismatch(int.Parse(contentsizes[i], System.Globalization.NumberStyles.HexNumber), contbuf.Length);
 
                 wad.DataSize += contbuf.Length;
@@ -1319,7 +1360,7 @@ namespace NUS_Downloader
         private void getcerts_Click(object sender, EventArgs e)
         {
             // Get a certs.sys from NUS...
-
+            /*
             // Directory stuff
             string currentdir = Application.StartupPath;
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
@@ -1376,8 +1417,9 @@ namespace NUS_Downloader
             // Cleanup...
             File.Delete(currentdir + "cetk");
             File.Delete(currentdir + "tmd.289");
+            */ 
         }
-
+        /*
         static string getMd5Hash(string input)
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -1412,7 +1454,7 @@ namespace NUS_Downloader
                 return false;
             }
         }
-
+        */
         private void packbox_CheckedChanged(object sender, EventArgs e)
         {
             if (packbox.Checked == true)
@@ -3331,6 +3373,84 @@ namespace NUS_Downloader
                 }
                 WriteStatus(String.Format("{0}v{1}", TitleID, Version));
             }
+        }
+
+        private void ScanForCerts(byte[] tmdortik)
+        {
+            
+            // For some reason a few 00s are cut off, so pad it up to be safe.
+            tmdortik = PadToMultipleOf(tmdortik, 16);
+
+            // Search for cert_CACP
+            if (!(tmdortik.Length < 0x300))
+                for (int a = 0; a < (tmdortik.Length - 0x300); a++)
+                {
+                    byte[] chunk = new byte[0x300];
+                    for (int b = 0; b < 0x300; b++)
+                    {
+                        chunk[b] = tmdortik[a + b];
+                    }
+                    if (Convert.ToBase64String(ComputeSHA(chunk)) == Convert.ToBase64String(cert_CACP_sha1))
+                    {
+                        cert_CACP = chunk;
+                        WriteStatus(" - Cert CA-CP Located!");
+                        break;
+                    }
+                }
+
+            // Search for cert_CAXS
+            if (!(tmdortik.Length < 0x300))
+                for (int a = 0; a < (tmdortik.Length - 0x300); a++)
+                {
+                    byte[] chunk = new byte[0x300];
+                    for (int b = 0; b < 0x300; b++)
+                    {
+                        chunk[b] = tmdortik[a + b];
+                    }
+                    if (Convert.ToBase64String(ComputeSHA(chunk)) == Convert.ToBase64String(cert_CAXS_sha1))
+                    {
+                        cert_CAXS = chunk;
+                        WriteStatus(" - Cert CA-XS Located!");
+                        break;
+                    }
+                }
+
+            // Search for cert_CA
+            if ((!(tmdortik.Length < 0x400)) && ((Convert.ToBase64String(cert_CA) != Convert.ToBase64String(cert_CA_sha1))))
+            {
+                for (int a = 0; a < (tmdortik.Length - 0x400); a++)
+                {
+                    byte[] chunk = new byte[0x400];
+                    for (int b = 0; b < 0x400; b++)
+                    {
+                        chunk[b] = tmdortik[a + b];
+                    }
+                    if (Convert.ToBase64String(ComputeSHA(chunk)) == Convert.ToBase64String(cert_CA_sha1))
+                    {
+                        cert_CA = chunk;
+                        WriteStatus(" - Cert CA Located!");
+                        break;
+                    }
+                }
+            }
+        }
+
+        private bool CertsValid()
+        {
+            if (Convert.ToBase64String(ComputeSHA(cert_CA)) != Convert.ToBase64String(cert_CA_sha1))
+                return false;
+            if (Convert.ToBase64String(ComputeSHA(cert_CACP)) != Convert.ToBase64String(cert_CACP_sha1))
+                return false;
+            if (Convert.ToBase64String(ComputeSHA(cert_CAXS)) != Convert.ToBase64String(cert_CAXS_sha1))
+                return false;
+            return true;
+        }
+
+        private bool TotalCertValid(byte[] cert_sys)
+        {
+            if (Convert.ToBase64String(ComputeSHA(cert_sys)) != Convert.ToBase64String(cert_total_sha1))
+                return false;
+            return true;
         }
     }
 }

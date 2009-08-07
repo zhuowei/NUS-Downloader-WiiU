@@ -42,7 +42,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
-            this.getcerts = new System.Windows.Forms.Button();
             this.wadnamebox = new System.Windows.Forms.TextBox();
             this.ignoreticket = new System.Windows.Forms.CheckBox();
             this.decryptbox = new System.Windows.Forms.CheckBox();
@@ -244,18 +243,6 @@
             this.button2.Text = "About";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // getcerts
-            // 
-            this.getcerts.BackColor = System.Drawing.Color.Bisque;
-            this.getcerts.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.getcerts.Location = new System.Drawing.Point(48, 246);
-            this.getcerts.Name = "getcerts";
-            this.getcerts.Size = new System.Drawing.Size(176, 46);
-            this.getcerts.TabIndex = 16;
-            this.getcerts.Text = "Generate Certs";
-            this.getcerts.UseVisualStyleBackColor = false;
-            this.getcerts.Click += new System.EventHandler(this.getcerts_Click);
             // 
             // wadnamebox
             // 
@@ -757,9 +744,9 @@
             this.contentModBox.Controls.Add(this.button11);
             this.contentModBox.Controls.Add(this.button9);
             this.contentModBox.Controls.Add(this.button10);
-            this.contentModBox.Location = new System.Drawing.Point(268, 153);
+            this.contentModBox.Location = new System.Drawing.Point(278, 434);
             this.contentModBox.Name = "contentModBox";
-            this.contentModBox.Size = new System.Drawing.Size(249, 327);
+            this.contentModBox.Size = new System.Drawing.Size(249, 69);
             this.contentModBox.TabIndex = 41;
             this.contentModBox.TabStop = false;
             this.contentModBox.Text = "Edit Title Contents";
@@ -907,7 +894,7 @@
             this.toolStripSeparator3,
             this.emulateUpdate});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(220, 76);
+            this.extrasStrip.Size = new System.Drawing.Size(220, 54);
             // 
             // loadInfoFromTMDToolStripMenuItem
             // 
@@ -965,18 +952,17 @@
             this.Controls.Add(this.button3);
             this.Controls.Add(this.shamelessvariablelabel);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.contentModBox);
             this.Controls.Add(this.button17);
             this.Controls.Add(this.ticketgpbox);
             this.Controls.Add(this.tmdgpbox);
             this.Controls.Add(this.truchabox);
             this.Controls.Add(this.databaseButton);
             this.Controls.Add(this.button5);
+            this.Controls.Add(this.contentModBox);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.decryptbox);
             this.Controls.Add(this.ignoreticket);
             this.Controls.Add(this.wadnamebox);
-            this.Controls.Add(this.getcerts);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.titleversion);
@@ -1028,7 +1014,6 @@
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button getcerts;
         private System.Windows.Forms.TextBox wadnamebox;
         private System.Windows.Forms.CheckBox ignoreticket;
         private System.Windows.Forms.CheckBox decryptbox;
