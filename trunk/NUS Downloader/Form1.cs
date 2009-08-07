@@ -1791,12 +1791,7 @@ namespace NUS_Downloader
             // Change WAD name if packed is already checked...
             if (packbox.Checked)
             {
-                if (titlename.Contains("IOS"))
-                    wadnamebox.Text = titlename + "-64-[v].wad";
-                else
-                    wadnamebox.Text = titlename + "-NUS-[v].wad";
-                if (titleversion.Text != "")
-                    wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
+                OfficialWADNaming(titlename);
             }
 
             // Check for danger item
@@ -1805,6 +1800,19 @@ namespace NUS_Downloader
                 WriteStatus("\r\n" + e.ClickedItem.OwnerItem.OwnerItem.ToolTipText);
             }
         }
+
+        public void OfficialWADNaming(string titlename)
+        {
+            if (titlename.Contains("IOS"))
+                wadnamebox.Text = titlename + "-64-[v].wad";
+            else if (titlename.Contains("System Menu"))
+                wadnamebox.Text = "RVL-WiiSystemmenu-[v].wad";
+            else
+                wadnamebox.Text = titlename + "-NUS-[v].wad";
+            if (titleversion.Text != "")
+                wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
+        }
+
         void wwitem_regionclicked(object sender, ToolStripItemClickedEventArgs e)
         {
             titleidbox.Text = e.ClickedItem.OwnerItem.Text.Substring(0, 16);
@@ -1831,12 +1839,7 @@ namespace NUS_Downloader
             // Change WAD name if packed is already checked...
             if (packbox.Checked)
             {
-                if (titlename.Contains("IOS"))
-                    wadnamebox.Text = titlename + "-64-[v].wad";
-                else
-                    wadnamebox.Text = titlename + "-NUS-[v].wad";
-                if (titleversion.Text != "")
-                    wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
+                OfficialWADNaming(titlename);
             }
 
             // Check for danger item
@@ -2313,6 +2316,9 @@ namespace NUS_Downloader
         private void UpdatePackedName()
         {
             // Change WAD name if applicable
+
+            string title_name = null;
+
             if ((titleidbox.Enabled == true) && (packbox.Checked == true))
             {
                 if (titleversion.Text != "")
@@ -2323,8 +2329,18 @@ namespace NUS_Downloader
                 {
                     wadnamebox.Text = titleidbox.Text + "-NUS-[v]" + titleversion.Text + ".wad";
                 }
+
+                if ((File.Exists("database.xml") == true) && (titleidbox.Text.Length == 16))
+                    title_name = NameFromDatabase(titleidbox.Text);
+
+                if (title_name != null)
+                {
+                    wadnamebox.Text = wadnamebox.Text.Replace(titleidbox.Text, title_name);
+                    OfficialWADNaming(title_name);
+                }
             }
             wadnamebox.Text = RemoveIllegalCharacters(wadnamebox.Text);
+            
         }
 
         // This is WIP code/theory...
@@ -3451,6 +3467,60 @@ namespace NUS_Downloader
             if (Convert.ToBase64String(ComputeSHA(cert_sys)) != Convert.ToBase64String(cert_total_sha1))
                 return false;
             return true;
+        }
+
+        private string NameFromDatabase(string titleid)
+        {
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.Load("database.xml");
+
+            // Variables
+            string[] XMLNodeTypes = new string[4] { "SYS", "IOS", "VC", "WW" };
+
+            // Loop through XMLNodeTypes
+            for (int i = 0; i < XMLNodeTypes.Length; i++) // FOR THE FOUR TYPES OF NODES
+            {
+                XmlNodeList XMLSpecificNodeTypeList = xDoc.GetElementsByTagName(XMLNodeTypes[i]);
+
+                for (int x = 0; x < XMLSpecificNodeTypeList.Count; x++) // FOR THE LIST OF A TYPE OF NODE
+                {
+                    bool found_it = false;
+
+                    // Lol.
+                    XmlNodeList ChildrenOfTheNode = XMLSpecificNodeTypeList[x].ChildNodes;
+
+                    for (int z = 0; z < ChildrenOfTheNode.Count; z++) // FOR EACH CHILD NODE
+                    {
+                        switch (ChildrenOfTheNode[z].Name)
+                        {
+                            case "titleID":
+                                if (ChildrenOfTheNode[z].InnerText == titleid)
+                                    found_it = true;
+                                else if ((ChildrenOfTheNode[z].InnerText.Substring(0, 14) + "XX") == (titleid.Substring(0, 14) + "XX") && (titleid.Substring(0, 14) != "00000001000000"))
+                                    found_it = true;
+                                else
+                                    found_it = false;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    if (found_it) 
+                    {
+                        for (int z = 0; z < ChildrenOfTheNode.Count; z++) // FOR EACH CHILD NODE
+                        {
+                            switch (ChildrenOfTheNode[z].Name)
+                            {
+                                case "name":
+                                    return ChildrenOfTheNode[z].InnerText;
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }
