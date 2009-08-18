@@ -1230,16 +1230,17 @@ namespace NUS_Downloader
         public void PackWAD(string titleid, string tmdfilename, string totaldirectory)
         {
             WriteStatus("Beginning WAD Pack...");
-            // Directory stuff
+
+            // Obtain Current Directory
             string currentdir = Application.StartupPath;
             if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
                 currentdir += @"\";
 
+            // Create instance of WAD Packing class
             WADPacker packer = new WADPacker();
             packer.StatusChanged += WriteStatus;
 
-            // Create cert file holder
-            //byte[] certsbuf = FileLocationToByteArray(currentdir + @"\cert.sys");
+            // Mash together certs into one array.
             byte[] certsbuf = new byte[0xA00];
             if (!(CertsValid()))
             {
@@ -1259,27 +1260,19 @@ namespace NUS_Downloader
             }
             packer.Certs = certsbuf;
             
-            // Create ticket file holder
-            //byte[] cetkbuf = FileLocationToByteArray(totaldirectory + @"\cetk");
+            // Read TMD/TIK into Packer.
             packer.Ticket = FileLocationToByteArray(totaldirectory + @"\cetk");
-
-            // Create tmd file holder
-            //byte[] tmdbuf = FileLocationToByteArray(totaldirectory + @"\" + tmdfilename);
             packer.TMD = FileLocationToByteArray(totaldirectory + @"\" + tmdfilename);
             
             // Get the TMD variables in here instead...
             int contentcount = ContentCount(packer.TMD);
-            //packer.TMDContentCount = ContentCount(packer.TMD);
             string[] contentnames = GetContentNames(packer.TMD, contentcount);
-            //string[] contentsizes = 
+           
             packer.tmdnames = GetContentNames(packer.TMD, contentcount);
             packer.tmdsizes = GetContentSizes(packer.TMD, contentcount);
 
             if (wadnamebox.Text.Contains("[v]") == true)
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
-            
-            // SaveAs Dialog
-            string wad_filename = totaldirectory + @"\" + RemoveIllegalCharacters(wadnamebox.Text);
             
             if (!(String.IsNullOrEmpty(WAD_Saveas_Filename)))
             {
@@ -1288,6 +1281,7 @@ namespace NUS_Downloader
             }
             else
             {
+                string wad_filename = totaldirectory + @"\" + RemoveIllegalCharacters(wadnamebox.Text);
                 packer.Directory = totaldirectory;
                 packer.FileName = System.IO.Path.GetFileName(wad_filename);
             }
@@ -1300,97 +1294,9 @@ namespace NUS_Downloader
             }
             packer.Contents = contents_array;
            
+            // Send operations over to the packer...
             packer.PackWAD();
-            /*
-            // Create wad file
-            FileStream wadfs = new FileStream(wad_filename, FileMode.Create);
-
-            // Add wad stuffs
-            WADHeader wad = new WADHeader();
-            wad.HeaderSize = 0x20;
-            wad.WadType = 0x49730000;
-            wad.CertChainSize = 0xA00;
-
-            // Write cert[] to 0x40.
-            wadfs.Seek(0x40, SeekOrigin.Begin);
-            wadfs.Write(certsbuf, 0, certsbuf.Length);
-            WriteStatus(" - Certs wrote (0x" + Convert.ToString(64, 16) + ")");
-
-            // Need 64 byte boundary...
-            wadfs.Seek(2624, SeekOrigin.Begin);
-
-            // Write ticket at this point...
-            wad.TicketSize = 0x2A4;
-            wadfs.Write(cetkbuf, 0, wad.TicketSize);
-            WriteStatus(" - Ticket wrote (0x" + Convert.ToString((wadfs.Length - 0x2A4), 16) + ")");
-
-            // Need 64 byte boundary...
-            wadfs.Seek(ByteBoundary(Convert.ToInt32(wadfs.Length)), SeekOrigin.Begin);
-
-            // Write TMD at this point...
-            wad.TMDSize = 484 + (contentcount * 36);
-            wadfs.Write(tmdbuf, 0, 484 + (contentcount * 36));
-            WriteStatus(" - TMD wrote (0x" + Convert.ToString((wadfs.Length - (484 + (contentcount * 36))), 16) + ")");
-
-            // Preliminary data size of wad file.
-            wad.DataSize = 0;
-
-            // Loop n Add contents
-            for (int i = 0; i < contentcount; i++)
-            {
-                // Need 64 byte boundary...
-                wadfs.Seek(ByteBoundary(Convert.ToInt32(wadfs.Length)), SeekOrigin.Begin);
-
-                // Create content file holder
-                byte[] contbuf = FileLocationToByteArray(totaldirectory + @"\" + contentnames[i]);
-
-                wadfs.Write(contbuf, 0, contbuf.Length);
-
-                WriteStatus(" - " + contentnames[i] + " wrote (0x" + Convert.ToString((wadfs.Length - contbuf.Length), 16) + ")");
-                HandleMismatch(int.Parse(contentsizes[i], System.Globalization.NumberStyles.HexNumber), contbuf.Length);
-
-                wad.DataSize += contbuf.Length;
-            }
-
-            // Seek the beginning of the WAD...
-            wadfs.Seek(0, SeekOrigin.Begin);
-
-            // Write initial part of header
-            byte[] start = new byte[8] { 0x00, 0x00, 0x00, 0x20, 0x49, 0x73, 0x00, 0x00 };
-            wadfs.Write(start, 0, start.Length);
-
-            // Write CertChainLength
-            wadfs.Seek(0x08, SeekOrigin.Begin);
-            byte[] chainsize = InttoByteArray(wad.CertChainSize, 4);
-            wadfs.Write(chainsize, 0, 4);
-
-            // Write res
-            byte[] reserved = new byte[4] { 0x00, 0x00, 0x00, 0x00 };
-            wadfs.Seek(0x0C, SeekOrigin.Begin);
-            wadfs.Write(reserved, 0, 4);
-
-            // Write ticketsize
-            byte[] ticketsize = new byte[4] { 0x00, 0x00, 0x02, 0xA4 };
-            wadfs.Seek(0x10, SeekOrigin.Begin);
-            wadfs.Write(ticketsize, 0, 4);
-
-            // Write tmdsize
-            int strippedtmd = 484 + (contentcount * 36);
-            byte[] tmdsize = InttoByteArray(strippedtmd, 4);
-            wadfs.Seek(0x14, SeekOrigin.Begin);
-            wadfs.Write(tmdsize, 0, 4);
-
-            // Write data size
-            wadfs.Seek(0x18, SeekOrigin.Begin);
-            byte[] datasize = InttoByteArray(wad.DataSize, 4);
-            wadfs.Write(datasize, 0, 4);
-
-            // Close filesystem...
-            wadfs.Close();
-
-            // Finished.
-            WriteStatus("WAD Created: " + wadnamebox.Text);
-            */
+            
             // Delete contents now...
             if (deletecontentsbox.Checked)
             {
@@ -1398,9 +1304,7 @@ namespace NUS_Downloader
                 File.Delete(totaldirectory + @"\" + tmdfilename);
                 File.Delete(totaldirectory + @"\cetk");
                 for (int a = 0; a < contentnames.Length; a++)
-                {
                     File.Delete(totaldirectory + @"\" + contentnames[a]);
-                }
                 WriteStatus(" - Contents have been deleted.");
                 string[] leftovers = Directory.GetFiles(totaldirectory);
                 if (leftovers.Length <= 0)
