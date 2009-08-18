@@ -15,13 +15,14 @@ namespace NUS_Downloader
         public byte[] Certs { get { return Certsys;} set { Certsys = value; CertChainSize = Certsys.Length; } }
         private byte[] tmd;
         public byte[] TMD { get { return tmd; } 
-            set {
+            set 
+            {
                 tmd = value;
                 TMDContentCount = ContentCount(TMD);
                 TMDSize = 484 + (TMDContentCount * 36);
             } }
-        public byte[] Ticket; //{ get { return Ticket; } set { Ticket = value; } }
-        private int TMDContentCount; //{ get { return TMDContentCount; } set { TMDContentCount = value; } }
+        public byte[] Ticket;
+        private int TMDContentCount;
 
         // WAD Contents
         private byte[][] TMDContents;
@@ -35,19 +36,19 @@ namespace NUS_Downloader
             } }
         
         // WAD Saving Variables
-        public string Directory; //{ get { return Directory; } set { Directory = value; } }
-        public string FileName; //{ get { return FileName; } set { FileName = value; } }
+        public string Directory;
+        public string FileName;
 
         // TMD Informations
-        public string[] tmdnames; //{ get { return tmdnames; } set { tmdnames = value; } }
-        public string[] tmdsizes; //{ get { return tmdsizes; } set { tmdsizes = value; } }
+        public string[] tmdnames;
+        public string[] tmdsizes;
 
         // WAD Header Variables
         private const int HeaderSize = 0x20;
-        private int CertChainSize; //{ get { return CertChainSize; } set { CertChainSize = value; } }
+        private int CertChainSize;
         private const int TicketSize = 0x2A4;
-        private int TMDSize; //{ get { return TMDSize; } set { TMDSize = value; } }
-        private int DataSize; //{ get { return DataSize; } set { DataSize = value; } }
+        private int TMDSize;
+        private int DataSize;
         private byte[] WADMagic = new byte[8] { 0x00, 0x00, 0x00, 0x20, 0x49, 0x73, 0x00, 0x00 };
         private byte[] RESERVED_CONST = new byte[4] { 0x00, 0x00, 0x00, 0x00 };
         private byte[] TIKSIZE_CONST = new byte[4] { 0x00, 0x00, 0x02, 0xA4 };
@@ -159,11 +160,11 @@ namespace NUS_Downloader
             // Write data size
             wadfs.Seek(0x18, SeekOrigin.Begin);
             wadfs.Write(ConvertInttoByteArray(DataSize, 4), 0, 4);
-            StatusChanged(" - WAD Header wrote (0x00)");
+            StatusChanged(" - Header wrote (0x00)");
 
             // Write cert[] to 0x40.
             wadfs.Seek(0x40, SeekOrigin.Begin);
-            wadfs.Write(Certs, 0, Certs.Length);
+            wadfs.Write(Certsys, 0, Certsys.Length);
             StatusChanged(String.Format(" - Certs wrote (0x{0})", Convert.ToString(64, 16)));
 
             // Pad to next 64 byte boundary.
@@ -177,7 +178,7 @@ namespace NUS_Downloader
             wadfs.Seek(PadToMultipleOf(wadfs.Length, 64), SeekOrigin.Begin);
 
             // Write TMD at this point...
-            wadfs.Write(TMD, 0, TMDSize);
+            wadfs.Write(tmd, 0, TMDSize);
             StatusChanged(String.Format(" - TMD wrote (0x{0})", Convert.ToString((wadfs.Length - TMDSize), 16)));
 
             // Add the individual contents
@@ -186,10 +187,10 @@ namespace NUS_Downloader
                 // Pad to next 64 byte boundary...
                 wadfs.Seek(PadToMultipleOf(wadfs.Length, 64), SeekOrigin.Begin);
 
-                wadfs.Write(Contents[a], 0, Contents[a].Length);
+                wadfs.Write(TMDContents[a], 0, Contents[a].Length);
 
-                StatusChanged(String.Format(" - {0} wrote (0x{1})", tmdnames[a], Convert.ToString((wadfs.Length - Contents[a].Length), 16)));
-                HandleMismatch(int.Parse(tmdsizes[a], System.Globalization.NumberStyles.HexNumber), Contents[a].Length);
+                StatusChanged(String.Format(" - {0} wrote (0x{1})", tmdnames[a], Convert.ToString((wadfs.Length - TMDContents[a].Length), 16)));
+                HandleMismatch(int.Parse(tmdsizes[a], System.Globalization.NumberStyles.HexNumber), TMDContents[a].Length);
             }
 
             // Close filesystem...
