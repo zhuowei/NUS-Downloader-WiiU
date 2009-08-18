@@ -22,7 +22,6 @@ namespace NUS_Downloader
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
-        const string certs_MD5 = "7677AD47BAA5D6E3E313E72661FBDC16";
         
         // Images do not compare unless globalized...
         Image green = Properties.Resources.bullet_green;
@@ -42,6 +41,8 @@ namespace NUS_Downloader
 
         byte[] cert_total_sha1 = new byte[20] {0xAC, 0xE0, 0xF1, 0x5D, 0x2A, 0x85, 0x1C, 0x38, 0x3F, 0xE4, 0x65, 0x7A, 0xFC, 0x38, 0x40, 0xD6, 0xFF, 0xE3, 0x0A, 0xD0};
 
+        string WAD_Saveas_Filename;
+        /*
         public struct WADHeader
         {
             public int HeaderSize;
@@ -52,7 +53,7 @@ namespace NUS_Downloader
             public int TMDSize;
             public int DataSize;
             public int FooterSize;
-        };
+        };*/
 
         public struct TitleContent
         {
@@ -171,6 +172,10 @@ namespace NUS_Downloader
             this.Size = this.MinimumSize;
         }
 
+        /// <summary>
+        /// Checks certain file existances, etc.
+        /// </summary>
+        /// <returns></returns>
         private bool BootChecks()
         {
             // Success?
@@ -265,6 +270,11 @@ namespace NUS_Downloader
             return result;
         }
 
+        /// <summary>
+        /// Gets the database version.
+        /// </summary>
+        /// <param name="file">The database file.</param>
+        /// <returns></returns>
         private string GetDatabaseVersion(string file)
         {
             // Read version of Database.xml
@@ -284,6 +294,9 @@ namespace NUS_Downloader
             extrasStrip.Show(Extrasbtn, 2, 2);
         }
 
+        /// <summary>
+        /// Loads the title info from TMD.
+        /// </summary>
         private void LoadTitleFromTMD()
         {
             // Show dialog for opening TMD file...
@@ -350,6 +363,11 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Returns needed IOS from TMD.
+        /// </summary>
+        /// <param name="tmd">The TMD.</param>
+        /// <returns></returns>
         private string IOSNeededFromTMD(byte[] tmd)
         {
             string sysversion = "";
@@ -361,6 +379,11 @@ namespace NUS_Downloader
             return sysversion;
         }
 
+        /// <summary>
+        /// Returns content count of TMD
+        /// </summary>
+        /// <param name="tmd">The TMD.</param>
+        /// <returns>int Count of Contents</returns>
         private int ContentCount(byte[] tmd)
         { 
             // nbr_cont (0xDE) len=0x02
@@ -369,6 +392,11 @@ namespace NUS_Downloader
             return nbr_cont;
         }
 
+        /// <summary>
+        /// Gets a TMD Boot Index
+        /// </summary>
+        /// <param name="tmd">The TMD.</param>
+        /// <returns>int BootIndex</returns>
         private int GetBootIndex(byte[] tmd)
         {
             // nbr_cont (0xE0) len=0x02
@@ -377,6 +405,12 @@ namespace NUS_Downloader
             return bootidx;
         }
 
+        /// <summary>
+        /// Sets the Boot index of a TMD.
+        /// </summary>
+        /// <param name="tmd">The TMD.</param>
+        /// <param name="bootindex">Index to set it too</param>
+        /// <returns>Edited TMD</returns>
         private byte[] SetBootIndex(byte[] tmd, int bootindex)
         {
             // nbr_cont (0xE0) len=0x02
@@ -386,7 +420,11 @@ namespace NUS_Downloader
             return tmd;
         }
 
-        private void WriteStatus(string Update)
+        /// <summary>
+        /// Writes the status to the statusbox.
+        /// </summary>
+        /// <param name="Update">The update.</param>
+        public void WriteStatus(string Update)
         {
             // Small function for writing text to the statusbox...
             if (statusbox.Text == "")
@@ -450,6 +488,11 @@ namespace NUS_Downloader
             return ret;
         }
 
+        /// <summary>
+        /// Makes a hex string the correct length.
+        /// </summary>
+        /// <param name="hex">The hex.</param>
+        /// <returns></returns>
         private string MakeProperLength(string hex)
         {
             // If hex is like, 'A', makes it '0A', etc.
@@ -459,6 +502,11 @@ namespace NUS_Downloader
             return hex;
         }
 
+        /// <summary>
+        /// Converts to hex.
+        /// </summary>
+        /// <param name="decval">The string.</param>
+        /// <returns>hex string</returns>
         private string ConvertToHex(string decval)
         {
             // Convert text string to unsigned integer
@@ -466,6 +514,10 @@ namespace NUS_Downloader
             return String.Format("{0:x2}", uiDecimal);
         }
 
+        /// <summary>
+        /// Reads the type of the Title ID.
+        /// </summary>
+        /// <param name="ttlid">The TitleID.</param>
         private void ReadIDType(string ttlid)
         {
             /*  Wiibrew TitleID Info...
@@ -488,39 +540,28 @@ namespace NUS_Downloader
              */
 
             if (ttlid.Substring(0, 8) == "00000001")
-            {
                 WriteStatus("ID Type: System Title. BE CAREFUL!");
-            }
             else if ((ttlid.Substring(0, 8) == "00010000") || (ttlid.Substring(0, 8) == "00010004"))
-            {
                 WriteStatus("ID Type: Disc-Based Game. Unlikely NUS Content!");
-            }
             else if (ttlid.Substring(0, 8) == "00010001")
-            {
                 WriteStatus("ID Type: Downloaded Channel. Possible NUS Content.");
-            }
             else if (ttlid.Substring(0, 8) == "00010002")
-            {
                 WriteStatus("ID Type: System Channel. BE CAREFUL!");
-            }
             else if (ttlid.Substring(0, 8) == "00010004")
-            {
                 WriteStatus("ID Type: Game Channel. Unlikely NUS Content!");
-            }
             else if (ttlid.Substring(0, 8) == "00010005")
-            {
                 WriteStatus("ID Type: Downloaded Game Content. Unlikely NUS Content!");
-            }
             else if (ttlid.Substring(0, 8) == "00010008")
-            {
                 WriteStatus("ID Type: 'Hidden' Channel. Unlikely NUS Content!");
-            }
             else
-            {
                 WriteStatus("ID Type: Unknown. Unlikely NUS Content!");
-            }
         }
 
+        /// <summary>
+        /// Trims the leading zeros of a string.
+        /// </summary>
+        /// <param name="num">The string with leading zeros.</param>
+        /// <returns>no-0-string</returns>
         private string TrimLeadingZeros(string num)
         {
             int startindex = 0;
@@ -535,6 +576,12 @@ namespace NUS_Downloader
             return num.Substring(startindex, (num.Length - startindex));
         }
 
+        /// <summary>
+        /// Gets the content names in a TMD.
+        /// </summary>
+        /// <param name="tmdfile">The TMD.</param>
+        /// <param name="length">The TMD contentcount.</param>
+        /// <returns>Array of Content names</returns>
         private string[] GetContentNames(byte[] tmdfile, int length)
         {
             string[] contentnames = new string[length];
@@ -552,6 +599,12 @@ namespace NUS_Downloader
             return contentnames;
         }
 
+        /// <summary>
+        /// Gets the content sizes in a TMD.
+        /// </summary>
+        /// <param name="tmdfile">The TMD.</param>
+        /// <param name="length">The TMD contentcount.</param>
+        /// <returns></returns>
         private string[] GetContentSizes(byte[] tmdfile, int length)
         {
             string[] contentsizes = new string[length];
@@ -583,6 +636,12 @@ namespace NUS_Downloader
             return contentsizes;
         }
 
+        /// <summary>
+        /// Gets the content hashes.
+        /// </summary>
+        /// <param name="tmdfile">The tmd.</param>
+        /// <param name="length">The content_count.</param>
+        /// <returns></returns>
         private byte[] GetContentHashes(byte[] tmdfile, int length)
         {
             byte[] contenthashes = new byte[length*20];
@@ -599,7 +658,12 @@ namespace NUS_Downloader
             return contenthashes;
         }
 
-        // Returns array of shared/normal values for a tmd...
+        /// <summary>
+        /// Gets the content types.
+        /// </summary>
+        /// <param name="tmdfile">The tmd.</param>
+        /// <param name="length">The content_count.</param>
+        /// <returns></returns>
         private int[] GetContentTypes(byte[] tmdfile, int length)
         {
             int[] contenttypes = new int[length];
@@ -617,6 +681,12 @@ namespace NUS_Downloader
             return contenttypes;
         }
 
+        /// <summary>
+        /// Gets the content indices.
+        /// </summary>
+        /// <param name="tmdfile">The tmd.</param>
+        /// <param name="length">The contentcount.</param>
+        /// <returns></returns>
         private byte[] GetContentIndices(byte[] tmdfile, int length)
         {
             byte[] contentindices = new byte[length];
@@ -651,6 +721,20 @@ namespace NUS_Downloader
                     statusbox.Text = " --- " + titleidbox.Text + " ---";
                 }
             }
+
+            // Handle SaveAs here so it shows up properly...
+            if (saveaswadbox.Checked)
+            {
+                SaveFileDialog wad_saveas = new SaveFileDialog();
+                wad_saveas.Title = "Save WAD File...";
+                wad_saveas.Filter = "WAD Files|*.wad|All Files|*.*";
+                wad_saveas.AddExtension = true;
+                DialogResult dres = wad_saveas.ShowDialog();
+                if (dres != DialogResult.Cancel)
+                    WAD_Saveas_Filename = wad_saveas.FileName;
+            }
+            else
+                WAD_Saveas_Filename = "";
 
             // Running Downloads in background so no form freezing
             NUSDownloader.RunWorkerAsync();
@@ -1006,12 +1090,12 @@ namespace NUS_Downloader
                     System.Threading.Thread.Sleep(1000);
                 }
 
-                // Re-Gather information...
+                /* Re-Gather information...
                 byte[] tmdrefresh = FileLocationToByteArray(titledirectory + tmdfull);
                 tmdcontents = GetContentNames(tmd, ContentCount(tmdrefresh));
                 tmdsizes = GetContentSizes(tmd, ContentCount(tmdrefresh));
                 tmdhashes = GetContentHashes(tmd, ContentCount(tmdrefresh));
-                tmdindices = GetContentIndices(tmd, ContentCount(tmdrefresh));
+                tmdindices = GetContentIndices(tmd, ContentCount(tmdrefresh)); */
 
                 /*
                 WriteStatus("Trucha Signing TMD...");
@@ -1043,7 +1127,7 @@ namespace NUS_Downloader
 
             if ((packbox.Checked == true) && (wiimode == true))
             {
-                PackWAD(titleid, tmdfull, tmdcontents.Length, tmdcontents, tmdsizes, titledirectory);
+                PackWAD(titleid, tmdfull, titledirectory);
             }
 
             SetEnableforDownload(true);
@@ -1052,6 +1136,9 @@ namespace NUS_Downloader
 
         }
 
+        /// <summary>
+        /// Creates the title directory.
+        /// </summary>
         private void CreateTitleDirectory()
         {
             // Creates the directory for the downloaded title...
@@ -1080,6 +1167,9 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Deletes the title directory.
+        /// </summary>
         private void DeleteTitleDirectory()
         {
             string currentdir = Application.StartupPath;
@@ -1099,6 +1189,14 @@ namespace NUS_Downloader
             //Directory.CreateDirectory(currentdir + titleidbox.Text);
         }
 
+        /// <summary>
+        /// Downloads the NUS file.
+        /// </summary>
+        /// <param name="titleid">The titleid.</param>
+        /// <param name="filename">The filename.</param>
+        /// <param name="placementdir">The placementdir.</param>
+        /// <param name="sizeinbytes">The sizeinbytes.</param>
+        /// <param name="iswiititle">if set to <c>true</c> [iswiititle].</param>
         private void DownloadNUSFile(string titleid, string filename, string placementdir, int sizeinbytes, bool iswiititle)
         {
             // Create NUS URL...
@@ -1118,13 +1216,27 @@ namespace NUS_Downloader
             generalWC.DownloadFile(nusfileurl, placementdir + filename);
         }
 
-        public void PackWAD(string titleid, string tmdfilename, int contentcount, string[] contentnames, string[] contentsizes, string totaldirectory)
+        void StatusChange(string status)
+        {
+            WriteStatus(status);
+        }
+
+        /// <summary>
+        /// Packs the WAD.
+        /// </summary>
+        /// <param name="titleid">The titleid.</param>
+        /// <param name="tmdfilename">The tmdfilename.</param>
+        /// <param name="totaldirectory">The working directory.</param>
+        public void PackWAD(string titleid, string tmdfilename, string totaldirectory)
         {
             WriteStatus("Beginning WAD Pack...");
             // Directory stuff
             string currentdir = Application.StartupPath;
             if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
                 currentdir += @"\";
+
+            WADPacker packer = new WADPacker();
+            packer.StatusChanged += WriteStatus;
 
             // Create cert file holder
             //byte[] certsbuf = FileLocationToByteArray(currentdir + @"\cert.sys");
@@ -1135,34 +1247,63 @@ namespace NUS_Downloader
                 return;
             }
             for (int c = 0; c < cert_CA.Length; c++)
-            {
                 certsbuf[c] = cert_CA[c];
-            }
             for (int c = 0; c < cert_CACP.Length; c++)
-            {
                 certsbuf[c + 0x400] = cert_CACP[c];
-            }
             for (int c = 0; c < cert_CAXS.Length; c++)
-            {
                 certsbuf[c + 0x700] = cert_CAXS[c];
-            }
             if (!(TotalCertValid(certsbuf)))
             {
                 WriteStatus("Error: Cert array did not hash properly!");
                 return;
             }
-
+            packer.Certs = certsbuf;
+            
             // Create ticket file holder
-            byte[] cetkbuf = FileLocationToByteArray(totaldirectory + @"\cetk");
+            //byte[] cetkbuf = FileLocationToByteArray(totaldirectory + @"\cetk");
+            packer.Ticket = FileLocationToByteArray(totaldirectory + @"\cetk");
 
             // Create tmd file holder
-            byte[] tmdbuf = FileLocationToByteArray(totaldirectory + @"\" + tmdfilename);
+            //byte[] tmdbuf = FileLocationToByteArray(totaldirectory + @"\" + tmdfilename);
+            packer.TMD = FileLocationToByteArray(totaldirectory + @"\" + tmdfilename);
+            
+            // Get the TMD variables in here instead...
+            int contentcount = ContentCount(packer.TMD);
+            //packer.TMDContentCount = ContentCount(packer.TMD);
+            string[] contentnames = GetContentNames(packer.TMD, contentcount);
+            //string[] contentsizes = 
+            packer.tmdnames = GetContentNames(packer.TMD, contentcount);
+            packer.tmdsizes = GetContentSizes(packer.TMD, contentcount);
 
             if (wadnamebox.Text.Contains("[v]") == true)
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
-
+            
+            // SaveAs Dialog
+            string wad_filename = totaldirectory + @"\" + RemoveIllegalCharacters(wadnamebox.Text);
+            
+            if (!(String.IsNullOrEmpty(WAD_Saveas_Filename)))
+            {
+                packer.FileName = System.IO.Path.GetFileName(WAD_Saveas_Filename);
+                packer.Directory = WAD_Saveas_Filename.Replace(packer.FileName, "");
+            }
+            else
+            {
+                packer.Directory = totaldirectory;
+                packer.FileName = System.IO.Path.GetFileName(wad_filename);
+            }
+            
+            // Gather contents...
+            byte[][] contents_array = new byte[contentcount][];
+            for (int a = 0; a < contentcount; a++)
+            {
+                contents_array[a] = FileLocationToByteArray(totaldirectory + contentnames[a]);
+            }
+            packer.Contents = contents_array;
+           
+            packer.PackWAD();
+            /*
             // Create wad file
-            FileStream wadfs = new FileStream(totaldirectory + @"\" + RemoveIllegalCharacters(wadnamebox.Text), FileMode.Create);
+            FileStream wadfs = new FileStream(wad_filename, FileMode.Create);
 
             // Add wad stuffs
             WADHeader wad = new WADHeader();
@@ -1178,7 +1319,6 @@ namespace NUS_Downloader
             // Need 64 byte boundary...
             wadfs.Seek(2624, SeekOrigin.Begin);
 
-            // Cert is 2560
             // Write ticket at this point...
             wad.TicketSize = 0x2A4;
             wadfs.Write(cetkbuf, 0, wad.TicketSize);
@@ -1245,13 +1385,38 @@ namespace NUS_Downloader
             byte[] datasize = InttoByteArray(wad.DataSize, 4);
             wadfs.Write(datasize, 0, 4);
 
-            // Finished.
-            WriteStatus("WAD Created: " + wadnamebox.Text);
-
             // Close filesystem...
             wadfs.Close();
+
+            // Finished.
+            WriteStatus("WAD Created: " + wadnamebox.Text);
+            */
+            // Delete contents now...
+            if (deletecontentsbox.Checked)
+            {
+                WriteStatus("Deleting contents...");
+                File.Delete(totaldirectory + @"\" + tmdfilename);
+                File.Delete(totaldirectory + @"\cetk");
+                for (int a = 0; a < contentnames.Length; a++)
+                {
+                    File.Delete(totaldirectory + @"\" + contentnames[a]);
+                }
+                WriteStatus(" - Contents have been deleted.");
+                string[] leftovers = Directory.GetFiles(totaldirectory);
+                if (leftovers.Length <= 0)
+                {
+                    WriteStatus(" - Title directory was empty; Deleted.");
+                    Directory.Delete(totaldirectory);
+                }
+                WriteStatus("All deletion completed.");
+            }
         }
 
+        /// <summary>
+        /// Returns next 0x40 padded length.
+        /// </summary>
+        /// <param name="currentlength">The currentlength.</param>
+        /// <returns></returns>
         private long ByteBoundary(int currentlength)
         {
             // Gets the next 0x40 offset.
@@ -1270,6 +1435,12 @@ namespace NUS_Downloader
             return (long)thelength;
         }
 
+        /// <summary>
+        /// Int -> Byte[] (OLD)
+        /// </summary>
+        /// <param name="inte">The int.</param>
+        /// <param name="arraysize">The array length.</param>
+        /// <returns></returns>
         private byte[] InttoByteArray(int inte, int arraysize)
         {
             // Take integer and make into byte array
@@ -1299,6 +1470,9 @@ namespace NUS_Downloader
 
                 wadnamebox.Enabled = false;
                 wadnamebox.Text = "";
+
+                // Cannot doit
+                truchabox.Enabled = false;
             }
         }
 
@@ -1310,6 +1484,7 @@ namespace NUS_Downloader
                 // packbox.Checked = true;
                 packbox.Enabled = true;
                 decryptbox.Enabled = true;
+                truchabox.Enabled = true;
             }
         }
 
@@ -1357,104 +1532,6 @@ namespace NUS_Downloader
             WriteStatus(" * Famfamfam for the Silk Icon Set.");
         }
         
-        private void getcerts_Click(object sender, EventArgs e)
-        {
-            // Get a certs.sys from NUS...
-            /*
-            // Directory stuff
-            string currentdir = Application.StartupPath;
-            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
-                currentdir += Path.DirectorySeparatorChar;
-
-            // Create certs file
-            FileStream certsfs = new FileStream(currentdir + @"\cert.sys", FileMode.Create);
-
-            // Getting it from SystemMenu 3.2
-            DownloadNUSFile("0000000100000002", "tmd.289", currentdir + @"\", 0, true);
-            DownloadNUSFile("0000000100000002", "cetk", currentdir + @"\", 0, true);
-
-            // Create ticket file holder
-            byte[] cetkbuf = FileLocationToByteArray(currentdir + "cetk");
-
-            // Create tmd file holder
-            byte[] tmdbuf = FileLocationToByteArray(currentdir + "tmd.289");
-
-            // Write CA cert...
-            certsfs.Seek(0, SeekOrigin.Begin);
-            certsfs.Write(tmdbuf, 0x628, 0x400);
-            WriteStatus("Added CA Cert!");
-
-            // Write CACP cert...
-            certsfs.Seek(0x400, SeekOrigin.Begin);
-            certsfs.Write(tmdbuf, 0x328, 0x300);
-            WriteStatus("Added CACP Cert!");
-
-            // Write CAXS cert...
-            certsfs.Seek(0x700, SeekOrigin.Begin);
-            certsfs.Write(cetkbuf, 0x2A4, 0x300);
-            WriteStatus("Added CAXS Cert!");
-            certsfs.Close();
-
-            // Hash check the cert.sys...
-            if (verifyMd5Hash(currentdir + @"\cert.sys", certs_MD5) == true)
-            {
-                WriteStatus("Certs File Successfully Created!");
-            }
-            else
-            {
-                WriteStatus("Error in Creating Certs File!");
-                WriteStatus("Please report this error if you are sure it is not your internet connection");
-            }
-
-            // Re-enable controls...
-            foreach (Control ctrl in this.Controls)
-            {
-                ctrl.Enabled = true;
-            }
-            getcerts.Visible = false;
-            wadnamebox.Enabled = false;
-
-            // Cleanup...
-            File.Delete(currentdir + "cetk");
-            File.Delete(currentdir + "tmd.289");
-            */ 
-        }
-        /*
-        static string getMd5Hash(string input)
-        {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            FileStream fs = new FileStream(input, FileMode.Open);
-            MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] hash = md5.ComputeHash(fs);
-            fs.Close();
-            fs.Dispose();
-            foreach (byte hex in hash)
-            {
-                //Returns hash in lower case.
-                sb.Append(hex.ToString("x2"));
-            }
-            return sb.ToString();
-        }
-
-        // Verify a hash against a string.
-        static bool verifyMd5Hash(string input, string hash)
-        {
-            // Hash the input.
-            string hashOfInput = getMd5Hash(input);
-
-            // Create a StringComparer an comare the hashes.
-            StringComparer comparer = StringComparer.OrdinalIgnoreCase;
-
-            if (0 == comparer.Compare(hashOfInput, hash))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        */
         private void packbox_CheckedChanged(object sender, EventArgs e)
         {
             if (packbox.Checked == true)
@@ -1468,6 +1545,7 @@ namespace NUS_Downloader
                 wadnamebox.Enabled = false;
                 wadnamebox.Text = "";
             }
+            
         }
 
         private void titleidbox_TextChanged(object sender, EventArgs e)
@@ -1480,6 +1558,11 @@ namespace NUS_Downloader
             UpdatePackedName();
         }
 
+        /// <summary>
+        /// Inits the crypto stuffz.
+        /// </summary>
+        /// <param name="iv">The iv.</param>
+        /// <param name="key">The key.</param>
         public void initCrypt(byte[] iv, byte[] key)
         {
             rijndaelCipher = new RijndaelManaged();
@@ -1491,6 +1574,11 @@ namespace NUS_Downloader
             rijndaelCipher.IV = iv;
         }
 
+        /// <summary>
+        /// Encrypts the specified plain bytes.
+        /// </summary>
+        /// <param name="plainBytes">The plain bytes.</param>
+        /// <returns></returns>
         public byte[] Encrypt(byte[] plainBytes)
         {
             ICryptoTransform transform = rijndaelCipher.CreateEncryptor();
@@ -1503,6 +1591,11 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Decrypts the specified encrypted data.
+        /// </summary>
+        /// <param name="encryptedData">The encrypted data.</param>
+        /// <returns></returns>
         public byte[] Decrypt(byte[] encryptedData)
         {
             ICryptoTransform transform = rijndaelCipher.CreateDecryptor();
@@ -1515,6 +1608,11 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Reads the stream.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <returns></returns>
         public byte[] ReadFully(Stream stream)
         {
             byte[] buffer = new byte[32768];
@@ -1530,6 +1628,12 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Displays the bytes.
+        /// </summary>
+        /// <param name="bytes">The bytes.</param>
+        /// <param name="spacer">What separates the bytes</param>
+        /// <returns></returns>
         public string DisplayBytes(byte[] bytes, string spacer)
         {
             string output = "";
@@ -1540,6 +1644,11 @@ namespace NUS_Downloader
             return output;
         }
 
+        /// <summary>
+        /// Computes the SHA-1 Hash.
+        /// </summary>
+        /// <param name="data">A byte[].</param>
+        /// <returns></returns>
         static public byte[] ComputeSHA(byte[] data)
         {
             SHA1 sha = new SHA1CryptoServiceProvider();
@@ -1547,6 +1656,11 @@ namespace NUS_Downloader
             return sha.ComputeHash(data);
         }
 
+        /// <summary>
+        /// Loads the common key from disc.
+        /// </summary>
+        /// <param name="keyfile">The keyfile.</param>
+        /// <returns></returns>
         public byte[] LoadCommonKey(string keyfile)
         {
             // Directory stuff
@@ -1569,6 +1683,9 @@ namespace NUS_Downloader
             databaseStrip.Show(databaseButton, 2, 2);
         }
 
+        /// <summary>
+        /// Clears the database strip.
+        /// </summary>
         private void ClearDatabaseStrip()
         {
             SystemMenuList.DropDownItems.Clear();
@@ -1589,6 +1706,9 @@ namespace NUS_Downloader
             VCArcadeMenuList.DropDownItems.Clear();
         }
 
+        /// <summary>
+        /// Fills the database strip.
+        /// </summary>
         private void FillDatabaseStrip()
         {
             XmlDocument xDoc = new XmlDocument();
@@ -1685,6 +1805,12 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Adds the tool strip item to strip.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="additionitem">The additionitem.</param>
+        /// <param name="attributes">The attributes.</param>
         void AddToolStripItemToStrip(int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes)
         { 
             // Deal with VC list depth...
@@ -1801,6 +1927,10 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Mods WAD names to be official.
+        /// </summary>
+        /// <param name="titlename">The titlename.</param>
         public void OfficialWADNaming(string titlename)
         {
             if (titlename.Contains("IOS"))
@@ -1908,21 +2038,12 @@ namespace NUS_Downloader
             }
         }
 
-        void HandleMismatch(int contentsize, int actualsize)
-        {
-            if (contentsize != actualsize)
-            {
-                if ((contentsize - actualsize) > 16)
-                {
-                    statusbox.Text += " (BAD Mismatch) (Dif: " + (contentsize - actualsize);
-                }
-                else
-                {
-                    statusbox.Text += " (Safe Mismatch)";
-                }
-            }
-        }
-
+        /// <summary>
+        /// Gathers the region based on index
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <param name="databasexml">XmlDocument with database inside</param>
+        /// <returns>Region desc</returns>
         string RegionFromIndex(int index, XmlDocument databasexml)
         { 
             /* Typical Region XML
@@ -1960,6 +2081,9 @@ namespace NUS_Downloader
             return "XX (Error)";
         }
 
+        /// <summary>
+        /// Loads the region codes.
+        /// </summary>
         private void LoadRegionCodes()
         {
             XmlDocument xDoc = new XmlDocument();
@@ -1981,6 +2105,11 @@ namespace NUS_Downloader
                 titleidbox.Text = titleidbox.Text.Substring(0, 14) + e.ClickedItem.Text.Substring(0, 2);
         }
 
+        /// <summary>
+        /// Removes the illegal characters.
+        /// </summary>
+        /// <param name="databasestr">removes the illegal chars</param>
+        /// <returns>legal string</returns>
         private string RemoveIllegalCharacters(string databasestr)
         { 
             // Database strings must contain filename-legal characters.
@@ -1992,6 +2121,11 @@ namespace NUS_Downloader
             return databasestr;
         }
 
+        /// <summary>
+        /// Zeroes the signature in TMD/TIK.
+        /// </summary>
+        /// <param name="tmdortik">TMD/TIK</param>
+        /// <returns>Zeroed TMD/TIK</returns>
         private byte[] ZeroSignature(byte[] tmdortik)
         { 
             // Write all 0x00 to signature...
@@ -2005,6 +2139,11 @@ namespace NUS_Downloader
             return tmdortik;
         }
 
+        /// <summary>
+        /// Trucha Signs a TMD/TIK
+        /// </summary>
+        /// <param name="tmdortik">The tmdortik.</param>
+        /// <returns>Fake-signed byte[]</returns>
         private byte[] TruchaSign(byte[] tmdortik)
         {
             // Loop through 2 bytes worth of numbers until hash starts with 0x00...
@@ -2036,6 +2175,12 @@ namespace NUS_Downloader
             return tmdortik;
         }
 
+        /// <summary>
+        /// Increments at an index.
+        /// </summary>
+        /// <param name="array">The array.</param>
+        /// <param name="index">The index.</param>
+        /// <returns></returns>
         static public byte[] incrementAtIndex(byte[] array, int index)
         {
             if (array[index] == byte.MaxValue)
@@ -2231,13 +2376,6 @@ namespace NUS_Downloader
             testtik.Close();
         }
 
-        // C# to convert a string to a byte array.
-        public static byte[] StrToByteArray(string str)
-        {
-            System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
-            return encoding.GetBytes(str);
-        }
-
         private void button7_Click(object sender, EventArgs e)
         {
             // Proceed with process (BG worker waits for form to resize)
@@ -2251,6 +2389,10 @@ namespace NUS_Downloader
             statusbox.Text = "";
         }
 
+        /// <summary>
+        /// Makes everything disabled/enabled.
+        /// </summary>
+        /// <param name="enabled">if set to <c>true</c> [enabled].</param>
         private void SetEnableforDownload(bool enabled)
         {
             // Disable things the user should not mess with during download...
@@ -2266,6 +2408,10 @@ namespace NUS_Downloader
             decryptbox.Enabled = enabled;
         }
 
+        /// <summary>
+        /// Makes tooltips disappear in the database, as many contain danger tag info.
+        /// </summary>
+        /// <param name="enabled">if set to <c>true</c> [enabled].</param>
         private void ShowInnerToolTips(bool enabled)
         {
             // Force tooltips to GTFO in sub menus...
@@ -2284,6 +2430,12 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Selects the database item image.
+        /// </summary>
+        /// <param name="ticket">if set to <c>true</c> [ticket].</param>
+        /// <param name="danger">if set to <c>true</c> [danger].</param>
+        /// <returns>Correct Image</returns>
         private System.Drawing.Image SelectItemImage(bool ticket, bool danger)
         {
             // All is good, go green...
@@ -2305,6 +2457,11 @@ namespace NUS_Downloader
             return null;
         }
 
+        /// <summary>
+        /// Loads a file into a byte[]
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        /// <returns>byte[] of file contents</returns>
         private byte[] FileLocationToByteArray(string filename)
         {
             FileStream fs = File.OpenRead(filename);
@@ -2313,6 +2470,9 @@ namespace NUS_Downloader
             return filebytearray;
         }
 
+        /// <summary>
+        /// Updates the name of the packed WAD in the textbox.
+        /// </summary>
         private void UpdatePackedName()
         {
             // Change WAD name if applicable
@@ -2343,7 +2503,12 @@ namespace NUS_Downloader
             
         }
 
-        // This is WIP code/theory...
+        /// <summary>
+        /// Generates a ticket from TitleKey/ID
+        /// </summary>
+        /// <param name="EncTitleKey">The enc title key.</param>
+        /// <param name="TitleID">The title ID.</param>
+        /// <returns>New Ticket</returns>
         private byte[] GenerateTicket(byte[] EncTitleKey, byte[] TitleID)
         { 
             byte[] Ticket = new byte[0x2A4];
@@ -2403,6 +2568,10 @@ namespace NUS_Downloader
             FillContentInfo(tmd);
         }
 
+        /// <summary>
+        /// Fills the content editor with info from TMD
+        /// </summary>
+        /// <param name="tmd">The TMD.</param>
         private void FillContentInfo(byte[] tmd)
         {
             // Clear anything existing...
@@ -2603,6 +2772,11 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Checks for a hex string.
+        /// </summary>
+        /// <param name="test">The test string</param>
+        /// <returns>Whether string is hex or not.</returns>
         public bool OnlyHexInString(string test)
         {
             return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
@@ -2640,6 +2814,9 @@ namespace NUS_Downloader
             UpdateTMDContents();
         }
 
+        /// <summary>
+        /// Updates the TMD contents.
+        /// </summary>
         private void UpdateTMDContents()
         {
             // Write changes to TMD of contents...
@@ -2903,21 +3080,12 @@ namespace NUS_Downloader
             testtmd.Close();
         }
 
-        /* Pad Byte[] to specific alignment...
-        private byte[] AlignByteArray(byte[] content, int alignto)
-        {
-            long thelength = content.Length - 1;
-            long remainder = thelength % alignto;
-
-            while (remainder != 0)
-            {
-                thelength += 1;
-                remainder = thelength % alignto;
-            }
-            Array.Resize(ref content, (int)thelength);
-            return content;
-        } */
-
+        /// <summary>
+        /// Pads to multiple of....
+        /// </summary>
+        /// <param name="src">The binary.</param>
+        /// <param name="pad">The pad amount.</param>
+        /// <returns>Padded byte[]</returns>
         private byte[] PadToMultipleOf(byte[] src, int pad)
         {
             int len = (src.Length + pad - 1) / pad * pad;
@@ -2971,6 +3139,12 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Determines whether OS is win7.
+        /// </summary>
+        /// <returns>
+        /// 	<c>true</c> if OS = win7; otherwise, <c>false</c>.
+        /// </returns>
         private bool IsWin7()
         {
             return (Environment.OSVersion.VersionString.Contains("6.1") == true);
@@ -3177,6 +3351,12 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Does byte[] contain byte[]?
+        /// </summary>
+        /// <param name="bigboy">The large byte[].</param>
+        /// <param name="littleman">Small byte[] which may be in large one.</param>
+        /// <returns>messed up int[] with offsets.</returns>
         private int[] ByteArrayContainsByteArray(byte[] bigboy, byte[] littleman)
         { 
             // bigboy.Contains(littleman);
@@ -3200,6 +3380,13 @@ namespace NUS_Downloader
             return offset;
         }
 
+        /// <summary>
+        /// Patches the binary.
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <param name="offset">The offset.</param>
+        /// <param name="newvalues">The newvalues.</param>
+        /// <returns></returns>
         private byte[] PatchBinary(byte[] content, int offset, byte[] newvalues)
         {
             for (int a = 0; a < newvalues.Length; a++)
@@ -3210,6 +3397,9 @@ namespace NUS_Downloader
             return content;
         }
 
+        /// <summary>
+        /// Recalculates the indices.
+        /// </summary>
         private void RecalculateIndices()
         {
             for (int a = 0; a < contentsEdit.Items.Count; a++)
@@ -3226,6 +3416,10 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Retrieves the new database via WiiBrew.
+        /// </summary>
+        /// <returns>Database as a String</returns>
         private string RetrieveNewDatabase()
         {
             // Retrieve Wiibrew database page source code
@@ -3288,6 +3482,11 @@ namespace NUS_Downloader
             LoadTitleFromTMD();
         }
 
+        /// <summary>
+        /// Sends the SOAP request to NUS.
+        /// </summary>
+        /// <param name="soap_xml">The Request</param>
+        /// <returns></returns>
         public string SendSOAPRequest(string soap_xml)
         {
             System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://nus.shop.wii.com:80/nus/services/NetUpdateSOAP");
@@ -3391,9 +3590,12 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Scans for certs in TMD/TIK.
+        /// </summary>
+        /// <param name="tmdortik">The tmdortik.</param>
         private void ScanForCerts(byte[] tmdortik)
         {
-            
             // For some reason a few 00s are cut off, so pad it up to be safe.
             tmdortik = PadToMultipleOf(tmdortik, 16);
 
@@ -3432,7 +3634,7 @@ namespace NUS_Downloader
                 }
 
             // Search for cert_CA
-            if ((!(tmdortik.Length < 0x400)) && ((Convert.ToBase64String(cert_CA) != Convert.ToBase64String(cert_CA_sha1))))
+            if ((!(tmdortik.Length < 0x400)) && ((Convert.ToBase64String(ComputeSHA(cert_CA)) != Convert.ToBase64String(cert_CA_sha1))))
             {
                 for (int a = 0; a < (tmdortik.Length - 0x400); a++)
                 {
@@ -3451,6 +3653,10 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Checks whether the certs are obtained.
+        /// </summary>
+        /// <returns></returns>
         private bool CertsValid()
         {
             if (Convert.ToBase64String(ComputeSHA(cert_CA)) != Convert.ToBase64String(cert_CA_sha1))
@@ -3462,6 +3668,11 @@ namespace NUS_Downloader
             return true;
         }
 
+        /// <summary>
+        /// Checks the whole cert file for validity.
+        /// </summary>
+        /// <param name="cert_sys">The cert_sys.</param>
+        /// <returns>Valid Cert state.</returns>
         private bool TotalCertValid(byte[] cert_sys)
         {
             if (Convert.ToBase64String(ComputeSHA(cert_sys)) != Convert.ToBase64String(cert_total_sha1))
@@ -3469,6 +3680,11 @@ namespace NUS_Downloader
             return true;
         }
 
+        /// <summary>
+        /// Looks for a title's name by TitleID in Database.
+        /// </summary>
+        /// <param name="titleid">The titleid.</param>
+        /// <returns>Existing name; else null</returns>
         private string NameFromDatabase(string titleid)
         {
             XmlDocument xDoc = new XmlDocument();
@@ -3514,6 +3730,7 @@ namespace NUS_Downloader
                             {
                                 case "name":
                                     return ChildrenOfTheNode[z].InnerText;
+                                default:
                                     break;
                             }
                         }
@@ -3521,6 +3738,12 @@ namespace NUS_Downloader
                 }
             }
             return null;
+        }
+
+        private void packbox_EnabledChanged(object sender, EventArgs e)
+        {
+            saveaswadbox.Enabled = packbox.Enabled;
+            deletecontentsbox.Enabled = packbox.Enabled;
         }
     }
 }
