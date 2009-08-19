@@ -18,7 +18,7 @@ namespace NUS_Downloader
         const string NUSURL = "http://nus.cdn.shop.wii.com/ccs/download/";
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
         // TODO: Always remember to change version!
-        string version = "v1.3";
+        string version = "v1.3 Beta";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
@@ -764,6 +764,10 @@ namespace NUS_Downloader
             
             // Set UserAgent to Wii value
             generalWC.Headers.Add("User-Agent", "wii libnup/1.0");
+
+            // Proxy
+            generalWC.Proxy = WebRequest.GetSystemWebProxy();
+            generalWC.UseDefaultCredentials = true;
 
             // Get placement directory early...
             string titledirectory;
@@ -3648,6 +3652,16 @@ namespace NUS_Downloader
         {
             saveaswadbox.Enabled = packbox.Enabled;
             deletecontentsbox.Enabled = packbox.Enabled;
+        }
+
+        private void saveaswadbox_Paint(object sender, PaintEventArgs e)
+        {
+            //e.Graphics.
+            /*Rectangle rect = new Rectangle(0, 0, 16, 16);
+            if (saveaswadbox.Checked)
+                e.Graphics.DrawImageUnscaledAndClipped(green, rect);
+            else
+                e.Graphics.DrawImageUnscaled(orange, -7, -5); */
         }
     }
 }

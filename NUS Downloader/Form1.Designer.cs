@@ -957,6 +957,7 @@
             this.saveaswadbox.TabIndex = 43;
             this.saveaswadbox.Text = "SaveAs";
             this.saveaswadbox.UseVisualStyleBackColor = true;
+            this.saveaswadbox.Paint += new System.Windows.Forms.PaintEventHandler(this.saveaswadbox_Paint);
             // 
             // deletecontentsbox
             // 
