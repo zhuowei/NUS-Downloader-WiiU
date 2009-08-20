@@ -42,6 +42,11 @@ namespace NUS_Downloader
         byte[] cert_total_sha1 = new byte[20] {0xAC, 0xE0, 0xF1, 0x5D, 0x2A, 0x85, 0x1C, 0x38, 0x3F, 0xE4, 0x65, 0x7A, 0xFC, 0x38, 0x40, 0xD6, 0xFF, 0xE3, 0x0A, 0xD0};
 
         string WAD_Saveas_Filename;
+
+        // Proxy stuff...
+        string proxy_url;
+        string proxy_usr;
+        string proxy_pwd;
         /*
         public struct WADHeader
         {
@@ -81,10 +86,8 @@ namespace NUS_Downloader
             InitializeComponent();
             Application.DoEvents();
 
-            // certs.sys / key.bin
-            if (BootChecks() == false)
-                return;
-
+            BootChecks();
+               
             // Vars
             bool startnow = false;
             bool endafter = false;
@@ -176,42 +179,12 @@ namespace NUS_Downloader
         /// Checks certain file existances, etc.
         /// </summary>
         /// <returns></returns>
-        private bool BootChecks()
+        private void BootChecks()
         {
-            // Success?
-            bool result = true;
-
             // Directory stuff
             string currentdir = Application.StartupPath;
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
                 currentdir += Path.DirectorySeparatorChar;
-
-            /* Check for certs file
-            if (File.Exists(currentdir + "cert.sys") == false)
-            {
-                foreach (Control ctrl in this.Controls)
-                {
-                    ctrl.Enabled = false;
-                }
-                getcerts.Enabled = true;
-                WriteStatus("You do not have a certs file. Press the button below to generate a cert file!");
-                result = false;
-            }
-            else if (verifyMd5Hash(currentdir + "cert.sys", certs_MD5) == false)
-            {
-                foreach (Control ctrl in this.Controls)
-                {
-                    ctrl.Enabled = false;
-                }
-                getcerts.Enabled = true;
-                WriteStatus("Your certs file is corrupted/invalid. Press the button below to generate a cert file!");
-                result = false;
-            }
-            else
-            {
-                getcerts.Visible = false;
-                WriteStatus("Certs file is present and intact.");
-            }*/
 
             // Check for Wii common key bin file...
             if (File.Exists(currentdir + "key.bin") == false)
@@ -225,22 +198,13 @@ namespace NUS_Downloader
             }
 
             // Check for Wii KOR common key bin file...
-            if (File.Exists(currentdir + "kkey.bin") == false)
-            {
-                //WriteStatus("Korean Common Key (kkey.bin) missing! Decryption disabled!");
-                //decryptbox.Visible = false;
-            }
-            else
+            if (File.Exists(currentdir + "kkey.bin") == true)
             {
                 WriteStatus("Korean Common Key detected.");
             }
 
             // Check for DSi common key bin file...
-            if (File.Exists(currentdir + "dsikey.bin") == false)
-            {
-                // Do not pester about DSi key
-            }
-            else
+            if (File.Exists(currentdir + "dsikey.bin") == true)
             {
                 WriteStatus("DSi Common Key detected.");
                 dsidecrypt = true;
@@ -267,7 +231,36 @@ namespace NUS_Downloader
                 ShowInnerToolTips(false);
             }
 
-            return result;
+            // Check for Proxy Settings file...
+            if (File.Exists(currentdir + "proxy.txt") == true)
+            {
+                WriteStatus("Proxy settings detected.");
+                string[] proxy_file = File.ReadAllLines(currentdir + "proxy.txt");
+                proxy_url = proxy_file[0];
+                if (proxy_file.Length > 1)
+                {
+                    proxy_usr = proxy_file[1];
+                    SetAllEnabled(false);
+                    ProxyVerifyBox.Visible = true; ProxyVerifyBox.Enabled = true;
+                    ProxyPwdBox.Enabled = true; SaveProxyBtn.Enabled = true;
+                    ProxyVerifyBox.Select();
+                }
+            }
+        }
+
+        private void SetAllEnabled(bool enabled)
+        {
+            for (int a = 0; a < this.Controls.Count; a++)
+            {
+                try
+                {
+                    this.Controls[a].Enabled = enabled;
+                }
+                catch
+                {
+                   // ...
+                }
+            }
         }
 
         /// <summary>
@@ -766,8 +759,30 @@ namespace NUS_Downloader
             generalWC.Headers.Add("User-Agent", "wii libnup/1.0");
 
             // Proxy
-            generalWC.Proxy = WebRequest.GetSystemWebProxy();
-            generalWC.UseDefaultCredentials = true;
+            if (!(String.IsNullOrEmpty(proxy_url)))
+            {
+                WebProxy customproxy = new WebProxy();
+                customproxy.Address = new Uri(proxy_url);
+                if (String.IsNullOrEmpty(proxy_usr))
+                    customproxy.UseDefaultCredentials = true;
+                else
+                {
+                    NetworkCredential cred = new NetworkCredential();
+                    cred.UserName = proxy_usr;
+
+                    if (String.IsNullOrEmpty(proxy_pwd))
+                        cred.Password = proxy_pwd;
+
+                    customproxy.Credentials = cred;
+                }
+                generalWC.Proxy = customproxy;
+                WriteStatus("Custom proxy settings applied!");
+            }
+            else
+            {
+                generalWC.Proxy = WebRequest.GetSystemWebProxy();
+                generalWC.UseDefaultCredentials = true;
+            }
 
             // Get placement directory early...
             string titledirectory;
@@ -3662,6 +3677,91 @@ namespace NUS_Downloader
                 e.Graphics.DrawImageUnscaledAndClipped(green, rect);
             else
                 e.Graphics.DrawImageUnscaled(orange, -7, -5); */
+        }
+
+        private void SaveProxyBtn_Click(object sender, EventArgs e)
+        {
+            // Current directory...
+            string currentdir = Application.StartupPath;
+            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
+                currentdir += @"\";
+
+            if ((String.IsNullOrEmpty(ProxyURL.Text)) && (String.IsNullOrEmpty(ProxyUser.Text)) && ((File.Exists(currentdir + "proxy.txt"))))
+            {
+                File.Delete(currentdir + "proxy.txt");
+                proxyBox.Visible = false;
+                proxy_usr = ""; proxy_url = ""; proxy_pwd = "";
+                WriteStatus("Proxy settings deleted!");
+                return;
+            }
+            else if ((String.IsNullOrEmpty(ProxyURL.Text)) && (String.IsNullOrEmpty(ProxyUser.Text)) && ((!(File.Exists(currentdir + "proxy.txt")))))
+            {
+                proxyBox.Visible = false;
+                WriteStatus("No proxy settings saved!");
+                return;
+            }
+
+            string proxy_file = "";
+
+            if (!(String.IsNullOrEmpty(ProxyURL.Text)))
+            {
+                proxy_file += ProxyURL.Text + "\n";
+                proxy_url = ProxyURL.Text;
+            }
+
+            if (!(String.IsNullOrEmpty(ProxyUser.Text)))
+            {
+                proxy_file += ProxyUser.Text;
+                proxy_usr = ProxyUser.Text;
+            }
+
+            if (!(String.IsNullOrEmpty(proxy_file)))
+            {
+                File.WriteAllText(currentdir + "proxy.txt", proxy_file);
+                WriteStatus("Proxy settings saved!");
+            }
+
+            proxyBox.Visible = false;
+
+            SetAllEnabled(false);
+            ProxyVerifyBox.Visible = true; ProxyVerifyBox.Enabled = true;
+            ProxyPwdBox.Enabled = true; SaveProxyBtn.Enabled = true;
+            ProxyVerifyBox.Select();
+        }
+
+        private void proxySettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Current directory...
+            string currentdir = Application.StartupPath;
+            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
+                currentdir += @"\";
+
+            // Check for Proxy Settings file...
+            if (File.Exists(currentdir + "proxy.txt") == true)
+            {
+                string[] proxy_file = File.ReadAllLines(currentdir + "proxy.txt");
+               
+                ProxyURL.Text = proxy_file[0];
+                if (proxy_file.Length > 1)
+                {
+                    ProxyUser.Text = proxy_file[1];
+                }
+            }
+
+            proxyBox.Visible = true;
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            proxy_pwd = ProxyPwdBox.Text;
+            ProxyVerifyBox.Visible = false;
+            SetAllEnabled(true);
+        }
+
+        private void ProxyPwdBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Enter))
+                button18_Click("LOLWUT", EventArgs.Empty);
         }
     }
 }
