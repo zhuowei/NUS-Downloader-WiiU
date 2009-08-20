@@ -96,17 +96,8 @@
             this.button3 = new System.Windows.Forms.Button();
             this.contentsEdit = new System.Windows.Forms.ListBox();
             this.contentModBox = new System.Windows.Forms.GroupBox();
-            this.button16 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.button17 = new System.Windows.Forms.Button();
             this.extrasStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loadInfoFromTMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -116,13 +107,37 @@
             this.europePALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.japanNTSCJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.koreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.proxySettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveaswadbox = new System.Windows.Forms.CheckBox();
             this.deletecontentsbox = new System.Windows.Forms.CheckBox();
+            this.proxyBox = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.ProxyUser = new System.Windows.Forms.TextBox();
+            this.SaveProxyBtn = new System.Windows.Forms.Button();
+            this.ProxyURL = new System.Windows.Forms.TextBox();
+            this.ProxyAssistBtn = new System.Windows.Forms.Button();
+            this.button16 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.ProxyVerifyBox = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.ProxyPwdBox = new System.Windows.Forms.TextBox();
+            this.SaveProxyPwdBtn = new System.Windows.Forms.Button();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
             this.contentModBox.SuspendLayout();
             this.extrasStrip.SuspendLayout();
+            this.proxyBox.SuspendLayout();
+            this.ProxyVerifyBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // Extrasbtn
@@ -755,28 +770,6 @@
             this.contentModBox.Text = "Edit Title Contents";
             this.contentModBox.Visible = false;
             // 
-            // button16
-            // 
-            this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button16.Image = global::NUS_Downloader.Properties.Resources.bug_add;
-            this.button16.Location = new System.Drawing.Point(136, 198);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(26, 26);
-            this.button16.TabIndex = 44;
-            this.button16.UseVisualStyleBackColor = true;
-            this.button16.Click += new System.EventHandler(this.button16_Click);
-            // 
-            // button13
-            // 
-            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button13.Image = global::NUS_Downloader.Properties.Resources.link;
-            this.button13.Location = new System.Drawing.Point(104, 198);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(26, 26);
-            this.button13.TabIndex = 43;
-            this.button13.UseVisualStyleBackColor = true;
-            this.button13.Click += new System.EventHandler(this.button13_Click);
-            // 
             // button15
             // 
             this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -798,6 +791,206 @@
             this.button14.Text = "Overwrite Title Contents...";
             this.button14.UseVisualStyleBackColor = true;
             this.button14.Click += new System.EventHandler(this.button14_Click);
+            // 
+            // button17
+            // 
+            this.button17.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button17.Location = new System.Drawing.Point(278, 345);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(249, 26);
+            this.button17.TabIndex = 42;
+            this.button17.Text = "Modify Individual Contents...";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Click += new System.EventHandler(this.button17_Click);
+            // 
+            // extrasStrip
+            // 
+            this.extrasStrip.AllowMerge = false;
+            this.extrasStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadInfoFromTMDToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.emulateUpdate,
+            this.toolStripSeparator4,
+            this.proxySettingsToolStripMenuItem});
+            this.extrasStrip.Name = "extrasStrip";
+            this.extrasStrip.Size = new System.Drawing.Size(220, 82);
+            // 
+            // loadInfoFromTMDToolStripMenuItem
+            // 
+            this.loadInfoFromTMDToolStripMenuItem.Name = "loadInfoFromTMDToolStripMenuItem";
+            this.loadInfoFromTMDToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.loadInfoFromTMDToolStripMenuItem.Text = "Load Info from TMD";
+            this.loadInfoFromTMDToolStripMenuItem.Click += new System.EventHandler(this.loadInfoFromTMDToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(216, 6);
+            // 
+            // emulateUpdate
+            // 
+            this.emulateUpdate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uSANTSCToolStripMenuItem,
+            this.europePALToolStripMenuItem,
+            this.japanNTSCJToolStripMenuItem,
+            this.koreaToolStripMenuItem});
+            this.emulateUpdate.Name = "emulateUpdate";
+            this.emulateUpdate.Size = new System.Drawing.Size(219, 22);
+            this.emulateUpdate.Text = "Emulate Wii System Update";
+            this.emulateUpdate.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.emulateUpdate_DropDownItemClicked);
+            // 
+            // uSANTSCToolStripMenuItem
+            // 
+            this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
+            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.uSANTSCToolStripMenuItem.Text = "USA (NTSC)";
+            // 
+            // europePALToolStripMenuItem
+            // 
+            this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
+            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.europePALToolStripMenuItem.Text = "Europe (PAL)";
+            // 
+            // japanNTSCJToolStripMenuItem
+            // 
+            this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
+            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.japanNTSCJToolStripMenuItem.Text = "Japan (NTSC-J)";
+            // 
+            // koreaToolStripMenuItem
+            // 
+            this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
+            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.koreaToolStripMenuItem.Text = "Korea";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(216, 6);
+            // 
+            // proxySettingsToolStripMenuItem
+            // 
+            this.proxySettingsToolStripMenuItem.Name = "proxySettingsToolStripMenuItem";
+            this.proxySettingsToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.proxySettingsToolStripMenuItem.Text = "Proxy Settings";
+            this.proxySettingsToolStripMenuItem.Click += new System.EventHandler(this.proxySettingsToolStripMenuItem_Click);
+            // 
+            // saveaswadbox
+            // 
+            this.saveaswadbox.AutoSize = true;
+            this.saveaswadbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.saveaswadbox.Location = new System.Drawing.Point(22, 437);
+            this.saveaswadbox.Name = "saveaswadbox";
+            this.saveaswadbox.Size = new System.Drawing.Size(58, 16);
+            this.saveaswadbox.TabIndex = 43;
+            this.saveaswadbox.Text = "SaveAs";
+            this.saveaswadbox.UseVisualStyleBackColor = true;
+            this.saveaswadbox.Paint += new System.Windows.Forms.PaintEventHandler(this.saveaswadbox_Paint);
+            // 
+            // deletecontentsbox
+            // 
+            this.deletecontentsbox.AutoSize = true;
+            this.deletecontentsbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.deletecontentsbox.Location = new System.Drawing.Point(22, 454);
+            this.deletecontentsbox.Name = "deletecontentsbox";
+            this.deletecontentsbox.Size = new System.Drawing.Size(62, 28);
+            this.deletecontentsbox.TabIndex = 44;
+            this.deletecontentsbox.Text = "Delete\r\nContents";
+            this.deletecontentsbox.UseVisualStyleBackColor = true;
+            // 
+            // proxyBox
+            // 
+            this.proxyBox.BackColor = System.Drawing.Color.White;
+            this.proxyBox.Controls.Add(this.label13);
+            this.proxyBox.Controls.Add(this.label12);
+            this.proxyBox.Controls.Add(this.ProxyUser);
+            this.proxyBox.Controls.Add(this.SaveProxyBtn);
+            this.proxyBox.Controls.Add(this.ProxyAssistBtn);
+            this.proxyBox.Controls.Add(this.ProxyURL);
+            this.proxyBox.Location = new System.Drawing.Point(33, 221);
+            this.proxyBox.Name = "proxyBox";
+            this.proxyBox.Size = new System.Drawing.Size(212, 114);
+            this.proxyBox.TabIndex = 45;
+            this.proxyBox.TabStop = false;
+            this.proxyBox.Text = "Proxy Settings";
+            this.proxyBox.Visible = false;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(6, 55);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(32, 13);
+            this.label13.TabIndex = 32;
+            this.label13.Text = "User:";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 29);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(36, 13);
+            this.label12.TabIndex = 31;
+            this.label12.Text = "Proxy:";
+            // 
+            // ProxyUser
+            // 
+            this.ProxyUser.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ProxyUser.Location = new System.Drawing.Point(55, 53);
+            this.ProxyUser.Name = "ProxyUser";
+            this.ProxyUser.Size = new System.Drawing.Size(151, 20);
+            this.ProxyUser.TabIndex = 30;
+            // 
+            // SaveProxyBtn
+            // 
+            this.SaveProxyBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.SaveProxyBtn.Location = new System.Drawing.Point(6, 79);
+            this.SaveProxyBtn.Name = "SaveProxyBtn";
+            this.SaveProxyBtn.Size = new System.Drawing.Size(161, 26);
+            this.SaveProxyBtn.TabIndex = 29;
+            this.SaveProxyBtn.Text = "Save Proxy Settings";
+            this.SaveProxyBtn.UseVisualStyleBackColor = true;
+            this.SaveProxyBtn.Click += new System.EventHandler(this.SaveProxyBtn_Click);
+            // 
+            // ProxyURL
+            // 
+            this.ProxyURL.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ProxyURL.Location = new System.Drawing.Point(55, 27);
+            this.ProxyURL.Name = "ProxyURL";
+            this.ProxyURL.Size = new System.Drawing.Size(151, 20);
+            this.ProxyURL.TabIndex = 0;
+            // 
+            // ProxyAssistBtn
+            // 
+            this.ProxyAssistBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.ProxyAssistBtn.Image = global::NUS_Downloader.Properties.Resources.help;
+            this.ProxyAssistBtn.Location = new System.Drawing.Point(177, 79);
+            this.ProxyAssistBtn.Name = "ProxyAssistBtn";
+            this.ProxyAssistBtn.Size = new System.Drawing.Size(29, 26);
+            this.ProxyAssistBtn.TabIndex = 28;
+            this.ProxyAssistBtn.UseVisualStyleBackColor = true;
+            // 
+            // button16
+            // 
+            this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button16.Image = global::NUS_Downloader.Properties.Resources.bug_add;
+            this.button16.Location = new System.Drawing.Point(136, 198);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(26, 26);
+            this.button16.TabIndex = 44;
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
+            // 
+            // button13
+            // 
+            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button13.Image = global::NUS_Downloader.Properties.Resources.link;
+            this.button13.Location = new System.Drawing.Point(104, 198);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(26, 26);
+            this.button13.TabIndex = 43;
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // button12
             // 
@@ -878,97 +1071,49 @@
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
-            // button17
+            // ProxyVerifyBox
             // 
-            this.button17.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button17.Location = new System.Drawing.Point(278, 345);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(249, 26);
-            this.button17.TabIndex = 42;
-            this.button17.Text = "Modify Individual Contents...";
-            this.button17.UseVisualStyleBackColor = true;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
+            this.ProxyVerifyBox.BackColor = System.Drawing.SystemColors.Control;
+            this.ProxyVerifyBox.Controls.Add(this.SaveProxyPwdBtn);
+            this.ProxyVerifyBox.Controls.Add(this.label14);
+            this.ProxyVerifyBox.Controls.Add(this.ProxyPwdBox);
+            this.ProxyVerifyBox.Location = new System.Drawing.Point(33, 202);
+            this.ProxyVerifyBox.Name = "ProxyVerifyBox";
+            this.ProxyVerifyBox.Size = new System.Drawing.Size(212, 75);
+            this.ProxyVerifyBox.TabIndex = 46;
+            this.ProxyVerifyBox.TabStop = false;
+            this.ProxyVerifyBox.Text = "Verify Credentials";
+            this.ProxyVerifyBox.Visible = false;
             // 
-            // extrasStrip
+            // label14
             // 
-            this.extrasStrip.AllowMerge = false;
-            this.extrasStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadInfoFromTMDToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.emulateUpdate});
-            this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(220, 54);
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(6, 21);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(62, 13);
+            this.label14.TabIndex = 33;
+            this.label14.Text = "Proxy Pass:";
             // 
-            // loadInfoFromTMDToolStripMenuItem
+            // ProxyPwdBox
             // 
-            this.loadInfoFromTMDToolStripMenuItem.Name = "loadInfoFromTMDToolStripMenuItem";
-            this.loadInfoFromTMDToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
-            this.loadInfoFromTMDToolStripMenuItem.Text = "Load Info from TMD";
-            this.loadInfoFromTMDToolStripMenuItem.Click += new System.EventHandler(this.loadInfoFromTMDToolStripMenuItem_Click);
+            this.ProxyPwdBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ProxyPwdBox.Location = new System.Drawing.Point(71, 19);
+            this.ProxyPwdBox.Name = "ProxyPwdBox";
+            this.ProxyPwdBox.Size = new System.Drawing.Size(135, 20);
+            this.ProxyPwdBox.TabIndex = 32;
+            this.ProxyPwdBox.UseSystemPasswordChar = true;
+            this.ProxyPwdBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ProxyPwdBox_KeyPress);
             // 
-            // toolStripSeparator3
+            // SaveProxyPwdBtn
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(216, 6);
-            // 
-            // emulateUpdate
-            // 
-            this.emulateUpdate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uSANTSCToolStripMenuItem,
-            this.europePALToolStripMenuItem,
-            this.japanNTSCJToolStripMenuItem,
-            this.koreaToolStripMenuItem});
-            this.emulateUpdate.Name = "emulateUpdate";
-            this.emulateUpdate.Size = new System.Drawing.Size(219, 22);
-            this.emulateUpdate.Text = "Emulate Wii System Update";
-            this.emulateUpdate.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.emulateUpdate_DropDownItemClicked);
-            // 
-            // uSANTSCToolStripMenuItem
-            // 
-            this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
-            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.uSANTSCToolStripMenuItem.Text = "USA (NTSC)";
-            // 
-            // europePALToolStripMenuItem
-            // 
-            this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
-            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.europePALToolStripMenuItem.Text = "Europe (PAL)";
-            // 
-            // japanNTSCJToolStripMenuItem
-            // 
-            this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
-            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.japanNTSCJToolStripMenuItem.Text = "Japan (NTSC-J)";
-            // 
-            // koreaToolStripMenuItem
-            // 
-            this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
-            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.koreaToolStripMenuItem.Text = "Korea";
-            // 
-            // saveaswadbox
-            // 
-            this.saveaswadbox.AutoSize = true;
-            this.saveaswadbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.saveaswadbox.Location = new System.Drawing.Point(22, 437);
-            this.saveaswadbox.Name = "saveaswadbox";
-            this.saveaswadbox.Size = new System.Drawing.Size(58, 16);
-            this.saveaswadbox.TabIndex = 43;
-            this.saveaswadbox.Text = "SaveAs";
-            this.saveaswadbox.UseVisualStyleBackColor = true;
-            this.saveaswadbox.Paint += new System.Windows.Forms.PaintEventHandler(this.saveaswadbox_Paint);
-            // 
-            // deletecontentsbox
-            // 
-            this.deletecontentsbox.AutoSize = true;
-            this.deletecontentsbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.deletecontentsbox.Location = new System.Drawing.Point(22, 454);
-            this.deletecontentsbox.Name = "deletecontentsbox";
-            this.deletecontentsbox.Size = new System.Drawing.Size(62, 28);
-            this.deletecontentsbox.TabIndex = 44;
-            this.deletecontentsbox.Text = "Delete\r\nContents";
-            this.deletecontentsbox.UseVisualStyleBackColor = true;
+            this.SaveProxyPwdBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.SaveProxyPwdBtn.Location = new System.Drawing.Point(9, 43);
+            this.SaveProxyPwdBtn.Name = "SaveProxyPwdBtn";
+            this.SaveProxyPwdBtn.Size = new System.Drawing.Size(197, 23);
+            this.SaveProxyPwdBtn.TabIndex = 34;
+            this.SaveProxyPwdBtn.Text = "Save (This Session Only)";
+            this.SaveProxyPwdBtn.UseVisualStyleBackColor = true;
+            this.SaveProxyPwdBtn.Click += new System.EventHandler(this.button18_Click);
             // 
             // Form1
             // 
@@ -977,6 +1122,7 @@
             this.ClientSize = new System.Drawing.Size(539, 492);
             this.Controls.Add(this.deletecontentsbox);
             this.Controls.Add(this.button3);
+            this.Controls.Add(this.ProxyVerifyBox);
             this.Controls.Add(this.shamelessvariablelabel);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button17);
@@ -986,15 +1132,16 @@
             this.Controls.Add(this.databaseButton);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.contentModBox);
+            this.Controls.Add(this.proxyBox);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.wadnamebox);
-            this.Controls.Add(this.button7);
             this.Controls.Add(this.truchabox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.titleversion);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.decryptbox);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.dlprogress);
@@ -1021,6 +1168,10 @@
             this.ticketgpbox.PerformLayout();
             this.contentModBox.ResumeLayout(false);
             this.extrasStrip.ResumeLayout(false);
+            this.proxyBox.ResumeLayout(false);
+            this.proxyBox.PerformLayout();
+            this.ProxyVerifyBox.ResumeLayout(false);
+            this.ProxyVerifyBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1116,6 +1267,19 @@
         private System.Windows.Forms.ToolStripMenuItem koreaToolStripMenuItem;
         private System.Windows.Forms.CheckBox saveaswadbox;
         private System.Windows.Forms.CheckBox deletecontentsbox;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem proxySettingsToolStripMenuItem;
+        private System.Windows.Forms.GroupBox proxyBox;
+        private System.Windows.Forms.TextBox ProxyUser;
+        private System.Windows.Forms.Button SaveProxyBtn;
+        private System.Windows.Forms.Button ProxyAssistBtn;
+        private System.Windows.Forms.TextBox ProxyURL;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.GroupBox ProxyVerifyBox;
+        private System.Windows.Forms.Button SaveProxyPwdBtn;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox ProxyPwdBox;
     }
 }
 
