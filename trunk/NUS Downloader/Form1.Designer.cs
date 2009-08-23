@@ -35,7 +35,6 @@
             this.downloadstartbtn = new System.Windows.Forms.Button();
             this.statusbox = new System.Windows.Forms.TextBox();
             this.packbox = new System.Windows.Forms.CheckBox();
-            this.dlprogress = new System.Windows.Forms.ProgressBar();
             this.localuse = new System.Windows.Forms.CheckBox();
             this.NUSDownloader = new System.ComponentModel.BackgroundWorker();
             this.titleversion = new System.Windows.Forms.TextBox();
@@ -96,8 +95,15 @@
             this.button3 = new System.Windows.Forms.Button();
             this.contentsEdit = new System.Windows.Forms.ListBox();
             this.contentModBox = new System.Windows.Forms.GroupBox();
+            this.button16 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
             this.button17 = new System.Windows.Forms.Button();
             this.extrasStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loadInfoFromTMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -116,21 +122,15 @@
             this.label12 = new System.Windows.Forms.Label();
             this.ProxyUser = new System.Windows.Forms.TextBox();
             this.SaveProxyBtn = new System.Windows.Forms.Button();
-            this.ProxyURL = new System.Windows.Forms.TextBox();
             this.ProxyAssistBtn = new System.Windows.Forms.Button();
-            this.button16 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
+            this.ProxyURL = new System.Windows.Forms.TextBox();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.ProxyVerifyBox = new System.Windows.Forms.GroupBox();
+            this.SaveProxyPwdBtn = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.ProxyPwdBox = new System.Windows.Forms.TextBox();
-            this.SaveProxyPwdBtn = new System.Windows.Forms.Button();
+            this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
@@ -194,14 +194,6 @@
             this.packbox.UseVisualStyleBackColor = true;
             this.packbox.CheckedChanged += new System.EventHandler(this.packbox_CheckedChanged);
             this.packbox.EnabledChanged += new System.EventHandler(this.packbox_EnabledChanged);
-            // 
-            // dlprogress
-            // 
-            this.dlprogress.Location = new System.Drawing.Point(12, 95);
-            this.dlprogress.Name = "dlprogress";
-            this.dlprogress.Size = new System.Drawing.Size(250, 15);
-            this.dlprogress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.dlprogress.TabIndex = 7;
             // 
             // localuse
             // 
@@ -770,6 +762,28 @@
             this.contentModBox.Text = "Edit Title Contents";
             this.contentModBox.Visible = false;
             // 
+            // button16
+            // 
+            this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button16.Image = global::NUS_Downloader.Properties.Resources.bug_add;
+            this.button16.Location = new System.Drawing.Point(136, 198);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(26, 26);
+            this.button16.TabIndex = 44;
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
+            // 
+            // button13
+            // 
+            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button13.Image = global::NUS_Downloader.Properties.Resources.link;
+            this.button13.Location = new System.Drawing.Point(104, 198);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(26, 26);
+            this.button13.TabIndex = 43;
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
             // button15
             // 
             this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -791,6 +805,61 @@
             this.button14.Text = "Overwrite Title Contents...";
             this.button14.UseVisualStyleBackColor = true;
             this.button14.Click += new System.EventHandler(this.button14_Click);
+            // 
+            // button12
+            // 
+            this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button12.Image = ((System.Drawing.Image)(resources.GetObject("button12.Image")));
+            this.button12.Location = new System.Drawing.Point(72, 198);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(26, 26);
+            this.button12.TabIndex = 40;
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // button8
+            // 
+            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button8.Image = ((System.Drawing.Image)(resources.GetObject("button8.Image")));
+            this.button8.Location = new System.Drawing.Point(213, 19);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(26, 26);
+            this.button8.TabIndex = 33;
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button11
+            // 
+            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button11.Image = ((System.Drawing.Image)(resources.GetObject("button11.Image")));
+            this.button11.Location = new System.Drawing.Point(9, 198);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(26, 26);
+            this.button11.TabIndex = 36;
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // button9
+            // 
+            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button9.Image = ((System.Drawing.Image)(resources.GetObject("button9.Image")));
+            this.button9.Location = new System.Drawing.Point(213, 53);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(26, 26);
+            this.button9.TabIndex = 34;
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button10
+            // 
+            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button10.Image = ((System.Drawing.Image)(resources.GetObject("button10.Image")));
+            this.button10.Location = new System.Drawing.Point(41, 198);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(26, 26);
+            this.button10.TabIndex = 35;
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // button17
             // 
@@ -952,14 +1021,6 @@
             this.SaveProxyBtn.UseVisualStyleBackColor = true;
             this.SaveProxyBtn.Click += new System.EventHandler(this.SaveProxyBtn_Click);
             // 
-            // ProxyURL
-            // 
-            this.ProxyURL.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ProxyURL.Location = new System.Drawing.Point(55, 27);
-            this.ProxyURL.Name = "ProxyURL";
-            this.ProxyURL.Size = new System.Drawing.Size(151, 20);
-            this.ProxyURL.TabIndex = 0;
-            // 
             // ProxyAssistBtn
             // 
             this.ProxyAssistBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -969,83 +1030,15 @@
             this.ProxyAssistBtn.Size = new System.Drawing.Size(29, 26);
             this.ProxyAssistBtn.TabIndex = 28;
             this.ProxyAssistBtn.UseVisualStyleBackColor = true;
+            this.ProxyAssistBtn.Click += new System.EventHandler(this.ProxyAssistBtn_Click);
             // 
-            // button16
+            // ProxyURL
             // 
-            this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button16.Image = global::NUS_Downloader.Properties.Resources.bug_add;
-            this.button16.Location = new System.Drawing.Point(136, 198);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(26, 26);
-            this.button16.TabIndex = 44;
-            this.button16.UseVisualStyleBackColor = true;
-            this.button16.Click += new System.EventHandler(this.button16_Click);
-            // 
-            // button13
-            // 
-            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button13.Image = global::NUS_Downloader.Properties.Resources.link;
-            this.button13.Location = new System.Drawing.Point(104, 198);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(26, 26);
-            this.button13.TabIndex = 43;
-            this.button13.UseVisualStyleBackColor = true;
-            this.button13.Click += new System.EventHandler(this.button13_Click);
-            // 
-            // button12
-            // 
-            this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button12.Image = ((System.Drawing.Image)(resources.GetObject("button12.Image")));
-            this.button12.Location = new System.Drawing.Point(72, 198);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(26, 26);
-            this.button12.TabIndex = 40;
-            this.button12.UseVisualStyleBackColor = true;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
-            // 
-            // button8
-            // 
-            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button8.Image = ((System.Drawing.Image)(resources.GetObject("button8.Image")));
-            this.button8.Location = new System.Drawing.Point(213, 19);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(26, 26);
-            this.button8.TabIndex = 33;
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
-            // button11
-            // 
-            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button11.Image = ((System.Drawing.Image)(resources.GetObject("button11.Image")));
-            this.button11.Location = new System.Drawing.Point(9, 198);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(26, 26);
-            this.button11.TabIndex = 36;
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
-            // 
-            // button9
-            // 
-            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button9.Image = ((System.Drawing.Image)(resources.GetObject("button9.Image")));
-            this.button9.Location = new System.Drawing.Point(213, 53);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(26, 26);
-            this.button9.TabIndex = 34;
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
-            // button10
-            // 
-            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button10.Image = ((System.Drawing.Image)(resources.GetObject("button10.Image")));
-            this.button10.Location = new System.Drawing.Point(41, 198);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(26, 26);
-            this.button10.TabIndex = 35;
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
+            this.ProxyURL.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ProxyURL.Location = new System.Drawing.Point(55, 27);
+            this.ProxyURL.Name = "ProxyURL";
+            this.ProxyURL.Size = new System.Drawing.Size(151, 20);
+            this.ProxyURL.TabIndex = 0;
             // 
             // radioButton1
             // 
@@ -1085,6 +1078,17 @@
             this.ProxyVerifyBox.Text = "Verify Credentials";
             this.ProxyVerifyBox.Visible = false;
             // 
+            // SaveProxyPwdBtn
+            // 
+            this.SaveProxyPwdBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.SaveProxyPwdBtn.Location = new System.Drawing.Point(9, 43);
+            this.SaveProxyPwdBtn.Name = "SaveProxyPwdBtn";
+            this.SaveProxyPwdBtn.Size = new System.Drawing.Size(197, 23);
+            this.SaveProxyPwdBtn.TabIndex = 34;
+            this.SaveProxyPwdBtn.Text = "Save (This Session Only)";
+            this.SaveProxyPwdBtn.UseVisualStyleBackColor = true;
+            this.SaveProxyPwdBtn.Click += new System.EventHandler(this.button18_Click);
+            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -1104,22 +1108,20 @@
             this.ProxyPwdBox.UseSystemPasswordChar = true;
             this.ProxyPwdBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ProxyPwdBox_KeyPress);
             // 
-            // SaveProxyPwdBtn
+            // dlprogress
             // 
-            this.SaveProxyPwdBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.SaveProxyPwdBtn.Location = new System.Drawing.Point(9, 43);
-            this.SaveProxyPwdBtn.Name = "SaveProxyPwdBtn";
-            this.SaveProxyPwdBtn.Size = new System.Drawing.Size(197, 23);
-            this.SaveProxyPwdBtn.TabIndex = 34;
-            this.SaveProxyPwdBtn.Text = "Save (This Session Only)";
-            this.SaveProxyPwdBtn.UseVisualStyleBackColor = true;
-            this.SaveProxyPwdBtn.Click += new System.EventHandler(this.button18_Click);
+            this.dlprogress.ContainerControl = this;
+            this.dlprogress.Location = new System.Drawing.Point(12, 95);
+            this.dlprogress.Name = "dlprogress";
+            this.dlprogress.Size = new System.Drawing.Size(250, 15);
+            this.dlprogress.TabIndex = 47;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(539, 492);
+            this.Controls.Add(this.dlprogress);
             this.Controls.Add(this.deletecontentsbox);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.ProxyVerifyBox);
@@ -1144,7 +1146,6 @@
             this.Controls.Add(this.button7);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.radioButton2);
-            this.Controls.Add(this.dlprogress);
             this.Controls.Add(this.packbox);
             this.Controls.Add(this.statusbox);
             this.Controls.Add(this.ignoreticket);
@@ -1184,7 +1185,6 @@
         private System.Windows.Forms.Button downloadstartbtn;
         private System.Windows.Forms.TextBox statusbox;
         private System.Windows.Forms.CheckBox packbox;
-        private System.Windows.Forms.ProgressBar dlprogress;
         private System.Windows.Forms.CheckBox localuse;
         private System.ComponentModel.BackgroundWorker NUSDownloader;
         private System.Windows.Forms.TextBox titleversion;
@@ -1280,6 +1280,7 @@
         private System.Windows.Forms.Button SaveProxyPwdBtn;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox ProxyPwdBox;
+        private wyDay.Controls.Windows7ProgressBar dlprogress;
     }
 }
 

@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Threading;
 using System.Text;
+using wyDay.Controls;
 
 
 namespace NUS_Downloader
@@ -47,6 +48,9 @@ namespace NUS_Downloader
         string proxy_url;
         string proxy_usr;
         string proxy_pwd;
+
+        // Common Key hash
+        byte[] wii_commonkey_sha1 = new byte[20] { 0xEB, 0xEA, 0xE6, 0xD2, 0x76, 0x2D, 0x4D, 0x3E, 0xA1, 0x60, 0xA6, 0xD8, 0x32, 0x7F, 0xAC, 0x9A, 0x25, 0xF8, 0x06, 0x2B };
         /*
         public struct WADHeader
         {
@@ -195,6 +199,8 @@ namespace NUS_Downloader
             else
             {
                 WriteStatus("Common Key detected.");
+                if ((Convert.ToBase64String(ComputeSHA(LoadCommonKey("key.bin")))) != (Convert.ToBase64String(wii_commonkey_sha1)))
+                    WriteStatus(" - (PS: Your common key isn't hashing right!");
             }
 
             // Check for Wii KOR common key bin file...
@@ -793,6 +799,14 @@ namespace NUS_Downloader
 
             downloadstartbtn.Text = "Prerequisites: (0/2)";
 
+            // Windows 7?
+            if (IsWin7())
+            { 
+                // Windows 7 Taskbar progress can be used.
+                dlprogress.ShowInTaskbar = true;
+                
+            }
+
             // Download TMD before the rest...
             string tmdfull = "tmd";
             if (titleversion.Text != "")
@@ -1152,6 +1166,9 @@ namespace NUS_Downloader
             SetEnableforDownload(true);
             downloadstartbtn.Text = "Start NUS Download!";
             dlprogress.Value = 0;
+            
+            if (IsWin7())
+                dlprogress.ShowInTaskbar = false;
 
         }
 
@@ -1442,8 +1459,8 @@ namespace NUS_Downloader
             else
                 WriteStatus("Database: OK");
 
-            /* if (IsWin7())
-                WriteStatus("Windows 7 Features: Enabled"); */
+            if (IsWin7())
+                WriteStatus("Windows 7 Features: Enabled");
             
             WriteStatus("");
             WriteStatus("Special thanks to:");
@@ -1453,6 +1470,7 @@ namespace NUS_Downloader
             WriteStatus(" * #WiiDev for answering the tough questions.");
             WriteStatus(" * Anyone who helped beta test on GBATemp!");
             WriteStatus(" * Famfamfam for the Silk Icon Set.");
+            WriteStatus(" * Wyatt O'Day for the Windows7ProgressBar Control.");
         }
         
         private void packbox_CheckedChanged(object sender, EventArgs e)
@@ -3762,6 +3780,13 @@ namespace NUS_Downloader
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
                 button18_Click("LOLWUT", EventArgs.Empty);
+        }
+
+        private void ProxyAssistBtn_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("If you are behind a proxy, set these settings to get through to NUS." +
+                " If you have an alternate port for accessing your proxy, add ':' followed by the port." +
+                " You will be prompted for your password each time you run NUSD, for privacy purposes.");
         }
     }
 }
