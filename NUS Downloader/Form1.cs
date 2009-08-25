@@ -776,7 +776,7 @@ namespace NUS_Downloader
                     NetworkCredential cred = new NetworkCredential();
                     cred.UserName = proxy_usr;
 
-                    if (String.IsNullOrEmpty(proxy_pwd))
+                    if (!(String.IsNullOrEmpty(proxy_pwd)))
                         cred.Password = proxy_pwd;
 
                     customproxy.Credentials = cred;
@@ -1471,6 +1471,7 @@ namespace NUS_Downloader
             WriteStatus(" * Anyone who helped beta test on GBATemp!");
             WriteStatus(" * Famfamfam for the Silk Icon Set.");
             WriteStatus(" * Wyatt O'Day for the Windows7ProgressBar Control.");
+            WriteStatus(" * Napo7 for testing proxy usage.");
         }
         
         private void packbox_CheckedChanged(object sender, EventArgs e)
