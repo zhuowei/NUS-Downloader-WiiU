@@ -81,6 +81,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap bug_error {
+            get {
+                object obj = ResourceManager.GetObject("bug_error", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap bullet_green {
             get {
                 object obj = ResourceManager.GetObject("bullet_green", resourceCulture);
@@ -154,6 +161,34 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap package_delete {
             get {
                 object obj = ResourceManager.GetObject("package_delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap page_white_magnify {
+            get {
+                object obj = ResourceManager.GetObject("page_white_magnify", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap script_go {
+            get {
+                object obj = ResourceManager.GetObject("script_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap server_connect {
+            get {
+                object obj = ResourceManager.GetObject("server_connect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap server_link {
+            get {
+                object obj = ResourceManager.GetObject("server_link", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

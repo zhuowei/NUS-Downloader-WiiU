@@ -44,6 +44,9 @@ namespace NUS_Downloader
 
         string WAD_Saveas_Filename;
 
+        // TODO: OOP scripting
+        string script_filename;
+
         // Proxy stuff...
         string proxy_url;
         string proxy_usr;
@@ -3367,6 +3370,33 @@ namespace NUS_Downloader
             // Retrieve Wiibrew database page source code
             WebClient databasedl = new WebClient();
             statusbox.Refresh();
+
+            // Proxy
+            if (!(String.IsNullOrEmpty(proxy_url)))
+            {
+                WebProxy customproxy = new WebProxy();
+                customproxy.Address = new Uri(proxy_url);
+                if (String.IsNullOrEmpty(proxy_usr))
+                    customproxy.UseDefaultCredentials = true;
+                else
+                {
+                    NetworkCredential cred = new NetworkCredential();
+                    cred.UserName = proxy_usr;
+
+                    if (!(String.IsNullOrEmpty(proxy_pwd)))
+                        cred.Password = proxy_pwd;
+
+                    customproxy.Credentials = cred;
+                }
+                databasedl.Proxy = customproxy;
+                WriteStatus("  - Custom proxy settings applied!");
+            }
+            else
+            {
+                databasedl.Proxy = WebRequest.GetSystemWebProxy();
+                databasedl.UseDefaultCredentials = true;
+            }
+
             string wiibrewsource = databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database");
             statusbox.Refresh();
 
@@ -3435,6 +3465,33 @@ namespace NUS_Downloader
             req.Method = "POST";
             req.UserAgent = "wii libnup/1.0";
             req.Headers.Add("SOAPAction", '"' + "urn:nus.wsapi.broadon.com/" + '"');
+
+            // Proxy
+            if (!(String.IsNullOrEmpty(proxy_url)))
+            {
+                WebProxy customproxy = new WebProxy();
+                customproxy.Address = new Uri(proxy_url);
+                if (String.IsNullOrEmpty(proxy_usr))
+                    customproxy.UseDefaultCredentials = true;
+                else
+                {
+                    NetworkCredential cred = new NetworkCredential();
+                    cred.UserName = proxy_usr;
+
+                    if (!(String.IsNullOrEmpty(proxy_pwd)))
+                        cred.Password = proxy_pwd;
+
+                    customproxy.Credentials = cred;
+                }
+                req.Proxy = customproxy;
+                WriteStatus("  - Custom proxy settings applied!");
+            }
+            else
+            {
+                req.Proxy = WebRequest.GetSystemWebProxy();
+                req.UseDefaultCredentials = true;
+            }
+
             Stream writeStream = req.GetRequestStream();
 
             UTF8Encoding encoding = new UTF8Encoding();
@@ -3472,17 +3529,25 @@ namespace NUS_Downloader
         private void emulateUpdate_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             // Begin Wii System Update
+            statusbox.Text = "";
             WriteStatus("Starting Wii System Update...");
 
-            extrasStrip.Close();
+            extrasStrip.Close();        
 
             string deviceID = "4362227770";
             string messageID = "13198105123219138";
             string attr = "2";
-            string RegionID = "USA";
-            string CountryCode = "US";
 
-            // TODO: Specific region/ccodes
+            string RegionID = e.ClickedItem.Text.Substring(0, 3);
+            if (RegionID == "JAP") // Japan fix, only region not w/ 1st 3 letters same as ID.
+                RegionID = "JPN";
+
+            string CountryCode = RegionID.Substring(0, 2);
+
+            /* [14:26] <Galaxy|> RegionID: USA, Country: US; 
+            RegionID: JPN, Country: JP; 
+            RegionID: EUR, Country: EU; 
+            RegionID: KOR, Country: KO; */
 
             string soap_req = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"" +
             " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"" +
@@ -3496,6 +3561,7 @@ namespace NUS_Downloader
             "</GetSystemUpdateRequest>\n</soapenv:Body>\n</soapenv:Envelope>";
 
             WriteStatus(" - Sending SOAP Request to NUS...");
+            WriteStatus("   - Region: " + RegionID);
             string update_xml = SendSOAPRequest(soap_req);
             if (update_xml != null)
                 WriteStatus("   - Recieved Update Info!");
@@ -3528,7 +3594,10 @@ namespace NUS_Downloader
                             break;
                     }
                 }
-                WriteStatus(String.Format("{0}v{1}", TitleID, Version));
+                WriteStatus(String.Format("   - {0} [v{1}]", TitleID, Version));
+
+                if ((File.Exists("database.xml") == true) && ((!(String.IsNullOrEmpty(NameFromDatabase(TitleID))))))
+                    statusbox.Text += String.Format(" [{0}]", NameFromDatabase(TitleID));
             }
         }
 
@@ -3629,6 +3698,13 @@ namespace NUS_Downloader
         /// <returns>Existing name; else null</returns>
         private string NameFromDatabase(string titleid)
         {
+            // DANGER: BAD h4x HERE!!
+            // Fix MIOS/BC naming
+            if (titleid == "0000000100000101")
+                return "MIOS";
+            else if (titleid == "0000000100000100")
+                return "BC";
+
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load("database.xml");
 
@@ -3640,7 +3716,7 @@ namespace NUS_Downloader
             {
                 XmlNodeList XMLSpecificNodeTypeList = xDoc.GetElementsByTagName(XMLNodeTypes[i]);
 
-                for (int x = 0; x < XMLSpecificNodeTypeList.Count; x++) // FOR THE LIST OF A TYPE OF NODE
+                for (int x = 0; x < XMLSpecificNodeTypeList.Count; x++) // FOR EACH ITEM IN THE LIST OF A NODE TYPE
                 {
                     bool found_it = false;
 
@@ -3788,6 +3864,63 @@ namespace NUS_Downloader
             MessageBox.Show("If you are behind a proxy, set these settings to get through to NUS." +
                 " If you have an alternate port for accessing your proxy, add ':' followed by the port." +
                 " You will be prompted for your password each time you run NUSD, for privacy purposes.");
+        }
+
+        private void enableBETATruchaFeaturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            truchabox.Visible = true;
+        }
+
+        private void loadNUSScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Current directory...
+            string currentdir = Application.StartupPath;
+            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
+                currentdir += @"\";
+
+            // Open a NUS script.
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Multiselect = false;
+            ofd.Filter = "NUS Scripts|*.nus|All Files|*.*";
+            if (Directory.Exists(currentdir + "scripts"))
+                ofd.InitialDirectory = currentdir + "scripts";
+            ofd.Title = "Load a NUS/Wiimpersonator script.";
+
+            if (ofd.ShowDialog() != DialogResult.Cancel)
+            {
+                script_filename = ofd.FileName;
+                BackgroundWorker scripter = new BackgroundWorker();
+                scripter.DoWork += new DoWorkEventHandler(RunScript);
+                scripter.RunWorkerAsync();
+            }
+        }
+
+        private void RunScript(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            Control.CheckForIllegalCrossThreadCalls = false;
+            WriteStatus("Starting script download. Please be patient!");
+            string[] NUS_Entries = File.ReadAllLines(script_filename);
+            WriteStatus(String.Format(" - Script loaded ({0} Titles)", NUS_Entries.Length));
+
+            for (int a = 0; a < NUS_Entries.Length; a++)
+            {
+                // Download the title
+                string[] title_info = NUS_Entries[a].Split(' ');
+                titleidbox.Text = title_info[0];
+                titleversion.Text = Convert.ToString(256*(byte.Parse(title_info[1].Substring(0, 2), System.Globalization.NumberStyles.HexNumber)));
+                titleversion.Text = Convert.ToString(Convert.ToInt32(titleversion.Text) + byte.Parse(title_info[1].Substring(2, 2), System.Globalization.NumberStyles.HexNumber));
+
+                button3_Click("Scripter", EventArgs.Empty);
+
+                Thread.Sleep(1000);
+
+                while (NUSDownloader.IsBusy)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+
+            WriteStatus("Script completed!");
         }
     }
 }
