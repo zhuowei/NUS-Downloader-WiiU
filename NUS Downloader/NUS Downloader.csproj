@@ -70,6 +70,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="NUS.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -96,6 +97,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="TMD.cs" />
     <Compile Include="WADPacker.cs" />
     <Compile Include="Windows7ProgressBar.cs">
       <SubType>Component</SubType>
@@ -111,6 +113,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="direction_down.ico" />
+    <None Include="Resources\page_white_magnify.png" />
+    <None Include="Resources\server_link.png" />
+    <None Include="Resources\server_connect.png" />
+    <None Include="Resources\script_go.png" />
+    <None Include="Resources\bug_error.png" />
     <None Include="Resources\help.png" />
     <None Include="Resources\link.png" />
     <None Include="Resources\bug_add.png" />
