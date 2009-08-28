@@ -46,6 +46,7 @@ namespace NUS_Downloader
 
         // TODO: OOP scripting
         string script_filename;
+        bool script_mode = false;
 
         // Proxy stuff...
         string proxy_url;
@@ -711,7 +712,7 @@ namespace NUS_Downloader
                 WriteStatus("Please enter SOME info...");
                 return;
             }
-            else
+            else if (!(script_mode))
             {
                 try
                 {
@@ -723,6 +724,8 @@ namespace NUS_Downloader
                     statusbox.Text = " --- " + titleidbox.Text + " ---";
                 }
             }
+            else
+                statusbox.Text += "\r\n --- " + titleidbox.Text + " ---";
 
             // Handle SaveAs here so it shows up properly...
             if (saveaswadbox.Checked)
@@ -746,7 +749,8 @@ namespace NUS_Downloader
         {
             // Preparations for Downloading
             Control.CheckForIllegalCrossThreadCalls = false;
-            WriteStatus("Starting NUS Download. Please be patient!");
+            if (!(script_mode))
+                WriteStatus("Starting NUS Download. Please be patient!");
             SetEnableforDownload(false);
             downloadstartbtn.Text = "Starting NUS Download!";
 
@@ -1172,6 +1176,9 @@ namespace NUS_Downloader
             
             if (IsWin7())
                 dlprogress.ShowInTaskbar = false;
+
+            if (script_mode)
+                statusbox.Text = "";
 
         }
 
@@ -3571,6 +3578,8 @@ namespace NUS_Downloader
                 return;
             }
 
+            string script_text = "";
+
             XmlDocument xDoc = new XmlDocument();
             xDoc.LoadXml(update_xml);
             XmlNodeList TitleList = xDoc.GetElementsByTagName("TitleVersion");
@@ -3598,7 +3607,25 @@ namespace NUS_Downloader
 
                 if ((File.Exists("database.xml") == true) && ((!(String.IsNullOrEmpty(NameFromDatabase(TitleID))))))
                     statusbox.Text += String.Format(" [{0}]", NameFromDatabase(TitleID));
+
+                script_text += String.Format("{0} {1}\n", TitleID, DisplayBytes(NewIntegertoByteArray(Convert.ToInt32(Version), 2), ""));
             }
+
+            WriteStatus(" - Outputting results to NUS script...");
+
+            // Current directory...
+            string currentdir = Application.StartupPath;
+            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
+                currentdir += @"\";
+
+            if (!(Directory.Exists(currentdir + "scripts")))
+            {
+                Directory.CreateDirectory(currentdir + "scripts");
+                WriteStatus("  - Created 'scrips\' directory.");
+            }
+            string time = RemoveIllegalCharacters(DateTime.Now.ToShortTimeString());
+            File.WriteAllText(String.Format(currentdir + "scripts\\{0}_Update_{1}_{2}_{3} {4}.nus", RegionID, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, time), script_text);
+            WriteStatus(" - Script written!");
         }
 
         /// <summary>
@@ -3898,6 +3925,7 @@ namespace NUS_Downloader
         private void RunScript(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             Control.CheckForIllegalCrossThreadCalls = false;
+            script_mode = true;
             WriteStatus("Starting script download. Please be patient!");
             string[] NUS_Entries = File.ReadAllLines(script_filename);
             WriteStatus(String.Format(" - Script loaded ({0} Titles)", NUS_Entries.Length));
@@ -3905,6 +3933,7 @@ namespace NUS_Downloader
             for (int a = 0; a < NUS_Entries.Length; a++)
             {
                 // Download the title
+                WriteStatus(String.Format(" - Running Download ({0}/{1})", a+1, NUS_Entries.Length));
                 string[] title_info = NUS_Entries[a].Split(' ');
                 titleidbox.Text = title_info[0];
                 titleversion.Text = Convert.ToString(256*(byte.Parse(title_info[1].Substring(0, 2), System.Globalization.NumberStyles.HexNumber)));
@@ -3919,7 +3948,7 @@ namespace NUS_Downloader
                     Thread.Sleep(1000);
                 }
             }
-
+            script_mode = false;
             WriteStatus("Script completed!");
         }
     }
