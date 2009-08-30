@@ -95,8 +95,15 @@
             this.button3 = new System.Windows.Forms.Button();
             this.contentsEdit = new System.Windows.Forms.ListBox();
             this.contentModBox = new System.Windows.Forms.GroupBox();
+            this.button16 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
             this.button17 = new System.Windows.Forms.Button();
             this.extrasStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loadInfoFromTMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,6 +118,7 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.enableBETATruchaFeaturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.loadNUSScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveaswadbox = new System.Windows.Forms.CheckBox();
             this.deletecontentsbox = new System.Windows.Forms.CheckBox();
             this.proxyBox = new System.Windows.Forms.GroupBox();
@@ -118,21 +126,13 @@
             this.label12 = new System.Windows.Forms.Label();
             this.ProxyUser = new System.Windows.Forms.TextBox();
             this.SaveProxyBtn = new System.Windows.Forms.Button();
+            this.ProxyAssistBtn = new System.Windows.Forms.Button();
             this.ProxyURL = new System.Windows.Forms.TextBox();
             this.ProxyVerifyBox = new System.Windows.Forms.GroupBox();
             this.SaveProxyPwdBtn = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.ProxyPwdBox = new System.Windows.Forms.TextBox();
-            this.loadNUSScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
-            this.button16 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.ProxyAssistBtn = new System.Windows.Forms.Button();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.databaseStrip.SuspendLayout();
@@ -767,6 +767,28 @@
             this.contentModBox.Text = "Edit Title Contents";
             this.contentModBox.Visible = false;
             // 
+            // button16
+            // 
+            this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button16.Image = global::NUS_Downloader.Properties.Resources.bug_add;
+            this.button16.Location = new System.Drawing.Point(136, 198);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(26, 26);
+            this.button16.TabIndex = 44;
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
+            // 
+            // button13
+            // 
+            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button13.Image = global::NUS_Downloader.Properties.Resources.link;
+            this.button13.Location = new System.Drawing.Point(104, 198);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(26, 26);
+            this.button13.TabIndex = 43;
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
             // button15
             // 
             this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -788,6 +810,61 @@
             this.button14.Text = "Overwrite Title Contents...";
             this.button14.UseVisualStyleBackColor = true;
             this.button14.Click += new System.EventHandler(this.button14_Click);
+            // 
+            // button12
+            // 
+            this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button12.Image = ((System.Drawing.Image)(resources.GetObject("button12.Image")));
+            this.button12.Location = new System.Drawing.Point(72, 198);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(26, 26);
+            this.button12.TabIndex = 40;
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // button8
+            // 
+            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button8.Image = ((System.Drawing.Image)(resources.GetObject("button8.Image")));
+            this.button8.Location = new System.Drawing.Point(213, 19);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(26, 26);
+            this.button8.TabIndex = 33;
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button11
+            // 
+            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button11.Image = ((System.Drawing.Image)(resources.GetObject("button11.Image")));
+            this.button11.Location = new System.Drawing.Point(9, 198);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(26, 26);
+            this.button11.TabIndex = 36;
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // button9
+            // 
+            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button9.Image = ((System.Drawing.Image)(resources.GetObject("button9.Image")));
+            this.button9.Location = new System.Drawing.Point(213, 53);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(26, 26);
+            this.button9.TabIndex = 34;
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button10
+            // 
+            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button10.Image = ((System.Drawing.Image)(resources.GetObject("button10.Image")));
+            this.button10.Location = new System.Drawing.Point(41, 198);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(26, 26);
+            this.button10.TabIndex = 35;
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // button17
             // 
@@ -845,25 +922,25 @@
             // uSANTSCToolStripMenuItem
             // 
             this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
-            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.uSANTSCToolStripMenuItem.Text = "USA";
             // 
             // europePALToolStripMenuItem
             // 
             this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
-            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.europePALToolStripMenuItem.Text = "EUROPE";
             // 
             // japanNTSCJToolStripMenuItem
             // 
             this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
-            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.japanNTSCJToolStripMenuItem.Text = "JAPAN";
             // 
             // koreaToolStripMenuItem
             // 
             this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
-            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.koreaToolStripMenuItem.Text = "KOREA";
             // 
             // toolStripSeparator4
@@ -896,6 +973,14 @@
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(224, 6);
+            // 
+            // loadNUSScriptToolStripMenuItem
+            // 
+            this.loadNUSScriptToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_go;
+            this.loadNUSScriptToolStripMenuItem.Name = "loadNUSScriptToolStripMenuItem";
+            this.loadNUSScriptToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.loadNUSScriptToolStripMenuItem.Text = "Load NUS Script";
+            this.loadNUSScriptToolStripMenuItem.Click += new System.EventHandler(this.loadNUSScriptToolStripMenuItem_Click);
             // 
             // saveaswadbox
             // 
@@ -974,6 +1059,17 @@
             this.SaveProxyBtn.UseVisualStyleBackColor = true;
             this.SaveProxyBtn.Click += new System.EventHandler(this.SaveProxyBtn_Click);
             // 
+            // ProxyAssistBtn
+            // 
+            this.ProxyAssistBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.ProxyAssistBtn.Image = global::NUS_Downloader.Properties.Resources.help;
+            this.ProxyAssistBtn.Location = new System.Drawing.Point(177, 79);
+            this.ProxyAssistBtn.Name = "ProxyAssistBtn";
+            this.ProxyAssistBtn.Size = new System.Drawing.Size(29, 26);
+            this.ProxyAssistBtn.TabIndex = 28;
+            this.ProxyAssistBtn.UseVisualStyleBackColor = true;
+            this.ProxyAssistBtn.Click += new System.EventHandler(this.ProxyAssistBtn_Click);
+            // 
             // ProxyURL
             // 
             this.ProxyURL.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1026,14 +1122,6 @@
             this.ProxyPwdBox.UseSystemPasswordChar = true;
             this.ProxyPwdBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ProxyPwdBox_KeyPress);
             // 
-            // loadNUSScriptToolStripMenuItem
-            // 
-            this.loadNUSScriptToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_go;
-            this.loadNUSScriptToolStripMenuItem.Name = "loadNUSScriptToolStripMenuItem";
-            this.loadNUSScriptToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.loadNUSScriptToolStripMenuItem.Text = "Load NUS Script";
-            this.loadNUSScriptToolStripMenuItem.Click += new System.EventHandler(this.loadNUSScriptToolStripMenuItem_Click);
-            // 
             // dlprogress
             // 
             this.dlprogress.ContainerControl = this;
@@ -1041,94 +1129,6 @@
             this.dlprogress.Name = "dlprogress";
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.TabIndex = 47;
-            // 
-            // button16
-            // 
-            this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button16.Image = global::NUS_Downloader.Properties.Resources.bug_add;
-            this.button16.Location = new System.Drawing.Point(136, 198);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(26, 26);
-            this.button16.TabIndex = 44;
-            this.button16.UseVisualStyleBackColor = true;
-            this.button16.Click += new System.EventHandler(this.button16_Click);
-            // 
-            // button13
-            // 
-            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button13.Image = global::NUS_Downloader.Properties.Resources.link;
-            this.button13.Location = new System.Drawing.Point(104, 198);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(26, 26);
-            this.button13.TabIndex = 43;
-            this.button13.UseVisualStyleBackColor = true;
-            this.button13.Click += new System.EventHandler(this.button13_Click);
-            // 
-            // button12
-            // 
-            this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button12.Image = ((System.Drawing.Image)(resources.GetObject("button12.Image")));
-            this.button12.Location = new System.Drawing.Point(72, 198);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(26, 26);
-            this.button12.TabIndex = 40;
-            this.button12.UseVisualStyleBackColor = true;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
-            // 
-            // button8
-            // 
-            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button8.Image = ((System.Drawing.Image)(resources.GetObject("button8.Image")));
-            this.button8.Location = new System.Drawing.Point(213, 19);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(26, 26);
-            this.button8.TabIndex = 33;
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
-            // button11
-            // 
-            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button11.Image = ((System.Drawing.Image)(resources.GetObject("button11.Image")));
-            this.button11.Location = new System.Drawing.Point(9, 198);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(26, 26);
-            this.button11.TabIndex = 36;
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
-            // 
-            // button9
-            // 
-            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button9.Image = ((System.Drawing.Image)(resources.GetObject("button9.Image")));
-            this.button9.Location = new System.Drawing.Point(213, 53);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(26, 26);
-            this.button9.TabIndex = 34;
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
-            // button10
-            // 
-            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button10.Image = ((System.Drawing.Image)(resources.GetObject("button10.Image")));
-            this.button10.Location = new System.Drawing.Point(41, 198);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(26, 26);
-            this.button10.TabIndex = 35;
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
-            // 
-            // ProxyAssistBtn
-            // 
-            this.ProxyAssistBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ProxyAssistBtn.Image = global::NUS_Downloader.Properties.Resources.help;
-            this.ProxyAssistBtn.Location = new System.Drawing.Point(177, 79);
-            this.ProxyAssistBtn.Name = "ProxyAssistBtn";
-            this.ProxyAssistBtn.Size = new System.Drawing.Size(29, 26);
-            this.ProxyAssistBtn.TabIndex = 28;
-            this.ProxyAssistBtn.UseVisualStyleBackColor = true;
-            this.ProxyAssistBtn.Click += new System.EventHandler(this.ProxyAssistBtn_Click);
             // 
             // radioButton1
             // 
