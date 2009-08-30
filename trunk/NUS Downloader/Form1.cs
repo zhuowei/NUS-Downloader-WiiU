@@ -95,7 +95,22 @@ namespace NUS_Downloader
             Application.DoEvents();
 
             BootChecks();
+
+            // Fix proxy entry.
+            if (!(String.IsNullOrEmpty(proxy_url)))
+                while (String.IsNullOrEmpty(proxy_pwd))
+                    Thread.Sleep(1000);
+
+            if ((args.Length == 1) && (File.Exists(args[0])))
+            {
+                script_filename = args[0];
+                BackgroundWorker scripter = new BackgroundWorker();
+                scripter.DoWork += new DoWorkEventHandler(RunScript);
+                scripter.RunWorkerAsync();
+            }
+
                
+            /*  CLI MODE DEPRECATED...
             // Vars
             bool startnow = false;
             bool endafter = false;
@@ -174,7 +189,7 @@ namespace NUS_Downloader
             if ((NUSDownloader.IsBusy == false) && (endafter == true))
             {
                 Application.Exit();
-            }
+            } */
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -3577,6 +3592,7 @@ namespace NUS_Downloader
                 WriteStatus("   - Fail.");
                 return;
             }
+            WriteStatus("   - Title information:");
 
             string script_text = "";
 
@@ -3603,7 +3619,7 @@ namespace NUS_Downloader
                             break;
                     }
                 }
-                WriteStatus(String.Format("   - {0} [v{1}]", TitleID, Version));
+                WriteStatus(String.Format("    - {0} [v{1}]", TitleID, Version));
 
                 if ((File.Exists("database.xml") == true) && ((!(String.IsNullOrEmpty(NameFromDatabase(TitleID))))))
                     statusbox.Text += String.Format(" [{0}]", NameFromDatabase(TitleID));
@@ -3626,6 +3642,7 @@ namespace NUS_Downloader
             string time = RemoveIllegalCharacters(DateTime.Now.ToShortTimeString());
             File.WriteAllText(String.Format(currentdir + "scripts\\{0}_Update_{1}_{2}_{3} {4}.nus", RegionID, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, time), script_text);
             WriteStatus(" - Script written!");
+            WriteStatus(" - Run this script if you feel like downloading the update!");
         }
 
         /// <summary>
@@ -3922,10 +3939,16 @@ namespace NUS_Downloader
             }
         }
 
+        /// <summary>
+        /// Runs a NUS script (BG).
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
         private void RunScript(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             Control.CheckForIllegalCrossThreadCalls = false;
             script_mode = true;
+            statusbox.Text = "";
             WriteStatus("Starting script download. Please be patient!");
             string[] NUS_Entries = File.ReadAllLines(script_filename);
             WriteStatus(String.Format(" - Script loaded ({0} Titles)", NUS_Entries.Length));
@@ -3933,8 +3956,11 @@ namespace NUS_Downloader
             for (int a = 0; a < NUS_Entries.Length; a++)
             {
                 // Download the title
-                WriteStatus(String.Format(" - Running Download ({0}/{1})", a+1, NUS_Entries.Length));
+                WriteStatus(String.Format("===== Running Download ({0}/{1}) =====", a+1, NUS_Entries.Length));
                 string[] title_info = NUS_Entries[a].Split(' ');
+                // don't let the delete issue reappear...
+                if (string.IsNullOrEmpty(title_info[0]))
+                    break;
                 titleidbox.Text = title_info[0];
                 titleversion.Text = Convert.ToString(256*(byte.Parse(title_info[1].Substring(0, 2), System.Globalization.NumberStyles.HexNumber)));
                 titleversion.Text = Convert.ToString(Convert.ToInt32(titleversion.Text) + byte.Parse(title_info[1].Substring(2, 2), System.Globalization.NumberStyles.HexNumber));
