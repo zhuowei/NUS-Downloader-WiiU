@@ -313,7 +313,8 @@
             this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(164, 148);
+            this.databaseStrip.Size = new System.Drawing.Size(164, 170);
+            //this.databaseStrip.Opening += new System.ComponentModel.CancelEventHandler(this.databaseStrip_Opening);
             // 
             // SystemMenuList
             // 
@@ -891,7 +892,7 @@
             this.toolStripSeparator6,
             this.loadNUSScriptToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(228, 160);
+            this.extrasStrip.Size = new System.Drawing.Size(228, 138);
             // 
             // loadInfoFromTMDToolStripMenuItem
             // 

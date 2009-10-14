@@ -19,7 +19,7 @@ namespace NUS_Downloader
         const string NUSURL = "http://nus.cdn.shop.wii.com/ccs/download/";
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
         // TODO: Always remember to change version!
-        string version = "v1.3 Beta";
+        string version = "v1.4 Beta";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
@@ -206,8 +206,8 @@ namespace NUS_Downloader
         {
             // Directory stuff
             string currentdir = Application.StartupPath;
-            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
-                currentdir += Path.DirectorySeparatorChar;
+            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Check for Wii common key bin file...
             if (File.Exists(currentdir + "key.bin") == false)
@@ -771,8 +771,8 @@ namespace NUS_Downloader
 
             // Current directory...
             string currentdir = Application.StartupPath;
-            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
-                currentdir += @"\";
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Prevent crossthread issues
             string titleid = titleidbox.Text;
@@ -815,9 +815,9 @@ namespace NUS_Downloader
             // Get placement directory early...
             string titledirectory;
             if (titleversion.Text == "")
-                titledirectory = currentdir + titleid + @"\";
+                titledirectory = currentdir + titleid + Path.DirectorySeparatorChar.ToString();
             else
-                titledirectory = currentdir + titleid + "v" + titleversion.Text + @"\";
+                titledirectory = currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString();
 
             downloadstartbtn.Text = "Prerequisites: (0/2)";
 
@@ -880,7 +880,7 @@ namespace NUS_Downloader
             dlprogress.Value = 100;
 
             // Create ticket file holder
-            byte[] cetkbuf = FileLocationToByteArray(titledirectory + @"\cetk");
+            byte[] cetkbuf = FileLocationToByteArray(titledirectory + Path.DirectorySeparatorChar.ToString() + @"cetk");
 
             // Obtain TitleKey
             byte[] titlekey = new byte[16];
@@ -909,15 +909,15 @@ namespace NUS_Downloader
                 if (cetkbuf[0x01F1] == 0x01)
                 {
                     WriteStatus("Key Type: Korean");
-                    keyBytes = LoadCommonKey(@"\kkey.bin");
+                    keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"kkey.bin");
                 }
                 else
                 {
                     WriteStatus("Key Type: Standard");
                     if (wiimode)
-                        keyBytes = LoadCommonKey(@"\key.bin");
+                        keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"key.bin");
                     else
-                        keyBytes = LoadCommonKey(@"\dsikey.bin");
+                        keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"dsikey.bin");
                 }
            
                 initCrypt(iv, keyBytes);
@@ -954,10 +954,10 @@ namespace NUS_Downloader
                 WriteStatus("Requires: IOS" + sysversion);
 
             // Renaming would be ideal, but gives too many errors...
-            /*if ((currentdir + titleid + "v" + titleversion.Text + @"\") != titledirectory)
+            /*if ((currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString()) != titledirectory)
             {
-                Directory.Move(titledirectory, currentdir + titleid + "v" + titleversion.Text + @"\");
-                titledirectory = currentdir + titleid + "v" + titleversion.Text + @"\";
+                Directory.Move(titledirectory, currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
+                titledirectory = currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString();
                 DirectoryInfo di = new DirectoryInfo(titledirectory);
             } */
 
@@ -1012,14 +1012,14 @@ namespace NUS_Downloader
                 }
 
                 // Progress reporting advances...
-                downloadstartbtn.Text = "Content: (" + (i + 1) + @"/" + contentstrnum + ")";
+                downloadstartbtn.Text = "Content: (" + (i + 1) + Path.AltDirectorySeparatorChar.ToString() + contentstrnum + ")";
                 currentcontentlocation += int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber);
 
                 // Decrypt stuff...
                 if (decryptbox.Checked == true)
                 {
                     // Create content file holder
-                    byte[] contbuf = FileLocationToByteArray(titledirectory + @"\" + tmdcontents[i]);
+                    byte[] contbuf = FileLocationToByteArray(titledirectory + Path.DirectorySeparatorChar.ToString() + tmdcontents[i]);
 
                     // IV (00+IDX+more000)
                     byte[] iv = new byte[16];
@@ -1033,12 +1033,12 @@ namespace NUS_Downloader
 
                     /* Create decrypted file
                     string zeros = "000000";
-                    FileStream decfs = new FileStream(titledirectory + @"\" + zeros + i.ToString("X2") + ".app", FileMode.Create);
+                    FileStream decfs = new FileStream(titledirectory + Path.DirectorySeparatorChar.ToString() + zeros + i.ToString("X2") + ".app", FileMode.Create);
                     decfs.Write(Decrypt(contbuf), 0, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber));
                     decfs.Close();
                     WriteStatus("  - Decrypted: " + zeros + i.ToString("X2") + ".app"); */
 
-                    FileStream decfs = new FileStream(titledirectory + @"\" + tmdcontents[i] + ".app", FileMode.Create);
+                    FileStream decfs = new FileStream(titledirectory + Path.DirectorySeparatorChar.ToString() + tmdcontents[i] + ".app", FileMode.Create);
                     decfs.Write(Decrypt(contbuf), 0, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber));
                     decfs.Close();
                     WriteStatus("  - Decrypted: " + tmdcontents[i] + ".app");
@@ -1204,15 +1204,15 @@ namespace NUS_Downloader
         {
             // Creates the directory for the downloaded title...
             string currentdir = Application.StartupPath;
-            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
-                currentdir += Path.DirectorySeparatorChar;
+            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Get placement directory early...
             string titledirectory;
             if (titleversion.Text == "")
-                titledirectory = Path.Combine(currentdir, titleidbox.Text + Path.DirectorySeparatorChar);
+                titledirectory = Path.Combine(currentdir, titleidbox.Text + Path.DirectorySeparatorChar.ToString());
             else
-                titledirectory = Path.Combine(currentdir, titleidbox.Text + "v" + titleversion.Text + Path.DirectorySeparatorChar);
+                titledirectory = Path.Combine(currentdir, titleidbox.Text + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
 
             // Keep local directory if present and checked out...
             if ((localuse.Checked) && (Directory.Exists(titledirectory)))
@@ -1234,15 +1234,15 @@ namespace NUS_Downloader
         private void DeleteTitleDirectory()
         {
             string currentdir = Application.StartupPath;
-            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
-                currentdir += Path.DirectorySeparatorChar;
+            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Get placement directory early...
             string titledirectory;
             if (titleversion.Text == "")
-                titledirectory = Path.Combine(currentdir, titleidbox.Text + Path.DirectorySeparatorChar);
+                titledirectory = Path.Combine(currentdir, titleidbox.Text + Path.DirectorySeparatorChar.ToString());
             else
-                titledirectory = Path.Combine(currentdir, titleidbox.Text + "v" + titleversion.Text + Path.DirectorySeparatorChar);
+                titledirectory = Path.Combine(currentdir, titleidbox.Text + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
 
             if (Directory.Exists(titledirectory))
                 Directory.Delete(titledirectory, true);
@@ -1263,9 +1263,9 @@ namespace NUS_Downloader
             // Create NUS URL...
             string nusfileurl;
             if (iswiititle)
-                nusfileurl = NUSURL + titleid + @"/" + filename;
+                nusfileurl = NUSURL + titleid + Path.AltDirectorySeparatorChar.ToString() + filename;
             else
-                nusfileurl = DSiNUSURL + titleid + @"/" + filename;
+                nusfileurl = DSiNUSURL + titleid + Path.AltDirectorySeparatorChar.ToString() + filename;
 
             WriteStatus("Grabbing " + filename + "...");
 
@@ -1294,8 +1294,8 @@ namespace NUS_Downloader
 
             // Obtain Current Directory
             string currentdir = Application.StartupPath;
-            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
-                currentdir += @"\";
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Create instance of WAD Packing class
             WADPacker packer = new WADPacker();
@@ -1322,8 +1322,8 @@ namespace NUS_Downloader
             packer.Certs = certsbuf;
             
             // Read TMD/TIK into Packer.
-            packer.Ticket = FileLocationToByteArray(totaldirectory + @"\cetk");
-            packer.TMD = FileLocationToByteArray(totaldirectory + @"\" + tmdfilename);
+            packer.Ticket = FileLocationToByteArray(totaldirectory + Path.DirectorySeparatorChar.ToString() + @"cetk");
+            packer.TMD = FileLocationToByteArray(totaldirectory + Path.DirectorySeparatorChar.ToString() + tmdfilename);
             
             // Get the TMD variables in here instead...
             int contentcount = ContentCount(packer.TMD);
@@ -1342,7 +1342,7 @@ namespace NUS_Downloader
             }
             else
             {
-                string wad_filename = totaldirectory + @"\" + RemoveIllegalCharacters(wadnamebox.Text);
+                string wad_filename = totaldirectory + Path.DirectorySeparatorChar.ToString() + RemoveIllegalCharacters(wadnamebox.Text);
                 packer.Directory = totaldirectory;
                 packer.FileName = System.IO.Path.GetFileName(wad_filename);
             }
@@ -1362,10 +1362,10 @@ namespace NUS_Downloader
             if (deletecontentsbox.Checked)
             {
                 WriteStatus("Deleting contents...");
-                File.Delete(totaldirectory + @"\" + tmdfilename);
-                File.Delete(totaldirectory + @"\cetk");
+                File.Delete(totaldirectory + Path.DirectorySeparatorChar.ToString() + tmdfilename);
+                File.Delete(totaldirectory + Path.DirectorySeparatorChar.ToString() + @"cetk");
                 for (int a = 0; a < contentnames.Length; a++)
-                    File.Delete(totaldirectory + @"\" + contentnames[a]);
+                    File.Delete(totaldirectory + Path.DirectorySeparatorChar.ToString() + contentnames[a]);
                 WriteStatus(" - Contents have been deleted.");
                 string[] leftovers = Directory.GetFiles(totaldirectory);
                 if (leftovers.Length <= 0)
@@ -1462,8 +1462,8 @@ namespace NUS_Downloader
             WriteStatus("This application created by WB3000");
             WriteStatus("");
             string currentdir = Application.StartupPath;
-            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar)) == false)
-                currentdir += Path.DirectorySeparatorChar;
+            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
+                currentdir += Path.DirectorySeparatorChar.ToString();
             if (File.Exists(currentdir + "key.bin") == false)
                 WriteStatus("Wii Decryption: Need (key.bin)");
             else
@@ -1632,8 +1632,8 @@ namespace NUS_Downloader
         {
             // Directory stuff
             string currentdir = Application.StartupPath;
-            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
-                currentdir += @"\";
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             if (File.Exists(currentdir + keyfile) == true)
             {
@@ -2191,7 +2191,7 @@ namespace NUS_Downloader
             string[] fileinfo = shamelessvariablelabel.Text.Split(',');
 
             // Create ticket file holder
-            byte[] cetkbuff = FileLocationToByteArray(fileinfo[0] + @"\cetk");
+            byte[] cetkbuff = FileLocationToByteArray(fileinfo[0] + Path.DirectorySeparatorChar.ToString() + @"cetk");
 
             // Titlekey
             byte[] titlekey = new byte[16];
@@ -2294,7 +2294,7 @@ namespace NUS_Downloader
             string[] fileinfo = shamelessvariablelabel.Text.Split(',');
 
             // Create ticket file holder
-            byte[] cetkbuff = FileLocationToByteArray(fileinfo[0] + @"\cetk");
+            byte[] cetkbuff = FileLocationToByteArray(fileinfo[0] + Path.DirectorySeparatorChar.ToString() + @"cetk");
 
             // Resize Ticket to actual size.
             Array.Resize(ref cetkbuff, 0x2A4);
@@ -2798,7 +2798,7 @@ namespace NUS_Downloader
                 etitlekey[a] = ticket[0x1BF + a];
             }
             // TODO: Add more key support
-            byte[] commonkey = LoadCommonKey(@"\key.bin");
+            byte[] commonkey = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"key.bin");
 
             // IV (TITLEID00000000)
             byte[] iv = new byte[16];
@@ -3213,7 +3213,7 @@ namespace NUS_Downloader
                 }
 
                 // TODO: Add more key support
-                byte[] commonkey = LoadCommonKey(@"\key.bin");
+                byte[] commonkey = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"key.bin");
 
                 // IV (TITLEID00000000)
                 byte[] iv = new byte[16];
@@ -3419,7 +3419,7 @@ namespace NUS_Downloader
                 databasedl.UseDefaultCredentials = true;
             }
 
-            string wiibrewsource = databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database");
+            string wiibrewsource = databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database?cachesmash=" + System.DateTime.Now.ToString());
             statusbox.Refresh();
 
             // Strip out HTML
@@ -3631,8 +3631,8 @@ namespace NUS_Downloader
 
             // Current directory...
             string currentdir = Application.StartupPath;
-            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
-                currentdir += @"\";
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             if (!(Directory.Exists(currentdir + "scripts")))
             {
@@ -3822,8 +3822,8 @@ namespace NUS_Downloader
         {
             // Current directory...
             string currentdir = Application.StartupPath;
-            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
-                currentdir += @"\";
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             if ((String.IsNullOrEmpty(ProxyURL.Text)) && (String.IsNullOrEmpty(ProxyUser.Text)) && ((File.Exists(currentdir + "proxy.txt"))))
             {
@@ -3872,8 +3872,8 @@ namespace NUS_Downloader
         {
             // Current directory...
             string currentdir = Application.StartupPath;
-            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
-                currentdir += @"\";
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Check for Proxy Settings file...
             if (File.Exists(currentdir + "proxy.txt") == true)
@@ -3919,8 +3919,8 @@ namespace NUS_Downloader
         {
             // Current directory...
             string currentdir = Application.StartupPath;
-            if (!(currentdir.EndsWith(@"\")) || !(currentdir.EndsWith(@"/")))
-                currentdir += @"\";
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Open a NUS script.
             OpenFileDialog ofd = new OpenFileDialog();
@@ -3977,5 +3977,7 @@ namespace NUS_Downloader
             script_mode = false;
             WriteStatus("Script completed!");
         }
+
+
     }
 }
