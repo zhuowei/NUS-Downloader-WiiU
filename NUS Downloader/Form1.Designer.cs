@@ -314,7 +314,6 @@
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
             this.databaseStrip.Size = new System.Drawing.Size(164, 170);
-            //this.databaseStrip.Opening += new System.ComponentModel.CancelEventHandler(this.databaseStrip_Opening);
             // 
             // SystemMenuList
             // 
@@ -760,9 +759,9 @@
             this.contentModBox.Controls.Add(this.button11);
             this.contentModBox.Controls.Add(this.button9);
             this.contentModBox.Controls.Add(this.button10);
-            this.contentModBox.Location = new System.Drawing.Point(278, 434);
+            this.contentModBox.Location = new System.Drawing.Point(265, 146);
             this.contentModBox.Name = "contentModBox";
-            this.contentModBox.Size = new System.Drawing.Size(249, 69);
+            this.contentModBox.Size = new System.Drawing.Size(249, 329);
             this.contentModBox.TabIndex = 41;
             this.contentModBox.TabStop = false;
             this.contentModBox.Text = "Edit Title Contents";
@@ -1172,7 +1171,6 @@
             this.Controls.Add(this.saveaswadbox);
             this.Controls.Add(this.databaseButton);
             this.Controls.Add(this.button5);
-            this.Controls.Add(this.contentModBox);
             this.Controls.Add(this.proxyBox);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.wadnamebox);
@@ -1185,6 +1183,7 @@
             this.Controls.Add(this.button7);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.radioButton2);
+            this.Controls.Add(this.contentModBox);
             this.Controls.Add(this.packbox);
             this.Controls.Add(this.statusbox);
             this.Controls.Add(this.ignoreticket);
