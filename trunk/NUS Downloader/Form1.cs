@@ -19,7 +19,7 @@ namespace NUS_Downloader
         const string NUSURL = "http://nus.cdn.shop.wii.com/ccs/download/";
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
         // TODO: Always remember to change version!
-        string version = "v1.4 Beta";
+        string version = "v1.3 Beta";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
@@ -206,6 +206,7 @@ namespace NUS_Downloader
         {
             // Directory stuff
             string currentdir = Application.StartupPath;
+
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -771,6 +772,7 @@ namespace NUS_Downloader
 
             // Current directory...
             string currentdir = Application.StartupPath;
+
             if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -852,6 +854,7 @@ namespace NUS_Downloader
             dlprogress.Value = 50;
 
             // Download CETK after tmd...
+            bool ticket_exists = true;
             try
             {
                 DownloadNUSFile(titleid, "cetk", titledirectory, 0, wiimode);
@@ -874,71 +877,80 @@ namespace NUS_Downloader
                     WriteStatus("Ticket not found! Continuing, however WAD packing and decryption are not possible!");
                     packbox.Checked = false;
                     decryptbox.Checked = false;
+                    ticket_exists = false;
                 }
             }
             downloadstartbtn.Text = "Prerequisites: (2/2)";
             dlprogress.Value = 100;
 
-            // Create ticket file holder
-            byte[] cetkbuf = FileLocationToByteArray(titledirectory + Path.DirectorySeparatorChar.ToString() + @"cetk");
+            byte[] cetkbuf = new byte[0];
+            byte[] titlekey = new byte[0];
+            if (ticket_exists)
+            {
+                // Create ticket file holder
+                cetkbuf = FileLocationToByteArray(titledirectory + Path.DirectorySeparatorChar.ToString() + @"cetk");
 
-            // Obtain TitleKey
-            byte[] titlekey = new byte[16];
-            if (decryptbox.Checked == true)
-            { 
-                // Load TitleKey into it's byte[]
-                // It is currently encrypted...
-                for (int i = 0; i < 16; i++)
-			    {
-                    titlekey[i] = cetkbuf[0x1BF + i];
-			    }
-
-                // IV (TITLEID+0000s)
-                byte[] iv = new byte[16];
-                for (int i = 0; i < 8; i++)
-			    {
-                    iv[i] = cetkbuf[0x1DC + i];
-			    }
-                for (int i = 0; i < 8; i++)
-			    {
-                    iv[i+8] = 0x00;
-			    }
-
-                // Standard/Korea Common Key
-                byte[] keyBytes;
-                if (cetkbuf[0x01F1] == 0x01)
+                // Obtain TitleKey
+                titlekey = new byte[16];
+                if (decryptbox.Checked == true)
                 {
-                    WriteStatus("Key Type: Korean");
-                    keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"kkey.bin");
-                }
-                else
-                {
-                    WriteStatus("Key Type: Standard");
-                    if (wiimode)
-                        keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"key.bin");
+                    // Load TitleKey into it's byte[]
+                    // It is currently encrypted...
+                    for (int i = 0; i < 16; i++)
+                    {
+                        titlekey[i] = cetkbuf[0x1BF + i];
+                    }
+
+                    // IV (TITLEID+0000s)
+                    byte[] iv = new byte[16];
+                    for (int i = 0; i < 8; i++)
+                    {
+                        iv[i] = cetkbuf[0x1DC + i];
+                    }
+                    for (int i = 0; i < 8; i++)
+                    {
+                        iv[i + 8] = 0x00;
+                    }
+
+                    // Standard/Korea Common Key
+                    byte[] keyBytes;
+                    if (cetkbuf[0x01F1] == 0x01)
+                    {
+                        WriteStatus("Key Type: Korean");
+                        keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"kkey.bin");
+                    }
                     else
-                        keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"dsikey.bin");
-                }
-           
-                initCrypt(iv, keyBytes);
+                    {
+                        WriteStatus("Key Type: Standard");
+                        if (wiimode)
+                            keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"key.bin");
+                        else
+                            keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"dsikey.bin");
+                    }
 
-                WriteStatus("Title Key: " + DisplayBytes(Decrypt(titlekey), ""));
-                titlekey = Decrypt(titlekey);
+                    initCrypt(iv, keyBytes);
+
+                    WriteStatus("Title Key: " + DisplayBytes(Decrypt(titlekey), ""));
+                    titlekey = Decrypt(titlekey);
+                }
             }
 
             // Read the tmd as a stream...
             byte[] tmd = FileLocationToByteArray(titledirectory + tmdfull);
 
-            // Locate Certs **************************************
-            if (!(CertsValid()))
+            if (ticket_exists == true)
             {
-                WriteStatus("Searching for certs...");
-                ScanForCerts(tmd);
-                ScanForCerts(cetkbuf);
+                // Locate Certs **************************************
+                if (!(CertsValid()))
+                {
+                    WriteStatus("Searching for certs...");
+                    ScanForCerts(tmd);
+                    ScanForCerts(cetkbuf);
+                }
+                else
+                    WriteStatus("Using cached certs...");
+                // /Locate Cert **************************************
             }
-            else
-                WriteStatus("Using cached certs...");
-            // /Locate Cert **************************************
 
             // Read Title Version...
             string tmdversion = "";
@@ -953,12 +965,11 @@ namespace NUS_Downloader
             if (sysversion != "0")
                 WriteStatus("Requires: IOS" + sysversion);
 
-            // Renaming would be ideal, but gives too many errors...
+            // Renaming would be ideal, but gives too many permission errors...
             /*if ((currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString()) != titledirectory)
-            {
-                Directory.Move(titledirectory, currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
-                titledirectory = currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString();
-                DirectoryInfo di = new DirectoryInfo(titledirectory);
+ 	        {
+ 	                Directory.Move(titledirectory, currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
+ 	                titledirectory = currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString();
             } */
 
             // Read Content #...
@@ -1029,7 +1040,7 @@ namespace NUS_Downloader
                     }
                     iv[1] = tmdindices[i];
                     
-                    initCrypt(iv, titlekey); 
+                    initCrypt(iv, titlekey);
 
                     /* Create decrypted file
                     string zeros = "000000";
@@ -3435,7 +3446,7 @@ namespace NUS_Downloader
             wiibrewsource = wiibrewsource.Replace("&lt;","<");
             wiibrewsource = wiibrewsource.Replace("&gt;",">");
             wiibrewsource = wiibrewsource.Replace("&quot;",'"'.ToString());
-            wiibrewsource = wiibrewsource.Replace("&nbsp;", " "); // Shouldn't occur, but they happen...
+            wiibrewsource = wiibrewsource.Replace("&nbsp;"," "); // Shouldn't occur, but they happen...
 
             // Return parsed xml database...
             return wiibrewsource;
@@ -3466,6 +3477,12 @@ namespace NUS_Downloader
             File.WriteAllText("olddatabase.xml", olddatabase);
             File.Delete("database.xml");
             File.WriteAllText("database.xml", database);
+
+            // Load it up...
+            ClearDatabaseStrip();
+            FillDatabaseStrip();
+            LoadRegionCodes();
+            ShowInnerToolTips(false);
 
             WriteStatus("Database successfully updated!");
         }
@@ -3637,7 +3654,7 @@ namespace NUS_Downloader
             if (!(Directory.Exists(currentdir + "scripts")))
             {
                 Directory.CreateDirectory(currentdir + "scripts");
-                WriteStatus("  - Created 'scrips\' directory.");
+                WriteStatus("  - Created 'scripts\' directory.");
             }
             string time = RemoveIllegalCharacters(DateTime.Now.ToShortTimeString());
             File.WriteAllText(String.Format(currentdir + "scripts\\{0}_Update_{1}_{2}_{3} {4}.nus", RegionID, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, time), script_text);

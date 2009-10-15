@@ -6,6 +6,18 @@ namespace NUS_Downloader
 {
     class TMD
     {
+        // TMD Variables
+        public byte[] SignatureType;
+ 
+
+
+
+        /* Signature Types
+        public enum SigTypes : byte[]
+        {
+            RSA_2048 = new byte[4] {0x00, 0x01, 0x00, 0x01},
+            RSA_4048 = new byte[4] {0x00, 0x01, 0x00, 0x01}
+        } */
         /*
          * Title metadata is a format used to store information about a title (a single standalone game, channel, etc.) and all its installed contents, including which contents they consist of and their SHA1 hashes.
 
