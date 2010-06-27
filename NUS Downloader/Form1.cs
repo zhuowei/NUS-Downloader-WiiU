@@ -18,8 +18,9 @@ namespace NUS_Downloader
     {
         const string NUSURL = "http://nus.cdn.shop.wii.com/ccs/download/";
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
+
         // TODO: Always remember to change version!
-        string version = "v1.3 Beta";
+        string version = "v1.5 (Beta)";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
@@ -55,6 +56,7 @@ namespace NUS_Downloader
 
         // Common Key hash
         byte[] wii_commonkey_sha1 = new byte[20] { 0xEB, 0xEA, 0xE6, 0xD2, 0x76, 0x2D, 0x4D, 0x3E, 0xA1, 0x60, 0xA6, 0xD8, 0x32, 0x7F, 0xAC, 0x9A, 0x25, 0xF8, 0x06, 0x2B };
+        byte[] wii_commonkey_sha1_asstring = new byte[20] { 0x56, 0xdd, 0x4e, 0xb3, 0x59, 0x75, 0xc2, 0xfd, 0x5a, 0xe8, 0xba, 0x8c, 0x7d, 0x89, 0x9a, 0xc5, 0xe6, 0x17, 0x54, 0x19 };
         /*
         public struct WADHeader
         {
@@ -85,7 +87,16 @@ namespace NUS_Downloader
         public Form1()
         {
             InitializeComponent();
+            Thread th = new Thread(new ThreadStart(DoSplash));
+            th.Start();
             BootChecks();
+            th.Abort();
+        }
+
+        public void DoSplash()
+        {
+            Splash sp = new Splash();
+            sp.ShowDialog();
         }
 
         // CLI Mode
@@ -214,13 +225,31 @@ namespace NUS_Downloader
             if (File.Exists(currentdir + "key.bin") == false)
             {
                 WriteStatus("Common Key (key.bin) missing! Decryption disabled!");
+                WriteStatus(" - To enable it, why not try choosing \"Retrieve Common Key\" from the Extras menu?");
                 decryptbox.Visible = false;
             }
             else
             {
                 WriteStatus("Common Key detected.");
                 if ((Convert.ToBase64String(ComputeSHA(LoadCommonKey("key.bin")))) != (Convert.ToBase64String(wii_commonkey_sha1)))
-                    WriteStatus(" - (PS: Your common key isn't hashing right!");
+                { // Hmm, seems to be a bad hash
+                    // Let's check if it matches the hex string version...
+                    if ((Convert.ToBase64String(ComputeSHA(LoadCommonKey("key.bin")))) != (Convert.ToBase64String(wii_commonkey_sha1_asstring)))
+                        WriteStatus(" - (PS: Your common key isn't hashing right!)");
+                    else
+                    {
+                        WriteStatus(" - Converting your key.bin file to the correct format...");
+                        // Directory stuff
+                        string keydir = Application.StartupPath;
+                        if (!(keydir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(keydir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                            keydir += Path.DirectorySeparatorChar.ToString();
+                        TextReader ckreader = new StreamReader(currentdir + "key.bin");
+                        String ckashex = ckreader.ReadLine();
+                        ckreader.Close();
+                        File.Delete(currentdir + "key.bin");
+                        WriteCommonKey("key.bin", HexStringToByteArray(ckashex));
+                    }
+                }
             }
 
             // Check for Wii KOR common key bin file...
@@ -1637,7 +1666,7 @@ namespace NUS_Downloader
         /// <summary>
         /// Loads the common key from disc.
         /// </summary>
-        /// <param name="keyfile">The keyfile.</param>
+        /// <param name="keyfile">The keyfile filename.</param>
         /// <returns></returns>
         public byte[] LoadCommonKey(string keyfile)
         {
@@ -1653,6 +1682,38 @@ namespace NUS_Downloader
             }
             else
                 return null;
+        }
+
+        /// <summary>
+        /// Writes/overwrites the common key onto disc.
+        /// </summary>
+        /// <param name="keyfile">The keyfile filename.</param>
+        /// <param name="commonkey">The byte array of the common key.</param>
+        /// <returns></returns>
+        public bool WriteCommonKey(string keyfile, byte[] commonkey)
+        {
+            // Directory stuff
+            string currentdir = Application.StartupPath;
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                currentdir += Path.DirectorySeparatorChar.ToString();
+
+            if (File.Exists(currentdir + keyfile) == true)
+            {
+                WriteStatus("Overwriting old key.bin...");
+            }
+            try
+            {
+                FileStream fs = File.OpenWrite(currentdir + keyfile);
+                fs.Write(commonkey, 0, commonkey.Length);
+                fs.Close();
+                WriteStatus("key.bin written - reloading...");
+                return true;
+            }
+            catch (IOException e)
+            {
+                WriteStatus("Error: couldn't write key.bin");
+            }
+            return false;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -3994,6 +4055,86 @@ namespace NUS_Downloader
             script_mode = false;
             WriteStatus("Script completed!");
         }
+
+        private void getCommonKeyMenuItem_Click(object sender, EventArgs e)
+        {
+            WriteStatus("Preparing to retrieve common key...");
+            
+            // Begin the epic grab for freedom
+            WebClient databasedl = new WebClient();
+            statusbox.Refresh();
+
+            // Proxy
+            if (!(String.IsNullOrEmpty(proxy_url)))
+            {
+                WebProxy customproxy = new WebProxy();
+                customproxy.Address = new Uri(proxy_url);
+                if (String.IsNullOrEmpty(proxy_usr))
+                    customproxy.UseDefaultCredentials = true;
+                else
+                {
+                    NetworkCredential cred = new NetworkCredential();
+                    cred.UserName = proxy_usr;
+
+                    if (!(String.IsNullOrEmpty(proxy_pwd)))
+                        cred.Password = proxy_pwd;
+
+                    customproxy.Credentials = cred;
+                }
+                databasedl.Proxy = customproxy;
+                WriteStatus("  - Custom proxy settings applied!");
+            }
+            else
+            {
+                databasedl.Proxy = WebRequest.GetSystemWebProxy();
+                databasedl.UseDefaultCredentials = true;
+            }
+
+            string keyspostsource = databasedl.DownloadString("http://hackmii.com/2008/04/keys-keys-keys/");
+            statusbox.Refresh();
+
+            // Find our start point
+            string startofcommonkey = "Common key (";
+            keyspostsource = keyspostsource.Substring(keyspostsource.IndexOf(startofcommonkey) + startofcommonkey.Length, 32);
+            WriteStatus("Got the common key as: " + keyspostsource);
+            byte[] commonkey = HexStringToByteArray(keyspostsource);
+            if (WriteCommonKey("key.bin", commonkey))
+            {
+                BootChecks();
+            }
+            
+        }
+
+        public static string ByteArrayToHexString(byte[] Bytes)
+        {
+            StringBuilder Result = new StringBuilder();
+            string HexAlphabet = "0123456789ABCDEF";
+
+            foreach (byte B in Bytes)
+            {
+                Result.Append(HexAlphabet[(int)(B >> 4)]);
+                Result.Append(HexAlphabet[(int)(B & 0xF)]);
+            }
+
+            return Result.ToString();
+        }
+
+        public static byte[] HexStringToByteArray(string Hex)
+        {
+            byte[] Bytes = new byte[Hex.Length / 2];
+            int[] HexValue = new int[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
+                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x0B, 0x0C, 0x0D,
+                                 0x0E, 0x0F };
+
+            for (int x = 0, i = 0; i < Hex.Length; i += 2, x += 1)
+            {
+                Bytes[x] = (byte)(HexValue[Char.ToUpper(Hex[i + 0]) - '0'] << 4 |
+                                  HexValue[Char.ToUpper(Hex[i + 1]) - '0']);
+            }
+
+            return Bytes;
+        }
+
 
 
     }
