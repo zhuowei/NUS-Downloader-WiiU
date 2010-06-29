@@ -54,6 +54,9 @@ namespace NUS_Downloader
         string proxy_usr;
         string proxy_pwd;
 
+        // Database thread
+        private BackgroundWorker fds;
+
         // Common Key hash
         byte[] wii_commonkey_sha1 = new byte[20] { 0xEB, 0xEA, 0xE6, 0xD2, 0x76, 0x2D, 0x4D, 0x3E, 0xA1, 0x60, 0xA6, 0xD8, 0x32, 0x7F, 0xAC, 0x9A, 0x25, 0xF8, 0x06, 0x2B };
         byte[] wii_commonkey_sha1_asstring = new byte[20] { 0x56, 0xdd, 0x4e, 0xb3, 0x59, 0x75, 0xc2, 0xfd, 0x5a, 0xe8, 0xba, 0x8c, 0x7d, 0x89, 0x9a, 0xc5, 0xe6, 0x17, 0x54, 0x19 };
@@ -87,16 +90,12 @@ namespace NUS_Downloader
         public Form1()
         {
             InitializeComponent();
-            Thread th = new Thread(new ThreadStart(DoSplash));
-            th.Start();
+            this.fds = new BackgroundWorker();
+            this.fds.DoWork += new DoWorkEventHandler(DoAllDatabaseyStuff);
+            this.fds.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DoAllDatabaseyStuff_Completed);
+            this.fds.ProgressChanged += new ProgressChangedEventHandler(DoAllDatabaseyStuff_ProgressChanged);
+            this.fds.WorkerReportsProgress = true;
             BootChecks();
-            th.Abort();
-        }
-
-        public void DoSplash()
-        {
-            Splash sp = new Splash();
-            sp.ShowDialog();
         }
 
         // CLI Mode
@@ -271,19 +270,17 @@ namespace NUS_Downloader
                 WriteStatus("Database.xml not found. Title database not usable!");
                 databaseButton.Visible = false;
                 Extrasbtn.Size = new System.Drawing.Size(134, 20);
-                Extrasbtn.Anchor = AnchorStyles.Right;
+                updateDatabaseToolStripMenuItem.Text = "Download Database";
             }
             else
             {
                 string version = GetDatabaseVersion("database.xml");
                 WriteStatus("Database.xml detected.");
                 WriteStatus(" - Version: " + version);
-
+                databaseButton.Enabled = false;
+                databaseButton.Text = "DB Loading";
                 // Load it up...
-                ClearDatabaseStrip();
-                FillDatabaseStrip();
-                LoadRegionCodes();
-                ShowInnerToolTips(false);
+                this.fds.RunWorkerAsync();
             }
 
             // Check for Proxy Settings file...
@@ -301,6 +298,26 @@ namespace NUS_Downloader
                     ProxyVerifyBox.Select();
                 }
             }
+        }
+
+        private void DoAllDatabaseyStuff(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            ClearDatabaseStrip();
+            FillDatabaseStrip(worker);
+            LoadRegionCodes();
+            ShowInnerToolTips(false);
+        }
+
+        private void DoAllDatabaseyStuff_Completed(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            this.databaseButton.Enabled = true;
+            this.databaseButton.Text = "Database...";
+        }
+
+        private void DoAllDatabaseyStuff_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            this.databaseButton.Text = "DB: " + e.ProgressPercentage + "%";
         }
 
         private void SetAllEnabled(bool enabled)
@@ -330,7 +347,16 @@ namespace NUS_Downloader
             if (file.Contains("<"))
                 xDoc.LoadXml(file);
             else
-                xDoc.Load(file);
+            {
+                if (File.Exists(file))
+                {
+                    xDoc.Load(file);
+                }
+                else
+                {
+                    return "None Found";
+                }
+            }
             XmlNodeList DatabaseList = xDoc.GetElementsByTagName("database");
             XmlAttributeCollection Attributes = DatabaseList[0].Attributes;
             return Attributes[0].Value;
@@ -1711,7 +1737,7 @@ namespace NUS_Downloader
             }
             catch (IOException e)
             {
-                WriteStatus("Error: couldn't write key.bin");
+                WriteStatus("Error: couldn't write key.bin: " + e.Message);
             }
             return false;
         }
@@ -1748,7 +1774,7 @@ namespace NUS_Downloader
         /// <summary>
         /// Fills the database strip.
         /// </summary>
-        private void FillDatabaseStrip()
+        private void FillDatabaseStrip(BackgroundWorker worker)
         {
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load("database.xml");
@@ -1756,6 +1782,8 @@ namespace NUS_Downloader
             // Variables
             string[] XMLNodeTypes = new string[4] { "SYS", "IOS", "VC", "WW" };
 
+            int totalLength = xDoc.SelectNodes("/database/*").Count;
+            int rnt = 0;
             // Loop through XMLNodeTypes
             for (int i = 0; i < XMLNodeTypes.Length; i++)
             {
@@ -1770,6 +1798,11 @@ namespace NUS_Downloader
                     string descname = "";
                     bool dangerous = false;
                     bool ticket = true;
+
+                    // Okay, so now report the progress...
+                    rnt = rnt + 1;
+                    float currentProgress = ((float)rnt / (float)totalLength) * (float)100;
+                    worker.ReportProgress(Convert.ToInt16(Math.Round(currentProgress)));
                     
                     // Lol.
                     XmlNodeList ChildrenOfTheNode = XMLSpecificNodeTypeList[x].ChildNodes;
@@ -3459,11 +3492,11 @@ namespace NUS_Downloader
         /// Retrieves the new database via WiiBrew.
         /// </summary>
         /// <returns>Database as a String</returns>
-        private string RetrieveNewDatabase()
+        private void RetrieveNewDatabase(object sender, DoWorkEventArgs e)
         {
             // Retrieve Wiibrew database page source code
             WebClient databasedl = new WebClient();
-            statusbox.Refresh();
+            //statusbox.Refresh();
 
             // Proxy
             if (!(String.IsNullOrEmpty(proxy_url)))
@@ -3492,7 +3525,7 @@ namespace NUS_Downloader
             }
 
             string wiibrewsource = databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database?cachesmash=" + System.DateTime.Now.ToString());
-            statusbox.Refresh();
+            //statusbox.Refresh();
 
             // Strip out HTML
             wiibrewsource = Regex.Replace(wiibrewsource, @"<(.|\n)*?>", "");
@@ -3510,15 +3543,13 @@ namespace NUS_Downloader
             wiibrewsource = wiibrewsource.Replace("&nbsp;"," "); // Shouldn't occur, but they happen...
 
             // Return parsed xml database...
-            return wiibrewsource;
+            e.Result = wiibrewsource;
         }
 
-        private void updateDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        private void RetrieveNewDatabase_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            statusbox.Text = "";
-            WriteStatus("Updating your database.xml from Wiibrew.org");
 
-            string database = RetrieveNewDatabase();
+            string database = e.Result.ToString();
             string currentversion = GetDatabaseVersion("database.xml");
             string onlineversion = GetDatabaseVersion(database);
             WriteStatus(" - Database successfully parsed!");
@@ -3531,21 +3562,54 @@ namespace NUS_Downloader
                 return;
             }
 
-            WriteStatus(" - Overwriting your current database.xml...");
-            WriteStatus(" - The old database will become 'olddatabase.xml' in case the new one is faulty.");
+            bool isCreation = false;
+            if (File.Exists("database.xml"))
+            {
+                WriteStatus(" - Overwriting your current database.xml...");
+                WriteStatus(" - The old database will become 'olddatabase.xml' in case the new one is faulty.");
 
-            string olddatabase = File.ReadAllText("database.xml");
-            File.WriteAllText("olddatabase.xml", olddatabase);
-            File.Delete("database.xml");
-            File.WriteAllText("database.xml", database);
+                string olddatabase = File.ReadAllText("database.xml");
+                File.WriteAllText("olddatabase.xml", olddatabase);
+                File.Delete("database.xml");
+                File.WriteAllText("database.xml", database);
+            }
+            else
+            {
+                WriteStatus(" - database.xml has been created.");
+                File.WriteAllText("database.xml", database);
+                isCreation = true;
+            }
 
             // Load it up...
-            ClearDatabaseStrip();
-            FillDatabaseStrip();
-            LoadRegionCodes();
-            ShowInnerToolTips(false);
+            this.fds.RunWorkerAsync();
 
-            WriteStatus("Database successfully updated!");
+            if (isCreation)
+            {
+                WriteStatus("Database successfully created!");
+            }
+            else
+            {
+                WriteStatus("Database successfully updated!");
+                databaseButton.Visible = false;
+                Extrasbtn.Size = new System.Drawing.Size(55, 20);
+                updateDatabaseToolStripMenuItem.Text = "Download Database";
+            }
+
+        }
+
+        private void updateDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            statusbox.Text = "";
+            WriteStatus("Updating your database.xml from Wiibrew.org");
+
+            BackgroundWorker dbFetcher = new BackgroundWorker();
+            dbFetcher.DoWork += new DoWorkEventHandler(RetrieveNewDatabase);
+            dbFetcher.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RetrieveNewDatabase_Completed);
+            dbFetcher.RunWorkerAsync();
+            while (dbFetcher.IsBusy)
+            {
+                statusbox.Text += ".";
+            }
         }
 
         private void loadInfoFromTMDToolStripMenuItem_Click(object sender, EventArgs e)

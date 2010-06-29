@@ -7,7 +7,7 @@ namespace NUS_Downloader
     class TMD
     {
         // TMD Variables
-        public byte[] SignatureType;
+        //public byte[] SignatureType;
  
 
 
