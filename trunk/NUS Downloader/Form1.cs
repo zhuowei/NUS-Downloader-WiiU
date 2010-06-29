@@ -3586,13 +3586,14 @@ namespace NUS_Downloader
             if (isCreation)
             {
                 WriteStatus("Database successfully created!");
+                databaseButton.Visible = true;
+                databaseButton.Enabled = false;
+                Extrasbtn.Size = new System.Drawing.Size(55, 20);
+                updateDatabaseToolStripMenuItem.Text = "Download Database";
             }
             else
             {
                 WriteStatus("Database successfully updated!");
-                databaseButton.Visible = false;
-                Extrasbtn.Size = new System.Drawing.Size(55, 20);
-                updateDatabaseToolStripMenuItem.Text = "Download Database";
             }
 
         }
@@ -3606,10 +3607,10 @@ namespace NUS_Downloader
             dbFetcher.DoWork += new DoWorkEventHandler(RetrieveNewDatabase);
             dbFetcher.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RetrieveNewDatabase_Completed);
             dbFetcher.RunWorkerAsync();
-            while (dbFetcher.IsBusy)
+            /*while (dbFetcher.IsBusy)
             {
                 statusbox.Text += ".";
-            }
+            }*/
         }
 
         private void loadInfoFromTMDToolStripMenuItem_Click(object sender, EventArgs e)
