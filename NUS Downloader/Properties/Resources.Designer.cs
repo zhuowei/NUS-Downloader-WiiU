@@ -130,6 +130,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap database_save {
+            get {
+                object obj = ResourceManager.GetObject("database_save", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap direction_down {
             get {
                 object obj = ResourceManager.GetObject("direction_down", resourceCulture);

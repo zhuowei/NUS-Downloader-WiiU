@@ -25,7 +25,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>C:\Users\Luke\Desktop\NUSD\build\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -38,6 +38,7 @@
     <ApplicationRevision>11</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -93,9 +94,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Splash.resx">
-      <DependentUpon>Splash.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -104,12 +102,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="Splash.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Splash.Designer.cs">
-      <DependentUpon>Splash.cs</DependentUpon>
     </Compile>
     <Compile Include="TMD.cs" />
     <Compile Include="WADPacker.cs" />
@@ -127,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="direction_down.ico" />
+    <None Include="Resources\database_save.png" />
     <Content Include="Resources\key.png" />
     <None Include="Resources\page_white_magnify.png" />
     <None Include="Resources\server_link.png" />

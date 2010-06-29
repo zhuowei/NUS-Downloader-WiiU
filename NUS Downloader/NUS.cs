@@ -16,6 +16,6 @@ namespace NUS_Downloader
 
         // Report Status back in EventHandler
         public delegate void StatusChangedEventHandler(string status);
-        public event StatusChangedEventHandler StatusChanged;
+        //public event StatusChangedEventHandler StatusChanged;
     }
 }
