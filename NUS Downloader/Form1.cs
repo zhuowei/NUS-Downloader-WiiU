@@ -220,7 +220,7 @@ namespace NUS_Downloader
         private void BootChecks()
         {
             // Directory stuff
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
 
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
                 currentdir += Path.DirectorySeparatorChar.ToString();
@@ -244,7 +244,7 @@ namespace NUS_Downloader
                     {
                         WriteStatus(" - Converting your key.bin file to the correct format...");
                         // Directory stuff
-                        string keydir = Application.StartupPath;
+                        string keydir = Directory.GetCurrentDirectory();
                         if (!(keydir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(keydir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                             keydir += Path.DirectorySeparatorChar.ToString();
                         TextReader ckreader = new StreamReader(currentdir + "key.bin");
@@ -831,7 +831,7 @@ namespace NUS_Downloader
             downloadstartbtn.Text = "Starting NUS Download!";
 
             // Current directory...
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
 
             if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
@@ -1274,7 +1274,7 @@ namespace NUS_Downloader
         private void CreateTitleDirectory()
         {
             // Creates the directory for the downloaded title...
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -1304,7 +1304,7 @@ namespace NUS_Downloader
         /// </summary>
         private void DeleteTitleDirectory()
         {
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -1364,7 +1364,7 @@ namespace NUS_Downloader
             WriteStatus("Beginning WAD Pack...");
 
             // Obtain Current Directory
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -1533,7 +1533,7 @@ namespace NUS_Downloader
             WriteStatus("This application created by WB3000");
             WriteStatus("Various sections contributed by lukegb");
             WriteStatus("");
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
                 currentdir += Path.DirectorySeparatorChar.ToString();
             if (File.Exists(currentdir + "key.bin") == false)
@@ -1703,7 +1703,7 @@ namespace NUS_Downloader
         public byte[] LoadCommonKey(string keyfile)
         {
             // Directory stuff
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -1725,7 +1725,7 @@ namespace NUS_Downloader
         public bool WriteCommonKey(string keyfile, byte[] commonkey)
         {
             // Directory stuff
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -1786,7 +1786,7 @@ namespace NUS_Downloader
             xDoc.Load("database.xml");
 
             // Variables
-            string[] XMLNodeTypes = new string[4] { "SYS", "IOS", "VC", "WW" };
+            string[] XMLNodeTypes = new string[5] { "SYS", "IOS", "VC", "WW", "UPD" };
 
             int totalLength = xDoc.SelectNodes("/database/*").Count;
             int rnt = 0;
@@ -1801,6 +1801,7 @@ namespace NUS_Downloader
                     XmlAttributeCollection XMLAttributes = XMLSpecificNodeTypeList[x].Attributes;
 
                     string titleID = "";
+                    string updateScript;
                     string descname = "";
                     bool dangerous = false;
                     bool ticket = true;
@@ -1822,6 +1823,9 @@ namespace NUS_Downloader
                                 break;
                             case "titleID":
                                 titleID = ChildrenOfTheNode[z].InnerText;
+                                break;
+                            case "titleIDs":
+                                updateScript = ChildrenOfTheNode[z].InnerText;
                                 break;
                             case "version":
                                 string[] versions = ChildrenOfTheNode[z].InnerText.Split(',');
@@ -1875,8 +1879,15 @@ namespace NUS_Downloader
                                 break;
                         }
                         XMLToolStripItem.Image = SelectItemImage(ticket, dangerous);
-                        
-                        XMLToolStripItem.Text = String.Format("{0} - {1}", titleID, descname);
+
+                        if (titleID != "")
+                        {
+                            XMLToolStripItem.Text = String.Format("{0} - {1}", titleID, descname);
+                        }
+                        else
+                        {
+                            XMLToolStripItem.Text = descname;
+                        }
                     }
                     AddToolStripItemToStrip(i, XMLToolStripItem, XMLAttributes);
                 }
@@ -1943,7 +1954,28 @@ namespace NUS_Downloader
                     default:
                         break;
                 }
-             //   additionitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(wwitem_regionclicked);
+                additionitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(wwitem_regionclicked);
+            }
+            else if (type == 4)
+            {
+                // I am a brand new combine harvester
+                //MassUpdateList.DropDownItems.Add(additionitem);
+                switch (attributes[0].Value)
+                {
+                    case "KOR":
+                        KoreaMassUpdate.DropDownItems.Add(additionitem);
+                        break;
+                    case "PAL":
+                        PALMassUpdate.DropDownItems.Add(additionitem);
+                        break;
+                    case "NTSC":
+                        NTSCMassUpdate.DropDownItems.Add(additionitem);
+                        break;
+                    default:
+                        Debug.WriteLine("Oops - database error");
+                        return;
+                }
+                additionitem.Click += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             }
             else
             {
@@ -3790,7 +3822,7 @@ namespace NUS_Downloader
             WriteStatus(" - Outputting results to NUS script...");
 
             // Current directory...
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -3981,7 +4013,7 @@ namespace NUS_Downloader
         private void SaveProxyBtn_Click(object sender, EventArgs e)
         {
             // Current directory...
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -4031,7 +4063,7 @@ namespace NUS_Downloader
         private void proxySettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Current directory...
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
@@ -4078,7 +4110,7 @@ namespace NUS_Downloader
         private void loadNUSScriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Current directory...
-            string currentdir = Application.StartupPath;
+            string currentdir = Directory.GetCurrentDirectory();
             if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
