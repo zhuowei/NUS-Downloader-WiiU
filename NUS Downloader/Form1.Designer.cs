@@ -136,6 +136,7 @@
             this.ProxyPwdBox = new System.Windows.Forms.TextBox();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.C64MenuListDrop = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
@@ -313,7 +314,7 @@
             this.RegionCodesList});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(155, 120);
+            this.databaseStrip.Size = new System.Drawing.Size(155, 142);
             // 
             // SystemMenuList
             // 
@@ -348,6 +349,7 @@
             // 
             // C64MenuList
             // 
+            this.C64MenuList.DropDown = this.C64MenuListDrop;
             this.C64MenuList.Name = "C64MenuList";
             this.C64MenuList.Size = new System.Drawing.Size(194, 22);
             this.C64MenuList.Text = "Commodore 64";
@@ -883,7 +885,7 @@
             this.toolStripSeparator2,
             this.updateDatabaseToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(242, 216);
+            this.extrasStrip.Size = new System.Drawing.Size(242, 194);
             // 
             // loadInfoFromTMDToolStripMenuItem
             // 
@@ -1164,6 +1166,12 @@
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
+            // C64MenuListDrop
+            // 
+            this.C64MenuListDrop.Name = "C64MenuListDrop";
+            this.C64MenuListDrop.OwnerItem = this.C64MenuList;
+            this.C64MenuListDrop.Size = new System.Drawing.Size(153, 26);
+            // 
             // dlprogress
             // 
             this.dlprogress.ContainerControl = this;
@@ -1343,6 +1351,7 @@
         private System.Windows.Forms.ToolStripMenuItem getCommonKeyMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem updateDatabaseToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip C64MenuListDrop;
     }
 }
 
