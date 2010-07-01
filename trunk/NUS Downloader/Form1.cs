@@ -11,6 +11,8 @@ using System.Threading;
 using System.Text;
 using wyDay.Controls;
 
+using System.Diagnostics;
+
 
 namespace NUS_Downloader
 {
@@ -20,10 +22,13 @@ namespace NUS_Downloader
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
 
         // TODO: Always remember to change version!
-        string version = "v1.5 (Beta)";
+        string version = "v1.5a (Beta)";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
+
+        // Cross-thread Windows Formsing
+        delegate void AddToolStripItemToStripCallback(int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes); //TODO
         
         // Images do not compare unless globalized...
         Image green = Properties.Resources.bullet_green;
@@ -1526,6 +1531,7 @@ namespace NUS_Downloader
             WriteStatus("NUS Downloader (NUSD)");
             WriteStatus("You are running version: " + version);
             WriteStatus("This application created by WB3000");
+            WriteStatus("Various sections contributed by lukegb");
             WriteStatus("");
             string currentdir = Application.StartupPath;
             if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
@@ -1884,10 +1890,21 @@ namespace NUS_Downloader
         /// <param name="additionitem">The additionitem.</param>
         /// <param name="attributes">The attributes.</param>
         void AddToolStripItemToStrip(int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes)
-        { 
+        {
+            Debug.WriteLine("Adding item...");
+            // Check if thread-safe
+            if (this.InvokeRequired)
+            {
+                Debug.WriteLine("InvokeRequired...");
+                AddToolStripItemToStripCallback atsitsc = new AddToolStripItemToStripCallback(AddToolStripItemToStrip);
+                this.Invoke(atsitsc, new object[] { type, additionitem, attributes });
+                return;
+            }
             // Deal with VC list depth...
             if (type == 2)
             {
+                Debug.WriteLine("Adding:");
+                Debug.WriteLine(additionitem);
                 switch (attributes[0].Value)
                 {
                     case "C64":
@@ -1926,7 +1943,7 @@ namespace NUS_Downloader
                     default:
                         break;
                 }
-                additionitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(wwitem_regionclicked);
+             //   additionitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(wwitem_regionclicked);
             }
             else
             {
