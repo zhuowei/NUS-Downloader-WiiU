@@ -50,6 +50,7 @@
             this.IOSMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.VCMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.C64MenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.C64MenuListDrop = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.GenesisMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.MSXMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.N64MenuList = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,6 +64,7 @@
             this.WiiWareMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.RegionCodesList = new System.Windows.Forms.ToolStripMenuItem();
+            this.MassUpdateList = new System.Windows.Forms.ToolStripMenuItem();
             this.truchabox = new System.Windows.Forms.CheckBox();
             this.tmdgpbox = new System.Windows.Forms.GroupBox();
             this.tmdversiontrucha = new System.Windows.Forms.TextBox();
@@ -136,8 +138,10 @@
             this.ProxyPwdBox = new System.Windows.Forms.TextBox();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.C64MenuListDrop = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
+            this.PALMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.NTSCMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.KoreaMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
@@ -311,10 +315,11 @@
             this.VCMenuList,
             this.WiiWareMenuList,
             this.toolStripSeparator1,
-            this.RegionCodesList});
+            this.RegionCodesList,
+            this.MassUpdateList});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(155, 142);
+            this.databaseStrip.Size = new System.Drawing.Size(167, 164);
             // 
             // SystemMenuList
             // 
@@ -326,7 +331,7 @@
             // IOSMenuList
             // 
             this.IOSMenuList.Name = "IOSMenuList";
-            this.IOSMenuList.Size = new System.Drawing.Size(154, 22);
+            this.IOSMenuList.Size = new System.Drawing.Size(166, 22);
             this.IOSMenuList.Text = "IOS";
             // 
             // VCMenuList
@@ -344,7 +349,7 @@
             this.TurboGrafxCDMenuList,
             this.VCArcadeMenuList});
             this.VCMenuList.Name = "VCMenuList";
-            this.VCMenuList.Size = new System.Drawing.Size(154, 22);
+            this.VCMenuList.Size = new System.Drawing.Size(166, 22);
             this.VCMenuList.Text = "Virtual Console";
             // 
             // C64MenuList
@@ -353,6 +358,12 @@
             this.C64MenuList.Name = "C64MenuList";
             this.C64MenuList.Size = new System.Drawing.Size(194, 22);
             this.C64MenuList.Text = "Commodore 64";
+            // 
+            // C64MenuListDrop
+            // 
+            this.C64MenuListDrop.Name = "C64MenuListDrop";
+            this.C64MenuListDrop.OwnerItem = this.C64MenuList;
+            this.C64MenuListDrop.Size = new System.Drawing.Size(61, 4);
             // 
             // GenesisMenuList
             // 
@@ -417,20 +428,30 @@
             // WiiWareMenuList
             // 
             this.WiiWareMenuList.Name = "WiiWareMenuList";
-            this.WiiWareMenuList.Size = new System.Drawing.Size(154, 22);
+            this.WiiWareMenuList.Size = new System.Drawing.Size(166, 22);
             this.WiiWareMenuList.Text = "WiiWare";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(151, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(163, 6);
             // 
             // RegionCodesList
             // 
             this.RegionCodesList.Name = "RegionCodesList";
-            this.RegionCodesList.Size = new System.Drawing.Size(154, 22);
+            this.RegionCodesList.Size = new System.Drawing.Size(166, 22);
             this.RegionCodesList.Text = "Region Codes";
             this.RegionCodesList.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.RegionCodesList_DropDownItemClicked);
+            // 
+            // MassUpdateList
+            // 
+            this.MassUpdateList.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.PALMassUpdate,
+            this.NTSCMassUpdate,
+            this.KoreaMassUpdate});
+            this.MassUpdateList.Name = "MassUpdateList";
+            this.MassUpdateList.Size = new System.Drawing.Size(166, 22);
+            this.MassUpdateList.Text = "Download Scripts";
             // 
             // truchabox
             // 
@@ -1166,12 +1187,6 @@
             this.radioButton2.UseVisualStyleBackColor = true;
             this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
-            // C64MenuListDrop
-            // 
-            this.C64MenuListDrop.Name = "C64MenuListDrop";
-            this.C64MenuListDrop.OwnerItem = this.C64MenuList;
-            this.C64MenuListDrop.Size = new System.Drawing.Size(153, 26);
-            // 
             // dlprogress
             // 
             this.dlprogress.ContainerControl = this;
@@ -1179,6 +1194,24 @@
             this.dlprogress.Name = "dlprogress";
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.TabIndex = 47;
+            // 
+            // PALMassUpdate
+            // 
+            this.PALMassUpdate.Name = "PALMassUpdate";
+            this.PALMassUpdate.Size = new System.Drawing.Size(152, 22);
+            this.PALMassUpdate.Text = "PAL";
+            // 
+            // NTSCMassUpdate
+            // 
+            this.NTSCMassUpdate.Name = "NTSCMassUpdate";
+            this.NTSCMassUpdate.Size = new System.Drawing.Size(152, 22);
+            this.NTSCMassUpdate.Text = "NTSC";
+            // 
+            // KoreaMassUpdate
+            // 
+            this.KoreaMassUpdate.Name = "KoreaMassUpdate";
+            this.KoreaMassUpdate.Size = new System.Drawing.Size(152, 22);
+            this.KoreaMassUpdate.Text = "Korea";
             // 
             // Form1
             // 
@@ -1352,6 +1385,10 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem updateDatabaseToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip C64MenuListDrop;
+        private System.Windows.Forms.ToolStripMenuItem MassUpdateList;
+        private System.Windows.Forms.ToolStripMenuItem PALMassUpdate;
+        private System.Windows.Forms.ToolStripMenuItem NTSCMassUpdate;
+        private System.Windows.Forms.ToolStripMenuItem KoreaMassUpdate;
     }
 }
 
