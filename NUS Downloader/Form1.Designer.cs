@@ -65,46 +65,10 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.RegionCodesList = new System.Windows.Forms.ToolStripMenuItem();
             this.MassUpdateList = new System.Windows.Forms.ToolStripMenuItem();
-            this.truchabox = new System.Windows.Forms.CheckBox();
-            this.tmdgpbox = new System.Windows.Forms.GroupBox();
-            this.tmdversiontrucha = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.newtitleidbox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.requiredIOSbox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.ticketgpbox = new System.Windows.Forms.GroupBox();
-            this.timelimitsecs = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.timelimitenabledcb = new System.Windows.Forms.ComboBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.ckeyindexcb = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.dlcamntbox = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.titleIDIV = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.titlekeybox = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.shamelessvariablelabel = new System.Windows.Forms.Label();
+            this.PALMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.NTSCMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.KoreaMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.button3 = new System.Windows.Forms.Button();
-            this.contentsEdit = new System.Windows.Forms.ListBox();
-            this.contentModBox = new System.Windows.Forms.GroupBox();
-            this.button16 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
-            this.button15 = new System.Windows.Forms.Button();
-            this.button14 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button17 = new System.Windows.Forms.Button();
             this.extrasStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loadInfoFromTMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -115,8 +79,6 @@
             this.koreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.proxySettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.enableBETATruchaFeaturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.loadNUSScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -139,14 +101,7 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
-            this.PALMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
-            this.NTSCMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
-            this.KoreaMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
-
             this.databaseStrip.SuspendLayout();
-            this.tmdgpbox.SuspendLayout();
-            this.ticketgpbox.SuspendLayout();
-            this.contentModBox.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
             this.ProxyVerifyBox.SuspendLayout();
@@ -454,290 +409,23 @@
             this.MassUpdateList.Size = new System.Drawing.Size(166, 22);
             this.MassUpdateList.Text = "Download Scripts";
             // 
-            // truchabox
+            // PALMassUpdate
             // 
-            this.truchabox.AutoSize = true;
-            this.truchabox.Location = new System.Drawing.Point(199, 463);
-            this.truchabox.Name = "truchabox";
-            this.truchabox.Size = new System.Drawing.Size(60, 17);
-            this.truchabox.TabIndex = 21;
-            this.truchabox.Text = "Trucha";
-            this.truchabox.UseVisualStyleBackColor = true;
-            this.truchabox.Visible = false;
+            this.PALMassUpdate.Name = "PALMassUpdate";
+            this.PALMassUpdate.Size = new System.Drawing.Size(104, 22);
+            this.PALMassUpdate.Text = "PAL";
             // 
-            // tmdgpbox
+            // NTSCMassUpdate
             // 
-            this.tmdgpbox.Controls.Add(this.tmdversiontrucha);
-            this.tmdgpbox.Controls.Add(this.label5);
-            this.tmdgpbox.Controls.Add(this.newtitleidbox);
-            this.tmdgpbox.Controls.Add(this.label4);
-            this.tmdgpbox.Controls.Add(this.requiredIOSbox);
-            this.tmdgpbox.Controls.Add(this.label3);
-            this.tmdgpbox.Location = new System.Drawing.Point(278, 12);
-            this.tmdgpbox.Name = "tmdgpbox";
-            this.tmdgpbox.Size = new System.Drawing.Size(249, 77);
-            this.tmdgpbox.TabIndex = 22;
-            this.tmdgpbox.TabStop = false;
-            this.tmdgpbox.Text = "Fake (Trucha) TMD Signing...";
+            this.NTSCMassUpdate.Name = "NTSCMassUpdate";
+            this.NTSCMassUpdate.Size = new System.Drawing.Size(104, 22);
+            this.NTSCMassUpdate.Text = "NTSC";
             // 
-            // tmdversiontrucha
+            // KoreaMassUpdate
             // 
-            this.tmdversiontrucha.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tmdversiontrucha.Location = new System.Drawing.Point(181, 24);
-            this.tmdversiontrucha.MaxLength = 6;
-            this.tmdversiontrucha.Name = "tmdversiontrucha";
-            this.tmdversiontrucha.Size = new System.Drawing.Size(62, 20);
-            this.tmdversiontrucha.TabIndex = 5;
-            this.tmdversiontrucha.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(130, 28);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(45, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Version:";
-            // 
-            // newtitleidbox
-            // 
-            this.newtitleidbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.newtitleidbox.Location = new System.Drawing.Point(80, 50);
-            this.newtitleidbox.MaxLength = 16;
-            this.newtitleidbox.Name = "newtitleidbox";
-            this.newtitleidbox.Size = new System.Drawing.Size(163, 20);
-            this.newtitleidbox.TabIndex = 3;
-            this.newtitleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 54);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(69, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "New Title ID:";
-            // 
-            // requiredIOSbox
-            // 
-            this.requiredIOSbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.requiredIOSbox.Location = new System.Drawing.Point(80, 24);
-            this.requiredIOSbox.MaxLength = 3;
-            this.requiredIOSbox.Name = "requiredIOSbox";
-            this.requiredIOSbox.Size = new System.Drawing.Size(44, 20);
-            this.requiredIOSbox.TabIndex = 1;
-            this.requiredIOSbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 28);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(73, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Requires IOS:";
-            // 
-            // ticketgpbox
-            // 
-            this.ticketgpbox.Controls.Add(this.timelimitsecs);
-            this.ticketgpbox.Controls.Add(this.label11);
-            this.ticketgpbox.Controls.Add(this.timelimitenabledcb);
-            this.ticketgpbox.Controls.Add(this.label10);
-            this.ticketgpbox.Controls.Add(this.ckeyindexcb);
-            this.ticketgpbox.Controls.Add(this.label9);
-            this.ticketgpbox.Controls.Add(this.dlcamntbox);
-            this.ticketgpbox.Controls.Add(this.label8);
-            this.ticketgpbox.Controls.Add(this.titleIDIV);
-            this.ticketgpbox.Controls.Add(this.label7);
-            this.ticketgpbox.Controls.Add(this.titlekeybox);
-            this.ticketgpbox.Controls.Add(this.label6);
-            this.ticketgpbox.Location = new System.Drawing.Point(278, 127);
-            this.ticketgpbox.Name = "ticketgpbox";
-            this.ticketgpbox.Size = new System.Drawing.Size(249, 180);
-            this.ticketgpbox.TabIndex = 23;
-            this.ticketgpbox.TabStop = false;
-            this.ticketgpbox.Text = "Fake (Trucha) Ticket Signing...";
-            // 
-            // timelimitsecs
-            // 
-            this.timelimitsecs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.timelimitsecs.Location = new System.Drawing.Point(95, 99);
-            this.timelimitsecs.MaxLength = 10;
-            this.timelimitsecs.Name = "timelimitsecs";
-            this.timelimitsecs.Size = new System.Drawing.Size(148, 20);
-            this.timelimitsecs.TabIndex = 15;
-            this.timelimitsecs.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(7, 101);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(84, 13);
-            this.label11.TabIndex = 14;
-            this.label11.Text = "Time (Seconds):";
-            // 
-            // timelimitenabledcb
-            // 
-            this.timelimitenabledcb.FormattingEnabled = true;
-            this.timelimitenabledcb.Items.AddRange(new object[] {
-            "0 - Disabled",
-            "1 - Enabled"});
-            this.timelimitenabledcb.Location = new System.Drawing.Point(95, 72);
-            this.timelimitenabledcb.Name = "timelimitenabledcb";
-            this.timelimitenabledcb.Size = new System.Drawing.Size(149, 21);
-            this.timelimitenabledcb.TabIndex = 13;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(7, 75);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(57, 13);
-            this.label10.TabIndex = 12;
-            this.label10.Text = "Time Limit:";
-            // 
-            // ckeyindexcb
-            // 
-            this.ckeyindexcb.FormattingEnabled = true;
-            this.ckeyindexcb.Items.AddRange(new object[] {
-            "0 - Standard Key",
-            "1 - Korean Key"});
-            this.ckeyindexcb.Location = new System.Drawing.Point(95, 45);
-            this.ckeyindexcb.Name = "ckeyindexcb";
-            this.ckeyindexcb.Size = new System.Drawing.Size(149, 21);
-            this.ckeyindexcb.TabIndex = 11;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(7, 48);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(72, 13);
-            this.label9.TabIndex = 10;
-            this.label9.Text = "Common Key:";
-            // 
-            // dlcamntbox
-            // 
-            this.dlcamntbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dlcamntbox.Location = new System.Drawing.Point(95, 19);
-            this.dlcamntbox.MaxLength = 6;
-            this.dlcamntbox.Name = "dlcamntbox";
-            this.dlcamntbox.Size = new System.Drawing.Size(148, 20);
-            this.dlcamntbox.TabIndex = 9;
-            this.dlcamntbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(7, 21);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(82, 13);
-            this.label8.TabIndex = 8;
-            this.label8.Text = "Amount of DLC:";
-            // 
-            // titleIDIV
-            // 
-            this.titleIDIV.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.titleIDIV.Location = new System.Drawing.Point(95, 151);
-            this.titleIDIV.MaxLength = 16;
-            this.titleIDIV.Name = "titleIDIV";
-            this.titleIDIV.Size = new System.Drawing.Size(148, 20);
-            this.titleIDIV.TabIndex = 7;
-            this.titleIDIV.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 153);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(65, 13);
-            this.label7.TabIndex = 6;
-            this.label7.Text = "Title ID / IV:";
-            // 
-            // titlekeybox
-            // 
-            this.titlekeybox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.titlekeybox.Location = new System.Drawing.Point(95, 125);
-            this.titlekeybox.MaxLength = 16;
-            this.titlekeybox.Name = "titlekeybox";
-            this.titlekeybox.Size = new System.Drawing.Size(148, 20);
-            this.titlekeybox.TabIndex = 5;
-            this.titlekeybox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 127);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(51, 13);
-            this.label6.TabIndex = 4;
-            this.label6.Text = "Title Key:";
-            // 
-            // button1
-            // 
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button1.Location = new System.Drawing.Point(350, 95);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(177, 26);
-            this.button1.TabIndex = 24;
-            this.button1.Text = "Write Changes to TMD...";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
-            // 
-            // button4
-            // 
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button4.Location = new System.Drawing.Point(350, 313);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(177, 26);
-            this.button4.TabIndex = 25;
-            this.button4.Text = "Write Changes to Ticket...";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click_1);
-            // 
-            // button5
-            // 
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button5.Location = new System.Drawing.Point(278, 313);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(66, 26);
-            this.button5.TabIndex = 26;
-            this.button5.Text = "Revert";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // button6
-            // 
-            this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button6.Location = new System.Drawing.Point(278, 95);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(66, 26);
-            this.button6.TabIndex = 27;
-            this.button6.Text = "Revert";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // button7
-            // 
-            this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(278, 377);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(249, 33);
-            this.button7.TabIndex = 28;
-            this.button7.Text = "Finished with Trucha Changes...";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
-            // 
-            // shamelessvariablelabel
-            // 
-            this.shamelessvariablelabel.AutoSize = true;
-            this.shamelessvariablelabel.Location = new System.Drawing.Point(285, 322);
-            this.shamelessvariablelabel.Name = "shamelessvariablelabel";
-            this.shamelessvariablelabel.Size = new System.Drawing.Size(0, 13);
-            this.shamelessvariablelabel.TabIndex = 30;
-            this.shamelessvariablelabel.Visible = false;
+            this.KoreaMassUpdate.Name = "KoreaMassUpdate";
+            this.KoreaMassUpdate.Size = new System.Drawing.Size(104, 22);
+            this.KoreaMassUpdate.Text = "Korea";
             // 
             // button3
             // 
@@ -750,145 +438,6 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click_1);
             // 
-            // contentsEdit
-            // 
-            this.contentsEdit.FormattingEnabled = true;
-            this.contentsEdit.Location = new System.Drawing.Point(9, 19);
-            this.contentsEdit.Name = "contentsEdit";
-            this.contentsEdit.ScrollAlwaysVisible = true;
-            this.contentsEdit.Size = new System.Drawing.Size(198, 173);
-            this.contentsEdit.TabIndex = 32;
-            // 
-            // contentModBox
-            // 
-            this.contentModBox.Controls.Add(this.button16);
-            this.contentModBox.Controls.Add(this.button13);
-            this.contentModBox.Controls.Add(this.button15);
-            this.contentModBox.Controls.Add(this.button14);
-            this.contentModBox.Controls.Add(this.button12);
-            this.contentModBox.Controls.Add(this.contentsEdit);
-            this.contentModBox.Controls.Add(this.button8);
-            this.contentModBox.Controls.Add(this.button11);
-            this.contentModBox.Controls.Add(this.button9);
-            this.contentModBox.Controls.Add(this.button10);
-            this.contentModBox.Location = new System.Drawing.Point(265, 146);
-            this.contentModBox.Name = "contentModBox";
-            this.contentModBox.Size = new System.Drawing.Size(249, 329);
-            this.contentModBox.TabIndex = 41;
-            this.contentModBox.TabStop = false;
-            this.contentModBox.Text = "Edit Title Contents";
-            this.contentModBox.Visible = false;
-            // 
-            // button16
-            // 
-            this.button16.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button16.Image = global::NUS_Downloader.Properties.Resources.bug_add;
-            this.button16.Location = new System.Drawing.Point(136, 198);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(26, 26);
-            this.button16.TabIndex = 44;
-            this.button16.UseVisualStyleBackColor = true;
-            this.button16.Click += new System.EventHandler(this.button16_Click);
-            // 
-            // button13
-            // 
-            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button13.Image = global::NUS_Downloader.Properties.Resources.link;
-            this.button13.Location = new System.Drawing.Point(104, 198);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(26, 26);
-            this.button13.TabIndex = 43;
-            this.button13.UseVisualStyleBackColor = true;
-            this.button13.Click += new System.EventHandler(this.button13_Click);
-            // 
-            // button15
-            // 
-            this.button15.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button15.Location = new System.Drawing.Point(9, 235);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(230, 26);
-            this.button15.TabIndex = 42;
-            this.button15.Text = "Revert";
-            this.button15.UseVisualStyleBackColor = true;
-            this.button15.Click += new System.EventHandler(this.button15_Click);
-            // 
-            // button14
-            // 
-            this.button14.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button14.Location = new System.Drawing.Point(9, 268);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(230, 50);
-            this.button14.TabIndex = 41;
-            this.button14.Text = "Overwrite Title Contents...";
-            this.button14.UseVisualStyleBackColor = true;
-            this.button14.Click += new System.EventHandler(this.button14_Click);
-            // 
-            // button12
-            // 
-            this.button12.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button12.Image = ((System.Drawing.Image)(resources.GetObject("button12.Image")));
-            this.button12.Location = new System.Drawing.Point(72, 198);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(26, 26);
-            this.button12.TabIndex = 40;
-            this.button12.UseVisualStyleBackColor = true;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
-            // 
-            // button8
-            // 
-            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button8.Image = ((System.Drawing.Image)(resources.GetObject("button8.Image")));
-            this.button8.Location = new System.Drawing.Point(213, 19);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(26, 26);
-            this.button8.TabIndex = 33;
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
-            // button11
-            // 
-            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button11.Image = ((System.Drawing.Image)(resources.GetObject("button11.Image")));
-            this.button11.Location = new System.Drawing.Point(9, 198);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(26, 26);
-            this.button11.TabIndex = 36;
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
-            // 
-            // button9
-            // 
-            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button9.Image = ((System.Drawing.Image)(resources.GetObject("button9.Image")));
-            this.button9.Location = new System.Drawing.Point(213, 53);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(26, 26);
-            this.button9.TabIndex = 34;
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
-            // button10
-            // 
-            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button10.Image = ((System.Drawing.Image)(resources.GetObject("button10.Image")));
-            this.button10.Location = new System.Drawing.Point(41, 198);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(26, 26);
-            this.button10.TabIndex = 35;
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
-            // 
-            // button17
-            // 
-            this.button17.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button17.Location = new System.Drawing.Point(278, 345);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(249, 26);
-            this.button17.TabIndex = 42;
-            this.button17.Text = "Modify Individual Contents...";
-            this.button17.UseVisualStyleBackColor = true;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
-            // 
             // extrasStrip
             // 
             this.extrasStrip.AllowMerge = false;
@@ -898,8 +447,6 @@
             this.emulateUpdate,
             this.toolStripSeparator4,
             this.proxySettingsToolStripMenuItem,
-            this.toolStripSeparator5,
-            this.enableBETATruchaFeaturesToolStripMenuItem,
             this.toolStripSeparator6,
             this.loadNUSScriptToolStripMenuItem,
             this.toolStripSeparator7,
@@ -907,7 +454,7 @@
             this.toolStripSeparator2,
             this.updateDatabaseToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(242, 194);
+            this.extrasStrip.Size = new System.Drawing.Size(242, 166);
             // 
             // loadInfoFromTMDToolStripMenuItem
             // 
@@ -971,19 +518,6 @@
             this.proxySettingsToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.proxySettingsToolStripMenuItem.Text = "Proxy Settings";
             this.proxySettingsToolStripMenuItem.Click += new System.EventHandler(this.proxySettingsToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(238, 6);
-            // 
-            // enableBETATruchaFeaturesToolStripMenuItem
-            // 
-            this.enableBETATruchaFeaturesToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.bug_error;
-            this.enableBETATruchaFeaturesToolStripMenuItem.Name = "enableBETATruchaFeaturesToolStripMenuItem";
-            this.enableBETATruchaFeaturesToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
-            this.enableBETATruchaFeaturesToolStripMenuItem.Text = "Enable BETA Trucha Features";
-            this.enableBETATruchaFeaturesToolStripMenuItem.Click += new System.EventHandler(this.enableBETATruchaFeaturesToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
@@ -1196,61 +730,32 @@
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.TabIndex = 47;
             // 
-            // PALMassUpdate
-            // 
-            this.PALMassUpdate.Name = "PALMassUpdate";
-            this.PALMassUpdate.Size = new System.Drawing.Size(152, 22);
-            this.PALMassUpdate.Text = "PAL";
-            // 
-            // NTSCMassUpdate
-            // 
-            this.NTSCMassUpdate.Name = "NTSCMassUpdate";
-            this.NTSCMassUpdate.Size = new System.Drawing.Size(152, 22);
-            this.NTSCMassUpdate.Text = "NTSC";
-            // 
-            // KoreaMassUpdate
-            // 
-            this.KoreaMassUpdate.Name = "KoreaMassUpdate";
-            this.KoreaMassUpdate.Size = new System.Drawing.Size(152, 22);
-            this.KoreaMassUpdate.Text = "Korea";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(539, 492);
+            this.ClientSize = new System.Drawing.Size(274, 492);
             this.Controls.Add(this.dlprogress);
             this.Controls.Add(this.deletecontentsbox);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.ProxyVerifyBox);
-            this.Controls.Add(this.shamelessvariablelabel);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.button17);
-            this.Controls.Add(this.ticketgpbox);
-            this.Controls.Add(this.tmdgpbox);
             this.Controls.Add(this.saveaswadbox);
             this.Controls.Add(this.databaseButton);
-            this.Controls.Add(this.button5);
             this.Controls.Add(this.proxyBox);
-            this.Controls.Add(this.button4);
             this.Controls.Add(this.wadnamebox);
-            this.Controls.Add(this.truchabox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.titleversion);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.decryptbox);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button7);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.radioButton2);
-            this.Controls.Add(this.contentModBox);
             this.Controls.Add(this.packbox);
             this.Controls.Add(this.statusbox);
             this.Controls.Add(this.ignoreticket);
             this.Controls.Add(this.downloadstartbtn);
             this.Controls.Add(this.titleidbox);
             this.Controls.Add(this.Extrasbtn);
-            this.Controls.Add(this.button6);
             this.Controls.Add(this.localuse);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1261,11 +766,6 @@
             this.Text = "NUSD";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.databaseStrip.ResumeLayout(false);
-            this.tmdgpbox.ResumeLayout(false);
-            this.tmdgpbox.PerformLayout();
-            this.ticketgpbox.ResumeLayout(false);
-            this.ticketgpbox.PerformLayout();
-            this.contentModBox.ResumeLayout(false);
             this.extrasStrip.ResumeLayout(false);
             this.proxyBox.ResumeLayout(false);
             this.proxyBox.PerformLayout();
@@ -1313,46 +813,7 @@
         private System.Windows.Forms.ToolStripMenuItem TurboGrafxCDMenuList;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem RegionCodesList;
-        private System.Windows.Forms.CheckBox truchabox;
-        private System.Windows.Forms.GroupBox tmdgpbox;
-        private System.Windows.Forms.GroupBox ticketgpbox;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox newtitleidbox;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox requiredIOSbox;
-        private System.Windows.Forms.TextBox tmdversiontrucha;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox dlcamntbox;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox titleIDIV;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox titlekeybox;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox timelimitenabledcb;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.ComboBox ckeyindexcb;
-        private System.Windows.Forms.TextBox timelimitsecs;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Label shamelessvariablelabel;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.ListBox contentsEdit;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.Button button12;
-        private System.Windows.Forms.GroupBox contentModBox;
-        private System.Windows.Forms.Button button14;
-        private System.Windows.Forms.Button button15;
-        private System.Windows.Forms.Button button13;
-        private System.Windows.Forms.Button button16;
-        private System.Windows.Forms.Button button17;
         private System.Windows.Forms.ContextMenuStrip extrasStrip;
         private System.Windows.Forms.ToolStripMenuItem loadInfoFromTMDToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
@@ -1377,8 +838,6 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox ProxyPwdBox;
         private wyDay.Controls.Windows7ProgressBar dlprogress;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripMenuItem enableBETATruchaFeaturesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem loadNUSScriptToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;

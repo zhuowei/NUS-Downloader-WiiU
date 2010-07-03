@@ -123,8 +123,6 @@ namespace NUS_Downloader
         /// </summary>
         public void PackWAD()
         {
-            //StatusChanged("Beginning WAD Pack...");
-
             if ((String.IsNullOrEmpty(Directory)) || (String.IsNullOrEmpty(FileName)))
             {
                 StatusChanged("ERROR: No Directory/FileName provided!");

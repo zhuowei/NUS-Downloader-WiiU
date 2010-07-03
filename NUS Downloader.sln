@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUS Downloader", "NUS Downloader\NUS Downloader.csproj", "{DB1289FA-BA83-408F-A576-326E5EC4CC6D}"
 EndProject
 Global

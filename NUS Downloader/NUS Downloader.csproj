@@ -77,7 +77,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="NUS.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -107,7 +106,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="TMD.cs" />
     <Compile Include="WADPacker.cs" />
     <Compile Include="Windows7ProgressBar.cs">
       <SubType>Component</SubType>
