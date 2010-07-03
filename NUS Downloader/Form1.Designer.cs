@@ -98,9 +98,8 @@
             this.SaveProxyPwdBtn = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.ProxyPwdBox = new System.Windows.Forms.TextBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
+            this.consoleCBox = new System.Windows.Forms.ComboBox();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -213,9 +212,9 @@
             // button2
             // 
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button2.Location = new System.Drawing.Point(154, 390);
+            this.button2.Location = new System.Drawing.Point(154, 389);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(53, 20);
+            this.button2.Size = new System.Drawing.Size(53, 21);
             this.button2.TabIndex = 14;
             this.button2.Text = "About";
             this.button2.UseVisualStyleBackColor = true;
@@ -275,7 +274,7 @@
             this.MassUpdateList});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(167, 164);
+            this.databaseStrip.Size = new System.Drawing.Size(167, 142);
             // 
             // SystemMenuList
             // 
@@ -698,30 +697,6 @@
             this.ProxyPwdBox.UseSystemPasswordChar = true;
             this.ProxyPwdBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ProxyPwdBox_KeyPress);
             // 
-            // radioButton1
-            // 
-            this.radioButton1.BackColor = System.Drawing.Color.Transparent;
-            this.radioButton1.Checked = true;
-            this.radioButton1.Image = ((System.Drawing.Image)(resources.GetObject("radioButton1.Image")));
-            this.radioButton1.Location = new System.Drawing.Point(12, 385);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(60, 31);
-            this.radioButton1.TabIndex = 12;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.UseVisualStyleBackColor = false;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.Image = ((System.Drawing.Image)(resources.GetObject("radioButton2.Image")));
-            this.radioButton2.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.radioButton2.Location = new System.Drawing.Point(78, 385);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(74, 30);
-            this.radioButton2.TabIndex = 13;
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
-            // 
             // dlprogress
             // 
             this.dlprogress.ContainerControl = this;
@@ -730,12 +705,26 @@
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.TabIndex = 47;
             // 
+            // consoleCBox
+            // 
+            this.consoleCBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.consoleCBox.FormattingEnabled = true;
+            this.consoleCBox.Items.AddRange(new object[] {
+            "Wii",
+            "DSi"});
+            this.consoleCBox.Location = new System.Drawing.Point(12, 389);
+            this.consoleCBox.Name = "consoleCBox";
+            this.consoleCBox.Size = new System.Drawing.Size(58, 21);
+            this.consoleCBox.TabIndex = 48;
+            this.consoleCBox.SelectedIndexChanged += new System.EventHandler(this.consoleCBox_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(274, 492);
             this.Controls.Add(this.dlprogress);
+            this.Controls.Add(this.consoleCBox);
             this.Controls.Add(this.deletecontentsbox);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.ProxyVerifyBox);
@@ -748,8 +737,6 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.decryptbox);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.radioButton1);
-            this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.packbox);
             this.Controls.Add(this.statusbox);
             this.Controls.Add(this.ignoreticket);
@@ -788,8 +775,6 @@
         private System.Windows.Forms.TextBox titleversion;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox wadnamebox;
         private System.Windows.Forms.CheckBox ignoreticket;
@@ -849,6 +834,7 @@
         private System.Windows.Forms.ToolStripMenuItem PALMassUpdate;
         private System.Windows.Forms.ToolStripMenuItem NTSCMassUpdate;
         private System.Windows.Forms.ToolStripMenuItem KoreaMassUpdate;
+        private System.Windows.Forms.ComboBox consoleCBox;
     }
 }
 

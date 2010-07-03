@@ -216,6 +216,7 @@ namespace NUS_Downloader
         {
             this.Text = "NUSD - " + version + " - WB3000";
             this.Size = this.MinimumSize;
+            consoleCBox.SelectedIndex = 0;
         }
 
         /// <summary>
@@ -853,7 +854,7 @@ namespace NUS_Downloader
             CreateTitleDirectory();
 
             // Wii / DSi
-            bool wiimode = radioButton1.Checked;
+            bool wiimode = (consoleCBox.SelectedIndex == 0);
             
             // Set UserAgent to Wii value
             generalWC.Headers.Add("User-Agent", "wii libnup/1.0");
@@ -1387,9 +1388,15 @@ namespace NUS_Downloader
             return b;
         }
 
-        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        private void consoleCBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (radioButton2.Checked == true)
+            if (consoleCBox.SelectedIndex == 0)
+            {
+                // Can pack WADs / Decrypt
+                packbox.Enabled = true;
+                decryptbox.Enabled = true;
+            }
+            if (consoleCBox.SelectedIndex == 1)
             {
                 // Cannot Pack WADs
                 packbox.Checked = false;
@@ -1404,17 +1411,6 @@ namespace NUS_Downloader
 
                 wadnamebox.Enabled = false;
                 wadnamebox.Text = "";
-            }
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-            if (radioButton1.Checked == true)
-            {
-                // Can pack WADs
-                // packbox.Checked = true;
-                packbox.Enabled = true;
-                decryptbox.Enabled = true;
             }
         }
 
@@ -3221,6 +3217,8 @@ namespace NUS_Downloader
 
             return Bytes;
         }
+
+        
 
 
 
