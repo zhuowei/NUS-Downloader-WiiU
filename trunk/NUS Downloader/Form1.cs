@@ -29,6 +29,7 @@ namespace NUS_Downloader
 
         // Cross-thread Windows Formsing
         delegate void AddToolStripItemToStripCallback(int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes); //TODO
+        delegate void WriteStatusCallback(string Update);
         
         // Images do not compare unless globalized...
         Image green = Properties.Resources.bullet_green;
@@ -53,6 +54,7 @@ namespace NUS_Downloader
         // TODO: OOP scripting
         string script_filename;
         bool script_mode = false;
+        string[] nusentries;
 
         // Proxy stuff...
         string proxy_url;
@@ -95,6 +97,9 @@ namespace NUS_Downloader
         public Form1()
         {
             InitializeComponent();
+            KoreaMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
+            NTSCMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
+            PALMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             this.fds = new BackgroundWorker();
             this.fds.DoWork += new DoWorkEventHandler(DoAllDatabaseyStuff);
             this.fds.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DoAllDatabaseyStuff_Completed);
@@ -505,6 +510,14 @@ namespace NUS_Downloader
         /// <param name="Update">The update.</param>
         public void WriteStatus(string Update)
         {
+            // Check if thread-safe
+            if (this.InvokeRequired)
+            {
+                Debug.WriteLine("InvokeRequired...");
+                WriteStatusCallback wsc = new WriteStatusCallback(WriteStatus);
+                this.Invoke(wsc, new object[] { Update });
+                return;
+            }
             // Small function for writing text to the statusbox...
             if (statusbox.Text == "")
                 statusbox.Text = Update;
@@ -1826,6 +1839,7 @@ namespace NUS_Downloader
                                 break;
                             case "titleIDs":
                                 updateScript = ChildrenOfTheNode[z].InnerText;
+                                XMLToolStripItem.AccessibleDescription = updateScript; // TODO: Find somewhere better to put this. AND FAST.
                                 break;
                             case "version":
                                 string[] versions = ChildrenOfTheNode[z].InnerText.Split(',');
@@ -1975,7 +1989,7 @@ namespace NUS_Downloader
                         Debug.WriteLine("Oops - database error");
                         return;
                 }
-                additionitem.Click += new ToolStripItemClickedEventHandler(upditem_itemclicked);
+                //additionitem.Click += new EventHandler(upditem_itemclicked);
             }
             else
             {
@@ -2099,6 +2113,26 @@ namespace NUS_Downloader
                 WriteStatus("\r\n" + e.ClickedItem.OwnerItem.ToolTipText);
             }
         }
+
+        void upditem_itemclicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            WriteStatus("Preparing to run download script...");
+            Control.CheckForIllegalCrossThreadCalls = false;
+            script_mode = true;
+            statusbox.Text = "";
+            WriteStatus("Starting script download. Please be patient!");
+            string[] NUS_Entries = e.ClickedItem.AccessibleDescription.Split('\n'); // TODO: Find somewhere better to put this. AND FAST!
+            for (int i = 0; i < NUS_Entries.Length; i++)
+            {
+                WriteStatus(NUS_Entries[i]);
+            }
+            script_filename = "\000";
+            nusentries = NUS_Entries;
+            BackgroundWorker scripter = new BackgroundWorker();
+            scripter.DoWork += new DoWorkEventHandler(RunScript);
+            scripter.RunWorkerAsync();
+        }
+
 
         void sysitem_versionclicked(object sender, ToolStripItemClickedEventArgs e)
         {
@@ -4142,7 +4176,15 @@ namespace NUS_Downloader
             script_mode = true;
             statusbox.Text = "";
             WriteStatus("Starting script download. Please be patient!");
-            string[] NUS_Entries = File.ReadAllLines(script_filename);
+            string[] NUS_Entries;
+            if (script_filename != "\000")
+            {
+                NUS_Entries = File.ReadAllLines(script_filename);
+            }
+            else
+            {
+                NUS_Entries = nusentries;
+            }
             WriteStatus(String.Format(" - Script loaded ({0} Titles)", NUS_Entries.Length));
 
             for (int a = 0; a < NUS_Entries.Length; a++)
