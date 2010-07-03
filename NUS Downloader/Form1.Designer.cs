@@ -142,6 +142,7 @@
             this.PALMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.NTSCMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.KoreaMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
+
             this.databaseStrip.SuspendLayout();
             this.tmdgpbox.SuspendLayout();
             this.ticketgpbox.SuspendLayout();
