@@ -3129,6 +3129,7 @@ namespace NUS_Downloader
             //throw new NotImplementedException();
             try
             {
+                // Add directories w/ scripts in \scripts\
                 foreach (string directory in Directory.GetDirectories(Path.Combine(CURRENT_DIR, "scripts"), "*", SearchOption.TopDirectoryOnly))
                 {
                     if (Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly).Length > 0)
@@ -3146,11 +3147,26 @@ namespace NUS_Downloader
                             nus_script_item.Text = finfo.Name;
                             nus_script_item.Image = Properties.Resources.script_go;
                             folder_item.DropDownItems.Add(nus_script_item);
+
+                            // TODO: OnItemClicked...
                         }
 
                         scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
                     }
                 }
+
+                // Add scripts in \scripts\
+                foreach (string nusscript in Directory.GetFiles(Path.Combine(CURRENT_DIR, "scripts"), "*.nus", SearchOption.TopDirectoryOnly))
+                {
+                    FileInfo finfo = new FileInfo(nusscript);
+                    ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
+                    nus_script_item.Text = finfo.Name;
+                    nus_script_item.Image = Properties.Resources.script_go;
+                    scriptsLocalMenuEntry.DropDownItems.Add(nus_script_item);
+
+                    // TODO: OnItemClicked...
+                }
+
             }
             catch (DirectoryNotFoundException)
             {
