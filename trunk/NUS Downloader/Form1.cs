@@ -302,6 +302,10 @@ namespace NUS_Downloader
         {
             this.databaseButton.Enabled = true;
             this.databaseButton.Text = "Database...";
+            if (this.KoreaMassUpdate.HasDropDownItems || this.PALMassUpdate.HasDropDownItems || this.NTSCMassUpdate.HasDropDownItems)
+            {
+                this.scriptsbutton.Enabled = true;
+            }
         }
 
         private void DoAllDatabaseyStuff_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
@@ -1762,20 +1766,20 @@ namespace NUS_Downloader
                 {
                     case "KOR":
                         KoreaMassUpdate.DropDownItems.Add(additionitem);
+                        KoreaMassUpdate.Enabled = true;
                         break;
                     case "PAL":
                         PALMassUpdate.DropDownItems.Add(additionitem);
+                        PALMassUpdate.Enabled = true;
                         break;
                     case "NTSC":
                         NTSCMassUpdate.DropDownItems.Add(additionitem);
+                        NTSCMassUpdate.Enabled = true;
                         break;
                     default:
                         Debug.WriteLine("Oops - database error");
                         return;
                 }
-                // SVN was messing with me and i lost track which of these was the latest...
-                //additionitem.Click += new ToolStripItemClickedEventHandler(upditem_clicked);
-                //additionitem.Click += new EventHandler(upditem_itemclicked);
             }
             else
             {
@@ -2950,7 +2954,7 @@ namespace NUS_Downloader
         /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
         private void RunScript(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            Control.CheckForIllegalCrossThreadCalls = false;
+            //Control.CheckForIllegalCrossThreadCalls = false;
             script_mode = true;
             statusbox.Text = "";
             WriteStatus("Starting script download. Please be patient!");
@@ -3123,28 +3127,37 @@ namespace NUS_Downloader
         void OrganizeScripts(object sender, DoWorkEventArgs e)
         {
             //throw new NotImplementedException();
-            foreach (string directory in Directory.GetDirectories(Path.Combine(CURRENT_DIR, "scripts"), "*", SearchOption.TopDirectoryOnly))
+            try
             {
-                if (Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly).Length > 0)
+                foreach (string directory in Directory.GetDirectories(Path.Combine(CURRENT_DIR, "scripts"), "*", SearchOption.TopDirectoryOnly))
                 {
-                    DirectoryInfo dinfo = new DirectoryInfo(directory);
-                    ToolStripMenuItem folder_item = new ToolStripMenuItem();
-                    folder_item.Text = dinfo.Name + Path.DirectorySeparatorChar;
-                    folder_item.Image = Properties.Resources.folder_table;
-                    
-
-                    foreach (string nusscript in Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly))
+                    if (Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly).Length > 0)
                     {
-                        FileInfo finfo = new FileInfo(nusscript);
-                        ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
-                        nus_script_item.Text = finfo.Name;
-                        nus_script_item.Image = Properties.Resources.script_go;
-                        folder_item.DropDownItems.Add(nus_script_item);
-                    }
+                        DirectoryInfo dinfo = new DirectoryInfo(directory);
+                        ToolStripMenuItem folder_item = new ToolStripMenuItem();
+                        folder_item.Text = dinfo.Name + Path.DirectorySeparatorChar;
+                        folder_item.Image = Properties.Resources.folder_table;
 
-                    scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
+
+                        foreach (string nusscript in Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly))
+                        {
+                            FileInfo finfo = new FileInfo(nusscript);
+                            ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
+                            nus_script_item.Text = finfo.Name;
+                            nus_script_item.Image = Properties.Resources.script_go;
+                            folder_item.DropDownItems.Add(nus_script_item);
+                        }
+
+                        scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
+                    }
                 }
             }
-        }
+            catch (DirectoryNotFoundException)
+            {
+                WriteStatus("Scripts directory not found...");
+                WriteStatus("- Creating it.");
+                Directory.CreateDirectory(Path.Combine(CURRENT_DIR, "scripts"));
+            }
+        } 
     }
 }
