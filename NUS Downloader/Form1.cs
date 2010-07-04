@@ -29,8 +29,6 @@ namespace NUS_Downloader
         // Cross-thread Windows Formsing
         private delegate void AddToolStripItemToStripCallback(
             int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes);
-
-        // TODO
         private delegate void WriteStatusCallback(string Update);
 
         // Images do not compare unless globalized...
@@ -267,7 +265,7 @@ namespace NUS_Downloader
             if (File.Exists(Path.Combine(currentdir, "key.bin")) == false)
             {
                 WriteStatus("Common Key (key.bin) missing! Decryption disabled!");
-                WriteStatus(" - To enable it, why not try choosing \"Retrieve Common Key\" from the Extras menu?");
+                WriteStatus(" - Try: Extras -> Retrieve Key -> Common Key");
                 decryptbox.Visible = false;
             }
             else
@@ -325,6 +323,7 @@ namespace NUS_Downloader
                 WriteStatus(" - Version: " + version);
                 databaseButton.Enabled = false;
                 databaseButton.Text = "DB Loading";
+                updateDatabaseToolStripMenuItem.Text = "Update Database";
                 // Load it up...
                 this.fds.RunWorkerAsync();
             }
@@ -1647,19 +1646,19 @@ namespace NUS_Downloader
 
             if (File.Exists(Path.Combine(currentdir, keyfile)) == true)
             {
-                WriteStatus("Overwriting old key.bin...");
+                WriteStatus(String.Format("Overwriting old {0}...", keyfile));
             }
             try
             {
                 FileStream fs = File.OpenWrite(Path.Combine(currentdir, keyfile));
                 fs.Write(commonkey, 0, commonkey.Length);
                 fs.Close();
-                WriteStatus("key.bin written - Reloading...");
+                WriteStatus(String.Format("{0} written - Reloading...", keyfile));
                 return true;
             }
             catch (IOException e)
             {
-                WriteStatus("Error: Couldn't write key.bin: " + e.Message);
+                WriteStatus(String.Format("Error: Couldn't write {0}: {1}", keyfile, e.Message));
             }
             return false;
         }
@@ -2625,10 +2624,6 @@ namespace NUS_Downloader
             dbFetcher.DoWork += new DoWorkEventHandler(RetrieveNewDatabase);
             dbFetcher.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RetrieveNewDatabase_Completed);
             dbFetcher.RunWorkerAsync();
-            /*while (dbFetcher.IsBusy)
-            {
-                statusbox.Text += ".";
-            }*/
         }
 
         private void loadInfoFromTMDToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3146,32 +3141,6 @@ namespace NUS_Downloader
             WriteStatus("Script completed!");
         }
 
-        private void getCommonKeyMenuItem_Click(object sender, EventArgs e)
-        {
-            WriteStatus("Preparing to retrieve common key...");
-
-            // Begin the epic grab for freedom
-            WebClient databasedl = new WebClient();
-            statusbox.Refresh();
-
-            // Proxy
-            databasedl = ConfigureWithProxy(databasedl);
-
-            string keyspostsource = databasedl.DownloadString("http://hackmii.com/2008/04/keys-keys-keys/");
-            statusbox.Refresh();
-
-            // Find our start point
-            string startofcommonkey = "Common key (";
-            keyspostsource = keyspostsource.Substring(
-                keyspostsource.IndexOf(startofcommonkey) + startofcommonkey.Length, 32);
-            WriteStatus("Got the common key as: " + keyspostsource);
-            byte[] commonkey = HexStringToByteArray(keyspostsource);
-            if (WriteCommonKey("key.bin", commonkey))
-            {
-                BootChecks();
-            }
-        }
-
         public static string ByteArrayToHexString(byte[] Bytes)
         {
             StringBuilder Result = new StringBuilder();
@@ -3203,6 +3172,67 @@ namespace NUS_Downloader
             }
 
             return Bytes;
+        }
+
+        private void commonKeykeybinToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BackgroundWorker keyFetcher = new BackgroundWorker();
+            keyFetcher.DoWork += new DoWorkEventHandler(RetrieveCommonKey);
+            keyFetcher.RunWorkerCompleted += new RunWorkerCompletedEventHandler(CommonKey_Retrieved);
+            keyFetcher.RunWorkerAsync("key.bin");
+        }
+
+        private void koreanKeykkeybinToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BackgroundWorker keyFetcher = new BackgroundWorker();
+            keyFetcher.DoWork += new DoWorkEventHandler(RetrieveCommonKey);
+            keyFetcher.RunWorkerCompleted += new RunWorkerCompletedEventHandler(CommonKey_Retrieved);
+            keyFetcher.RunWorkerAsync("kkey.bin");
+        }
+
+        void CommonKey_Retrieved(object sender, RunWorkerCompletedEventArgs e)
+        {
+            BootChecks();
+        }
+
+        void RetrieveCommonKey(object sender, DoWorkEventArgs e)
+        {
+            WriteStatus(String.Format("Retrieving Key ({0})...", e.Argument.ToString()));
+
+            // Begin the epic grab for freedom
+            WebClient keyclient = new WebClient();
+
+            // Proxy
+            keyclient = ConfigureWithProxy(keyclient);
+
+            string htmlwithkey;
+            if (e.Argument.ToString() == "key.bin")
+            {
+                htmlwithkey = keyclient.DownloadString("http://hackmii.com/2008/04/keys-keys-keys/");
+
+                // Find our start point
+                string startofcommonkey = "Common key (";
+                htmlwithkey = htmlwithkey.Substring(
+                    htmlwithkey.IndexOf(startofcommonkey) + startofcommonkey.Length, 32);
+                WriteStatus(" - Got the Common Key as: ");
+                WriteStatus("   " + htmlwithkey);
+                byte[] commonkey = HexStringToByteArray(htmlwithkey);
+                WriteCommonKey("key.bin", commonkey);
+            }
+            else if (e.Argument.ToString() == "kkey.bin")
+            {
+                htmlwithkey = keyclient.DownloadString("http://hackmii.com/2008/09/korean-wii/");
+
+                // Find our start point
+                string startofcommonkey = "those.</p>";
+                htmlwithkey = htmlwithkey.Substring(
+                    htmlwithkey.IndexOf(startofcommonkey) + startofcommonkey.Length + 6, 47);
+                htmlwithkey = htmlwithkey.Replace(" ", "");
+                WriteStatus(" - Got the Korean Key as: ");
+                WriteStatus("   " + htmlwithkey);
+                byte[] commonkey = HexStringToByteArray(htmlwithkey);
+                WriteCommonKey("kkey.bin", commonkey);
+            }
         }
     }
 }
