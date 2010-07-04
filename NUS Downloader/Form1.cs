@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Threading;
 using System.Text;
 using wyDay.Controls;
-
 using System.Diagnostics;
 
 
@@ -18,55 +17,86 @@ namespace NUS_Downloader
 {
     public partial class Form1 : Form
     {
-        const string NUSURL = "http://nus.cdn.shop.wii.com/ccs/download/";
-        const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
+        private const string WII_NUS_URL = "http://nus.cdn.shop.wii.com/ccs/download/";
+        private const string DSI_NUS_URL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
 
         // TODO: Always remember to change version!
-        string version = "v1.5a Beta";
-        WebClient generalWC = new WebClient();
-        static RijndaelManaged rijndaelCipher;
-        static bool dsidecrypt = false;
+        private string version = "v1.5a Beta";
+        private WebClient generalWC = new WebClient();
+        private static RijndaelManaged rijndaelCipher;
+        private static bool dsidecrypt = false;
 
         // Cross-thread Windows Formsing
-        delegate void AddToolStripItemToStripCallback(int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes); //TODO
-        delegate void WriteStatusCallback(string Update);
-        
+        private delegate void AddToolStripItemToStripCallback(
+            int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes);
+
+        //TODO
+        private delegate void WriteStatusCallback(string Update);
+
         // Images do not compare unless globalized...
-        Image green = Properties.Resources.bullet_green;
-        Image orange = Properties.Resources.bullet_orange;
-        Image redorb = Properties.Resources.bullet_red;
-        Image redgreen = Properties.Resources.bullet_redgreen;
-        Image redorange = Properties.Resources.bullet_redorange;
+        private Image green = Properties.Resources.bullet_green;
+        private Image orange = Properties.Resources.bullet_orange;
+        private Image redorb = Properties.Resources.bullet_red;
+        private Image redgreen = Properties.Resources.bullet_redgreen;
+        private Image redorange = Properties.Resources.bullet_redorange;
 
         // Certs storage
-        byte[] cert_CA = new byte[0x400];
-        byte[] cert_CACP = new byte[0x300];
-        byte[] cert_CAXS = new byte[0x300];
+        private byte[] cert_CA = new byte[0x400];
+        private byte[] cert_CACP = new byte[0x300];
+        private byte[] cert_CAXS = new byte[0x300];
 
-        byte[] cert_CA_sha1 = new byte[20] {0x5B, 0x7D, 0x3E, 0xE2, 0x87, 0x06, 0xAD, 0x8D, 0xA2, 0xCB, 0xD5, 0xA6, 0xB7, 0x5C, 0x15, 0xD0, 0xF9, 0xB6, 0xF3, 0x18};
-        byte[] cert_CACP_sha1 = new byte[20] {0x68, 0x24, 0xD6, 0xDA, 0x4C, 0x25, 0x18, 0x4F, 0x0D, 0x6D, 0xAF, 0x6E, 0xDB, 0x9C, 0x0F, 0xC5, 0x75, 0x22, 0xA4, 0x1C};
-        byte[] cert_CAXS_sha1 = new byte[20] {0x09, 0x78, 0x70, 0x45, 0x03, 0x71, 0x21, 0x47, 0x78, 0x24, 0xBC, 0x6A, 0x3E, 0x5E, 0x07, 0x61, 0x56, 0x57, 0x3F, 0x8A};
+        private byte[] cert_CA_sha1 = new byte[20]
+                                          {
+                                              0x5B, 0x7D, 0x3E, 0xE2, 0x87, 0x06, 0xAD, 0x8D, 0xA2, 0xCB, 0xD5, 0xA6, 0xB7,
+                                              0x5C, 0x15, 0xD0, 0xF9, 0xB6, 0xF3, 0x18
+                                          };
 
-        byte[] cert_total_sha1 = new byte[20] {0xAC, 0xE0, 0xF1, 0x5D, 0x2A, 0x85, 0x1C, 0x38, 0x3F, 0xE4, 0x65, 0x7A, 0xFC, 0x38, 0x40, 0xD6, 0xFF, 0xE3, 0x0A, 0xD0};
+        private byte[] cert_CACP_sha1 = new byte[20]
+                                            {
+                                                0x68, 0x24, 0xD6, 0xDA, 0x4C, 0x25, 0x18, 0x4F, 0x0D, 0x6D, 0xAF, 0x6E,
+                                                0xDB, 0x9C, 0x0F, 0xC5, 0x75, 0x22, 0xA4, 0x1C
+                                            };
 
-        string WAD_Saveas_Filename;
+        private byte[] cert_CAXS_sha1 = new byte[20]
+                                            {
+                                                0x09, 0x78, 0x70, 0x45, 0x03, 0x71, 0x21, 0x47, 0x78, 0x24, 0xBC, 0x6A,
+                                                0x3E, 0x5E, 0x07, 0x61, 0x56, 0x57, 0x3F, 0x8A
+                                            };
+
+        private byte[] cert_total_sha1 = new byte[20]
+                                             {
+                                                 0xAC, 0xE0, 0xF1, 0x5D, 0x2A, 0x85, 0x1C, 0x38, 0x3F, 0xE4, 0x65, 0x7A,
+                                                 0xFC, 0x38, 0x40, 0xD6, 0xFF, 0xE3, 0x0A, 0xD0
+                                             };
+
+        private string WAD_Saveas_Filename;
 
         // TODO: OOP scripting
-        string script_filename;
-        bool script_mode = false;
-        string[] nusentries;
+        private string script_filename;
+        private bool script_mode = false;
+        private string[] nusentries;
 
         // Proxy stuff...
-        string proxy_url;
-        string proxy_usr;
-        string proxy_pwd;
+        private string proxy_url;
+        private string proxy_usr;
+        private string proxy_pwd;
 
         // Database thread
         private BackgroundWorker fds;
 
         // Common Key hash
-        byte[] wii_commonkey_sha1 = new byte[20] { 0xEB, 0xEA, 0xE6, 0xD2, 0x76, 0x2D, 0x4D, 0x3E, 0xA1, 0x60, 0xA6, 0xD8, 0x32, 0x7F, 0xAC, 0x9A, 0x25, 0xF8, 0x06, 0x2B };
-        byte[] wii_commonkey_sha1_asstring = new byte[20] { 0x56, 0xdd, 0x4e, 0xb3, 0x59, 0x75, 0xc2, 0xfd, 0x5a, 0xe8, 0xba, 0x8c, 0x7d, 0x89, 0x9a, 0xc5, 0xe6, 0x17, 0x54, 0x19 };
+        private byte[] wii_commonkey_sha1 = new byte[20]
+                                                {
+                                                    0xEB, 0xEA, 0xE6, 0xD2, 0x76, 0x2D, 0x4D, 0x3E, 0xA1, 0x60, 0xA6, 0xD8,
+                                                    0x32, 0x7F, 0xAC, 0x9A, 0x25, 0xF8, 0x06, 0x2B
+                                                };
+
+        private byte[] wii_commonkey_sha1_asstring = new byte[20]
+                                                         {
+                                                             0x56, 0xdd, 0x4e, 0xb3, 0x59, 0x75, 0xc2, 0xfd, 0x5a, 0xe8,
+                                                             0xba, 0x8c, 0x7d, 0x89, 0x9a, 0xc5, 0xe6, 0x17, 0x54, 0x19
+                                                         };
+
         /*
         public struct WADHeader
         {
@@ -87,10 +117,12 @@ namespace NUS_Downloader
             public byte[] Type;
             public byte[] Size;
             public byte[] SHAHash;
-        };
+        } ;
 
-        public enum ContentTypes : int {
-            Shared = 0x8001, Normal = 0x0001
+        public enum ContentTypes : int
+        {
+            Shared = 0x8001,
+            Normal = 0x0001
         }
 
         // This is the standard entry to the GUI
@@ -129,7 +161,7 @@ namespace NUS_Downloader
                 scripter.RunWorkerAsync();
             }
 
-               
+
             /*  CLI MODE DEPRECATED...
             // Vars
             bool startnow = false;
@@ -229,7 +261,7 @@ namespace NUS_Downloader
             string currentdir = Directory.GetCurrentDirectory();
 
             //if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
-                //currentdir += Path.DirectorySeparatorChar.ToString();
+            //currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Check for Wii common key bin file...
             if (File.Exists(Path.Combine(currentdir, "key.bin")) == false)
@@ -241,10 +273,13 @@ namespace NUS_Downloader
             else
             {
                 WriteStatus("Common Key detected.");
-                if ((Convert.ToBase64String(ComputeSHA(LoadCommonKey("key.bin")))) != (Convert.ToBase64String(wii_commonkey_sha1)))
-                { // Hmm, seems to be a bad hash
+                if ((Convert.ToBase64String(ComputeSHA(LoadCommonKey("key.bin")))) !=
+                    (Convert.ToBase64String(wii_commonkey_sha1)))
+                {
+                    // Hmm, seems to be a bad hash
                     // Let's check if it matches the hex string version...
-                    if ((Convert.ToBase64String(ComputeSHA(LoadCommonKey("key.bin")))) != (Convert.ToBase64String(wii_commonkey_sha1_asstring)))
+                    if ((Convert.ToBase64String(ComputeSHA(LoadCommonKey("key.bin")))) !=
+                        (Convert.ToBase64String(wii_commonkey_sha1_asstring)))
                         WriteStatus(" - (PS: Your common key isn't hashing right!)");
                     else
                     {
@@ -252,7 +287,7 @@ namespace NUS_Downloader
                         // Directory stuff
                         //string keydir = Directory.GetCurrentDirectory();
                         //if (!(keydir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(keydir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                            //keydir += Path.DirectorySeparatorChar.ToString();
+                        //keydir += Path.DirectorySeparatorChar.ToString();
                         TextReader ckreader = new StreamReader(Path.Combine(currentdir, "key.bin"));
                         String ckashex = ckreader.ReadLine();
                         ckreader.Close();
@@ -304,8 +339,10 @@ namespace NUS_Downloader
                 {
                     proxy_usr = proxy_file[1];
                     SetAllEnabled(false);
-                    ProxyVerifyBox.Visible = true; ProxyVerifyBox.Enabled = true;
-                    ProxyPwdBox.Enabled = true; SaveProxyBtn.Enabled = true;
+                    ProxyVerifyBox.Visible = true;
+                    ProxyVerifyBox.Enabled = true;
+                    ProxyPwdBox.Enabled = true;
+                    SaveProxyBtn.Enabled = true;
                     ProxyVerifyBox.Select();
                 }
             }
@@ -341,7 +378,7 @@ namespace NUS_Downloader
                 }
                 catch
                 {
-                   // ...
+                    // ...
                 }
             }
         }
@@ -435,11 +472,13 @@ namespace NUS_Downloader
                 // Loop through each content and display name, hash, index
                 for (int i = 0; i < nbr_cont; i++)
                 {
-                    WriteStatus("   Content " + (i + 1) + ": " + tmdcontents[i] + " (" + Convert.ToString(int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber)) + " bytes)");
+                    WriteStatus("   Content " + (i + 1) + ": " + tmdcontents[i] + " (" +
+                                Convert.ToString(int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber)) +
+                                " bytes)");
                     byte[] hash = new byte[20];
                     for (int x = 0; x < 20; x++)
                     {
-                        hash[x] = tmdhashes[(i * 20) + x];
+                        hash[x] = tmdhashes[(i*20) + x];
                     }
                     WriteStatus("  - Hash: " + DisplayBytes(hash, "").Substring(0, 8) + "...");
                     WriteStatus("  - Index: " + tmdindices[i]);
@@ -458,7 +497,8 @@ namespace NUS_Downloader
             string sysversion = "";
             for (int i = 0; i < 8; i++)
                 sysversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[0x184 + i])));
-            sysversion = Convert.ToString(int.Parse(sysversion.Substring(14, 2), System.Globalization.NumberStyles.HexNumber));
+            sysversion =
+                Convert.ToString(int.Parse(sysversion.Substring(14, 2), System.Globalization.NumberStyles.HexNumber));
             return sysversion;
         }
 
@@ -468,10 +508,10 @@ namespace NUS_Downloader
         /// <param name="tmd">The TMD.</param>
         /// <returns>int Count of Contents</returns>
         private int ContentCount(byte[] tmd)
-        { 
+        {
             // nbr_cont (0xDE) len=0x02
             int nbr_cont = 0;
-            nbr_cont = (tmd[0x1DE] * 256) + tmd[0x1DF];
+            nbr_cont = (tmd[0x1DE]*256) + tmd[0x1DF];
             return nbr_cont;
         }
 
@@ -484,7 +524,7 @@ namespace NUS_Downloader
         {
             // nbr_cont (0xE0) len=0x02
             int bootidx = 0;
-            bootidx = (tmd[0x1E0] * 256) + tmd[0x1E1];
+            bootidx = (tmd[0x1E0]*256) + tmd[0x1E1];
             return bootidx;
         }
 
@@ -514,7 +554,7 @@ namespace NUS_Downloader
             {
                 Debug.WriteLine("InvokeRequired...");
                 WriteStatusCallback wsc = new WriteStatusCallback(WriteStatus);
-                this.Invoke(wsc, new object[] { Update });
+                this.Invoke(wsc, new object[] {Update});
                 return;
             }
             // Small function for writing text to the statusbox...
@@ -565,9 +605,9 @@ namespace NUS_Downloader
 
                     // Nope. Resize the buffer, put in the byte we've just
                     // read, and continue
-                    byte[] newBuffer = new byte[buffer.Length * 2];
+                    byte[] newBuffer = new byte[buffer.Length*2];
                     Array.Copy(buffer, newBuffer, buffer.Length);
-                    newBuffer[read] = (byte)nextByte;
+                    newBuffer[read] = (byte) nextByte;
                     buffer = newBuffer;
                     read++;
                 }
@@ -600,7 +640,7 @@ namespace NUS_Downloader
         private string ConvertToHex(string decval)
         {
             // Convert text string to unsigned integer
-            int uiDecimal = System.Convert.ToInt32(decval); 
+            int uiDecimal = System.Convert.ToInt32(decval);
             return String.Format("{0:x2}", uiDecimal);
         }
 
@@ -679,10 +719,10 @@ namespace NUS_Downloader
 
             for (int i = 0; i < length; i++)
             {
-                contentnames[i] = MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset]))) + 
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 1]))) + 
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 2]))) + 
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 3])));
+                contentnames[i] = MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset]))) +
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 1]))) +
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 2]))) +
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 3])));
                 startoffset += 36;
             }
 
@@ -703,13 +743,13 @@ namespace NUS_Downloader
             for (int i = 0; i < length; i++)
             {
                 contentsizes[i] = MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset]))) +
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 1]))) +
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 2]))) +
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 3]))) +
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 4]))) +
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 5]))) +
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 6]))) +
-                    MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 7])));
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 1]))) +
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 2]))) +
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 3]))) +
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 4]))) +
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 5]))) +
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 6]))) +
+                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 7])));
                 contentsizes[i] = TrimLeadingZeros(contentsizes[i]);
                 /*contentsizes[i] = Convert.ToString(tmdfile[startoffset]) +
                     Convert.ToString(tmdfile[startoffset + 1]) +
@@ -741,7 +781,7 @@ namespace NUS_Downloader
             {
                 for (int x = 0; x < 20; x++)
                 {
-                    contenthashes[(i * 20) + x] = tmdfile[startoffset + x];
+                    contenthashes[(i*20) + x] = tmdfile[startoffset + x];
                 }
                 startoffset += 36;
             }
@@ -762,9 +802,9 @@ namespace NUS_Downloader
             for (int i = 0; i < length; i++)
             {
                 if (tmdfile[startoffset] == 0x80)
-                    contenttypes[i] = (int)ContentTypes.Shared;
+                    contenttypes[i] = (int) ContentTypes.Shared;
                 else
-                    contenttypes[i] = (int)ContentTypes.Normal;
+                    contenttypes[i] = (int) ContentTypes.Normal;
                 startoffset += 36;
             }
 
@@ -844,7 +884,8 @@ namespace NUS_Downloader
             // Current directory...
             string currentdir = Directory.GetCurrentDirectory();
 
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) ||
+                !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Prevent crossthread issues
@@ -855,7 +896,7 @@ namespace NUS_Downloader
 
             // Wii / DSi
             bool wiimode = (consoleCBox.SelectedIndex == 0);
-            
+
             // Set UserAgent to Wii value
             generalWC.Headers.Add("User-Agent", "wii libnup/1.0");
 
@@ -896,10 +937,9 @@ namespace NUS_Downloader
 
             // Windows 7?
             if (IsWin7())
-            { 
+            {
                 // Windows 7 Taskbar progress can be used.
                 dlprogress.ShowInTaskbar = true;
-                
             }
 
             // Download TMD before the rest...
@@ -912,7 +952,6 @@ namespace NUS_Downloader
             }
             catch (Exception ex)
             {
-                
                 WriteStatus("Download Failed: " + tmdfull);
                 WriteStatus(" - Reason: " + ex.Message.ToString().Replace("The remote server returned an error: ", ""));
                 SetEnableforDownload(true);
@@ -935,7 +974,8 @@ namespace NUS_Downloader
                 if (ignoreticket.Checked == false)
                 {
                     WriteStatus("Download Failed: cetk");
-                    WriteStatus(" - Reason: " + ex.Message.ToString().Replace("The remote server returned an error: ", ""));
+                    WriteStatus(" - Reason: " +
+                                ex.Message.ToString().Replace("The remote server returned an error: ", ""));
                     WriteStatus("You may be able to retrieve the contents by Ignoring the Ticket (Check below)");
                     SetEnableforDownload(true);
                     downloadstartbtn.Text = "Start NUS Download!";
@@ -1066,7 +1106,7 @@ namespace NUS_Downloader
             {
                 totalcontentsize += int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber);
             }
-            WriteStatus("Total Size: " + (long)totalcontentsize + " bytes");
+            WriteStatus("Total Size: " + (long) totalcontentsize + " bytes");
 
             for (int i = 0; i < tmdcontents.Length; i++)
             {
@@ -1079,13 +1119,15 @@ namespace NUS_Downloader
                     }
                     else
                     {
-                        DownloadNUSFile(titleid, tmdcontents[i], titledirectory, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber), wiimode);
+                        DownloadNUSFile(titleid, tmdcontents[i], titledirectory,
+                                        int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber), wiimode);
                     }
                 }
                 catch (Exception ex)
                 {
                     WriteStatus("Download Failed: " + tmdcontents[i]);
-                    WriteStatus(" - Reason: " + ex.Message.ToString().Replace("The remote server returned an error: ", ""));
+                    WriteStatus(" - Reason: " +
+                                ex.Message.ToString().Replace("The remote server returned an error: ", ""));
                     SetEnableforDownload(true);
                     downloadstartbtn.Text = "Start NUS Download!";
                     dlprogress.Value = 0;
@@ -1094,14 +1136,16 @@ namespace NUS_Downloader
                 }
 
                 // Progress reporting advances...
-                downloadstartbtn.Text = "Content: (" + (i + 1) + Path.AltDirectorySeparatorChar.ToString() + contentstrnum + ")";
+                downloadstartbtn.Text = "Content: (" + (i + 1) + Path.AltDirectorySeparatorChar.ToString() +
+                                        contentstrnum + ")";
                 currentcontentlocation += int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber);
 
                 // Decrypt stuff...
                 if (decryptbox.Checked == true)
                 {
                     // Create content file holder
-                    byte[] contbuf = FileLocationToByteArray(titledirectory + Path.DirectorySeparatorChar.ToString() + tmdcontents[i]);
+                    byte[] contbuf =
+                        FileLocationToByteArray(titledirectory + Path.DirectorySeparatorChar.ToString() + tmdcontents[i]);
 
                     // IV (00+IDX+more000)
                     byte[] iv = new byte[16];
@@ -1110,7 +1154,7 @@ namespace NUS_Downloader
                         iv[x] = 0x00;
                     }
                     iv[1] = tmdindices[i];
-                    
+
                     initCrypt(iv, titlekey);
 
                     /* Create decrypted file
@@ -1120,7 +1164,10 @@ namespace NUS_Downloader
                     decfs.Close();
                     WriteStatus("  - Decrypted: " + zeros + i.ToString("X2") + ".app"); */
 
-                    FileStream decfs = new FileStream(titledirectory + Path.DirectorySeparatorChar.ToString() + tmdcontents[i] + ".app", FileMode.Create);
+                    FileStream decfs =
+                        new FileStream(
+                            titledirectory + Path.DirectorySeparatorChar.ToString() + tmdcontents[i] + ".app",
+                            FileMode.Create);
                     decfs.Write(Decrypt(contbuf), 0, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber));
                     decfs.Close();
                     WriteStatus("  - Decrypted: " + tmdcontents[i] + ".app");
@@ -1129,7 +1176,7 @@ namespace NUS_Downloader
                     byte[] hash = new byte[20];
                     for (int x = 0; x < 20; x++)
                     {
-                        hash[x] = tmdhashes[(i * 20) + x];
+                        hash[x] = tmdhashes[(i*20) + x];
                     }
                     byte[] deccont = Decrypt(contbuf);
                     Array.Resize(ref deccont, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber));
@@ -1145,7 +1192,7 @@ namespace NUS_Downloader
                     }
                 }
 
-                dlprogress.Value = Convert.ToInt32(((currentcontentlocation / totalcontentsize) * 100));
+                dlprogress.Value = Convert.ToInt32(((currentcontentlocation/totalcontentsize)*100));
             }
 
             WriteStatus("NUS Download Finished.");
@@ -1158,13 +1205,12 @@ namespace NUS_Downloader
             SetEnableforDownload(true);
             downloadstartbtn.Text = "Start NUS Download!";
             dlprogress.Value = 0;
-            
+
             if (IsWin7())
                 dlprogress.ShowInTaskbar = false;
 
             if (script_mode)
                 statusbox.Text = "";
-
         }
 
         /// <summary>
@@ -1182,7 +1228,9 @@ namespace NUS_Downloader
             if (titleversion.Text == "")
                 titledirectory = Path.Combine(currentdir, titleidbox.Text + Path.DirectorySeparatorChar.ToString());
             else
-                titledirectory = Path.Combine(currentdir, titleidbox.Text + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
+                titledirectory = Path.Combine(currentdir,
+                                              titleidbox.Text + "v" + titleversion.Text +
+                                              Path.DirectorySeparatorChar.ToString());
 
             // Keep local directory if present and checked out...
             if ((localuse.Checked) && (Directory.Exists(titledirectory)))
@@ -1212,7 +1260,9 @@ namespace NUS_Downloader
             if (titleversion.Text == "")
                 titledirectory = Path.Combine(currentdir, titleidbox.Text + Path.DirectorySeparatorChar.ToString());
             else
-                titledirectory = Path.Combine(currentdir, titleidbox.Text + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
+                titledirectory = Path.Combine(currentdir,
+                                              titleidbox.Text + "v" + titleversion.Text +
+                                              Path.DirectorySeparatorChar.ToString());
 
             if (Directory.Exists(titledirectory))
                 Directory.Delete(titledirectory, true);
@@ -1228,14 +1278,15 @@ namespace NUS_Downloader
         /// <param name="placementdir">The placementdir.</param>
         /// <param name="sizeinbytes">The sizeinbytes.</param>
         /// <param name="iswiititle">if set to <c>true</c> [iswiititle].</param>
-        private void DownloadNUSFile(string titleid, string filename, string placementdir, int sizeinbytes, bool iswiititle)
+        private void DownloadNUSFile(string titleid, string filename, string placementdir, int sizeinbytes,
+                                     bool iswiititle)
         {
             // Create NUS URL...
             string nusfileurl;
             if (iswiititle)
-                nusfileurl = NUSURL + titleid + Path.AltDirectorySeparatorChar.ToString() + filename;
+                nusfileurl = WII_NUS_URL + titleid + Path.AltDirectorySeparatorChar.ToString() + filename;
             else
-                nusfileurl = DSiNUSURL + titleid + Path.AltDirectorySeparatorChar.ToString() + filename;
+                nusfileurl = DSI_NUS_URL + titleid + Path.AltDirectorySeparatorChar.ToString() + filename;
 
             WriteStatus("Grabbing " + filename + "...");
 
@@ -1247,7 +1298,7 @@ namespace NUS_Downloader
             generalWC.DownloadFile(nusfileurl, placementdir + filename);
         }
 
-        void StatusChange(string status)
+        private void StatusChange(string status)
         {
             WriteStatus(status);
         }
@@ -1264,7 +1315,8 @@ namespace NUS_Downloader
 
             // Obtain Current Directory
             string currentdir = Directory.GetCurrentDirectory();
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) ||
+                !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Create instance of WAD Packing class
@@ -1290,21 +1342,21 @@ namespace NUS_Downloader
                 return;
             }
             packer.Certs = certsbuf;
-            
+
             // Read TMD/TIK into Packer.
             packer.Ticket = FileLocationToByteArray(totaldirectory + Path.DirectorySeparatorChar.ToString() + @"cetk");
             packer.TMD = FileLocationToByteArray(totaldirectory + Path.DirectorySeparatorChar.ToString() + tmdfilename);
-            
+
             // Get the TMD variables in here instead...
             int contentcount = ContentCount(packer.TMD);
             string[] contentnames = GetContentNames(packer.TMD, contentcount);
-           
+
             packer.tmdnames = GetContentNames(packer.TMD, contentcount);
             packer.tmdsizes = GetContentSizes(packer.TMD, contentcount);
 
             if (wadnamebox.Text.Contains("[v]") == true)
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
-            
+
             if (!(String.IsNullOrEmpty(WAD_Saveas_Filename)))
             {
                 packer.FileName = System.IO.Path.GetFileName(WAD_Saveas_Filename);
@@ -1312,11 +1364,12 @@ namespace NUS_Downloader
             }
             else
             {
-                string wad_filename = totaldirectory + Path.DirectorySeparatorChar.ToString() + RemoveIllegalCharacters(wadnamebox.Text);
+                string wad_filename = totaldirectory + Path.DirectorySeparatorChar.ToString() +
+                                      RemoveIllegalCharacters(wadnamebox.Text);
                 packer.Directory = totaldirectory;
                 packer.FileName = System.IO.Path.GetFileName(wad_filename);
             }
-            
+
             // Gather contents...
             byte[][] contents_array = new byte[contentcount][];
             for (int a = 0; a < contentcount; a++)
@@ -1324,10 +1377,10 @@ namespace NUS_Downloader
                 contents_array[a] = FileLocationToByteArray(totaldirectory + contentnames[a]);
             }
             packer.Contents = contents_array;
-           
+
             // Send operations over to the packer...
             packer.PackWAD();
-            
+
             // Delete contents now...
             if (deletecontentsbox.Checked)
             {
@@ -1347,6 +1400,7 @@ namespace NUS_Downloader
             }
         }
 
+        /*
         /// <summary>
         /// Returns next 0x40 padded length.
         /// </summary>
@@ -1361,13 +1415,13 @@ namespace NUS_Downloader
             while (remainder != 0)
             {
                 thelength += 1;
-                remainder = thelength % 0x40;
+                remainder = thelength%0x40;
             }
 
             //WriteStatus("Initial Size: " + currentlength);
             //WriteStatus("0x40 Size: " + thelength);
 
-            return (long)thelength;
+            return (long) thelength;
         }
 
         /// <summary>
@@ -1386,7 +1440,7 @@ namespace NUS_Downloader
                 Array.Reverse(b);
 
             return b;
-        }
+        }*/
 
         private void consoleCBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1448,7 +1502,7 @@ namespace NUS_Downloader
 
             if (IsWin7())
                 WriteStatus("Windows 7 Features: Enabled");
-            
+
             WriteStatus("");
             WriteStatus("Special thanks to:");
             WriteStatus(" * Crediar for his wadmaker tool + source, and for the advice!");
@@ -1460,7 +1514,7 @@ namespace NUS_Downloader
             WriteStatus(" * Wyatt O'Day for the Windows7ProgressBar Control.");
             WriteStatus(" * Napo7 for testing proxy usage.");
         }
-        
+
         private void packbox_CheckedChanged(object sender, EventArgs e)
         {
             if (packbox.Checked == true)
@@ -1474,7 +1528,6 @@ namespace NUS_Downloader
                 wadnamebox.Enabled = false;
                 wadnamebox.Text = "";
             }
-            
         }
 
         private void titleidbox_TextChanged(object sender, EventArgs e)
@@ -1578,7 +1631,7 @@ namespace NUS_Downloader
         /// </summary>
         /// <param name="data">A byte[].</param>
         /// <returns></returns>
-        static public byte[] ComputeSHA(byte[] data)
+        public static byte[] ComputeSHA(byte[] data)
         {
             SHA1 sha = new SHA1CryptoServiceProvider();
             // This is one implementation of the abstract class SHA1.
@@ -1594,7 +1647,8 @@ namespace NUS_Downloader
         {
             // Directory stuff
             string currentdir = Directory.GetCurrentDirectory();
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) ||
+                !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
                 currentdir += Path.DirectorySeparatorChar.ToString();
 
             if (File.Exists(currentdir + keyfile) == true)
@@ -1617,7 +1671,7 @@ namespace NUS_Downloader
             // Directory stuff
             string currentdir = Directory.GetCurrentDirectory();
             //if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                //currentdir += Path.DirectorySeparatorChar.ToString();
+            //currentdir += Path.DirectorySeparatorChar.ToString();
 
             if (File.Exists(Path.Combine(currentdir, keyfile)) == true)
             {
@@ -1676,7 +1730,7 @@ namespace NUS_Downloader
             xDoc.Load("database.xml");
 
             // Variables
-            string[] XMLNodeTypes = new string[5] { "SYS", "IOS", "VC", "WW", "UPD" };
+            string[] XMLNodeTypes = new string[5] {"SYS", "IOS", "VC", "WW", "UPD"};
 
             int totalLength = xDoc.SelectNodes("/database/*").Count;
             int rnt = 0;
@@ -1698,9 +1752,10 @@ namespace NUS_Downloader
 
                     // Okay, so now report the progress...
                     rnt = rnt + 1;
-                    float currentProgress = ((float)rnt / (float)totalLength) * (float)100;
-                    worker.ReportProgress(Convert.ToInt16(Math.Round(currentProgress)));
-                    
+                    float currentProgress = ((float) rnt/(float) totalLength)*(float) 100;
+                    if (Convert.ToInt16(Math.Round(currentProgress))%10 == 0)
+                        worker.ReportProgress(Convert.ToInt16(Math.Round(currentProgress)));
+
                     // Lol.
                     XmlNodeList ChildrenOfTheNode = XMLSpecificNodeTypeList[x].ChildNodes;
 
@@ -1716,7 +1771,8 @@ namespace NUS_Downloader
                                 break;
                             case "titleIDs":
                                 updateScript = ChildrenOfTheNode[z].InnerText;
-                                XMLToolStripItem.AccessibleDescription = updateScript; // TODO: Find somewhere better to put this. AND FAST.
+                                XMLToolStripItem.AccessibleDescription = updateScript;
+                                    // TODO: Find somewhere better to put this. AND FAST.
                                 break;
                             case "version":
                                 string[] versions = ChildrenOfTheNode[z].InnerText.Split(',');
@@ -1727,13 +1783,15 @@ namespace NUS_Downloader
                                     {
                                         if (ChildrenOfTheNode[z].InnerText != "")
                                         {
-                                            ToolStripMenuItem regitem = (ToolStripMenuItem)XMLToolStripItem.DropDownItems[b];
+                                            ToolStripMenuItem regitem =
+                                                (ToolStripMenuItem) XMLToolStripItem.DropDownItems[b];
                                             regitem.DropDownItems.Add("Latest Version");
                                             for (int y = 0; y < versions.Length; y++)
                                             {
                                                 regitem.DropDownItems.Add("v" + versions[y]);
                                             }
-                                            regitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(deepitem_clicked);
+                                            regitem.DropDownItemClicked +=
+                                                new ToolStripItemClickedEventHandler(deepitem_clicked);
                                         }
                                     }
                                 }
@@ -1755,7 +1813,8 @@ namespace NUS_Downloader
                                 {
                                     for (int y = 0; y < regions.Length; y++)
                                     {
-                                        XMLToolStripItem.DropDownItems.Add(RegionFromIndex(Convert.ToInt32(regions[y]), xDoc));
+                                        XMLToolStripItem.DropDownItems.Add(RegionFromIndex(Convert.ToInt32(regions[y]),
+                                                                                           xDoc));
                                     }
                                 }
                                 break;
@@ -1791,15 +1850,15 @@ namespace NUS_Downloader
         /// <param name="type">The type.</param>
         /// <param name="additionitem">The additionitem.</param>
         /// <param name="attributes">The attributes.</param>
-        void AddToolStripItemToStrip(int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes)
+        private void AddToolStripItemToStrip(int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes)
         {
-            Debug.WriteLine("Adding item...");
+            Debug.WriteLine(String.Format("Adding item (Type: {0})...", type));
             // Check if thread-safe
             if (this.InvokeRequired)
             {
                 Debug.WriteLine("InvokeRequired...");
                 AddToolStripItemToStripCallback atsitsc = new AddToolStripItemToStripCallback(AddToolStripItemToStrip);
-                this.Invoke(atsitsc, new object[] { type, additionitem, attributes });
+                this.Invoke(atsitsc, new object[] {type, additionitem, attributes});
                 return;
             }
             // Deal with VC list depth...
@@ -1891,7 +1950,7 @@ namespace NUS_Downloader
             }
         }
 
-        void deepitem_clicked(object sender, ToolStripItemClickedEventArgs e)
+        private void deepitem_clicked(object sender, ToolStripItemClickedEventArgs e)
         {
             titleidbox.Text = e.ClickedItem.OwnerItem.OwnerItem.Text.Substring(0, 16);
             titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.OwnerItem.Text.Substring(0, 2));
@@ -1912,11 +1971,14 @@ namespace NUS_Downloader
             }
 
             // Prepare StatusBox...
-            string titlename = e.ClickedItem.OwnerItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.OwnerItem.Text.Length - 19));
+            string titlename = e.ClickedItem.OwnerItem.OwnerItem.Text.Substring(19,
+                                                                                (e.ClickedItem.OwnerItem.OwnerItem.Text.
+                                                                                     Length - 19));
             statusbox.Text = " --- " + titlename + " ---";
 
             // Check if a ticket is present...
-            if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.OwnerItem.Image) == (redorange))
+            if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (orange) ||
+                (e.ClickedItem.OwnerItem.OwnerItem.Image) == (redorange))
             {
                 ignoreticket.Checked = true;
                 WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
@@ -1935,7 +1997,8 @@ namespace NUS_Downloader
             }
 
             // Check for danger item
-            if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (redgreen) || (e.ClickedItem.OwnerItem.OwnerItem.Image) == (redorange))
+            if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (redgreen) ||
+                (e.ClickedItem.OwnerItem.OwnerItem.Image) == (redorange))
             {
                 WriteStatus("\r\n" + e.ClickedItem.OwnerItem.OwnerItem.ToolTipText);
             }
@@ -1970,7 +2033,7 @@ namespace NUS_Downloader
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
         }
 
-        void wwitem_regionclicked(object sender, ToolStripItemClickedEventArgs e)
+        private void wwitem_regionclicked(object sender, ToolStripItemClickedEventArgs e)
         {
             titleidbox.Text = e.ClickedItem.OwnerItem.Text.Substring(0, 16);
             titleversion.Text = "";
@@ -1979,7 +2042,7 @@ namespace NUS_Downloader
             // Prepare StatusBox...
             string titlename = e.ClickedItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.Text.Length - 19));
             statusbox.Text = " --- " + titlename + " ---";
-   
+
             // Check if a ticket is present...
             if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
             {
@@ -2006,14 +2069,15 @@ namespace NUS_Downloader
             }
         }
 
-        void upditem_itemclicked(object sender, ToolStripItemClickedEventArgs e)
+        private void upditem_itemclicked(object sender, ToolStripItemClickedEventArgs e)
         {
             WriteStatus("Preparing to run download script...");
             Control.CheckForIllegalCrossThreadCalls = false;
             script_mode = true;
             statusbox.Text = "";
             WriteStatus("Starting script download. Please be patient!");
-            string[] NUS_Entries = e.ClickedItem.AccessibleDescription.Split('\n'); // TODO: Find somewhere better to put this. AND FAST!
+            string[] NUS_Entries = e.ClickedItem.AccessibleDescription.Split('\n');
+                // TODO: Find somewhere better to put this. AND FAST!
             for (int i = 0; i < NUS_Entries.Length; i++)
             {
                 WriteStatus(NUS_Entries[i]);
@@ -2026,10 +2090,10 @@ namespace NUS_Downloader
         }
 
 
-        void sysitem_versionclicked(object sender, ToolStripItemClickedEventArgs e)
+        private void sysitem_versionclicked(object sender, ToolStripItemClickedEventArgs e)
         {
             titleidbox.Text = e.ClickedItem.OwnerItem.Text.Substring(0, 16);
-            
+
             if (e.ClickedItem.Text != "Latest Version")
             {
                 if (e.ClickedItem.Text.Contains("v"))
@@ -2066,7 +2130,7 @@ namespace NUS_Downloader
             {
                 ignoreticket.Checked = false;
             }
-            
+
             // Change WAD name if packed is already checked...
             if (packbox.Checked)
             {
@@ -2091,8 +2155,8 @@ namespace NUS_Downloader
         /// <param name="index">The index.</param>
         /// <param name="databasexml">XmlDocument with database inside</param>
         /// <returns>Region desc</returns>
-        string RegionFromIndex(int index, XmlDocument databasexml)
-        { 
+        private string RegionFromIndex(int index, XmlDocument databasexml)
+        {
             /* Typical Region XML
              * <REGIONS>
 		            <region index="0">41 (All/System)</region>
@@ -2157,8 +2221,8 @@ namespace NUS_Downloader
         /// </summary>
         /// <param name="databasestr">removes the illegal chars</param>
         /// <returns>legal string</returns>
-        private string RemoveIllegalCharacters(string databasestr)
-        { 
+        private static string RemoveIllegalCharacters(string databasestr)
+        {
             // Database strings must contain filename-legal characters.
             foreach (char illegalchar in System.IO.Path.GetInvalidFileNameChars())
             {
@@ -2169,66 +2233,12 @@ namespace NUS_Downloader
         }
 
         /// <summary>
-        /// Zeroes the signature in TMD/TIK.
-        /// </summary>
-        /// <param name="tmdortik">TMD/TIK</param>
-        /// <returns>Zeroed TMD/TIK</returns>
-        private byte[] ZeroSignature(byte[] tmdortik)
-        { 
-            // Write all 0x00 to signature...
-            // Sig starts at 0x04 in both TMD/TIK
-            for (int i = 0; i < 256; i++)
-            {
-                tmdortik[i + 4] = 0x00;
-            }
-
-            WriteStatus(" - Signature Emptied...");
-            return tmdortik;
-        }
-
-        /// <summary>
-        /// Trucha Signs a TMD/TIK
-        /// </summary>
-        /// <param name="tmdortik">The tmdortik.</param>
-        /// <returns>Fake-signed byte[]</returns>
-        private byte[] TruchaSign(byte[] tmdortik)
-        {
-            // Loop through 2 bytes worth of numbers until hash starts with 0x00...
-            // Padding starts at 0x104 in both TMD/TIK, seems like a good place to me...
-
-            byte[] payload = new byte[2];
-            byte[] hashobject = new byte[tmdortik.Length - 0x104];
-
-            for (int i = 0; i < 65535; i++)
-            {
-                payload = incrementAtIndex(payload, 1);
-
-                tmdortik[0x104] = payload[0];
-                tmdortik[0x105] = payload[1];
-
-                for (int x = 0; x < (tmdortik.Length - 0x104); x++)
-                {
-                    hashobject[x] = tmdortik[0x104 + x];
-                }
-
-                if (ComputeSHA(hashobject)[0] == 0x00)
-                {
-                    WriteStatus(" - Successfully Trucha Signed.");
-                    return tmdortik;
-                }
-            }
-
-            WriteStatus(" - Sign FAIL!");
-            return tmdortik;
-        }
-
-        /// <summary>
         /// Increments at an index.
         /// </summary>
         /// <param name="array">The array.</param>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        static public byte[] incrementAtIndex(byte[] array, int index)
+        public static byte[] incrementAtIndex(byte[] array, int index)
         {
             if (array[index] == byte.MaxValue)
             {
@@ -2279,14 +2289,13 @@ namespace NUS_Downloader
             {
                 try
                 {
-                    ToolStripMenuItem menuitem = (ToolStripMenuItem)item;
+                    ToolStripMenuItem menuitem = (ToolStripMenuItem) item;
                     menuitem.DropDown.ShowItemToolTips = false;
                 }
                 catch (Exception)
                 {
                     // Do nothing, some objects will not cast.
                 }
-
             }
         }
 
@@ -2360,7 +2369,6 @@ namespace NUS_Downloader
                 }
             }
             wadnamebox.Text = RemoveIllegalCharacters(wadnamebox.Text);
-            
         }
 
         /// <summary>
@@ -2374,10 +2382,15 @@ namespace NUS_Downloader
             byte[] Ticket = new byte[0x2A4];
 
             // RSA Signature Heading...
-            Ticket[1] = 0x01; Ticket[3] = 0x01;
+            Ticket[1] = 0x01;
+            Ticket[3] = 0x01;
 
             // Signature Issuer... (Root-CA00000001-XS00000003)
-            byte[] SignatureIssuer = new byte[0x1A] { 0x52, 0x6F, 0x6F, 0x74, 0x2D, 0x43, 0x41, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x31, 0x2D, 0x58, 0x53, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x33 };
+            byte[] SignatureIssuer = new byte[0x1A]
+                                         {
+                                             0x52, 0x6F, 0x6F, 0x74, 0x2D, 0x43, 0x41, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
+                                             0x30, 0x31, 0x2D, 0x58, 0x53, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x33
+                                         };
             for (int a = 0; a < 0x40; a++)
             {
                 Ticket[0x140 + a] = SignatureIssuer[a];
@@ -2402,8 +2415,10 @@ namespace NUS_Downloader
             }
 
             // Misc FF...
-            Ticket[0x1E4] = 0xFF; Ticket[0x1E5] = 0xFF;
-            Ticket[0x1E6] = 0xFF; Ticket[0x1E7] = 0xFF;
+            Ticket[0x1E4] = 0xFF;
+            Ticket[0x1E5] = 0xFF;
+            Ticket[0x1E6] = 0xFF;
+            Ticket[0x1E7] = 0xFF;
 
             // Unknown 0x01...
             Ticket[0x221] = 0x01;
@@ -2427,12 +2442,6 @@ namespace NUS_Downloader
             return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
         }
 
-        
-
-        
-
-        
-
         /// <summary>
         /// Pads to multiple of....
         /// </summary>
@@ -2441,16 +2450,11 @@ namespace NUS_Downloader
         /// <returns>Padded byte[]</returns>
         private byte[] PadToMultipleOf(byte[] src, int pad)
         {
-            int len = (src.Length + pad - 1) / pad * pad;
-      
+            int len = (src.Length + pad - 1)/pad*pad;
+
             Array.Resize(ref src, len);
             return src;
         }
-
-
-        
-
-        
 
         /// <summary>
         /// Determines whether OS is win7.
@@ -2467,10 +2471,9 @@ namespace NUS_Downloader
         {
             byte[] resultArray = new byte[arrayLen];
 
-            for(int i = arrayLen - 1 ; i >= 0; i--) 
+            for (int i = arrayLen - 1; i >= 0; i--)
             {
-                resultArray[i] = (byte)((theInt >> (8 * i)) & 0xFF);
-
+                resultArray[i] = (byte) ((theInt >> (8*i)) & 0xFF);
             }
             Array.Reverse(resultArray);
 
@@ -2485,7 +2488,6 @@ namespace NUS_Downloader
             return resultArray;
         }
 
-        
 
         /// <summary>
         /// Does byte[] contain byte[]?
@@ -2494,7 +2496,7 @@ namespace NUS_Downloader
         /// <param name="littleman">Small byte[] which may be in large one.</param>
         /// <returns>messed up int[] with offsets.</returns>
         private int[] ByteArrayContainsByteArray(byte[] bigboy, byte[] littleman)
-        { 
+        {
             // bigboy.Contains(littleman);
             // returns offset          { cnt , ofst };
             int[] offset = new int[5];
@@ -2552,7 +2554,9 @@ namespace NUS_Downloader
                 databasedl.UseDefaultCredentials = true;
             }
 
-            string wiibrewsource = databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database?cachesmash=" + System.DateTime.Now.ToString());
+            string wiibrewsource =
+                databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database?cachesmash=" +
+                                          System.DateTime.Now.ToString());
             //statusbox.Refresh();
 
             // Strip out HTML
@@ -2561,14 +2565,15 @@ namespace NUS_Downloader
             // Shrink to fix only the database
             string startofdatabase = "&lt;database v";
             string endofdatabase = "&lt;/database&gt;";
-            wiibrewsource = wiibrewsource.Substring(wiibrewsource.IndexOf(startofdatabase), wiibrewsource.Length - wiibrewsource.IndexOf(startofdatabase));
+            wiibrewsource = wiibrewsource.Substring(wiibrewsource.IndexOf(startofdatabase),
+                                                    wiibrewsource.Length - wiibrewsource.IndexOf(startofdatabase));
             wiibrewsource = wiibrewsource.Substring(0, wiibrewsource.IndexOf(endofdatabase) + endofdatabase.Length);
 
             // Fix ", <, >, and spaces
-            wiibrewsource = wiibrewsource.Replace("&lt;","<");
-            wiibrewsource = wiibrewsource.Replace("&gt;",">");
-            wiibrewsource = wiibrewsource.Replace("&quot;",'"'.ToString());
-            wiibrewsource = wiibrewsource.Replace("&nbsp;"," "); // Shouldn't occur, but they happen...
+            wiibrewsource = wiibrewsource.Replace("&lt;", "<");
+            wiibrewsource = wiibrewsource.Replace("&gt;", ">");
+            wiibrewsource = wiibrewsource.Replace("&quot;", '"'.ToString());
+            wiibrewsource = wiibrewsource.Replace("&nbsp;", " "); // Shouldn't occur, but they happen...
 
             // Return parsed xml database...
             e.Result = wiibrewsource;
@@ -2576,7 +2581,6 @@ namespace NUS_Downloader
 
         private void RetrieveNewDatabase_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-
             string database = e.Result.ToString();
             string currentversion = GetDatabaseVersion("database.xml");
             string onlineversion = GetDatabaseVersion(database);
@@ -2623,7 +2627,6 @@ namespace NUS_Downloader
             {
                 WriteStatus("Database successfully updated!");
             }
-
         }
 
         private void updateDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2654,7 +2657,9 @@ namespace NUS_Downloader
         /// <returns></returns>
         public string SendSOAPRequest(string soap_xml)
         {
-            System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create("http://nus.shop.wii.com:80/nus/services/NetUpdateSOAP");
+            System.Net.HttpWebRequest req =
+                (System.Net.HttpWebRequest)
+                System.Net.HttpWebRequest.Create("http://nus.shop.wii.com:80/nus/services/NetUpdateSOAP");
             req.Method = "POST";
             req.UserAgent = "wii libnup/1.0";
             req.Headers.Add("SOAPAction", '"' + "urn:nus.wsapi.broadon.com/" + '"');
@@ -2697,7 +2702,7 @@ namespace NUS_Downloader
             try
             {
                 string result;
-                System.Net.HttpWebResponse resp = (System.Net.HttpWebResponse)req.GetResponse();
+                System.Net.HttpWebResponse resp = (System.Net.HttpWebResponse) req.GetResponse();
 
                 using (Stream responseStream = resp.GetResponseStream())
                 {
@@ -2716,7 +2721,6 @@ namespace NUS_Downloader
 
                 return ex.Message.ToString();
             }
-           
         }
 
         private void emulateUpdate_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -2725,7 +2729,7 @@ namespace NUS_Downloader
             statusbox.Text = "";
             WriteStatus("Starting Wii System Update...");
 
-            extrasStrip.Close();        
+            extrasStrip.Close();
 
             string deviceID = "4362227770";
             string messageID = "13198105123219138";
@@ -2743,15 +2747,18 @@ namespace NUS_Downloader
             RegionID: KOR, Country: KO; */
 
             string soap_req = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"" +
-            " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"" +
-            " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
-            "<soapenv:Body>\n<GetSystemUpdateRequest xmlns=\"urn:nus.wsapi.broadon.com\">\n" +
-            "<Version>1.0</Version>\n<MessageId>" + messageID + "</MessageId>\n<DeviceId>" + deviceID + "</DeviceId>\n" +
-            "<RegionId>" + RegionID + "</RegionId>\n<CountryCode>" + CountryCode + "</CountryCode>\n<TitleVersion>\n<TitleId>0000000100000001</TitleId>\n" +
-            "<Version>2</Version>\n</TitleVersion>\n<TitleVersion>\n<TitleId>0000000100000002</TitleId>\n" +
-            "<Version>33</Version>\n</TitleVersion>\n<TitleVersion>\n<TitleId>0000000100000009</TitleId>\n" +
-            "<Version>516</Version>\n</TitleVersion>\n<Attribute>" + attr + "</Attribute>\n<AuditData></AuditData>\n" +
-            "</GetSystemUpdateRequest>\n</soapenv:Body>\n</soapenv:Envelope>";
+                              " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"" +
+                              " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                              "<soapenv:Body>\n<GetSystemUpdateRequest xmlns=\"urn:nus.wsapi.broadon.com\">\n" +
+                              "<Version>1.0</Version>\n<MessageId>" + messageID + "</MessageId>\n<DeviceId>" + deviceID +
+                              "</DeviceId>\n" +
+                              "<RegionId>" + RegionID + "</RegionId>\n<CountryCode>" + CountryCode +
+                              "</CountryCode>\n<TitleVersion>\n<TitleId>0000000100000001</TitleId>\n" +
+                              "<Version>2</Version>\n</TitleVersion>\n<TitleVersion>\n<TitleId>0000000100000002</TitleId>\n" +
+                              "<Version>33</Version>\n</TitleVersion>\n<TitleVersion>\n<TitleId>0000000100000009</TitleId>\n" +
+                              "<Version>516</Version>\n</TitleVersion>\n<Attribute>" + attr +
+                              "</Attribute>\n<AuditData></AuditData>\n" +
+                              "</GetSystemUpdateRequest>\n</soapenv:Body>\n</soapenv:Envelope>";
 
             WriteStatus(" - Sending SOAP Request to NUS...");
             WriteStatus("   - Region: " + RegionID);
@@ -2795,23 +2802,24 @@ namespace NUS_Downloader
                 if ((File.Exists("database.xml") == true) && ((!(String.IsNullOrEmpty(NameFromDatabase(TitleID))))))
                     statusbox.Text += String.Format(" [{0}]", NameFromDatabase(TitleID));
 
-                script_text += String.Format("{0} {1}\n", TitleID, DisplayBytes(NewIntegertoByteArray(Convert.ToInt32(Version), 2), ""));
+                script_text += String.Format("{0} {1}\n", TitleID,
+                                             DisplayBytes(NewIntegertoByteArray(Convert.ToInt32(Version), 2), ""));
             }
 
             WriteStatus(" - Outputting results to NUS script...");
 
             // Current directory...
             string currentdir = Directory.GetCurrentDirectory();
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                currentdir += Path.DirectorySeparatorChar.ToString();
 
-            if (!(Directory.Exists(currentdir + "scripts")))
+            if (!(Directory.Exists(Path.Combine(currentdir, "scripts"))))
             {
-                Directory.CreateDirectory(currentdir + "scripts");
+                Directory.CreateDirectory(Path.Combine(currentdir, "scripts"));
                 WriteStatus("  - Created 'scripts\' directory.");
             }
             string time = RemoveIllegalCharacters(DateTime.Now.ToShortTimeString());
-            File.WriteAllText(String.Format(currentdir + "scripts\\{0}_Update_{1}_{2}_{3} {4}.nus", RegionID, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, time), script_text);
+            File.WriteAllText(
+                String.Format(Path.Combine(currentdir, "scripts\\{0}_Update_{1}_{2}_{3} {4}.nus"), RegionID,
+                              DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, time), script_text);
             WriteStatus(" - Script written!");
             WriteStatus(" - Run this script if you feel like downloading the update!");
         }
@@ -2860,7 +2868,8 @@ namespace NUS_Downloader
                 }
 
             // Search for cert_CA
-            if ((!(tmdortik.Length < 0x400)) && ((Convert.ToBase64String(ComputeSHA(cert_CA)) != Convert.ToBase64String(cert_CA_sha1))))
+            if ((!(tmdortik.Length < 0x400)) &&
+                ((Convert.ToBase64String(ComputeSHA(cert_CA)) != Convert.ToBase64String(cert_CA_sha1))))
             {
                 for (int a = 0; a < (tmdortik.Length - 0x400); a++)
                 {
@@ -2924,7 +2933,7 @@ namespace NUS_Downloader
             xDoc.Load("database.xml");
 
             // Variables
-            string[] XMLNodeTypes = new string[4] { "SYS", "IOS", "VC", "WW" };
+            string[] XMLNodeTypes = new string[4] {"SYS", "IOS", "VC", "WW"};
 
             // Loop through XMLNodeTypes
             for (int i = 0; i < XMLNodeTypes.Length; i++) // FOR THE FOUR TYPES OF NODES
@@ -2945,7 +2954,9 @@ namespace NUS_Downloader
                             case "titleID":
                                 if (ChildrenOfTheNode[z].InnerText == titleid)
                                     found_it = true;
-                                else if ((ChildrenOfTheNode[z].InnerText.Substring(0, 14) + "XX") == (titleid.Substring(0, 14) + "XX") && (titleid.Substring(0, 14) != "00000001000000"))
+                                else if ((ChildrenOfTheNode[z].InnerText.Substring(0, 14) + "XX") ==
+                                         (titleid.Substring(0, 14) + "XX") &&
+                                         (titleid.Substring(0, 14) != "00000001000000"))
                                     found_it = true;
                                 else
                                     found_it = false;
@@ -2955,7 +2966,7 @@ namespace NUS_Downloader
                         }
                     }
 
-                    if (found_it) 
+                    if (found_it)
                     {
                         for (int z = 0; z < ChildrenOfTheNode.Count; z++) // FOR EACH CHILD NODE
                         {
@@ -2979,32 +2990,24 @@ namespace NUS_Downloader
             deletecontentsbox.Enabled = packbox.Enabled;
         }
 
-        private void saveaswadbox_Paint(object sender, PaintEventArgs e)
-        {
-            //e.Graphics.
-            /*Rectangle rect = new Rectangle(0, 0, 16, 16);
-            if (saveaswadbox.Checked)
-                e.Graphics.DrawImageUnscaledAndClipped(green, rect);
-            else
-                e.Graphics.DrawImageUnscaled(orange, -7, -5); */
-        }
-
         private void SaveProxyBtn_Click(object sender, EventArgs e)
         {
             // Current directory...
             string currentdir = Directory.GetCurrentDirectory();
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                currentdir += Path.DirectorySeparatorChar.ToString();
 
-            if ((String.IsNullOrEmpty(ProxyURL.Text)) && (String.IsNullOrEmpty(ProxyUser.Text)) && ((File.Exists(currentdir + "proxy.txt"))))
+            if ((String.IsNullOrEmpty(ProxyURL.Text)) && (String.IsNullOrEmpty(ProxyUser.Text)) &&
+                ((File.Exists(Path.Combine(currentdir, "proxy.txt")))))
             {
-                File.Delete(currentdir + "proxy.txt");
+                File.Delete(Path.Combine(currentdir, "proxy.txt"));
                 proxyBox.Visible = false;
-                proxy_usr = ""; proxy_url = ""; proxy_pwd = "";
+                proxy_usr = "";
+                proxy_url = "";
+                proxy_pwd = "";
                 WriteStatus("Proxy settings deleted!");
                 return;
             }
-            else if ((String.IsNullOrEmpty(ProxyURL.Text)) && (String.IsNullOrEmpty(ProxyUser.Text)) && ((!(File.Exists(currentdir + "proxy.txt")))))
+            else if ((String.IsNullOrEmpty(ProxyURL.Text)) && (String.IsNullOrEmpty(ProxyUser.Text)) &&
+                     ((!(File.Exists(Path.Combine(currentdir, "proxy.txt"))))))
             {
                 proxyBox.Visible = false;
                 WriteStatus("No proxy settings saved!");
@@ -3027,15 +3030,17 @@ namespace NUS_Downloader
 
             if (!(String.IsNullOrEmpty(proxy_file)))
             {
-                File.WriteAllText(currentdir + "proxy.txt", proxy_file);
+                File.WriteAllText(Path.Combine(currentdir, "proxy.txt"), proxy_file);
                 WriteStatus("Proxy settings saved!");
             }
 
             proxyBox.Visible = false;
 
             SetAllEnabled(false);
-            ProxyVerifyBox.Visible = true; ProxyVerifyBox.Enabled = true;
-            ProxyPwdBox.Enabled = true; SaveProxyBtn.Enabled = true;
+            ProxyVerifyBox.Visible = true;
+            ProxyVerifyBox.Enabled = true;
+            ProxyPwdBox.Enabled = true;
+            SaveProxyBtn.Enabled = true;
             ProxyVerifyBox.Select();
         }
 
@@ -3043,14 +3048,12 @@ namespace NUS_Downloader
         {
             // Current directory...
             string currentdir = Directory.GetCurrentDirectory();
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Check for Proxy Settings file...
-            if (File.Exists(currentdir + "proxy.txt") == true)
+            if (File.Exists(Path.Combine(currentdir, "proxy.txt")) == true)
             {
-                string[] proxy_file = File.ReadAllLines(currentdir + "proxy.txt");
-               
+                string[] proxy_file = File.ReadAllLines(Path.Combine(currentdir, "proxy.txt"));
+
                 ProxyURL.Text = proxy_file[0];
                 if (proxy_file.Length > 1)
                 {
@@ -3077,23 +3080,21 @@ namespace NUS_Downloader
         private void ProxyAssistBtn_Click(object sender, EventArgs e)
         {
             MessageBox.Show("If you are behind a proxy, set these settings to get through to NUS." +
-                " If you have an alternate port for accessing your proxy, add ':' followed by the port." +
-                " You will be prompted for your password each time you run NUSD, for privacy purposes.");
+                            " If you have an alternate port for accessing your proxy, add ':' followed by the port." +
+                            " You will be prompted for your password each time you run NUSD, for privacy purposes.");
         }
 
         private void loadNUSScriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Current directory...
             string currentdir = Directory.GetCurrentDirectory();
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Open a NUS script.
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = false;
             ofd.Filter = "NUS Scripts|*.nus|All Files|*.*";
-            if (Directory.Exists(currentdir + "scripts"))
-                ofd.InitialDirectory = currentdir + "scripts";
+            if (Directory.Exists(Path.Combine(currentdir, "scripts")))
+                ofd.InitialDirectory = Path.Combine(currentdir, "scripts");
             ofd.Title = "Load a NUS/Wiimpersonator script.";
 
             if (ofd.ShowDialog() != DialogResult.Cancel)
@@ -3130,14 +3131,20 @@ namespace NUS_Downloader
             for (int a = 0; a < NUS_Entries.Length; a++)
             {
                 // Download the title
-                WriteStatus(String.Format("===== Running Download ({0}/{1}) =====", a+1, NUS_Entries.Length));
+                WriteStatus(String.Format("===== Running Download ({0}/{1}) =====", a + 1, NUS_Entries.Length));
                 string[] title_info = NUS_Entries[a].Split(' ');
                 // don't let the delete issue reappear...
                 if (string.IsNullOrEmpty(title_info[0]))
                     break;
                 titleidbox.Text = title_info[0];
-                titleversion.Text = Convert.ToString(256*(byte.Parse(title_info[1].Substring(0, 2), System.Globalization.NumberStyles.HexNumber)));
-                titleversion.Text = Convert.ToString(Convert.ToInt32(titleversion.Text) + byte.Parse(title_info[1].Substring(2, 2), System.Globalization.NumberStyles.HexNumber));
+                titleversion.Text =
+                    Convert.ToString(256*
+                                     (byte.Parse(title_info[1].Substring(0, 2),
+                                                 System.Globalization.NumberStyles.HexNumber)));
+                titleversion.Text =
+                    Convert.ToString(Convert.ToInt32(titleversion.Text) +
+                                     byte.Parse(title_info[1].Substring(2, 2),
+                                                System.Globalization.NumberStyles.HexNumber));
 
                 button3_Click("Scripter", EventArgs.Empty);
 
@@ -3155,7 +3162,7 @@ namespace NUS_Downloader
         private void getCommonKeyMenuItem_Click(object sender, EventArgs e)
         {
             WriteStatus("Preparing to retrieve common key...");
-            
+
             // Begin the epic grab for freedom
             WebClient databasedl = new WebClient();
             statusbox.Refresh();
@@ -3191,14 +3198,14 @@ namespace NUS_Downloader
 
             // Find our start point
             string startofcommonkey = "Common key (";
-            keyspostsource = keyspostsource.Substring(keyspostsource.IndexOf(startofcommonkey) + startofcommonkey.Length, 32);
+            keyspostsource = keyspostsource.Substring(
+                keyspostsource.IndexOf(startofcommonkey) + startofcommonkey.Length, 32);
             WriteStatus("Got the common key as: " + keyspostsource);
             byte[] commonkey = HexStringToByteArray(keyspostsource);
             if (WriteCommonKey("key.bin", commonkey))
             {
                 BootChecks();
             }
-            
         }
 
         public static string ByteArrayToHexString(byte[] Bytes)
@@ -3208,8 +3215,8 @@ namespace NUS_Downloader
 
             foreach (byte B in Bytes)
             {
-                Result.Append(HexAlphabet[(int)(B >> 4)]);
-                Result.Append(HexAlphabet[(int)(B & 0xF)]);
+                Result.Append(HexAlphabet[(int) (B >> 4)]);
+                Result.Append(HexAlphabet[(int) (B & 0xF)]);
             }
 
             return Result.ToString();
@@ -3217,23 +3224,21 @@ namespace NUS_Downloader
 
         public static byte[] HexStringToByteArray(string Hex)
         {
-            byte[] Bytes = new byte[Hex.Length / 2];
-            int[] HexValue = new int[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
-                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x0B, 0x0C, 0x0D,
-                                 0x0E, 0x0F };
+            byte[] Bytes = new byte[Hex.Length/2];
+            int[] HexValue = new int[]
+                                 {
+                                     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
+                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x0B, 0x0C, 0x0D,
+                                     0x0E, 0x0F
+                                 };
 
             for (int x = 0, i = 0; i < Hex.Length; i += 2, x += 1)
             {
-                Bytes[x] = (byte)(HexValue[Char.ToUpper(Hex[i + 0]) - '0'] << 4 |
-                                  HexValue[Char.ToUpper(Hex[i + 1]) - '0']);
+                Bytes[x] = (byte) (HexValue[Char.ToUpper(Hex[i + 0]) - '0'] << 4 |
+                                   HexValue[Char.ToUpper(Hex[i + 1]) - '0']);
             }
 
             return Bytes;
         }
-
-        
-
-
-
     }
 }
