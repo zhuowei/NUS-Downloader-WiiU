@@ -22,7 +22,7 @@ namespace NUS_Downloader
         private readonly string CURRENT_DIR = Directory.GetCurrentDirectory();
 
         // TODO: Always remember to change version!
-        private string version = "v1.5a Beta";
+        private string version = "v2.0 Beta";
         private WebClient generalWC = new WebClient();
         private static RijndaelManaged rijndaelCipher;
         private static bool dsidecrypt = false;
@@ -31,6 +31,7 @@ namespace NUS_Downloader
         private delegate void AddToolStripItemToStripCallback(
             int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes);
         private delegate void WriteStatusCallback(string Update);
+        private delegate void BootChecksCallback();
 
         // Images do not compare unless globalized...
         private Image green = Properties.Resources.bullet_green;
@@ -174,6 +175,14 @@ namespace NUS_Downloader
         /// <returns></returns>
         private void BootChecks()
         {
+            // Check if correct thread...
+            if (this.InvokeRequired)
+            {
+                Debug.WriteLine("InvokeRequired...");
+                BootChecksCallback bcc = new BootChecksCallback(BootChecks);
+                this.Invoke(bcc);
+                return;
+            }
             // Check for Wii common key bin file...
             if (File.Exists(Path.Combine(CURRENT_DIR, "key.bin")) == false)
             {
@@ -221,9 +230,12 @@ namespace NUS_Downloader
             if (File.Exists(Path.Combine(CURRENT_DIR, "database.xml")) == false)
             {
                 WriteStatus("Database.xml not found. Title database not usable!");
-                databaseButton.Visible = false;
-                Extrasbtn.Size = new System.Drawing.Size(134, 20);
-                updateDatabaseToolStripMenuItem.Text = "Download Database";
+                //databaseButton.Visible = false;
+                //Extrasbtn.Size = new System.Drawing.Size(134, 20);
+                databaseButton.Click -= new System.EventHandler(this.button4_Click);
+                databaseButton.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
+                databaseButton.Text = "Download DB";
+                //updateDatabaseToolStripMenuItem.Text = "Download Database";
             }
             else
             {
@@ -2006,6 +2018,7 @@ namespace NUS_Downloader
         /// </summary>
         private void LoadRegionCodes()
         {
+            // TODO: make this check InvokeRequired...
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load("database.xml");
 
