@@ -1,2 +1,5 @@
 Make more compatible with mono.
 Finish scripting improvements.
+
+Routine:
+Verify version number before releases!
