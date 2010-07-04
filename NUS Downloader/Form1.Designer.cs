@@ -92,7 +92,10 @@
             this.consoleCBox = new System.Windows.Forms.ComboBox();
             this.scriptsbutton = new System.Windows.Forms.Button();
             this.scriptsStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.scriptsLocalMenuEntry = new System.Windows.Forms.ToolStripMenuItem();
+            this.scriptsDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadNUSScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.emulateUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.uSANTSCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.europePALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,8 +104,6 @@
             this.titleversion = new wmgCMS.WaterMarkTextBox();
             this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
-            this.scriptsMainMenuEntry = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -652,13 +653,30 @@
             // scriptsStrip
             // 
             this.scriptsStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.scriptsMainMenuEntry,
+            this.scriptsLocalMenuEntry,
+            this.scriptsDatabaseToolStripMenuItem,
             this.loadNUSScriptToolStripMenuItem,
             this.toolStripSeparator2,
             this.emulateUpdate});
             this.scriptsStrip.Name = "scriptsStrip";
             this.scriptsStrip.ShowItemToolTips = false;
-            this.scriptsStrip.Size = new System.Drawing.Size(220, 76);
+            this.scriptsStrip.Size = new System.Drawing.Size(220, 120);
+            // 
+            // scriptsLocalMenuEntry
+            // 
+            this.scriptsLocalMenuEntry.Enabled = false;
+            this.scriptsLocalMenuEntry.Image = global::NUS_Downloader.Properties.Resources.script_code;
+            this.scriptsLocalMenuEntry.Name = "scriptsLocalMenuEntry";
+            this.scriptsLocalMenuEntry.Size = new System.Drawing.Size(219, 22);
+            this.scriptsLocalMenuEntry.Text = "Scripts (Local)";
+            // 
+            // scriptsDatabaseToolStripMenuItem
+            // 
+            this.scriptsDatabaseToolStripMenuItem.Enabled = false;
+            this.scriptsDatabaseToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_code_red;
+            this.scriptsDatabaseToolStripMenuItem.Name = "scriptsDatabaseToolStripMenuItem";
+            this.scriptsDatabaseToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.scriptsDatabaseToolStripMenuItem.Text = "Scripts (Database)";
             // 
             // loadNUSScriptToolStripMenuItem
             // 
@@ -667,6 +685,11 @@
             this.loadNUSScriptToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
             this.loadNUSScriptToolStripMenuItem.Text = "Load NUS Script";
             this.loadNUSScriptToolStripMenuItem.Click += new System.EventHandler(this.loadNUSScriptToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
             // 
             // emulateUpdate
             // 
@@ -684,25 +707,25 @@
             // uSANTSCToolStripMenuItem
             // 
             this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
-            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.uSANTSCToolStripMenuItem.Text = "USA";
             // 
             // europePALToolStripMenuItem
             // 
             this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
-            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.europePALToolStripMenuItem.Text = "EUROPE";
             // 
             // japanNTSCJToolStripMenuItem
             // 
             this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
-            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.japanNTSCJToolStripMenuItem.Text = "JAPAN";
             // 
             // koreaToolStripMenuItem
             // 
             this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
-            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.koreaToolStripMenuItem.Text = "KOREA";
             // 
             // titleversion
@@ -738,18 +761,6 @@
             this.dlprogress.Name = "dlprogress";
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.TabIndex = 47;
-            // 
-            // scriptsMainMenuEntry
-            // 
-            this.scriptsMainMenuEntry.Enabled = false;
-            this.scriptsMainMenuEntry.Name = "scriptsMainMenuEntry";
-            this.scriptsMainMenuEntry.Size = new System.Drawing.Size(219, 22);
-            this.scriptsMainMenuEntry.Text = "Scripts\\";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
             // 
             // Form1
             // 
@@ -870,8 +881,9 @@
         private System.Windows.Forms.ToolStripMenuItem koreaToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem updateDatabaseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem scriptsMainMenuEntry;
+        private System.Windows.Forms.ToolStripMenuItem scriptsLocalMenuEntry;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem scriptsDatabaseToolStripMenuItem;
     }
 }
 

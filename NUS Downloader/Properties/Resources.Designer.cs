@@ -144,6 +144,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap folder_table {
+            get {
+                object obj = ResourceManager.GetObject("folder_table", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap help {
             get {
                 object obj = ResourceManager.GetObject("help", resourceCulture);
@@ -182,6 +189,20 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap page_white_magnify {
             get {
                 object obj = ResourceManager.GetObject("page_white_magnify", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap script_code {
+            get {
+                object obj = ResourceManager.GetObject("script_code", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap script_code_red {
+            get {
+                object obj = ResourceManager.GetObject("script_code_red", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
