@@ -30,7 +30,7 @@ namespace NUS_Downloader
         private delegate void AddToolStripItemToStripCallback(
             int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes);
 
-        //TODO
+        // TODO
         private delegate void WriteStatusCallback(string Update);
 
         // Images do not compare unless globalized...
@@ -901,30 +901,7 @@ namespace NUS_Downloader
             generalWC.Headers.Add("User-Agent", "wii libnup/1.0");
 
             // Proxy
-            if (!(String.IsNullOrEmpty(proxy_url)))
-            {
-                WebProxy customproxy = new WebProxy();
-                customproxy.Address = new Uri(proxy_url);
-                if (String.IsNullOrEmpty(proxy_usr))
-                    customproxy.UseDefaultCredentials = true;
-                else
-                {
-                    NetworkCredential cred = new NetworkCredential();
-                    cred.UserName = proxy_usr;
-
-                    if (!(String.IsNullOrEmpty(proxy_pwd)))
-                        cred.Password = proxy_pwd;
-
-                    customproxy.Credentials = cred;
-                }
-                generalWC.Proxy = customproxy;
-                WriteStatus("Custom proxy settings applied!");
-            }
-            else
-            {
-                generalWC.Proxy = WebRequest.GetSystemWebProxy();
-                generalWC.UseDefaultCredentials = true;
-            }
+            generalWC = ConfigureWithProxy(generalWC);
 
             // Get placement directory early...
             string titledirectory;
@@ -1477,25 +1454,25 @@ namespace NUS_Downloader
             WriteStatus("This application created by WB3000");
             WriteStatus("Various sections contributed by lukegb");
             WriteStatus("");
+
             string currentdir = Directory.GetCurrentDirectory();
-            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
-                currentdir += Path.DirectorySeparatorChar.ToString();
-            if (File.Exists(currentdir + "key.bin") == false)
+            
+            if (File.Exists(Path.Combine(currentdir, "key.bin")) == false)
                 WriteStatus("Wii Decryption: Need (key.bin)");
             else
                 WriteStatus("Wii Decryption: OK");
 
-            if (File.Exists(currentdir + "kkey.bin") == false)
+            if (File.Exists(Path.Combine(currentdir, "kkey.bin")) == false)
                 WriteStatus("Wii Korea Decryption: Need (kkey.bin)");
             else
                 WriteStatus("Wii Korea Decryption: OK");
 
-            if (File.Exists(currentdir + "dsikey.bin") == false)
+            if (File.Exists(Path.Combine(currentdir, "dsikey.bin")) == false)
                 WriteStatus("DSi Decryption: Need (dsikey.bin)");
             else
                 WriteStatus("DSi Decryption: OK");
 
-            if (File.Exists(currentdir + "database.xml") == false)
+            if (File.Exists(Path.Combine(currentdir, "database.xml")) == false)
                 WriteStatus("Database: Need (database.xml)");
             else
                 WriteStatus("Database: OK");
@@ -1647,14 +1624,11 @@ namespace NUS_Downloader
         {
             // Directory stuff
             string currentdir = Directory.GetCurrentDirectory();
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) ||
-                !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                currentdir += Path.DirectorySeparatorChar.ToString();
 
-            if (File.Exists(currentdir + keyfile) == true)
+            if (File.Exists(Path.Combine(currentdir, keyfile)) == true)
             {
                 // Read common key byte[]
-                return FileLocationToByteArray(currentdir + keyfile);
+                return FileLocationToByteArray(Path.Combine(currentdir, keyfile));
             }
             else
                 return null;
@@ -1670,8 +1644,6 @@ namespace NUS_Downloader
         {
             // Directory stuff
             string currentdir = Directory.GetCurrentDirectory();
-            //if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-            //currentdir += Path.DirectorySeparatorChar.ToString();
 
             if (File.Exists(Path.Combine(currentdir, keyfile)) == true)
             {
@@ -1722,12 +1694,22 @@ namespace NUS_Downloader
         }
 
         /// <summary>
-        /// Fills the database strip.
+        /// Fills the database strip with the local database.xml file.
         /// </summary>
         private void FillDatabaseStrip(BackgroundWorker worker)
         {
+            // Load database.xml into memorystream to perhaps reduce disk reads?
+            string currentdir = Directory.GetCurrentDirectory();
+            string databasestr = File.ReadAllText(Path.Combine(currentdir, "database.xml"));
+            System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+            byte[] databasebytes = encoding.GetBytes(databasestr);
+
+            // Load the memory stream
+            MemoryStream databaseStream = new MemoryStream(databasebytes);
+            databaseStream.Seek(0, SeekOrigin.Begin);
+
             XmlDocument xDoc = new XmlDocument();
-            xDoc.Load("database.xml");
+            xDoc.Load(databaseStream);
 
             // Variables
             string[] XMLNodeTypes = new string[5] {"SYS", "IOS", "VC", "WW", "UPD"};
@@ -2448,7 +2430,7 @@ namespace NUS_Downloader
         /// <param name="src">The binary.</param>
         /// <param name="pad">The pad amount.</param>
         /// <returns>Padded byte[]</returns>
-        private byte[] PadToMultipleOf(byte[] src, int pad)
+        private static byte[] PadToMultipleOf(byte[] src, int pad)
         {
             int len = (src.Length + pad - 1)/pad*pad;
 
@@ -2462,7 +2444,7 @@ namespace NUS_Downloader
         /// <returns>
         /// 	<c>true</c> if OS = win7; otherwise, <c>false</c>.
         /// </returns>
-        private bool IsWin7()
+        private static bool IsWin7()
         {
             return (Environment.OSVersion.VersionString.Contains("6.1") == true);
         }
@@ -2518,16 +2500,8 @@ namespace NUS_Downloader
             return offset;
         }
 
-        /// <summary>
-        /// Retrieves the new database via WiiBrew.
-        /// </summary>
-        /// <returns>Database as a String</returns>
-        private void RetrieveNewDatabase(object sender, DoWorkEventArgs e)
+        private WebClient ConfigureWithProxy(WebClient client)
         {
-            // Retrieve Wiibrew database page source code
-            WebClient databasedl = new WebClient();
-            //statusbox.Refresh();
-
             // Proxy
             if (!(String.IsNullOrEmpty(proxy_url)))
             {
@@ -2545,19 +2519,32 @@ namespace NUS_Downloader
 
                     customproxy.Credentials = cred;
                 }
-                databasedl.Proxy = customproxy;
+                client.Proxy = customproxy;
                 WriteStatus("  - Custom proxy settings applied!");
             }
             else
             {
-                databasedl.Proxy = WebRequest.GetSystemWebProxy();
-                databasedl.UseDefaultCredentials = true;
+                client.Proxy = WebRequest.GetSystemWebProxy();
+                client.UseDefaultCredentials = true;
             }
+            return client;
+        }
+
+        /// <summary>
+        /// Retrieves the new database via WiiBrew.
+        /// </summary>
+        /// <returns>Database as a String</returns>
+        private void RetrieveNewDatabase(object sender, DoWorkEventArgs e)
+        {
+            // Retrieve Wiibrew database page source code
+            WebClient databasedl = new WebClient();
+
+            // Proxy
+            databasedl = ConfigureWithProxy(databasedl);
 
             string wiibrewsource =
                 databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database?cachesmash=" +
                                           System.DateTime.Now.ToString());
-            //statusbox.Refresh();
 
             // Strip out HTML
             wiibrewsource = Regex.Replace(wiibrewsource, @"<(.|\n)*?>", "");
@@ -3168,30 +3155,7 @@ namespace NUS_Downloader
             statusbox.Refresh();
 
             // Proxy
-            if (!(String.IsNullOrEmpty(proxy_url)))
-            {
-                WebProxy customproxy = new WebProxy();
-                customproxy.Address = new Uri(proxy_url);
-                if (String.IsNullOrEmpty(proxy_usr))
-                    customproxy.UseDefaultCredentials = true;
-                else
-                {
-                    NetworkCredential cred = new NetworkCredential();
-                    cred.UserName = proxy_usr;
-
-                    if (!(String.IsNullOrEmpty(proxy_pwd)))
-                        cred.Password = proxy_pwd;
-
-                    customproxy.Credentials = cred;
-                }
-                databasedl.Proxy = customproxy;
-                WriteStatus("  - Custom proxy settings applied!");
-            }
-            else
-            {
-                databasedl.Proxy = WebRequest.GetSystemWebProxy();
-                databasedl.UseDefaultCredentials = true;
-            }
+            databasedl = ConfigureWithProxy(databasedl);
 
             string keyspostsource = databasedl.DownloadString("http://hackmii.com/2008/04/keys-keys-keys/");
             statusbox.Refresh();
