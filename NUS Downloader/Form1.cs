@@ -22,7 +22,7 @@ namespace NUS_Downloader
         const string DSiNUSURL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
 
         // TODO: Always remember to change version!
-        string version = "v1.5a (Beta)";
+        string version = "v1.5a Beta";
         WebClient generalWC = new WebClient();
         static RijndaelManaged rijndaelCipher;
         static bool dsidecrypt = false;
@@ -228,11 +228,11 @@ namespace NUS_Downloader
             // Directory stuff
             string currentdir = Directory.GetCurrentDirectory();
 
-            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
-                currentdir += Path.DirectorySeparatorChar.ToString();
+            //if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
+                //currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Check for Wii common key bin file...
-            if (File.Exists(currentdir + "key.bin") == false)
+            if (File.Exists(Path.Combine(currentdir, "key.bin")) == false)
             {
                 WriteStatus("Common Key (key.bin) missing! Decryption disabled!");
                 WriteStatus(" - To enable it, why not try choosing \"Retrieve Common Key\" from the Extras menu?");
@@ -250,33 +250,33 @@ namespace NUS_Downloader
                     {
                         WriteStatus(" - Converting your key.bin file to the correct format...");
                         // Directory stuff
-                        string keydir = Directory.GetCurrentDirectory();
-                        if (!(keydir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(keydir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                            keydir += Path.DirectorySeparatorChar.ToString();
-                        TextReader ckreader = new StreamReader(currentdir + "key.bin");
+                        //string keydir = Directory.GetCurrentDirectory();
+                        //if (!(keydir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(keydir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                            //keydir += Path.DirectorySeparatorChar.ToString();
+                        TextReader ckreader = new StreamReader(Path.Combine(currentdir, "key.bin"));
                         String ckashex = ckreader.ReadLine();
                         ckreader.Close();
-                        File.Delete(currentdir + "key.bin");
+                        File.Delete(Path.Combine(currentdir, "key.bin"));
                         WriteCommonKey("key.bin", HexStringToByteArray(ckashex));
                     }
                 }
             }
 
             // Check for Wii KOR common key bin file...
-            if (File.Exists(currentdir + "kkey.bin") == true)
+            if (File.Exists(Path.Combine(currentdir, "kkey.bin")) == true)
             {
                 WriteStatus("Korean Common Key detected.");
             }
 
             // Check for DSi common key bin file...
-            if (File.Exists(currentdir + "dsikey.bin") == true)
+            if (File.Exists(Path.Combine(currentdir, "dsikey.bin")) == true)
             {
                 WriteStatus("DSi Common Key detected.");
                 dsidecrypt = true;
             }
 
             // Check for database.xml
-            if (File.Exists(currentdir + "database.xml") == false)
+            if (File.Exists(Path.Combine(currentdir, "database.xml")) == false)
             {
                 WriteStatus("Database.xml not found. Title database not usable!");
                 databaseButton.Visible = false;
@@ -295,10 +295,10 @@ namespace NUS_Downloader
             }
 
             // Check for Proxy Settings file...
-            if (File.Exists(currentdir + "proxy.txt") == true)
+            if (File.Exists(Path.Combine(currentdir, "proxy.txt")) == true)
             {
                 WriteStatus("Proxy settings detected.");
-                string[] proxy_file = File.ReadAllLines(currentdir + "proxy.txt");
+                string[] proxy_file = File.ReadAllLines(Path.Combine(currentdir, "proxy.txt"));
                 proxy_url = proxy_file[0];
                 if (proxy_file.Length > 1)
                 {
@@ -1616,24 +1616,24 @@ namespace NUS_Downloader
         {
             // Directory stuff
             string currentdir = Directory.GetCurrentDirectory();
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                currentdir += Path.DirectorySeparatorChar.ToString();
+            //if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
+                //currentdir += Path.DirectorySeparatorChar.ToString();
 
-            if (File.Exists(currentdir + keyfile) == true)
+            if (File.Exists(Path.Combine(currentdir, keyfile)) == true)
             {
                 WriteStatus("Overwriting old key.bin...");
             }
             try
             {
-                FileStream fs = File.OpenWrite(currentdir + keyfile);
+                FileStream fs = File.OpenWrite(Path.Combine(currentdir, keyfile));
                 fs.Write(commonkey, 0, commonkey.Length);
                 fs.Close();
-                WriteStatus("key.bin written - reloading...");
+                WriteStatus("key.bin written - Reloading...");
                 return true;
             }
             catch (IOException e)
             {
-                WriteStatus("Error: couldn't write key.bin: " + e.Message);
+                WriteStatus("Error: Couldn't write key.bin: " + e.Message);
             }
             return false;
         }
@@ -1947,12 +1947,25 @@ namespace NUS_Downloader
         /// <param name="titlename">The titlename.</param>
         public void OfficialWADNaming(string titlename)
         {
-            if (titlename.Contains("IOS"))
+            if (titlename == "MIOS")
+                wadnamebox.Text = "RVL-mios-[v].wad";
+            else if (titlename.Contains("IOS"))
                 wadnamebox.Text = titlename + "-64-[v].wad";
             else if (titlename.Contains("System Menu"))
                 wadnamebox.Text = "RVL-WiiSystemmenu-[v].wad";
+            else if (titlename.Contains("System Menu"))
+                wadnamebox.Text = "RVL-WiiSystemmenu-[v].wad";
+            else if (titlename == "BC")
+                wadnamebox.Text = "RVL-bc-[v].wad";
+            else if (titlename.Contains("Mii Channel"))
+                wadnamebox.Text = "RVL-NigaoeNR-[v].wad";
+            else if (titlename.Contains("Shopping Channel"))
+                wadnamebox.Text = "RVL-Shopping-[v].wad";
+            else if (titlename.Contains("Weather Channel"))
+                wadnamebox.Text = "RVL-Weather-[v].wad";
             else
                 wadnamebox.Text = titlename + "-NUS-[v].wad";
+
             if (titleversion.Text != "")
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
         }
