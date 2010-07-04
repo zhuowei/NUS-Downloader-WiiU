@@ -129,7 +129,7 @@ namespace NUS_Downloader
                 return;
             }
 
-            FileStream wadfs = new FileStream((Directory + FileName), FileMode.Create);
+            FileStream wadfs = new FileStream(Path.Combine(Directory, FileName), FileMode.Create);
 
             // Seek the beginning of the WAD...
             wadfs.Seek(0, SeekOrigin.Begin);

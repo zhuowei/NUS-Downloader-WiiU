@@ -65,25 +65,17 @@
             this.PALMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.NTSCMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.KoreaMassUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.updateDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button3 = new System.Windows.Forms.Button();
             this.extrasStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loadInfoFromTMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.emulateUpdate = new System.Windows.Forms.ToolStripMenuItem();
-            this.uSANTSCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.europePALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.japanNTSCJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.koreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.proxySettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.loadNUSScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.getCommonKeyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.commonKeykeybinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.koreanKeykkeybinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.updateDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveaswadbox = new System.Windows.Forms.CheckBox();
             this.deletecontentsbox = new System.Windows.Forms.CheckBox();
             this.proxyBox = new System.Windows.Forms.GroupBox();
@@ -100,13 +92,22 @@
             this.consoleCBox = new System.Windows.Forms.ComboBox();
             this.scriptsbutton = new System.Windows.Forms.Button();
             this.scriptsStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.loadNUSScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.emulateUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.uSANTSCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.europePALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.japanNTSCJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.koreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.titleversion = new wmgCMS.WaterMarkTextBox();
             this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
+            this.scriptsMainMenuEntry = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
             this.ProxyVerifyBox.SuspendLayout();
+            this.scriptsStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // Extrasbtn
@@ -242,10 +243,12 @@
             this.WiiWareMenuList,
             this.toolStripSeparator1,
             this.RegionCodesList,
-            this.MassUpdateList});
+            this.MassUpdateList,
+            this.toolStripSeparator4,
+            this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(167, 142);
+            this.databaseStrip.Size = new System.Drawing.Size(167, 170);
             // 
             // SystemMenuList
             // 
@@ -397,6 +400,19 @@
             this.KoreaMassUpdate.Size = new System.Drawing.Size(104, 22);
             this.KoreaMassUpdate.Text = "Korea";
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(163, 6);
+            // 
+            // updateDatabaseToolStripMenuItem
+            // 
+            this.updateDatabaseToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.database_save;
+            this.updateDatabaseToolStripMenuItem.Name = "updateDatabaseToolStripMenuItem";
+            this.updateDatabaseToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.updateDatabaseToolStripMenuItem.Text = "Update Database";
+            this.updateDatabaseToolStripMenuItem.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
+            // 
             // button3
             // 
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -414,98 +430,37 @@
             this.extrasStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadInfoFromTMDToolStripMenuItem,
             this.toolStripSeparator3,
-            this.emulateUpdate,
-            this.toolStripSeparator4,
             this.proxySettingsToolStripMenuItem,
             this.toolStripSeparator6,
-            this.loadNUSScriptToolStripMenuItem,
-            this.toolStripSeparator7,
-            this.getCommonKeyMenuItem,
-            this.toolStripSeparator2,
-            this.updateDatabaseToolStripMenuItem});
+            this.getCommonKeyMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(220, 166);
+            this.extrasStrip.Size = new System.Drawing.Size(183, 82);
             // 
             // loadInfoFromTMDToolStripMenuItem
             // 
             this.loadInfoFromTMDToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.page_white_magnify;
             this.loadInfoFromTMDToolStripMenuItem.Name = "loadInfoFromTMDToolStripMenuItem";
-            this.loadInfoFromTMDToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.loadInfoFromTMDToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.loadInfoFromTMDToolStripMenuItem.Text = "Load Info from TMD";
             this.loadInfoFromTMDToolStripMenuItem.Click += new System.EventHandler(this.loadInfoFromTMDToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(216, 6);
-            // 
-            // emulateUpdate
-            // 
-            this.emulateUpdate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uSANTSCToolStripMenuItem,
-            this.europePALToolStripMenuItem,
-            this.japanNTSCJToolStripMenuItem,
-            this.koreaToolStripMenuItem});
-            this.emulateUpdate.Image = global::NUS_Downloader.Properties.Resources.server_connect;
-            this.emulateUpdate.Name = "emulateUpdate";
-            this.emulateUpdate.Size = new System.Drawing.Size(219, 22);
-            this.emulateUpdate.Text = "Emulate Wii System Update";
-            this.emulateUpdate.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.emulateUpdate_DropDownItemClicked);
-            // 
-            // uSANTSCToolStripMenuItem
-            // 
-            this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
-            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.uSANTSCToolStripMenuItem.Text = "USA";
-            // 
-            // europePALToolStripMenuItem
-            // 
-            this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
-            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.europePALToolStripMenuItem.Text = "EUROPE";
-            // 
-            // japanNTSCJToolStripMenuItem
-            // 
-            this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
-            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.japanNTSCJToolStripMenuItem.Text = "JAPAN";
-            // 
-            // koreaToolStripMenuItem
-            // 
-            this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
-            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.koreaToolStripMenuItem.Text = "KOREA";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(179, 6);
             // 
             // proxySettingsToolStripMenuItem
             // 
             this.proxySettingsToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.server_link;
             this.proxySettingsToolStripMenuItem.Name = "proxySettingsToolStripMenuItem";
-            this.proxySettingsToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.proxySettingsToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.proxySettingsToolStripMenuItem.Text = "Proxy Settings";
             this.proxySettingsToolStripMenuItem.Click += new System.EventHandler(this.proxySettingsToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(216, 6);
-            // 
-            // loadNUSScriptToolStripMenuItem
-            // 
-            this.loadNUSScriptToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_go;
-            this.loadNUSScriptToolStripMenuItem.Name = "loadNUSScriptToolStripMenuItem";
-            this.loadNUSScriptToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
-            this.loadNUSScriptToolStripMenuItem.Text = "Load NUS Script";
-            this.loadNUSScriptToolStripMenuItem.Click += new System.EventHandler(this.loadNUSScriptToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(179, 6);
             // 
             // getCommonKeyMenuItem
             // 
@@ -514,7 +469,7 @@
             this.koreanKeykkeybinToolStripMenuItem});
             this.getCommonKeyMenuItem.Image = global::NUS_Downloader.Properties.Resources.key;
             this.getCommonKeyMenuItem.Name = "getCommonKeyMenuItem";
-            this.getCommonKeyMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.getCommonKeyMenuItem.Size = new System.Drawing.Size(182, 22);
             this.getCommonKeyMenuItem.Text = "Retrieve Key";
             // 
             // commonKeykeybinToolStripMenuItem
@@ -530,19 +485,6 @@
             this.koreanKeykkeybinToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.koreanKeykkeybinToolStripMenuItem.Text = "Korean Key (kkey.bin)";
             this.koreanKeykkeybinToolStripMenuItem.Click += new System.EventHandler(this.koreanKeykkeybinToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
-            // 
-            // updateDatabaseToolStripMenuItem
-            // 
-            this.updateDatabaseToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.database_save;
-            this.updateDatabaseToolStripMenuItem.Name = "updateDatabaseToolStripMenuItem";
-            this.updateDatabaseToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
-            this.updateDatabaseToolStripMenuItem.Text = "Update Database";
-            this.updateDatabaseToolStripMenuItem.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
             // 
             // saveaswadbox
             // 
@@ -709,9 +651,59 @@
             // 
             // scriptsStrip
             // 
+            this.scriptsStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.scriptsMainMenuEntry,
+            this.loadNUSScriptToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.emulateUpdate});
             this.scriptsStrip.Name = "scriptsStrip";
             this.scriptsStrip.ShowItemToolTips = false;
-            this.scriptsStrip.Size = new System.Drawing.Size(61, 4);
+            this.scriptsStrip.Size = new System.Drawing.Size(220, 76);
+            // 
+            // loadNUSScriptToolStripMenuItem
+            // 
+            this.loadNUSScriptToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_go;
+            this.loadNUSScriptToolStripMenuItem.Name = "loadNUSScriptToolStripMenuItem";
+            this.loadNUSScriptToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.loadNUSScriptToolStripMenuItem.Text = "Load NUS Script";
+            this.loadNUSScriptToolStripMenuItem.Click += new System.EventHandler(this.loadNUSScriptToolStripMenuItem_Click);
+            // 
+            // emulateUpdate
+            // 
+            this.emulateUpdate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uSANTSCToolStripMenuItem,
+            this.europePALToolStripMenuItem,
+            this.japanNTSCJToolStripMenuItem,
+            this.koreaToolStripMenuItem});
+            this.emulateUpdate.Image = global::NUS_Downloader.Properties.Resources.server_connect;
+            this.emulateUpdate.Name = "emulateUpdate";
+            this.emulateUpdate.Size = new System.Drawing.Size(219, 22);
+            this.emulateUpdate.Text = "Emulate Wii System Update";
+            this.emulateUpdate.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.emulateUpdate_DropDownItemClicked);
+            // 
+            // uSANTSCToolStripMenuItem
+            // 
+            this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
+            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.uSANTSCToolStripMenuItem.Text = "USA";
+            // 
+            // europePALToolStripMenuItem
+            // 
+            this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
+            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.europePALToolStripMenuItem.Text = "EUROPE";
+            // 
+            // japanNTSCJToolStripMenuItem
+            // 
+            this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
+            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.japanNTSCJToolStripMenuItem.Text = "JAPAN";
+            // 
+            // koreaToolStripMenuItem
+            // 
+            this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
+            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.koreaToolStripMenuItem.Text = "KOREA";
             // 
             // titleversion
             // 
@@ -746,6 +738,18 @@
             this.dlprogress.Name = "dlprogress";
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.TabIndex = 47;
+            // 
+            // scriptsMainMenuEntry
+            // 
+            this.scriptsMainMenuEntry.Enabled = false;
+            this.scriptsMainMenuEntry.Name = "scriptsMainMenuEntry";
+            this.scriptsMainMenuEntry.Size = new System.Drawing.Size(219, 22);
+            this.scriptsMainMenuEntry.Text = "Scripts\\";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
             // 
             // Form1
             // 
@@ -787,6 +791,7 @@
             this.proxyBox.PerformLayout();
             this.ProxyVerifyBox.ResumeLayout(false);
             this.ProxyVerifyBox.PerformLayout();
+            this.scriptsStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -828,14 +833,8 @@
         private System.Windows.Forms.ContextMenuStrip extrasStrip;
         private System.Windows.Forms.ToolStripMenuItem loadInfoFromTMDToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem emulateUpdate;
-        private System.Windows.Forms.ToolStripMenuItem uSANTSCToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem europePALToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem japanNTSCJToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem koreaToolStripMenuItem;
         private System.Windows.Forms.CheckBox saveaswadbox;
         private System.Windows.Forms.CheckBox deletecontentsbox;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem proxySettingsToolStripMenuItem;
         private System.Windows.Forms.GroupBox proxyBox;
         private System.Windows.Forms.TextBox ProxyUser;
@@ -850,11 +849,7 @@
         private System.Windows.Forms.TextBox ProxyPwdBox;
         private wyDay.Controls.Windows7ProgressBar dlprogress;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripMenuItem loadNUSScriptToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem getCommonKeyMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem updateDatabaseToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip C64MenuListDrop;
         private System.Windows.Forms.ToolStripMenuItem MassUpdateList;
         private System.Windows.Forms.ToolStripMenuItem PALMassUpdate;
@@ -867,6 +862,16 @@
         private wmgCMS.WaterMarkTextBox titleversion;
         private System.Windows.Forms.Button scriptsbutton;
         private System.Windows.Forms.ContextMenuStrip scriptsStrip;
+        private System.Windows.Forms.ToolStripMenuItem loadNUSScriptToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem emulateUpdate;
+        private System.Windows.Forms.ToolStripMenuItem uSANTSCToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem europePALToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem japanNTSCJToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem koreaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem updateDatabaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem scriptsMainMenuEntry;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 

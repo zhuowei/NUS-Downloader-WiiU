@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Threading;
 using System.Text;
-using wyDay.Controls;
 using System.Diagnostics;
 
 
@@ -19,6 +18,8 @@ namespace NUS_Downloader
     {
         private const string WII_NUS_URL = "http://nus.cdn.shop.wii.com/ccs/download/";
         private const string DSI_NUS_URL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
+
+        private readonly string CURRENT_DIR = Directory.GetCurrentDirectory();
 
         // TODO: Always remember to change version!
         private string version = "v1.5a Beta";
@@ -158,93 +159,11 @@ namespace NUS_Downloader
                 scripter.DoWork += new DoWorkEventHandler(RunScript);
                 scripter.RunWorkerAsync();
             }
-
-
-            /*  CLI MODE DEPRECATED...
-            // Vars
-            bool startnow = false;
-            bool endafter = false;
-
-            // Fix'd
-            localuse.Checked = false;
-
-            // Switch through arguments
-            for (int i = 0; i < args.Length; i++)
-            {
-                switch (args[i])
-                {
-                    case "-t":
-                        if (args[i + 1].Length == 16)
-                            titleidbox.Text = args[i + 1];
-                        else
-                        {
-                            WriteStatus("Title ID: Your Doing It Wrong (c)");
-                            WriteStatus("ex: -t 0000000100000002");
-                        }
-                        break;
-                    case "-v":
-                        titleversion.Text = args[i + 1];
-                        break;
-                    case "-s":
-                        startnow = true;
-                        break;
-                    case "-close":
-                        endafter = true;
-                        break;
-                    case "-d":
-                        decryptbox.Checked = true;
-                        break;
-                    case "-ticket":
-                        ignoreticket.Checked = true;
-                        break;
-                    case "-local":
-                        localuse.Checked = true;
-                        break;
-                    case "-p":
-                        packbox.Checked = true;
-                        wadnamebox.Text = args[i + 1];
-                        break;
-                    case "-dsi":
-                        radioButton2.Checked = true;
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            // Start doing stuff...
-            if ((startnow) && (titleidbox.Text.Length != 0))
-            {
-                // Prevent mass deletion
-                if ((titleidbox.Text == "") && (titleversion.Text == ""))
-                {
-                    WriteStatus("Please enter SOME info...");
-                    return;
-                }
-                else
-                {
-                    if (!statusbox.Lines[0].StartsWith(" ---"))
-                        statusbox.Text = " --- " + titleidbox.Text + " ---";
-                }
-
-                // Running Downloads in background so no form freezing
-                NUSDownloader.RunWorkerAsync();
-            }
-
-            // Close if specified
-            while (NUSDownloader.IsBusy)
-            {
-                Thread.Sleep(1000);
-            }
-            if ((NUSDownloader.IsBusy == false) && (endafter == true))
-            {
-                Application.Exit();
-            } */
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.Text = "NUSD - " + version + " - WB3000";
+            this.Text = String.Format("NUSD - {0} - WB3000", version); ;
             this.Size = this.MinimumSize;
             consoleCBox.SelectedIndex = 0;
         }
@@ -255,14 +174,8 @@ namespace NUS_Downloader
         /// <returns></returns>
         private void BootChecks()
         {
-            // Directory stuff
-            string currentdir = Directory.GetCurrentDirectory();
-
-            //if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
-            //currentdir += Path.DirectorySeparatorChar.ToString();
-
             // Check for Wii common key bin file...
-            if (File.Exists(Path.Combine(currentdir, "key.bin")) == false)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "key.bin")) == false)
             {
                 WriteStatus("Common Key (key.bin) missing! Decryption disabled!");
                 WriteStatus(" - Try: Extras -> Retrieve Key -> Common Key");
@@ -282,34 +195,30 @@ namespace NUS_Downloader
                     else
                     {
                         WriteStatus(" - Converting your key.bin file to the correct format...");
-                        // Directory stuff
-                        //string keydir = Directory.GetCurrentDirectory();
-                        //if (!(keydir.EndsWith(Path.DirectorySeparatorChar.ToString())) || !(keydir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                        //keydir += Path.DirectorySeparatorChar.ToString();
-                        TextReader ckreader = new StreamReader(Path.Combine(currentdir, "key.bin"));
+                        TextReader ckreader = new StreamReader(Path.Combine(CURRENT_DIR, "key.bin"));
                         String ckashex = ckreader.ReadLine();
                         ckreader.Close();
-                        File.Delete(Path.Combine(currentdir, "key.bin"));
+                        File.Delete(Path.Combine(CURRENT_DIR, "key.bin"));
                         WriteCommonKey("key.bin", HexStringToByteArray(ckashex));
                     }
                 }
             }
 
             // Check for Wii KOR common key bin file...
-            if (File.Exists(Path.Combine(currentdir, "kkey.bin")) == true)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "kkey.bin")) == true)
             {
                 WriteStatus("Korean Common Key detected.");
             }
 
             // Check for DSi common key bin file...
-            if (File.Exists(Path.Combine(currentdir, "dsikey.bin")) == true)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "dsikey.bin")) == true)
             {
                 WriteStatus("DSi Common Key detected.");
                 dsidecrypt = true;
             }
 
             // Check for database.xml
-            if (File.Exists(Path.Combine(currentdir, "database.xml")) == false)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "database.xml")) == false)
             {
                 WriteStatus("Database.xml not found. Title database not usable!");
                 databaseButton.Visible = false;
@@ -329,10 +238,10 @@ namespace NUS_Downloader
             }
 
             // Check for Proxy Settings file...
-            if (File.Exists(Path.Combine(currentdir, "proxy.txt")) == true)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "proxy.txt")) == true)
             {
                 WriteStatus("Proxy settings detected.");
-                string[] proxy_file = File.ReadAllLines(Path.Combine(currentdir, "proxy.txt"));
+                string[] proxy_file = File.ReadAllLines(Path.Combine(CURRENT_DIR, "proxy.txt"));
                 proxy_url = proxy_file[0];
                 if (proxy_file.Length > 1)
                 {
@@ -880,13 +789,6 @@ namespace NUS_Downloader
             SetEnableforDownload(false);
             downloadstartbtn.Text = "Starting NUS Download!";
 
-            // Current directory...
-            string currentdir = Directory.GetCurrentDirectory();
-
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) ||
-                !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                currentdir += Path.DirectorySeparatorChar.ToString();
-
             // Prevent crossthread issues
             string titleid = titleidbox.Text;
 
@@ -905,9 +807,9 @@ namespace NUS_Downloader
             // Get placement directory early...
             string titledirectory;
             if (titleversion.Text == "")
-                titledirectory = currentdir + titleid + Path.DirectorySeparatorChar.ToString();
+                titledirectory = Path.Combine(CURRENT_DIR, titleid);
             else
-                titledirectory = currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString();
+                titledirectory = Path.Combine(CURRENT_DIR, (titleid + "v" + titleversion.Text));
 
             downloadstartbtn.Text = "Prerequisites: (0/2)";
 
@@ -975,7 +877,7 @@ namespace NUS_Downloader
             if (ticket_exists)
             {
                 // Create ticket file holder
-                cetkbuf = FileLocationToByteArray(titledirectory + Path.DirectorySeparatorChar.ToString() + @"cetk");
+                cetkbuf = FileLocationToByteArray(Path.Combine(titledirectory, "cetk"));
 
                 // Obtain TitleKey
                 titlekey = new byte[16];
@@ -1004,15 +906,15 @@ namespace NUS_Downloader
                     if (cetkbuf[0x01F1] == 0x01)
                     {
                         WriteStatus("Key Type: Korean");
-                        keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"kkey.bin");
+                        keyBytes = LoadCommonKey("kkey.bin");
                     }
                     else
                     {
                         WriteStatus("Key Type: Standard");
                         if (wiimode)
-                            keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"key.bin");
+                            keyBytes = LoadCommonKey("key.bin");
                         else
-                            keyBytes = LoadCommonKey(Path.DirectorySeparatorChar.ToString() + @"dsikey.bin");
+                            keyBytes = LoadCommonKey("dsikey.bin");
                     }
 
                     initCrypt(iv, keyBytes);
@@ -1023,7 +925,7 @@ namespace NUS_Downloader
             }
 
             // Read the tmd as a stream...
-            byte[] tmd = FileLocationToByteArray(titledirectory + tmdfull);
+            byte[] tmd = FileLocationToByteArray(Path.Combine(titledirectory, tmdfull));
 
             if (ticket_exists == true)
             {
@@ -1053,10 +955,10 @@ namespace NUS_Downloader
                 WriteStatus("Requires: IOS" + sysversion);
 
             // Renaming would be ideal, but gives too many permission errors...
-            /*if ((currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString()) != titledirectory)
+            /*if ((CURRENT_DIR + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString()) != titledirectory)
  	        {
- 	                Directory.Move(titledirectory, currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
- 	                titledirectory = currentdir + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString();
+ 	                Directory.Move(titledirectory, CURRENT_DIR + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
+ 	                titledirectory = CURRENT_DIR + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString();
             } */
 
             // Read Content #...
@@ -1089,7 +991,7 @@ namespace NUS_Downloader
                 try
                 {
                     // If it exists we leave it...
-                    if ((localuse.Checked) && (File.Exists(titledirectory + tmdcontents[i])))
+                    if ((localuse.Checked) && (File.Exists(Path.Combine(titledirectory, tmdcontents[i]))))
                     {
                         WriteStatus("Leaving local " + tmdcontents[i] + ".");
                     }
@@ -1112,8 +1014,7 @@ namespace NUS_Downloader
                 }
 
                 // Progress reporting advances...
-                downloadstartbtn.Text = "Content: (" + (i + 1) + Path.AltDirectorySeparatorChar.ToString() +
-                                        contentstrnum + ")";
+                downloadstartbtn.Text = String.Format("Content: ({0} / {1})", (i + 1), contentstrnum);
                 currentcontentlocation += int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber);
 
                 // Decrypt stuff...
@@ -1121,7 +1022,7 @@ namespace NUS_Downloader
                 {
                     // Create content file holder
                     byte[] contbuf =
-                        FileLocationToByteArray(titledirectory + Path.DirectorySeparatorChar.ToString() + tmdcontents[i]);
+                        FileLocationToByteArray(Path.Combine(titledirectory, tmdcontents[i]));
 
                     // IV (00+IDX+more000)
                     byte[] iv = new byte[16];
@@ -1142,7 +1043,7 @@ namespace NUS_Downloader
 
                     FileStream decfs =
                         new FileStream(
-                            titledirectory + Path.DirectorySeparatorChar.ToString() + tmdcontents[i] + ".app",
+                            Path.Combine(titledirectory, (tmdcontents[i] + ".app")),
                             FileMode.Create);
                     decfs.Write(Decrypt(contbuf), 0, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber));
                     decfs.Close();
@@ -1194,19 +1095,12 @@ namespace NUS_Downloader
         /// </summary>
         private void CreateTitleDirectory()
         {
-            // Creates the directory for the downloaded title...
-            string currentdir = Directory.GetCurrentDirectory();
-            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
-                currentdir += Path.DirectorySeparatorChar.ToString();
-
             // Get placement directory early...
             string titledirectory;
             if (titleversion.Text == "")
-                titledirectory = Path.Combine(currentdir, titleidbox.Text + Path.DirectorySeparatorChar.ToString());
+                titledirectory = Path.Combine(CURRENT_DIR, titleidbox.Text);
             else
-                titledirectory = Path.Combine(currentdir,
-                                              titleidbox.Text + "v" + titleversion.Text +
-                                              Path.DirectorySeparatorChar.ToString());
+                titledirectory = Path.Combine(CURRENT_DIR, (titleidbox.Text + "v" + titleversion.Text));
 
             // Keep local directory if present and checked out...
             if ((localuse.Checked) && (Directory.Exists(titledirectory)))
@@ -1227,23 +1121,15 @@ namespace NUS_Downloader
         /// </summary>
         private void DeleteTitleDirectory()
         {
-            string currentdir = Directory.GetCurrentDirectory();
-            if (currentdir.EndsWith(Convert.ToString(Path.DirectorySeparatorChar.ToString())) == false)
-                currentdir += Path.DirectorySeparatorChar.ToString();
-
             // Get placement directory early...
             string titledirectory;
             if (titleversion.Text == "")
-                titledirectory = Path.Combine(currentdir, titleidbox.Text + Path.DirectorySeparatorChar.ToString());
+                titledirectory = Path.Combine(CURRENT_DIR, titleidbox.Text);
             else
-                titledirectory = Path.Combine(currentdir,
-                                              titleidbox.Text + "v" + titleversion.Text +
-                                              Path.DirectorySeparatorChar.ToString());
+                titledirectory = Path.Combine(CURRENT_DIR, (titleidbox.Text + "v" + titleversion.Text));
 
             if (Directory.Exists(titledirectory))
                 Directory.Delete(titledirectory, true);
-
-            //Directory.CreateDirectory(currentdir + titleidbox.Text);
         }
 
         /// <summary>
@@ -1260,9 +1146,9 @@ namespace NUS_Downloader
             // Create NUS URL...
             string nusfileurl;
             if (iswiititle)
-                nusfileurl = WII_NUS_URL + titleid + Path.AltDirectorySeparatorChar.ToString() + filename;
+                nusfileurl = CombinePaths(WII_NUS_URL, titleid, filename);
             else
-                nusfileurl = DSI_NUS_URL + titleid + Path.AltDirectorySeparatorChar.ToString() + filename;
+                nusfileurl = CombinePaths(DSI_NUS_URL, titleid, filename);
 
             WriteStatus("Grabbing " + filename + "...");
 
@@ -1271,7 +1157,7 @@ namespace NUS_Downloader
                 statusbox.Text += " (" + Convert.ToString(sizeinbytes) + " bytes)";
 
             // Download NUS file...
-            generalWC.DownloadFile(nusfileurl, placementdir + filename);
+            generalWC.DownloadFile(nusfileurl, Path.Combine(placementdir, filename));
         }
 
         private void StatusChange(string status)
@@ -1288,12 +1174,6 @@ namespace NUS_Downloader
         public void PackWAD(string titleid, string tmdfilename, string totaldirectory)
         {
             WriteStatus("Beginning WAD Pack...");
-
-            // Obtain Current Directory
-            string currentdir = Directory.GetCurrentDirectory();
-            if (!(currentdir.EndsWith(Path.DirectorySeparatorChar.ToString())) ||
-                !(currentdir.EndsWith(Path.AltDirectorySeparatorChar.ToString())))
-                currentdir += Path.DirectorySeparatorChar.ToString();
 
             // Create instance of WAD Packing class
             WADPacker packer = new WADPacker();
@@ -1320,8 +1200,8 @@ namespace NUS_Downloader
             packer.Certs = certsbuf;
 
             // Read TMD/TIK into Packer.
-            packer.Ticket = FileLocationToByteArray(totaldirectory + Path.DirectorySeparatorChar.ToString() + @"cetk");
-            packer.TMD = FileLocationToByteArray(totaldirectory + Path.DirectorySeparatorChar.ToString() + tmdfilename);
+            packer.Ticket = FileLocationToByteArray(Path.Combine(totaldirectory, "cetk"));
+            packer.TMD = FileLocationToByteArray(Path.Combine(totaldirectory, tmdfilename));
 
             // Get the TMD variables in here instead...
             int contentcount = ContentCount(packer.TMD);
@@ -1340,8 +1220,7 @@ namespace NUS_Downloader
             }
             else
             {
-                string wad_filename = totaldirectory + Path.DirectorySeparatorChar.ToString() +
-                                      RemoveIllegalCharacters(wadnamebox.Text);
+                string wad_filename = Path.Combine(totaldirectory, RemoveIllegalCharacters(wadnamebox.Text));
                 packer.Directory = totaldirectory;
                 packer.FileName = System.IO.Path.GetFileName(wad_filename);
             }
@@ -1350,7 +1229,7 @@ namespace NUS_Downloader
             byte[][] contents_array = new byte[contentcount][];
             for (int a = 0; a < contentcount; a++)
             {
-                contents_array[a] = FileLocationToByteArray(totaldirectory + contentnames[a]);
+                contents_array[a] = FileLocationToByteArray(Path.Combine(totaldirectory, contentnames[a]));
             }
             packer.Contents = contents_array;
 
@@ -1361,10 +1240,10 @@ namespace NUS_Downloader
             if (deletecontentsbox.Checked)
             {
                 WriteStatus("Deleting contents...");
-                File.Delete(totaldirectory + Path.DirectorySeparatorChar.ToString() + tmdfilename);
-                File.Delete(totaldirectory + Path.DirectorySeparatorChar.ToString() + @"cetk");
+                File.Delete(Path.Combine(totaldirectory, tmdfilename));
+                File.Delete(Path.Combine(totaldirectory, "cetk"));
                 for (int a = 0; a < contentnames.Length; a++)
-                    File.Delete(totaldirectory + Path.DirectorySeparatorChar.ToString() + contentnames[a]);
+                    File.Delete(Path.Combine(totaldirectory, contentnames[a]));
                 WriteStatus(" - Contents have been deleted.");
                 string[] leftovers = Directory.GetFiles(totaldirectory);
                 if (leftovers.Length <= 0)
@@ -1375,48 +1254,6 @@ namespace NUS_Downloader
                 WriteStatus("All deletion completed.");
             }
         }
-
-        /*
-        /// <summary>
-        /// Returns next 0x40 padded length.
-        /// </summary>
-        /// <param name="currentlength">The currentlength.</param>
-        /// <returns></returns>
-        private long ByteBoundary(int currentlength)
-        {
-            // Gets the next 0x40 offset.
-            long thelength = currentlength - 1;
-            long remainder = 1;
-
-            while (remainder != 0)
-            {
-                thelength += 1;
-                remainder = thelength%0x40;
-            }
-
-            //WriteStatus("Initial Size: " + currentlength);
-            //WriteStatus("0x40 Size: " + thelength);
-
-            return (long) thelength;
-        }
-
-        /// <summary>
-        /// Int -> Byte[] (OLD)
-        /// </summary>
-        /// <param name="inte">The int.</param>
-        /// <param name="arraysize">The array length.</param>
-        /// <returns></returns>
-        private byte[] InttoByteArray(int inte, int arraysize)
-        {
-            // Take integer and make into byte array
-            byte[] b = new byte[arraysize];
-            b = BitConverter.GetBytes(inte);
-
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(b);
-
-            return b;
-        }*/
 
         private void consoleCBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1453,25 +1290,23 @@ namespace NUS_Downloader
             WriteStatus("This application created by WB3000");
             WriteStatus("Various sections contributed by lukegb");
             WriteStatus("");
-
-            string currentdir = Directory.GetCurrentDirectory();
             
-            if (File.Exists(Path.Combine(currentdir, "key.bin")) == false)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "key.bin")) == false)
                 WriteStatus("Wii Decryption: Need (key.bin)");
             else
                 WriteStatus("Wii Decryption: OK");
 
-            if (File.Exists(Path.Combine(currentdir, "kkey.bin")) == false)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "kkey.bin")) == false)
                 WriteStatus("Wii Korea Decryption: Need (kkey.bin)");
             else
                 WriteStatus("Wii Korea Decryption: OK");
 
-            if (File.Exists(Path.Combine(currentdir, "dsikey.bin")) == false)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "dsikey.bin")) == false)
                 WriteStatus("DSi Decryption: Need (dsikey.bin)");
             else
                 WriteStatus("DSi Decryption: OK");
 
-            if (File.Exists(Path.Combine(currentdir, "database.xml")) == false)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "database.xml")) == false)
                 WriteStatus("Database: Need (database.xml)");
             else
                 WriteStatus("Database: OK");
@@ -1621,13 +1456,10 @@ namespace NUS_Downloader
         /// <returns></returns>
         public byte[] LoadCommonKey(string keyfile)
         {
-            // Directory stuff
-            string currentdir = Directory.GetCurrentDirectory();
-
-            if (File.Exists(Path.Combine(currentdir, keyfile)) == true)
+            if (File.Exists(Path.Combine(CURRENT_DIR, keyfile)) == true)
             {
                 // Read common key byte[]
-                return FileLocationToByteArray(Path.Combine(currentdir, keyfile));
+                return FileLocationToByteArray(Path.Combine(CURRENT_DIR, keyfile));
             }
             else
                 return null;
@@ -1641,16 +1473,13 @@ namespace NUS_Downloader
         /// <returns></returns>
         public bool WriteCommonKey(string keyfile, byte[] commonkey)
         {
-            // Directory stuff
-            string currentdir = Directory.GetCurrentDirectory();
-
-            if (File.Exists(Path.Combine(currentdir, keyfile)) == true)
+            if (File.Exists(Path.Combine(CURRENT_DIR, keyfile)) == true)
             {
                 WriteStatus(String.Format("Overwriting old {0}...", keyfile));
             }
             try
             {
-                FileStream fs = File.OpenWrite(Path.Combine(currentdir, keyfile));
+                FileStream fs = File.OpenWrite(Path.Combine(CURRENT_DIR, keyfile));
                 fs.Write(commonkey, 0, commonkey.Length);
                 fs.Close();
                 WriteStatus(String.Format("{0} written - Reloading...", keyfile));
@@ -1698,8 +1527,7 @@ namespace NUS_Downloader
         private void FillDatabaseStrip(BackgroundWorker worker)
         {
             // Load database.xml into memorystream to perhaps reduce disk reads?
-            string currentdir = Directory.GetCurrentDirectory();
-            string databasestr = File.ReadAllText(Path.Combine(currentdir, "database.xml"));
+            string databasestr = File.ReadAllText(Path.Combine(CURRENT_DIR, "database.xml"));
             System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
             byte[] databasebytes = encoding.GetBytes(databasestr);
 
@@ -2711,7 +2539,7 @@ namespace NUS_Downloader
             statusbox.Text = "";
             WriteStatus("Starting Wii System Update...");
 
-            extrasStrip.Close();
+            scriptsStrip.Close();
 
             string deviceID = "4362227770";
             string messageID = "13198105123219138";
@@ -2790,17 +2618,14 @@ namespace NUS_Downloader
 
             WriteStatus(" - Outputting results to NUS script...");
 
-            // Current directory...
-            string currentdir = Directory.GetCurrentDirectory();
-
-            if (!(Directory.Exists(Path.Combine(currentdir, "scripts"))))
+            if (!(Directory.Exists(Path.Combine(CURRENT_DIR, "scripts"))))
             {
-                Directory.CreateDirectory(Path.Combine(currentdir, "scripts"));
+                Directory.CreateDirectory(Path.Combine(CURRENT_DIR, "scripts"));
                 WriteStatus("  - Created 'scripts\' directory.");
             }
             string time = RemoveIllegalCharacters(DateTime.Now.ToShortTimeString());
             File.WriteAllText(
-                String.Format(Path.Combine(currentdir, "scripts\\{0}_Update_{1}_{2}_{3} {4}.nus"), RegionID,
+                String.Format(Path.Combine(CURRENT_DIR, "scripts\\{0}_Update_{1}_{2}_{3} {4}.nus"), RegionID,
                               DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, time), script_text);
             WriteStatus(" - Script written!");
             WriteStatus(" - Run this script if you feel like downloading the update!");
@@ -2974,13 +2799,10 @@ namespace NUS_Downloader
 
         private void SaveProxyBtn_Click(object sender, EventArgs e)
         {
-            // Current directory...
-            string currentdir = Directory.GetCurrentDirectory();
-
             if ((String.IsNullOrEmpty(ProxyURL.Text)) && (String.IsNullOrEmpty(ProxyUser.Text)) &&
-                ((File.Exists(Path.Combine(currentdir, "proxy.txt")))))
+                ((File.Exists(Path.Combine(CURRENT_DIR, "proxy.txt")))))
             {
-                File.Delete(Path.Combine(currentdir, "proxy.txt"));
+                File.Delete(Path.Combine(CURRENT_DIR, "proxy.txt"));
                 proxyBox.Visible = false;
                 proxy_usr = "";
                 proxy_url = "";
@@ -2989,7 +2811,7 @@ namespace NUS_Downloader
                 return;
             }
             else if ((String.IsNullOrEmpty(ProxyURL.Text)) && (String.IsNullOrEmpty(ProxyUser.Text)) &&
-                     ((!(File.Exists(Path.Combine(currentdir, "proxy.txt"))))))
+                     ((!(File.Exists(Path.Combine(CURRENT_DIR, "proxy.txt"))))))
             {
                 proxyBox.Visible = false;
                 WriteStatus("No proxy settings saved!");
@@ -3012,7 +2834,7 @@ namespace NUS_Downloader
 
             if (!(String.IsNullOrEmpty(proxy_file)))
             {
-                File.WriteAllText(Path.Combine(currentdir, "proxy.txt"), proxy_file);
+                File.WriteAllText(Path.Combine(CURRENT_DIR, "proxy.txt"), proxy_file);
                 WriteStatus("Proxy settings saved!");
             }
 
@@ -3028,13 +2850,10 @@ namespace NUS_Downloader
 
         private void proxySettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Current directory...
-            string currentdir = Directory.GetCurrentDirectory();
-
             // Check for Proxy Settings file...
-            if (File.Exists(Path.Combine(currentdir, "proxy.txt")) == true)
+            if (File.Exists(Path.Combine(CURRENT_DIR, "proxy.txt")) == true)
             {
-                string[] proxy_file = File.ReadAllLines(Path.Combine(currentdir, "proxy.txt"));
+                string[] proxy_file = File.ReadAllLines(Path.Combine(CURRENT_DIR, "proxy.txt"));
 
                 ProxyURL.Text = proxy_file[0];
                 if (proxy_file.Length > 1)
@@ -3068,15 +2887,12 @@ namespace NUS_Downloader
 
         private void loadNUSScriptToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Current directory...
-            string currentdir = Directory.GetCurrentDirectory();
-
             // Open a NUS script.
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = false;
             ofd.Filter = "NUS Scripts|*.nus|All Files|*.*";
-            if (Directory.Exists(Path.Combine(currentdir, "scripts")))
-                ofd.InitialDirectory = Path.Combine(currentdir, "scripts");
+            if (Directory.Exists(Path.Combine(CURRENT_DIR, "scripts")))
+                ofd.InitialDirectory = Path.Combine(CURRENT_DIR, "scripts");
             ofd.Title = "Load a NUS/Wiimpersonator script.";
 
             if (ofd.ShowDialog() != DialogResult.Cancel)
@@ -3234,6 +3050,17 @@ namespace NUS_Downloader
                 WriteCommonKey("kkey.bin", commonkey);
             }
         }
+
+        string CombinePaths(params string[] parts)
+        {
+            string result = String.Empty;
+            foreach (string s in parts)
+            {
+                result = Path.Combine(result, s);
+            }
+            return result;
+        }
+
 
         private void scriptsbutton_Click(object sender, EventArgs e)
         {
