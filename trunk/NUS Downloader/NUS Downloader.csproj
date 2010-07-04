@@ -107,6 +107,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="WADPacker.cs" />
+    <Compile Include="WaterMarkTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Windows7ProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>

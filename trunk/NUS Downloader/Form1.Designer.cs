@@ -31,15 +31,12 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.Extrasbtn = new System.Windows.Forms.Button();
-            this.titleidbox = new System.Windows.Forms.TextBox();
             this.downloadstartbtn = new System.Windows.Forms.Button();
             this.statusbox = new System.Windows.Forms.TextBox();
             this.packbox = new System.Windows.Forms.CheckBox();
             this.localuse = new System.Windows.Forms.CheckBox();
             this.NUSDownloader = new System.ComponentModel.BackgroundWorker();
-            this.titleversion = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.wadnamebox = new System.Windows.Forms.TextBox();
             this.ignoreticket = new System.Windows.Forms.CheckBox();
@@ -101,6 +98,10 @@
             this.label14 = new System.Windows.Forms.Label();
             this.ProxyPwdBox = new System.Windows.Forms.TextBox();
             this.consoleCBox = new System.Windows.Forms.ComboBox();
+            this.scriptsbutton = new System.Windows.Forms.Button();
+            this.scriptsStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.titleversion = new wmgCMS.WaterMarkTextBox();
+            this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
@@ -111,24 +112,13 @@
             // Extrasbtn
             // 
             this.Extrasbtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.Extrasbtn.Location = new System.Drawing.Point(125, 12);
+            this.Extrasbtn.Location = new System.Drawing.Point(194, 5);
             this.Extrasbtn.Name = "Extrasbtn";
-            this.Extrasbtn.Size = new System.Drawing.Size(55, 20);
+            this.Extrasbtn.Size = new System.Drawing.Size(68, 27);
             this.Extrasbtn.TabIndex = 0;
             this.Extrasbtn.Text = "Extras...";
             this.Extrasbtn.UseVisualStyleBackColor = true;
             this.Extrasbtn.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // titleidbox
-            // 
-            this.titleidbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.titleidbox.Location = new System.Drawing.Point(12, 38);
-            this.titleidbox.MaxLength = 16;
-            this.titleidbox.Name = "titleidbox";
-            this.titleidbox.Size = new System.Drawing.Size(176, 20);
-            this.titleidbox.TabIndex = 2;
-            this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titleidbox.TextChanged += new System.EventHandler(this.titleidbox_TextChanged);
             // 
             // downloadstartbtn
             // 
@@ -180,17 +170,6 @@
             // 
             this.NUSDownloader.DoWork += new System.ComponentModel.DoWorkEventHandler(this.NUSDownloader_DoWork);
             // 
-            // titleversion
-            // 
-            this.titleversion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.titleversion.Location = new System.Drawing.Point(204, 38);
-            this.titleversion.MaxLength = 8;
-            this.titleversion.Name = "titleversion";
-            this.titleversion.Size = new System.Drawing.Size(58, 20);
-            this.titleversion.TabIndex = 3;
-            this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titleversion.TextChanged += new System.EventHandler(this.titleversion_TextChanged);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -200,16 +179,6 @@
             this.label1.Size = new System.Drawing.Size(13, 13);
             this.label1.TabIndex = 10;
             this.label1.Text = "v";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Location = new System.Drawing.Point(9, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(113, 13);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Enter a Title ID Below:";
             // 
             // button2
             // 
@@ -256,9 +225,9 @@
             // databaseButton
             // 
             this.databaseButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.databaseButton.Location = new System.Drawing.Point(186, 12);
+            this.databaseButton.Location = new System.Drawing.Point(12, 5);
             this.databaseButton.Name = "databaseButton";
-            this.databaseButton.Size = new System.Drawing.Size(76, 20);
+            this.databaseButton.Size = new System.Drawing.Size(85, 27);
             this.databaseButton.TabIndex = 20;
             this.databaseButton.Text = "Database...";
             this.databaseButton.UseVisualStyleBackColor = true;
@@ -455,7 +424,7 @@
             this.toolStripSeparator2,
             this.updateDatabaseToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(220, 188);
+            this.extrasStrip.Size = new System.Drawing.Size(220, 166);
             // 
             // loadInfoFromTMDToolStripMenuItem
             // 
@@ -727,6 +696,49 @@
             this.consoleCBox.TabIndex = 48;
             this.consoleCBox.SelectedIndexChanged += new System.EventHandler(this.consoleCBox_SelectedIndexChanged);
             // 
+            // scriptsbutton
+            // 
+            this.scriptsbutton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.scriptsbutton.Location = new System.Drawing.Point(103, 5);
+            this.scriptsbutton.Name = "scriptsbutton";
+            this.scriptsbutton.Size = new System.Drawing.Size(85, 27);
+            this.scriptsbutton.TabIndex = 51;
+            this.scriptsbutton.Text = "Scripts...";
+            this.scriptsbutton.UseVisualStyleBackColor = true;
+            this.scriptsbutton.Click += new System.EventHandler(this.scriptsbutton_Click);
+            // 
+            // scriptsStrip
+            // 
+            this.scriptsStrip.Name = "scriptsStrip";
+            this.scriptsStrip.ShowItemToolTips = false;
+            this.scriptsStrip.Size = new System.Drawing.Size(61, 4);
+            // 
+            // titleversion
+            // 
+            this.titleversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.titleversion.Location = new System.Drawing.Point(204, 38);
+            this.titleversion.MaxLength = 8;
+            this.titleversion.Name = "titleversion";
+            this.titleversion.Size = new System.Drawing.Size(58, 20);
+            this.titleversion.TabIndex = 50;
+            this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titleversion.WaterMarkColor = System.Drawing.Color.Silver;
+            this.titleversion.WaterMarkText = "Version";
+            this.titleversion.TextChanged += new System.EventHandler(this.titleversion_TextChanged);
+            // 
+            // titleidbox
+            // 
+            this.titleidbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.titleidbox.Location = new System.Drawing.Point(12, 38);
+            this.titleidbox.MaxLength = 16;
+            this.titleidbox.Name = "titleidbox";
+            this.titleidbox.Size = new System.Drawing.Size(176, 20);
+            this.titleidbox.TabIndex = 49;
+            this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titleidbox.WaterMarkColor = System.Drawing.Color.Silver;
+            this.titleidbox.WaterMarkText = "Title ID";
+            this.titleidbox.TextChanged += new System.EventHandler(this.titleidbox_TextChanged);
+            // 
             // dlprogress
             // 
             this.dlprogress.ContainerControl = this;
@@ -740,27 +752,27 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(274, 492);
+            this.Controls.Add(this.scriptsbutton);
+            this.Controls.Add(this.titleversion);
+            this.Controls.Add(this.titleidbox);
             this.Controls.Add(this.dlprogress);
             this.Controls.Add(this.consoleCBox);
             this.Controls.Add(this.deletecontentsbox);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.ProxyVerifyBox);
             this.Controls.Add(this.saveaswadbox);
-            this.Controls.Add(this.databaseButton);
             this.Controls.Add(this.proxyBox);
             this.Controls.Add(this.wadnamebox);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.titleversion);
             this.Controls.Add(this.button2);
+            this.Controls.Add(this.databaseButton);
             this.Controls.Add(this.decryptbox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.packbox);
             this.Controls.Add(this.statusbox);
             this.Controls.Add(this.ignoreticket);
             this.Controls.Add(this.downloadstartbtn);
-            this.Controls.Add(this.titleidbox);
-            this.Controls.Add(this.Extrasbtn);
             this.Controls.Add(this.localuse);
+            this.Controls.Add(this.Extrasbtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -783,15 +795,12 @@
         #endregion
 
         private System.Windows.Forms.Button Extrasbtn;
-        private System.Windows.Forms.TextBox titleidbox;
         private System.Windows.Forms.Button downloadstartbtn;
         private System.Windows.Forms.TextBox statusbox;
         private System.Windows.Forms.CheckBox packbox;
         private System.Windows.Forms.CheckBox localuse;
         private System.ComponentModel.BackgroundWorker NUSDownloader;
-        private System.Windows.Forms.TextBox titleversion;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox wadnamebox;
         private System.Windows.Forms.CheckBox ignoreticket;
@@ -854,6 +863,10 @@
         private System.Windows.Forms.ComboBox consoleCBox;
         private System.Windows.Forms.ToolStripMenuItem commonKeykeybinToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem koreanKeykkeybinToolStripMenuItem;
+        private wmgCMS.WaterMarkTextBox titleidbox;
+        private wmgCMS.WaterMarkTextBox titleversion;
+        private System.Windows.Forms.Button scriptsbutton;
+        private System.Windows.Forms.ContextMenuStrip scriptsStrip;
     }
 }
 

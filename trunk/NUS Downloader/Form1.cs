@@ -3234,5 +3234,11 @@ namespace NUS_Downloader
                 WriteCommonKey("kkey.bin", commonkey);
             }
         }
+
+        private void scriptsbutton_Click(object sender, EventArgs e)
+        {
+            // Show scripts menu
+            scriptsStrip.Show(scriptsbutton, 2, 2);
+        }
     }
 }
