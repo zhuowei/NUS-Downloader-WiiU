@@ -124,7 +124,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="direction_down.ico" />
+    <None Include="Resources\script_code_red.png" />
+    <None Include="Resources\script_code.png" />
     <None Include="Resources\database_save.png" />
+    <None Include="Resources\folder_table.png" />
     <Content Include="Resources\key.png" />
     <None Include="Resources\page_white_magnify.png" />
     <None Include="Resources\server_link.png" />

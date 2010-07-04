@@ -84,6 +84,9 @@ namespace NUS_Downloader
         // Database thread
         private BackgroundWorker fds;
 
+        // Scripts Thread
+        private BackgroundWorker scriptsWorker;
+
         // Common Key hash
         private byte[] wii_commonkey_sha1 = new byte[20]
                                                 {
@@ -132,11 +135,20 @@ namespace NUS_Downloader
             KoreaMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             NTSCMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             PALMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
+
+            // Database BGLoader
             this.fds = new BackgroundWorker();
             this.fds.DoWork += new DoWorkEventHandler(DoAllDatabaseyStuff);
             this.fds.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DoAllDatabaseyStuff_Completed);
             this.fds.ProgressChanged += new ProgressChangedEventHandler(DoAllDatabaseyStuff_ProgressChanged);
             this.fds.WorkerReportsProgress = true;
+
+            // Scripts BGLoader
+            this.scriptsWorker = new BackgroundWorker();
+            this.scriptsWorker.DoWork += new DoWorkEventHandler(OrganizeScripts);
+            this.scriptsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(scriptsWorker_RunWorkerCompleted);
+            RunScriptOrganizer();
+
             BootChecks();
         }
 
@@ -169,22 +181,31 @@ namespace NUS_Downloader
             consoleCBox.SelectedIndex = 0;
         }
 
+        private bool NUSDFileExists(string filename)
+        {
+            if (File.Exists(Path.Combine(CURRENT_DIR, filename)))
+                return true;
+            else
+                return false;
+        }
+
         /// <summary>
         /// Checks certain file existances, etc.
         /// </summary>
         /// <returns></returns>
         private void BootChecks()
         {
-            // Check if correct thread...
+            /* Check if correct thread...
             if (this.InvokeRequired)
             {
                 Debug.WriteLine("InvokeRequired...");
                 BootChecksCallback bcc = new BootChecksCallback(BootChecks);
                 this.Invoke(bcc);
                 return;
-            }
+            }*/
+
             // Check for Wii common key bin file...
-            if (File.Exists(Path.Combine(CURRENT_DIR, "key.bin")) == false)
+            if (NUSDFileExists("key.bin") == false)
             {
                 WriteStatus("Common Key (key.bin) missing! Decryption disabled!");
                 WriteStatus(" - Try: Extras -> Retrieve Key -> Common Key");
@@ -214,43 +235,43 @@ namespace NUS_Downloader
             }
 
             // Check for Wii KOR common key bin file...
-            if (File.Exists(Path.Combine(CURRENT_DIR, "kkey.bin")) == true)
+            if (NUSDFileExists("kkey.bin") == true)
             {
                 WriteStatus("Korean Common Key detected.");
             }
 
             // Check for DSi common key bin file...
-            if (File.Exists(Path.Combine(CURRENT_DIR, "dsikey.bin")) == true)
+            if (NUSDFileExists("dsikey.bin") == true)
             {
                 WriteStatus("DSi Common Key detected.");
                 dsidecrypt = true;
             }
 
             // Check for database.xml
-            if (File.Exists(Path.Combine(CURRENT_DIR, "database.xml")) == false)
+            if (NUSDFileExists("database.xml") == false)
             {
                 WriteStatus("Database.xml not found. Title database not usable!");
-                //databaseButton.Visible = false;
-                //Extrasbtn.Size = new System.Drawing.Size(134, 20);
-                databaseButton.Click -= new System.EventHandler(this.button4_Click);
+                /*databaseButton.Click -= new System.EventHandler(this.button4_Click);
                 databaseButton.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
-                databaseButton.Text = "Download DB";
-                //updateDatabaseToolStripMenuItem.Text = "Download Database";
+                databaseButton.Text = "Download DB"; */
+                DatabaseEnabled(false);
+                updateDatabaseToolStripMenuItem.Enabled = true;
+                updateDatabaseToolStripMenuItem.Text = "Download Database";
             }
             else
             {
                 string version = GetDatabaseVersion("database.xml");
                 WriteStatus("Database.xml detected.");
                 WriteStatus(" - Version: " + version);
+                updateDatabaseToolStripMenuItem.Text = "Update Database";
                 databaseButton.Enabled = false;
                 databaseButton.Text = "DB Loading";
-                updateDatabaseToolStripMenuItem.Text = "Update Database";
                 // Load it up...
                 this.fds.RunWorkerAsync();
             }
 
             // Check for Proxy Settings file...
-            if (File.Exists(Path.Combine(CURRENT_DIR, "proxy.txt")) == true)
+            if (NUSDFileExists("proxy.txt") == true)
             {
                 WriteStatus("Proxy settings detected.");
                 string[] proxy_file = File.ReadAllLines(Path.Combine(CURRENT_DIR, "proxy.txt"));
@@ -286,6 +307,12 @@ namespace NUS_Downloader
         private void DoAllDatabaseyStuff_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
             this.databaseButton.Text = "DB: " + e.ProgressPercentage + "%";
+        }
+
+        private void RunScriptOrganizer()
+        {
+            this.scriptsWorker.RunWorkerAsync();
+            scriptsLocalMenuEntry.Enabled = true;
         }
 
         private void SetAllEnabled(bool enabled)
@@ -2447,7 +2474,6 @@ namespace NUS_Downloader
                 WriteStatus("Database successfully created!");
                 databaseButton.Visible = true;
                 databaseButton.Enabled = false;
-                Extrasbtn.Size = new System.Drawing.Size(55, 20);
                 updateDatabaseToolStripMenuItem.Text = "Download Database";
             }
             else
@@ -3079,6 +3105,46 @@ namespace NUS_Downloader
         {
             // Show scripts menu
             scriptsStrip.Show(scriptsbutton, 2, 2);
+        }
+
+        private void DatabaseEnabled(bool enabled)
+        {
+            for (int a = 0; a < databaseStrip.Items.Count; a++)
+            {
+                databaseStrip.Items[a].Enabled = false;
+            }
+        }
+
+        void scriptsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //throw new NotImplementedException();
+        }
+
+        void OrganizeScripts(object sender, DoWorkEventArgs e)
+        {
+            //throw new NotImplementedException();
+            foreach (string directory in Directory.GetDirectories(Path.Combine(CURRENT_DIR, "scripts"), "*", SearchOption.TopDirectoryOnly))
+            {
+                if (Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly).Length > 0)
+                {
+                    DirectoryInfo dinfo = new DirectoryInfo(directory);
+                    ToolStripMenuItem folder_item = new ToolStripMenuItem();
+                    folder_item.Text = dinfo.Name + Path.DirectorySeparatorChar;
+                    folder_item.Image = Properties.Resources.folder_table;
+                    
+
+                    foreach (string nusscript in Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly))
+                    {
+                        FileInfo finfo = new FileInfo(nusscript);
+                        ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
+                        nus_script_item.Text = finfo.Name;
+                        nus_script_item.Image = Properties.Resources.script_go;
+                        folder_item.DropDownItems.Add(nus_script_item);
+                    }
+
+                    scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
+                }
+            }
         }
     }
 }
