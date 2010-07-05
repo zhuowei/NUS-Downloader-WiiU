@@ -176,17 +176,14 @@ namespace NUS_Downloader
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.Text = String.Format("NUSD - {0} - WB3000", version); ;
+            this.Text = String.Format("NUSD - {0}", version); ;
             this.Size = this.MinimumSize;
             consoleCBox.SelectedIndex = 0;
         }
 
         private bool NUSDFileExists(string filename)
         {
-            if (File.Exists(Path.Combine(CURRENT_DIR, filename)))
-                return true;
-            else
-                return false;
+            return File.Exists(Path.Combine(CURRENT_DIR, filename));
         }
 
         /// <summary>
@@ -195,14 +192,14 @@ namespace NUS_Downloader
         /// <returns></returns>
         private void BootChecks()
         {
-            /* Check if correct thread...
+            //Check if correct thread...
             if (this.InvokeRequired)
             {
                 Debug.WriteLine("InvokeRequired...");
                 BootChecksCallback bcc = new BootChecksCallback(BootChecks);
                 this.Invoke(bcc);
                 return;
-            }*/
+            }
 
             // Check for Wii common key bin file...
             if (NUSDFileExists("key.bin") == false)
@@ -276,7 +273,14 @@ namespace NUS_Downloader
                 WriteStatus("Proxy settings detected.");
                 string[] proxy_file = File.ReadAllLines(Path.Combine(CURRENT_DIR, "proxy.txt"));
                 proxy_url = proxy_file[0];
-                if (proxy_file.Length > 1)
+
+                // If proxy\nuser\npassword
+                if (proxy_file.Length > 2)
+                {
+                    proxy_usr = proxy_file[1];
+                    proxy_pwd = proxy_file[2];
+                }
+                else if (proxy_file.Length > 1)
                 {
                     proxy_usr = proxy_file[1];
                     SetAllEnabled(false);
@@ -1280,7 +1284,7 @@ namespace NUS_Downloader
             packer.PackWAD();
 
             // Delete contents now...
-            if (deletecontentsbox.Checked)
+            if (keepenccontents.Checked == false)
             {
                 WriteStatus("Deleting contents...");
                 File.Delete(Path.Combine(totaldirectory, tmdfilename));
@@ -1322,51 +1326,6 @@ namespace NUS_Downloader
                 wadnamebox.Enabled = false;
                 wadnamebox.Text = "";
             }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            // Display About Text...
-            statusbox.Text = "";
-            WriteStatus("NUS Downloader (NUSD)");
-            WriteStatus("You are running version: " + version);
-            WriteStatus("This application created by WB3000");
-            WriteStatus("Various sections contributed by lukegb");
-            WriteStatus("");
-            
-            if (File.Exists(Path.Combine(CURRENT_DIR, "key.bin")) == false)
-                WriteStatus("Wii Decryption: Need (key.bin)");
-            else
-                WriteStatus("Wii Decryption: OK");
-
-            if (File.Exists(Path.Combine(CURRENT_DIR, "kkey.bin")) == false)
-                WriteStatus("Wii Korea Decryption: Need (kkey.bin)");
-            else
-                WriteStatus("Wii Korea Decryption: OK");
-
-            if (File.Exists(Path.Combine(CURRENT_DIR, "dsikey.bin")) == false)
-                WriteStatus("DSi Decryption: Need (dsikey.bin)");
-            else
-                WriteStatus("DSi Decryption: OK");
-
-            if (File.Exists(Path.Combine(CURRENT_DIR, "database.xml")) == false)
-                WriteStatus("Database: Need (database.xml)");
-            else
-                WriteStatus("Database: OK");
-
-            if (IsWin7())
-                WriteStatus("Windows 7 Features: Enabled");
-
-            WriteStatus("");
-            WriteStatus("Special thanks to:");
-            WriteStatus(" * Crediar for his wadmaker tool + source, and for the advice!");
-            WriteStatus(" * SquidMan/Galaxy/comex/Xuzz for advice/sources.");
-            WriteStatus(" * Pasta for database compilation assistance.");
-            WriteStatus(" * #WiiDev for answering the tough questions.");
-            WriteStatus(" * Anyone who helped beta test on GBATemp!");
-            WriteStatus(" * Famfamfam for the Silk Icon Set.");
-            WriteStatus(" * Wyatt O'Day for the Windows7ProgressBar Control.");
-            WriteStatus(" * Napo7 for testing proxy usage.");
         }
 
         private void packbox_CheckedChanged(object sender, EventArgs e)
@@ -2837,7 +2796,7 @@ namespace NUS_Downloader
         private void packbox_EnabledChanged(object sender, EventArgs e)
         {
             saveaswadbox.Enabled = packbox.Enabled;
-            deletecontentsbox.Enabled = packbox.Enabled;
+            //deletecontentsbox.Enabled = packbox.Enabled;
         }
 
         private void SaveProxyBtn_Click(object sender, EventArgs e)
@@ -2924,8 +2883,7 @@ namespace NUS_Downloader
         private void ProxyAssistBtn_Click(object sender, EventArgs e)
         {
             MessageBox.Show("If you are behind a proxy, set these settings to get through to NUS." +
-                            " If you have an alternate port for accessing your proxy, add ':' followed by the port." +
-                            " You will be prompted for your password each time you run NUSD, for privacy purposes.");
+                            " If you have an alternate port for accessing your proxy, add ':' followed by the port.");
         }
 
         private void loadNUSScriptToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3127,53 +3085,152 @@ namespace NUS_Downloader
         void OrganizeScripts(object sender, DoWorkEventArgs e)
         {
             //throw new NotImplementedException();
-            try
-            {
-                // Add directories w/ scripts in \scripts\
-                foreach (string directory in Directory.GetDirectories(Path.Combine(CURRENT_DIR, "scripts"), "*", SearchOption.TopDirectoryOnly))
-                {
-                    if (Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly).Length > 0)
-                    {
-                        DirectoryInfo dinfo = new DirectoryInfo(directory);
-                        ToolStripMenuItem folder_item = new ToolStripMenuItem();
-                        folder_item.Text = dinfo.Name + Path.DirectorySeparatorChar;
-                        folder_item.Image = Properties.Resources.folder_table;
 
-
-                        foreach (string nusscript in Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly))
-                        {
-                            FileInfo finfo = new FileInfo(nusscript);
-                            ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
-                            nus_script_item.Text = finfo.Name;
-                            nus_script_item.Image = Properties.Resources.script_go;
-                            folder_item.DropDownItems.Add(nus_script_item);
-
-                            // TODO: OnItemClicked...
-                        }
-
-                        scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
-                    }
-                }
-
-                // Add scripts in \scripts\
-                foreach (string nusscript in Directory.GetFiles(Path.Combine(CURRENT_DIR, "scripts"), "*.nus", SearchOption.TopDirectoryOnly))
-                {
-                    FileInfo finfo = new FileInfo(nusscript);
-                    ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
-                    nus_script_item.Text = finfo.Name;
-                    nus_script_item.Image = Properties.Resources.script_go;
-                    scriptsLocalMenuEntry.DropDownItems.Add(nus_script_item);
-
-                    // TODO: OnItemClicked...
-                }
-
-            }
-            catch (DirectoryNotFoundException)
+            if (Directory.Exists(Path.Combine(CURRENT_DIR, "scripts")) == false)
             {
                 WriteStatus("Scripts directory not found...");
                 WriteStatus("- Creating it.");
                 Directory.CreateDirectory(Path.Combine(CURRENT_DIR, "scripts"));
             }
-        } 
+
+            // Add directories w/ scripts in \scripts\
+            foreach (string directory in Directory.GetDirectories(Path.Combine(CURRENT_DIR, "scripts"), "*", SearchOption.TopDirectoryOnly))
+            {
+                if (Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly).Length > 0)
+                {
+                    DirectoryInfo dinfo = new DirectoryInfo(directory);
+                    ToolStripMenuItem folder_item = new ToolStripMenuItem();
+                    folder_item.Text = dinfo.Name + Path.DirectorySeparatorChar;
+                    folder_item.Image = Properties.Resources.folder_table;
+
+
+                    foreach (string nusscript in Directory.GetFiles(directory, "*.nus", SearchOption.TopDirectoryOnly))
+                    {
+                        FileInfo finfo = new FileInfo(nusscript);
+                        ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
+                        nus_script_item.Text = finfo.Name;
+                        nus_script_item.Image = Properties.Resources.script_go;
+                        folder_item.DropDownItems.Add(nus_script_item);
+
+                        // TODO: OnItemClicked...
+                    }
+
+                    scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
+                }
+            }
+
+            // Add scripts in \scripts\
+            foreach (string nusscript in Directory.GetFiles(Path.Combine(CURRENT_DIR, "scripts"), "*.nus", SearchOption.TopDirectoryOnly))
+            {
+                FileInfo finfo = new FileInfo(nusscript);
+                ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
+                nus_script_item.Text = finfo.Name;
+                nus_script_item.Image = Properties.Resources.script_go;
+                scriptsLocalMenuEntry.DropDownItems.Add(nus_script_item);
+
+                // TODO: OnItemClicked...
+            }
+
+            
+        }
+
+        private void aboutNUSDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Display About Text...
+            statusbox.Text = "";
+            WriteStatus("NUS Downloader (NUSD)");
+            WriteStatus("You are running version: " + version);
+            WriteStatus("This application created by WB3000");
+            WriteStatus("Various sections contributed by lukegb");
+            WriteStatus("");
+
+            if (NUSDFileExists("key.bin") == false)
+                WriteStatus("Wii Decryption: Need (key.bin)");
+            else
+                WriteStatus("Wii Decryption: OK");
+
+            if (NUSDFileExists("kkey.bin") == false)
+                WriteStatus("Wii Korea Decryption: Need (kkey.bin)");
+            else
+                WriteStatus("Wii Korea Decryption: OK");
+
+            if (NUSDFileExists("dsikey.bin") == false)
+                WriteStatus("DSi Decryption: Need (dsikey.bin)");
+            else
+                WriteStatus("DSi Decryption: OK");
+
+            if (NUSDFileExists("database.xml") == false)
+                WriteStatus("Database: Need (database.xml)");
+            else
+                WriteStatus("Database: OK");
+
+            if (IsWin7())
+                WriteStatus("Windows 7 Features: Enabled");
+
+            WriteStatus("");
+            WriteStatus("Special thanks to:");
+            WriteStatus(" * Crediar for his wadmaker tool + source, and for the advice!");
+            WriteStatus(" * SquidMan/Galaxy/comex/Xuzz for advice/sources.");
+            WriteStatus(" * Pasta for database compilation assistance.");
+            WriteStatus(" * #WiiDev for answering the tough questions.");
+            WriteStatus(" * Anyone who helped beta test on GBATemp!");
+            WriteStatus(" * Famfamfam for the Silk Icon Set.");
+            WriteStatus(" * Wyatt O'Day for the Windows7ProgressBar Control.");
+            WriteStatus(" * Napo7 for testing proxy usage.");
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            SaveProxyPwdPermanentBtn.Enabled = checkBox1.Checked;
+        }
+
+        private void SaveProxyPwdPermanentBtn_Click(object sender, EventArgs e)
+        {
+            proxy_pwd = ProxyPwdBox.Text;
+
+            string proxy_file = File.ReadAllText(Path.Combine(CURRENT_DIR, "proxy.txt"));
+
+            proxy_file += String.Format("\n{0}", proxy_pwd);
+
+            File.WriteAllText(Path.Combine(CURRENT_DIR, "proxy.txt"), proxy_file);
+
+            ProxyVerifyBox.Visible = false;
+            SetAllEnabled(true);
+            WriteStatus("To delete all traces of proxy settings, delete the proxy.txt file!");
+        }
+
+        private void button3_MouseEnter(object sender, EventArgs e)
+        {
+            // expand clear button
+            button3.Location = new Point(194, 363);
+            button3.Size = new System.Drawing.Size(68, 21);
+            button3.Text = "Clear";
+            button3.ImageAlign = ContentAlignment.MiddleLeft;
+        }
+
+        private void button3_MouseLeave(object sender, EventArgs e)
+        {
+            // shrink clear button
+            button3.Location = new Point(239, 363);
+            button3.Size = new System.Drawing.Size(23, 21);
+            button3.Text = String.Empty;
+            button3.ImageAlign = ContentAlignment.MiddleCenter;
+        }
+
+        private void saveaswadbox_MouseEnter(object sender, EventArgs e)
+        {
+            saveaswadbox.Location = new Point(200, 433);
+            saveaswadbox.Size = new Size(62, 22);
+            saveaswadbox.Text = "Save As...";
+            button3.ImageAlign = ContentAlignment.MiddleLeft;
+        }
+
+        private void saveaswadbox_MouseLeave(object sender, EventArgs e)
+        {
+            saveaswadbox.Location = new Point(230, 433);
+            saveaswadbox.Size = new Size(32, 22);
+            saveaswadbox.Text = String.Empty;
+            saveaswadbox.ImageAlign = ContentAlignment.MiddleCenter;
+        }
     }
 }
