@@ -814,11 +814,17 @@ namespace NUS_Downloader
         }
 
         private void button3_Click(object sender, EventArgs e)
-        {
-            // Prevent mass deletion
-            if (titleidbox.Text == String.Empty)
+        {            if (titleidbox.Text == String.Empty)
             {
+                // Prevent mass deletion and fail
                 WriteStatus("Please enter a Title ID!");
+                return;
+            }
+            else if (!(packbox.Checked) && !(decryptbox.Checked) && !(keepenccontents.Checked))
+            {
+                // Prevent pointless running by n00bs.
+                WriteStatus("Running with your current settings will produce no output!");
+                WriteStatus(" - To amend this, look below and check an output type.");
                 return;
             }
             else if (!(script_mode))

@@ -60,20 +60,6 @@ namespace NUS_Downloader.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap arrow_down {
-            get {
-                object obj = ResourceManager.GetObject("arrow_down", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap arrow_up {
-            get {
-                object obj = ResourceManager.GetObject("arrow_up", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap box {
             get {
                 object obj = ResourceManager.GetObject("box", resourceCulture);
@@ -84,13 +70,6 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap bug_add {
             get {
                 object obj = ResourceManager.GetObject("bug_add", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap bug_error {
-            get {
-                object obj = ResourceManager.GetObject("bug_error", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -179,13 +158,6 @@ namespace NUS_Downloader.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap help1 {
-            get {
-                object obj = ResourceManager.GetObject("help1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap information {
             get {
                 object obj = ResourceManager.GetObject("information", resourceCulture);
@@ -196,13 +168,6 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap key {
             get {
                 object obj = ResourceManager.GetObject("key", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap link {
-            get {
-                object obj = ResourceManager.GetObject("link", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -280,13 +245,6 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap server_link {
             get {
                 object obj = ResourceManager.GetObject("server_link", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap telephone_add {
-            get {
-                object obj = ResourceManager.GetObject("telephone_add", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
