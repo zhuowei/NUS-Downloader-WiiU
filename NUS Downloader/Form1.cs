@@ -909,7 +909,7 @@ namespace NUS_Downloader
             {
                 packbox.Checked = true;
                 packbox_CheckedChanged("scripted", new EventArgs());
-                deletecontentsbox.Checked = true;
+                keepenccontents.Checked = false;
                 wadnamebox.Enabled = false;
             }
 
@@ -3172,8 +3172,6 @@ namespace NUS_Downloader
 
                 // TODO: OnItemClicked...
             }
-
-            
         }
 
         private void aboutNUSDToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3273,7 +3271,6 @@ namespace NUS_Downloader
             saveaswadbtn.Size = new Size(32, 22);
             saveaswadbtn.Text = String.Empty;
             saveaswadbtn.ImageAlign = ContentAlignment.MiddleCenter;
-        }
         }
 
         void nus_script_item_Click(object sender, EventArgs e)
