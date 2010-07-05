@@ -1,4 +1,11 @@
-﻿using System;
+﻿///////////////////////////////////////
+// NUS Downloader: WADPacker.cs      //
+// $Rev::                          $ //
+// $Author::                       $ //
+// $Date::                         $ //
+///////////////////////////////////////
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
