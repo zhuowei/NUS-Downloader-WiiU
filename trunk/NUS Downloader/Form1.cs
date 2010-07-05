@@ -3156,6 +3156,7 @@ namespace NUS_Downloader
                         scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
                     }
 
+                /*
                 // Add scripts in \scripts\
                 foreach (string nusscript in Directory.GetFiles(Path.Combine(CURRENT_DIR, "scripts"), "*.nus", SearchOption.TopDirectoryOnly))
                 {
@@ -3166,7 +3167,7 @@ namespace NUS_Downloader
                     scriptsLocalMenuEntry.DropDownItems.Add(nus_script_item);
 
                     nus_script_item.Click += new EventHandler(nus_script_item_Click);
-                }
+                } */
             }
 
             // Add scripts in \scripts\
@@ -3178,7 +3179,7 @@ namespace NUS_Downloader
                 nus_script_item.Image = Properties.Resources.script_go;
                 scriptsLocalMenuEntry.DropDownItems.Add(nus_script_item);
 
-                // TODO: OnItemClicked...
+                nus_script_item.Click += new EventHandler(nus_script_item_Click);
             }
         }
 
