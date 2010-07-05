@@ -114,6 +114,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Windows7Taskbar.cs" />
+    <None Include="TODO" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\wilolgoi.png" />

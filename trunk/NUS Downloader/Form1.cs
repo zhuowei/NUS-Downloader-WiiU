@@ -32,6 +32,8 @@ namespace NUS_Downloader
             int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes);
         private delegate void WriteStatusCallback(string Update);
         private delegate void BootChecksCallback();
+        private delegate void SetEnableForDownloadCallback(bool enabled);
+        private delegate void SetTextThreadSafeCallback(System.Windows.Forms.Control what, string setto);
 
         // Images do not compare unless globalized...
         private Image green = Properties.Resources.bullet_green;
@@ -799,15 +801,15 @@ namespace NUS_Downloader
                 try
                 {
                     if (!statusbox.Lines[0].StartsWith(" ---"))
-                        statusbox.Text = " --- " + titleidbox.Text + " ---";
+                        SetTextThreadSafe(statusbox, " --- " + titleidbox.Text + " ---");
                 }
                 catch // No lines present...
                 {
-                    statusbox.Text = " --- " + titleidbox.Text + " ---";
+                    SetTextThreadSafe(statusbox, " --- " + titleidbox.Text + " ---");
                 }
             }
             else
-                statusbox.Text += "\r\n --- " + titleidbox.Text + " ---";
+                SetTextThreadSafe(statusbox, statusbox.Text + "\r\n --- " + titleidbox.Text + " ---");
 
             // Handle SaveAs here so it shows up properly...
             if (!(String.IsNullOrEmpty(WAD_Saveas_Filename)))
@@ -827,23 +829,35 @@ namespace NUS_Downloader
             NUSDownloader.RunWorkerAsync();
         }
 
+        private void SetTextThreadSafe(System.Windows.Forms.Control what, string setto)
+        {
+            if (this.InvokeRequired)
+            {
+                SetTextThreadSafeCallback sttscb = new SetTextThreadSafeCallback(SetTextThreadSafe);
+                this.Invoke(sttscb, new object[] { what, setto });
+                return;
+            }
+            what.Text = setto;
+        }
+
         private void NUSDownloader_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             // Preparations for Downloading
-            Control.CheckForIllegalCrossThreadCalls = false;
+            Control.CheckForIllegalCrossThreadCalls = false; // this function would need major rewriting to get rid of this...
             if (!(script_mode))
                 WriteStatus("Starting NUS Download. Please be patient!");
             SetEnableforDownload(false);
+
             downloadstartbtn.Text = "Starting NUS Download!";
 
-            // Prevent crossthread issues
-            string titleid = titleidbox.Text;
-
             // Creates the directory 
-            CreateTitleDirectory();
+            if (!script_mode)
+                CreateTitleDirectory();
 
             // Wii / DSi
             bool wiimode = (consoleCBox.SelectedIndex == 0);
+
+            string titleid = titleidbox.Text;
 
             // Set UserAgent to Wii value
             generalWC.Headers.Add("User-Agent", "wii libnup/1.0");
@@ -857,6 +871,9 @@ namespace NUS_Downloader
                 titledirectory = Path.Combine(CURRENT_DIR, titleid);
             else
                 titledirectory = Path.Combine(CURRENT_DIR, (titleid + "v" + titleversion.Text));
+
+            if (script_mode)
+                titledirectory = Path.Combine(CURRENT_DIR, "output_" + Path.GetFileNameWithoutExtension(script_filename));
 
             downloadstartbtn.Text = "Prerequisites: (0/2)";
 
@@ -887,6 +904,14 @@ namespace NUS_Downloader
             }
             downloadstartbtn.Text = "Prerequisites: (1/2)";
             dlprogress.Value = 50;
+
+            if (script_mode)
+            {
+                packbox.Checked = true;
+                packbox_CheckedChanged("scripted", new EventArgs());
+                deletecontentsbox.Checked = true;
+                wadnamebox.Enabled = false;
+            }
 
             // Download CETK after tmd...
             bool ticket_exists = true;
@@ -1165,6 +1190,8 @@ namespace NUS_Downloader
         /// </summary>
         private void DeleteTitleDirectory()
         {
+            if (script_mode)
+                return;
             // Get placement directory early...
             string titledirectory;
             if (titleversion.Text == "")
@@ -1253,6 +1280,9 @@ namespace NUS_Downloader
 
             packer.tmdnames = GetContentNames(packer.TMD, contentcount);
             packer.tmdsizes = GetContentSizes(packer.TMD, contentcount);
+
+            if (script_mode)
+                UpdatePackedName();
 
             if (wadnamebox.Text.Contains("[v]") == true)
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
@@ -1874,9 +1904,8 @@ namespace NUS_Downloader
         private void upditem_itemclicked(object sender, ToolStripItemClickedEventArgs e)
         {
             WriteStatus("Preparing to run download script...");
-            Control.CheckForIllegalCrossThreadCalls = false;
             script_mode = true;
-            statusbox.Text = "";
+            SetTextThreadSafe(statusbox, "");
             WriteStatus("Starting script download. Please be patient!");
             string[] NUS_Entries = e.ClickedItem.AccessibleDescription.Split('\n');
                 // TODO: Find somewhere better to put this. AND FAST!
@@ -1996,6 +2025,10 @@ namespace NUS_Downloader
         private void LoadRegionCodes()
         {
             // TODO: make this check InvokeRequired...
+            if (this.InvokeRequired)
+            {
+                Debug.Write("TOLDYOUSO!");
+            }
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load("database.xml");
 
@@ -2065,6 +2098,12 @@ namespace NUS_Downloader
         /// <param name="enabled">if set to <c>true</c> [enabled].</param>
         private void SetEnableforDownload(bool enabled)
         {
+            if (this.InvokeRequired)
+            {
+                SetEnableForDownloadCallback sefdcb = new SetEnableForDownloadCallback(SetEnableforDownload);
+                this.Invoke(sefdcb, new object[] { enabled });
+                return;
+            }
             // Disable things the user should not mess with during download...
             downloadstartbtn.Enabled = enabled;
             titleidbox.Enabled = enabled;
@@ -2150,7 +2189,7 @@ namespace NUS_Downloader
 
             string title_name = null;
 
-            if ((titleidbox.Enabled == true) && (packbox.Checked == true))
+            if ((titleidbox.Enabled == true || script_mode == true) && (packbox.Checked == true))
             {
                 if (titleversion.Text != "")
                 {
@@ -2902,10 +2941,11 @@ namespace NUS_Downloader
         /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
         private void RunScript(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            //Control.CheckForIllegalCrossThreadCalls = false;
             script_mode = true;
-            statusbox.Text = "";
+            SetTextThreadSafe(statusbox, "");
             WriteStatus("Starting script download. Please be patient!");
+            if (!File.Exists(Path.Combine(CURRENT_DIR, "output_" + Path.GetFileNameWithoutExtension(script_filename))))
+                Directory.CreateDirectory(Path.Combine(CURRENT_DIR, "output_" + Path.GetFileNameWithoutExtension(script_filename)));
             string[] NUS_Entries;
             if (script_filename != "\000")
             {
@@ -2925,15 +2965,15 @@ namespace NUS_Downloader
                 // don't let the delete issue reappear...
                 if (string.IsNullOrEmpty(title_info[0]))
                     break;
-                titleidbox.Text = title_info[0];
-                titleversion.Text =
+                SetTextThreadSafe(titleidbox, title_info[0]);
+                SetTextThreadSafe(titleversion,
                     Convert.ToString(256*
                                      (byte.Parse(title_info[1].Substring(0, 2),
-                                                 System.Globalization.NumberStyles.HexNumber)));
-                titleversion.Text =
+                                                 System.Globalization.NumberStyles.HexNumber))));
+                SetTextThreadSafe(titleversion,
                     Convert.ToString(Convert.ToInt32(titleversion.Text) +
                                      byte.Parse(title_info[1].Substring(2, 2),
-                                                System.Globalization.NumberStyles.HexNumber));
+                                                System.Globalization.NumberStyles.HexNumber)));
 
                 button3_Click("Scripter", EventArgs.Empty);
 
@@ -3102,10 +3142,22 @@ namespace NUS_Downloader
                         nus_script_item.Image = Properties.Resources.script_go;
                         folder_item.DropDownItems.Add(nus_script_item);
 
-                        // TODO: OnItemClicked...
+                            nus_script_item.Click += new EventHandler(nus_script_item_Click);
+                        }
+
+                        scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
                     }
 
-                    scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
+                // Add scripts in \scripts\
+                foreach (string nusscript in Directory.GetFiles(Path.Combine(CURRENT_DIR, "scripts"), "*.nus", SearchOption.TopDirectoryOnly))
+                {
+                    FileInfo finfo = new FileInfo(nusscript);
+                    ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
+                    nus_script_item.Text = finfo.Name;
+                    nus_script_item.Image = Properties.Resources.script_go;
+                    scriptsLocalMenuEntry.DropDownItems.Add(nus_script_item);
+
+                    nus_script_item.Click += new EventHandler(nus_script_item_Click);
                 }
             }
 
@@ -3222,5 +3274,21 @@ namespace NUS_Downloader
             saveaswadbtn.Text = String.Empty;
             saveaswadbtn.ImageAlign = ContentAlignment.MiddleCenter;
         }
+        }
+
+        void nus_script_item_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
+            string folderpath = "";
+            if (!tsmi.OwnerItem.Equals(this.scriptsLocalMenuEntry))
+            {
+                folderpath = Path.Combine(tsmi.OwnerItem.Text, folderpath);
+            }
+            folderpath = Path.Combine(this.CURRENT_DIR, Path.Combine("scripts", Path.Combine(folderpath, tsmi.Text)));
+            script_filename = folderpath;
+            BackgroundWorker scripter = new BackgroundWorker();
+            scripter.DoWork += new DoWorkEventHandler(RunScript);
+            scripter.RunWorkerAsync();
+        } 
     }
 }
