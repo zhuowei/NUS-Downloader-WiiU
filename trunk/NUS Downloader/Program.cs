@@ -1,4 +1,12 @@
-﻿using System;
+﻿///////////////////////////////////////
+// NUS Downloader: Program.cs        //
+// $Rev::                          $ //
+// $Author::                       $ //
+// $Date::                         $ //
+///////////////////////////////////////
+
+
+using System;
 using System.Windows.Forms;
 
 namespace NUS_Downloader
