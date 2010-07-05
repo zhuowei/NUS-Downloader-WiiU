@@ -33,11 +33,9 @@
             this.Extrasbtn = new System.Windows.Forms.Button();
             this.downloadstartbtn = new System.Windows.Forms.Button();
             this.statusbox = new System.Windows.Forms.TextBox();
-            this.localuse = new System.Windows.Forms.CheckBox();
             this.NUSDownloader = new System.ComponentModel.BackgroundWorker();
             this.label1 = new System.Windows.Forms.Label();
             this.wadnamebox = new System.Windows.Forms.TextBox();
-            this.ignoreticket = new System.Windows.Forms.CheckBox();
             this.databaseButton = new System.Windows.Forms.Button();
             this.databaseStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.SystemMenuList = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,15 +77,13 @@
             this.scriptsbutton = new System.Windows.Forms.Button();
             this.scriptsStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.titleversion = new wmgCMS.WaterMarkTextBox();
-            this.titleidbox = new wmgCMS.WaterMarkTextBox();
-            this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
+            this.saveaswadbtn = new System.Windows.Forms.Button();
             this.ProxyAssistBtn = new System.Windows.Forms.Button();
             this.keepenccontents = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
             this.packbox = new System.Windows.Forms.CheckBox();
             this.decryptbox = new System.Windows.Forms.CheckBox();
-            this.saveaswadbox = new System.Windows.Forms.CheckBox();
+            this.localuse = new System.Windows.Forms.CheckBox();
             this.updateDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadInfoFromTMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.proxySettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,6 +102,9 @@
             this.europePALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.japanNTSCJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.koreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.titleversion = new wmgCMS.WaterMarkTextBox();
+            this.titleidbox = new wmgCMS.WaterMarkTextBox();
+            this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -145,19 +144,6 @@
             this.statusbox.Size = new System.Drawing.Size(250, 268);
             this.statusbox.TabIndex = 5;
             // 
-            // localuse
-            // 
-            this.localuse.AutoSize = true;
-            this.localuse.Checked = true;
-            this.localuse.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.localuse.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.localuse.Location = new System.Drawing.Point(186, 391);
-            this.localuse.Name = "localuse";
-            this.localuse.Size = new System.Drawing.Size(76, 17);
-            this.localuse.TabIndex = 8;
-            this.localuse.Text = "Local Files";
-            this.localuse.UseVisualStyleBackColor = true;
-            // 
             // NUSDownloader
             // 
             this.NUSDownloader.DoWork += new System.ComponentModel.DoWorkEventHandler(this.NUSDownloader_DoWork);
@@ -182,16 +168,6 @@
             this.wadnamebox.Name = "wadnamebox";
             this.wadnamebox.Size = new System.Drawing.Size(146, 18);
             this.wadnamebox.TabIndex = 17;
-            // 
-            // ignoreticket
-            // 
-            this.ignoreticket.AutoSize = true;
-            this.ignoreticket.Location = new System.Drawing.Point(76, 391);
-            this.ignoreticket.Name = "ignoreticket";
-            this.ignoreticket.Size = new System.Drawing.Size(89, 17);
-            this.ignoreticket.TabIndex = 18;
-            this.ignoreticket.Text = "Ignore Ticket";
-            this.ignoreticket.UseVisualStyleBackColor = true;
             // 
             // databaseButton
             // 
@@ -550,39 +526,19 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
             // 
-            // titleversion
+            // saveaswadbtn
             // 
-            this.titleversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.titleversion.Location = new System.Drawing.Point(204, 38);
-            this.titleversion.MaxLength = 8;
-            this.titleversion.Name = "titleversion";
-            this.titleversion.Size = new System.Drawing.Size(58, 20);
-            this.titleversion.TabIndex = 50;
-            this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titleversion.WaterMarkColor = System.Drawing.Color.Silver;
-            this.titleversion.WaterMarkText = "Version";
-            this.titleversion.TextChanged += new System.EventHandler(this.titleversion_TextChanged);
-            // 
-            // titleidbox
-            // 
-            this.titleidbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.titleidbox.Location = new System.Drawing.Point(12, 38);
-            this.titleidbox.MaxLength = 16;
-            this.titleidbox.Name = "titleidbox";
-            this.titleidbox.Size = new System.Drawing.Size(176, 20);
-            this.titleidbox.TabIndex = 49;
-            this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titleidbox.WaterMarkColor = System.Drawing.Color.Silver;
-            this.titleidbox.WaterMarkText = "Title ID";
-            this.titleidbox.TextChanged += new System.EventHandler(this.titleidbox_TextChanged);
-            // 
-            // dlprogress
-            // 
-            this.dlprogress.ContainerControl = this;
-            this.dlprogress.Location = new System.Drawing.Point(12, 95);
-            this.dlprogress.Name = "dlprogress";
-            this.dlprogress.Size = new System.Drawing.Size(250, 15);
-            this.dlprogress.TabIndex = 47;
+            this.saveaswadbtn.BackColor = System.Drawing.Color.Transparent;
+            this.saveaswadbtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.saveaswadbtn.Image = global::NUS_Downloader.Properties.Resources.disk;
+            this.saveaswadbtn.Location = new System.Drawing.Point(230, 433);
+            this.saveaswadbtn.Name = "saveaswadbtn";
+            this.saveaswadbtn.Size = new System.Drawing.Size(32, 22);
+            this.saveaswadbtn.TabIndex = 53;
+            this.saveaswadbtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.saveaswadbtn.UseVisualStyleBackColor = false;
+            this.saveaswadbtn.MouseEnter += new System.EventHandler(this.saveaswadbtn_MouseEnter);
+            this.saveaswadbtn.MouseLeave += new System.EventHandler(this.saveaswadbtn_MouseLeave);
             // 
             // ProxyAssistBtn
             // 
@@ -603,7 +559,7 @@
             this.keepenccontents.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.keepenccontents.Location = new System.Drawing.Point(12, 437);
             this.keepenccontents.Name = "keepenccontents";
-            this.keepenccontents.Size = new System.Drawing.Size(165, 25);
+            this.keepenccontents.Size = new System.Drawing.Size(165, 26);
             this.keepenccontents.TabIndex = 52;
             this.keepenccontents.Text = "Keep Encrypted Contents";
             this.keepenccontents.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -644,26 +600,26 @@
             this.decryptbox.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.decryptbox.Location = new System.Drawing.Point(12, 462);
             this.decryptbox.Name = "decryptbox";
-            this.decryptbox.Size = new System.Drawing.Size(172, 24);
+            this.decryptbox.Size = new System.Drawing.Size(172, 26);
             this.decryptbox.TabIndex = 19;
             this.decryptbox.Text = "Create Decrypted Contents";
             this.decryptbox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.decryptbox.UseVisualStyleBackColor = true;
             // 
-            // saveaswadbox
+            // localuse
             // 
-            this.saveaswadbox.Appearance = System.Windows.Forms.Appearance.Button;
-            this.saveaswadbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.saveaswadbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.saveaswadbox.Image = global::NUS_Downloader.Properties.Resources.disk;
-            this.saveaswadbox.Location = new System.Drawing.Point(230, 433);
-            this.saveaswadbox.Name = "saveaswadbox";
-            this.saveaswadbox.Size = new System.Drawing.Size(32, 22);
-            this.saveaswadbox.TabIndex = 43;
-            this.saveaswadbox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.saveaswadbox.UseVisualStyleBackColor = true;
-            this.saveaswadbox.MouseEnter += new System.EventHandler(this.saveaswadbox_MouseEnter);
-            this.saveaswadbox.MouseLeave += new System.EventHandler(this.saveaswadbox_MouseLeave);
+            this.localuse.Checked = true;
+            this.localuse.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.localuse.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.localuse.Image = global::NUS_Downloader.Properties.Resources.drive_disk;
+            this.localuse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.localuse.Location = new System.Drawing.Point(91, 390);
+            this.localuse.Name = "localuse";
+            this.localuse.Size = new System.Drawing.Size(171, 22);
+            this.localuse.TabIndex = 8;
+            this.localuse.Text = "Use Local Files If Available";
+            this.localuse.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.localuse.UseVisualStyleBackColor = true;
             // 
             // updateDatabaseToolStripMenuItem
             // 
@@ -715,7 +671,7 @@
             // 
             // aboutNUSDToolStripMenuItem
             // 
-            this.aboutNUSDToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.help;
+            this.aboutNUSDToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.information;
             this.aboutNUSDToolStripMenuItem.Name = "aboutNUSDToolStripMenuItem";
             this.aboutNUSDToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
             this.aboutNUSDToolStripMenuItem.Text = "About NUSD";
@@ -807,11 +763,46 @@
             this.koreaToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.koreaToolStripMenuItem.Text = "KOREA";
             // 
+            // titleversion
+            // 
+            this.titleversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.titleversion.Location = new System.Drawing.Point(204, 38);
+            this.titleversion.MaxLength = 8;
+            this.titleversion.Name = "titleversion";
+            this.titleversion.Size = new System.Drawing.Size(58, 20);
+            this.titleversion.TabIndex = 50;
+            this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titleversion.WaterMarkColor = System.Drawing.Color.Silver;
+            this.titleversion.WaterMarkText = "Version";
+            this.titleversion.TextChanged += new System.EventHandler(this.titleversion_TextChanged);
+            // 
+            // titleidbox
+            // 
+            this.titleidbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.titleidbox.Location = new System.Drawing.Point(12, 38);
+            this.titleidbox.MaxLength = 16;
+            this.titleidbox.Name = "titleidbox";
+            this.titleidbox.Size = new System.Drawing.Size(176, 20);
+            this.titleidbox.TabIndex = 49;
+            this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titleidbox.WaterMarkColor = System.Drawing.Color.Silver;
+            this.titleidbox.WaterMarkText = "Title ID";
+            this.titleidbox.TextChanged += new System.EventHandler(this.titleidbox_TextChanged);
+            // 
+            // dlprogress
+            // 
+            this.dlprogress.ContainerControl = this;
+            this.dlprogress.Location = new System.Drawing.Point(12, 95);
+            this.dlprogress.Name = "dlprogress";
+            this.dlprogress.Size = new System.Drawing.Size(250, 15);
+            this.dlprogress.TabIndex = 47;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(274, 491);
+            this.Controls.Add(this.saveaswadbtn);
             this.Controls.Add(this.ProxyVerifyBox);
             this.Controls.Add(this.proxyBox);
             this.Controls.Add(this.scriptsbutton);
@@ -827,11 +818,9 @@
             this.Controls.Add(this.downloadstartbtn);
             this.Controls.Add(this.wadnamebox);
             this.Controls.Add(this.Extrasbtn);
-            this.Controls.Add(this.ignoreticket);
             this.Controls.Add(this.packbox);
             this.Controls.Add(this.decryptbox);
             this.Controls.Add(this.localuse);
-            this.Controls.Add(this.saveaswadbox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -862,7 +851,6 @@
         private System.ComponentModel.BackgroundWorker NUSDownloader;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox wadnamebox;
-        private System.Windows.Forms.CheckBox ignoreticket;
         private System.Windows.Forms.CheckBox decryptbox;
         private System.Windows.Forms.Button databaseButton;
         private System.Windows.Forms.ContextMenuStrip databaseStrip;
@@ -887,7 +875,6 @@
         private System.Windows.Forms.ContextMenuStrip extrasStrip;
         private System.Windows.Forms.ToolStripMenuItem loadInfoFromTMDToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.CheckBox saveaswadbox;
         private System.Windows.Forms.ToolStripMenuItem proxySettingsToolStripMenuItem;
         private System.Windows.Forms.GroupBox proxyBox;
         private System.Windows.Forms.TextBox ProxyUser;
@@ -930,6 +917,7 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button SaveProxyPwdPermanentBtn;
         private System.Windows.Forms.CheckBox keepenccontents;
+        private System.Windows.Forms.Button saveaswadbtn;
     }
 }
 
