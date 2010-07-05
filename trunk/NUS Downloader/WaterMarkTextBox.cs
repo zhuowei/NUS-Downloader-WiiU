@@ -82,11 +82,12 @@ namespace wmgCMS
             else
                 DisbaleWaterMark(); */
 
-            if (this.Text.Length > 0)
+            /*if (this.Text.Length > 0)
             {
                 System.Diagnostics.Debug.WriteLine(sender.ToString() + " disabled watermark");
                 DisbaleWaterMark();
-            }
+            }*/
+            DisbaleWaterMark();
         }
 
         private void EnableWaterMark()
