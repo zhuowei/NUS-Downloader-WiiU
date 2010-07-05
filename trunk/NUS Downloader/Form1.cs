@@ -347,7 +347,6 @@ namespace NUS_Downloader
         private void RunScriptOrganizer()
         {
             this.scriptsWorker.RunWorkerAsync();
-            scriptsLocalMenuEntry.Enabled = true;
         }
 
         private void SetAllEnabled(bool enabled)
@@ -2663,7 +2662,7 @@ namespace NUS_Downloader
                 }
                 WriteStatus(String.Format("    - {0} [v{1}]", TitleID, Version));
 
-                if ((File.Exists("database.xml") == true) && ((!(String.IsNullOrEmpty(NameFromDatabase(TitleID))))))
+                if ((NUSDFileExists("database.xml") == true) && ((!(String.IsNullOrEmpty(NameFromDatabase(TitleID))))))
                     statusbox.Text += String.Format(" [{0}]", NameFromDatabase(TitleID));
 
                 script_text += String.Format("{0} {1}\n", TitleID,
@@ -2679,10 +2678,14 @@ namespace NUS_Downloader
             }
             string time = RemoveIllegalCharacters(DateTime.Now.ToShortTimeString());
             File.WriteAllText(
-                String.Format(Path.Combine(CURRENT_DIR, "scripts\\{0}_Update_{1}_{2}_{3} {4}.nus"), RegionID,
+                String.Format(Path.Combine(CURRENT_DIR, "scripts\\{0}_Update_{1}_{2}_{3} at {4}.nus"), RegionID,
                               DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, time), script_text);
             WriteStatus(" - Script written!");
+            scriptsLocalMenuEntry.Enabled = false;
+            this.scriptsWorker.RunWorkerAsync();
+            
             WriteStatus(" - Run this script if you feel like downloading the update!");
+            // TODO: run the script...
         }
 
         /// <summary>
@@ -3132,7 +3135,7 @@ namespace NUS_Downloader
 
         void scriptsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //throw new NotImplementedException();
+            scriptsLocalMenuEntry.Enabled = true;
         }
 
         void OrganizeScripts(object sender, DoWorkEventArgs e)
@@ -3145,6 +3148,15 @@ namespace NUS_Downloader
                 WriteStatus("- Creating it.");
                 Directory.CreateDirectory(Path.Combine(CURRENT_DIR, "scripts"));
             }
+
+            // Clear any entries from previous runthrough
+            if (scriptsLocalMenuEntry.DropDownItems.Count > 0)
+            {
+                // TODO: i suppose this is bad amiright
+                Control.CheckForIllegalCrossThreadCalls = false;
+                scriptsLocalMenuEntry.DropDownItems.Clear();
+            }
+            
 
             // Add directories w/ scripts in \scripts\
             foreach (string directory in Directory.GetDirectories(Path.Combine(CURRENT_DIR, "scripts"), "*", SearchOption.TopDirectoryOnly))
@@ -3170,19 +3182,6 @@ namespace NUS_Downloader
 
                         scriptsLocalMenuEntry.DropDownItems.Add(folder_item);
                     }
-
-                /*
-                // Add scripts in \scripts\
-                foreach (string nusscript in Directory.GetFiles(Path.Combine(CURRENT_DIR, "scripts"), "*.nus", SearchOption.TopDirectoryOnly))
-                {
-                    FileInfo finfo = new FileInfo(nusscript);
-                    ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
-                    nus_script_item.Text = finfo.Name;
-                    nus_script_item.Image = Properties.Resources.script_go;
-                    scriptsLocalMenuEntry.DropDownItems.Add(nus_script_item);
-
-                    nus_script_item.Click += new EventHandler(nus_script_item_Click);
-                } */
             }
 
             // Add scripts in \scripts\
