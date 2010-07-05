@@ -5,6 +5,23 @@
 // $Date::                         $ //
 ///////////////////////////////////////
 
+///////////////////////////////////////
+// Copyright (C) 2010
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>
+///////////////////////////////////////
+
 
 using System;
 using System.Windows.Forms;
@@ -799,9 +816,9 @@ namespace NUS_Downloader
         private void button3_Click(object sender, EventArgs e)
         {
             // Prevent mass deletion
-            if ((titleidbox.Text == "") && (titleversion.Text == ""))
+            if (titleidbox.Text == String.Empty)
             {
-                WriteStatus("Please enter SOME info...");
+                WriteStatus("Please enter a Title ID!");
                 return;
             }
             else if (!(script_mode))
@@ -818,20 +835,7 @@ namespace NUS_Downloader
             }
             else
                 SetTextThreadSafe(statusbox, statusbox.Text + "\r\n --- " + titleidbox.Text + " ---");
-
-            // Handle SaveAs here so it shows up properly...
-            if (!(String.IsNullOrEmpty(WAD_Saveas_Filename)))
-            {
-                SaveFileDialog wad_saveas = new SaveFileDialog();
-                wad_saveas.Title = "Save WAD File...";
-                wad_saveas.Filter = "WAD Files|*.wad|All Files|*.*";
-                wad_saveas.AddExtension = true;
-                DialogResult dres = wad_saveas.ShowDialog();
-                if (dres != DialogResult.Cancel)
-                    WAD_Saveas_Filename = wad_saveas.FileName;
-            }
-            else
-                WAD_Saveas_Filename = "";
+           
 
             // Running Downloads in background so no form freezing
             NUSDownloader.RunWorkerAsync();
@@ -1167,6 +1171,11 @@ namespace NUS_Downloader
                 statusbox.Text = "";
         }
 
+        private void NUSDownloader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            WAD_Saveas_Filename = String.Empty;
+        } 
+
         /// <summary>
         /// Creates the title directory.
         /// </summary>
@@ -1351,7 +1360,7 @@ namespace NUS_Downloader
                 packbox.Checked = false;
                 packbox.Enabled = false;
 
-                // Can decrypt if key exists...lulz
+                // Can decrypt if dsikey exists...
                 if (dsidecrypt == false)
                 {
                     decryptbox.Checked = false;
@@ -3295,6 +3304,24 @@ namespace NUS_Downloader
             BackgroundWorker scripter = new BackgroundWorker();
             scripter.DoWork += new DoWorkEventHandler(RunScript);
             scripter.RunWorkerAsync();
-        } 
+        }
+
+        private void saveaswadbtn_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog wad_saveas = new SaveFileDialog();
+            wad_saveas.Title = "Save WAD File...";
+            wad_saveas.Filter = "WAD Files|*.wad|All Files|*.*";
+            wad_saveas.AddExtension = true;
+            DialogResult dres = wad_saveas.ShowDialog();
+            if (dres != DialogResult.Cancel)
+                WAD_Saveas_Filename = wad_saveas.FileName;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // This prevents errors when exiting before the database is parsed.
+            // This is also probably not the best way to accomplish this...
+            Environment.Exit(0);
+        }
     }
 }

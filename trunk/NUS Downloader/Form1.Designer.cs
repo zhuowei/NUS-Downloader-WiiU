@@ -147,6 +147,7 @@
             // NUSDownloader
             // 
             this.NUSDownloader.DoWork += new System.ComponentModel.DoWorkEventHandler(this.NUSDownloader_DoWork);
+            this.NUSDownloader.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.NUSDownloader_RunWorkerCompleted);
             // 
             // label1
             // 
@@ -193,7 +194,7 @@
             this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(164, 170);
+            this.databaseStrip.Size = new System.Drawing.Size(164, 148);
             // 
             // SystemMenuList
             // 
@@ -691,6 +692,7 @@
             this.saveaswadbtn.TabIndex = 53;
             this.saveaswadbtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.saveaswadbtn.UseVisualStyleBackColor = false;
+            this.saveaswadbtn.Click += new System.EventHandler(this.saveaswadbtn_Click);
             this.saveaswadbtn.MouseEnter += new System.EventHandler(this.saveaswadbtn_MouseEnter);
             this.saveaswadbtn.MouseLeave += new System.EventHandler(this.saveaswadbtn_MouseLeave);
             // 
@@ -829,6 +831,7 @@
             this.MinimumSize = new System.Drawing.Size(280, 519);
             this.Name = "Form1";
             this.Text = "NUSD";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.databaseStrip.ResumeLayout(false);
             this.extrasStrip.ResumeLayout(false);
