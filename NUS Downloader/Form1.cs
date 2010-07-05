@@ -1,4 +1,12 @@
-﻿using System;
+﻿//////////////////////////////
+// NUS Downlodaer: Form1.cs //
+// $Rev::                 $ //
+// $Author::              $ //
+// $Date::                $ //
+//////////////////////////////
+
+
+using System;
 using System.Windows.Forms;
 using System.IO;
 using System.Net;
