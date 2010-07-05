@@ -136,6 +136,7 @@
     <None Include="Resources\information.png" />
     <None Include="Resources\box.png" />
     <None Include="Resources\disk.png" />
+    <None Include="Resources\drive_disk.png" />
     <Content Include="Resources\key.png" />
     <None Include="Resources\page_white_magnify.png" />
     <None Include="Resources\server_link.png" />

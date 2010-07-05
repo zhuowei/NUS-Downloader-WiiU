@@ -158,6 +158,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap drive_disk {
+            get {
+                object obj = ResourceManager.GetObject("drive_disk", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap folder_table {
             get {
                 object obj = ResourceManager.GetObject("folder_table", resourceCulture);

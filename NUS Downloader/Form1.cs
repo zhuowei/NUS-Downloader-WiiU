@@ -810,7 +810,7 @@ namespace NUS_Downloader
                 statusbox.Text += "\r\n --- " + titleidbox.Text + " ---";
 
             // Handle SaveAs here so it shows up properly...
-            if (saveaswadbox.Checked)
+            if (!(String.IsNullOrEmpty(WAD_Saveas_Filename)))
             {
                 SaveFileDialog wad_saveas = new SaveFileDialog();
                 wad_saveas.Title = "Save WAD File...";
@@ -896,25 +896,22 @@ namespace NUS_Downloader
             }
             catch (Exception ex)
             {
-                if (ignoreticket.Checked == false)
-                {
-                    WriteStatus("Download Failed: cetk");
-                    WriteStatus(" - Reason: " +
-                                ex.Message.ToString().Replace("The remote server returned an error: ", ""));
-                    WriteStatus("You may be able to retrieve the contents by Ignoring the Ticket (Check below)");
-                    SetEnableforDownload(true);
-                    downloadstartbtn.Text = "Start NUS Download!";
-                    dlprogress.Value = 0;
-                    DeleteTitleDirectory();
-                    return;
-                }
-                else
-                {
-                    WriteStatus("Ticket not found! Continuing, however WAD packing and decryption are not possible!");
-                    packbox.Checked = false;
-                    decryptbox.Checked = false;
-                    ticket_exists = false;
-                }
+                //WriteStatus("Download Failed: cetk");
+                /*WriteStatus("You may be able to retrieve the contents by Ignoring the Ticket (Check below)");
+                SetEnableforDownload(true);
+                downloadstartbtn.Text = "Start NUS Download!";
+                dlprogress.Value = 0;
+                DeleteTitleDirectory();
+                return;*/
+                
+                WriteStatus("Ticket not found! Continuing, however WAD packing and decryption are not possible!");
+                WriteStatus(" - Reason: " +
+                            ex.Message.ToString().Replace("The remote server returned an error: ", ""));
+
+                packbox.Checked = false;
+                decryptbox.Checked = false;
+                WAD_Saveas_Filename = String.Empty;
+                ticket_exists = false;
             }
             downloadstartbtn.Text = "Prerequisites: (2/2)";
             dlprogress.Value = 100;
@@ -1333,13 +1330,15 @@ namespace NUS_Downloader
             if (packbox.Checked == true)
             {
                 wadnamebox.Enabled = true;
+                saveaswadbtn.Enabled = true;
                 // Change WAD name if applicable
                 UpdatePackedName();
             }
             else
             {
                 wadnamebox.Enabled = false;
-                wadnamebox.Text = "";
+                saveaswadbtn.Enabled = false;
+                wadnamebox.Text = String.Empty;
             }
         }
 
@@ -1791,14 +1790,10 @@ namespace NUS_Downloader
             if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (orange) ||
                 (e.ClickedItem.OwnerItem.OwnerItem.Image) == (redorange))
             {
-                ignoreticket.Checked = true;
+                //ignoreticket.Checked = true;
                 WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
                 packbox.Checked = false;
                 decryptbox.Checked = false;
-            }
-            else
-            {
-                ignoreticket.Checked = false;
             }
 
             // Change WAD name if packed is already checked...
@@ -1857,14 +1852,10 @@ namespace NUS_Downloader
             // Check if a ticket is present...
             if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
             {
-                ignoreticket.Checked = true;
+                //ignoreticket.Checked = true;
                 WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
                 packbox.Checked = false;
                 decryptbox.Checked = false;
-            }
-            else
-            {
-                ignoreticket.Checked = false;
             }
 
             // Change WAD name if packed is already checked...
@@ -1932,14 +1923,10 @@ namespace NUS_Downloader
 
             if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
             {
-                ignoreticket.Checked = true;
+                //ignoreticket.Checked = true;
                 WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
                 packbox.Checked = false;
                 decryptbox.Checked = false;
-            }
-            else
-            {
-                ignoreticket.Checked = false;
             }
 
             // Change WAD name if packed is already checked...
@@ -2086,8 +2073,11 @@ namespace NUS_Downloader
             databaseButton.Enabled = enabled;
             packbox.Enabled = enabled;
             localuse.Enabled = enabled;
-            ignoreticket.Enabled = enabled;
+            saveaswadbtn.Enabled = enabled;
             decryptbox.Enabled = enabled;
+            keepenccontents.Enabled = enabled;
+            scriptsbutton.Enabled = enabled;
+            consoleCBox.Enabled = enabled;
         }
 
         /// <summary>
@@ -2795,7 +2785,7 @@ namespace NUS_Downloader
 
         private void packbox_EnabledChanged(object sender, EventArgs e)
         {
-            saveaswadbox.Enabled = packbox.Enabled;
+            saveaswadbtn.Enabled = packbox.Enabled;
             //deletecontentsbox.Enabled = packbox.Enabled;
         }
 
@@ -3217,20 +3207,20 @@ namespace NUS_Downloader
             button3.ImageAlign = ContentAlignment.MiddleCenter;
         }
 
-        private void saveaswadbox_MouseEnter(object sender, EventArgs e)
+        private void saveaswadbtn_MouseEnter(object sender, EventArgs e)
         {
-            saveaswadbox.Location = new Point(200, 433);
-            saveaswadbox.Size = new Size(62, 22);
-            saveaswadbox.Text = "Save As...";
-            button3.ImageAlign = ContentAlignment.MiddleLeft;
+            saveaswadbtn.Location = new Point(190, 433);
+            saveaswadbtn.Size = new Size(72, 22);
+            saveaswadbtn.Text = "Save As";
+            saveaswadbtn.ImageAlign = ContentAlignment.MiddleLeft;
         }
 
-        private void saveaswadbox_MouseLeave(object sender, EventArgs e)
+        private void saveaswadbtn_MouseLeave(object sender, EventArgs e)
         {
-            saveaswadbox.Location = new Point(230, 433);
-            saveaswadbox.Size = new Size(32, 22);
-            saveaswadbox.Text = String.Empty;
-            saveaswadbox.ImageAlign = ContentAlignment.MiddleCenter;
+            saveaswadbtn.Location = new Point(230, 433);
+            saveaswadbtn.Size = new Size(32, 22);
+            saveaswadbtn.Text = String.Empty;
+            saveaswadbtn.ImageAlign = ContentAlignment.MiddleCenter;
         }
     }
 }
