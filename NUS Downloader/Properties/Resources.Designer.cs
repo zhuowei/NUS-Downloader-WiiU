@@ -74,6 +74,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap box {
+            get {
+                object obj = ResourceManager.GetObject("box", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap bug_add {
             get {
                 object obj = ResourceManager.GetObject("bug_add", resourceCulture);
@@ -144,6 +151,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap disk {
+            get {
+                object obj = ResourceManager.GetObject("disk", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap folder_table {
             get {
                 object obj = ResourceManager.GetObject("folder_table", resourceCulture);
@@ -154,6 +168,20 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap help {
             get {
                 object obj = ResourceManager.GetObject("help", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap help1 {
+            get {
+                object obj = ResourceManager.GetObject("help1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap information {
+            get {
+                object obj = ResourceManager.GetObject("information", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -172,6 +200,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap package {
+            get {
+                object obj = ResourceManager.GetObject("package", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap package_add {
             get {
                 object obj = ResourceManager.GetObject("package_add", resourceCulture);
@@ -186,9 +221,23 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap package_green {
+            get {
+                object obj = ResourceManager.GetObject("package_green", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap page_white_magnify {
             get {
                 object obj = ResourceManager.GetObject("page_white_magnify", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap picture_empty {
+            get {
+                object obj = ResourceManager.GetObject("picture_empty", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -224,6 +273,13 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap server_link {
             get {
                 object obj = ResourceManager.GetObject("server_link", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap telephone_add {
+            get {
+                object obj = ResourceManager.GetObject("telephone_add", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
