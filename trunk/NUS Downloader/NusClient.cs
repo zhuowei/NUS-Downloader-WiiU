@@ -307,9 +307,11 @@ namespace libWiiSharp
             //Download TMD
             fireDebug("   Downloading TMD...");
             TMD tmd;
+            byte[] tmdFileWithCerts;
             try
             {
-                tmd = TMD.Load(wcNus.DownloadData(titleUrl + tmdFile));
+                tmdFileWithCerts = wcNus.DownloadData(titleUrl + tmdFile);
+                tmd = TMD.Load(tmdFileWithCerts);
             }
             catch (Exception ex) { fireDebug("   Downloading TMD Failed..."); throw new Exception("Downloading TMD Failed:\n" + ex.Message); }
 
@@ -402,7 +404,7 @@ namespace libWiiSharp
             if (storeWad)
             {
                 fireDebug("   Building Certificate Chain...");
-                CertificateChain cert = CertificateChain.FromTikTmd(Path.Combine(outputDir, "cetk"), Path.Combine(outputDir, tmdFile));
+                CertificateChain cert = CertificateChain.FromTikTmd(Path.Combine(outputDir, "cetk"), tmdFileWithCerts);
 
                 byte[][] contents = new byte[tmd.NumOfContents][];
 
