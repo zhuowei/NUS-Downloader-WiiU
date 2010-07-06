@@ -413,7 +413,10 @@ namespace libWiiSharp
 
                 fireDebug("   Creating WAD...");
                 WAD wad = WAD.Create(cert, tik, tmd, contents);
-                wad.Save(Path.Combine(outputDir, wadName));
+                if (wadName.Contains(Path.DirectorySeparatorChar.ToString()) || wadName.Contains(Path.AltDirectorySeparatorChar.ToString()))
+                    wad.Save(wadName);
+                else
+                    wad.Save(Path.Combine(outputDir, wadName));
             }
 
             //Delete not wanted files
