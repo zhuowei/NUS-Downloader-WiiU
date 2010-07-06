@@ -115,16 +115,14 @@ namespace NUS_Downloader
         private BackgroundWorker scriptsWorker;
 
         // Common Key hash
-        private byte[] wii_commonkey_sha1 = new byte[20]
+        private static byte[] wii_commonkey = new byte[16]
                                                 {
-                                                    0xEB, 0xEA, 0xE6, 0xD2, 0x76, 0x2D, 0x4D, 0x3E, 0xA1, 0x60, 0xA6, 0xD8,
-                                                    0x32, 0x7F, 0xAC, 0x9A, 0x25, 0xF8, 0x06, 0x2B
+                                                    0xeb, 0xe4, 0x2a, 0x22, 0x5e, 0x85, 0x93, 0xe4, 0x48, 0xd9, 0xc5, 0x45, 0x73, 0x81, 0xaa, 0xf7
                                                 };
 
-        private byte[] wii_commonkey_sha1_asstring = new byte[20]
+        private static byte[] wii_commonkey_kor = new byte[16]
                                                          {
-                                                             0x56, 0xdd, 0x4e, 0xb3, 0x59, 0x75, 0xc2, 0xfd, 0x5a, 0xe8,
-                                                             0xba, 0x8c, 0x7d, 0x89, 0x9a, 0xc5, 0xe6, 0x17, 0x54, 0x19
+                                                             0x63, 0xb8, 0x2b, 0xb4, 0xf4, 0x61, 0x4e, 0x2e, 0x13, 0xf2, 0xfe, 0xfb, 0xba, 0x4c, 0x9b, 0x7e
                                                          };
 
         /*
@@ -229,7 +227,7 @@ namespace NUS_Downloader
             }
 
             // Check for Wii common key bin file...
-            if (NUSDFileExists("key.bin") == false)
+            /*if (NUSDFileExists("key.bin") == false)
             {
                 WriteStatus("Common Key (key.bin) missing! Decryption disabled!");
                 WriteStatus(" - Try: Extras -> Retrieve Key -> Common Key");
@@ -258,11 +256,13 @@ namespace NUS_Downloader
                 }
             }
 
+
             // Check for Wii KOR common key bin file...
             if (NUSDFileExists("kkey.bin") == true)
             {
                 WriteStatus("Korean Common Key detected.");
-            }
+            }*/
+            WriteStatus("Common keys are compiled in, key.bin/kkey.bin not read.");
 
             // Check for DSi common key bin file...
             if (NUSDFileExists("dsikey.bin") == true)
@@ -1531,6 +1531,14 @@ namespace NUS_Downloader
         /// <returns></returns>
         public byte[] LoadCommonKey(string keyfile)
         {
+            if (keyfile == "key.bin")
+            {
+                return wii_commonkey;
+            }
+            else if (keyfile == "kkey.bin")
+            {
+                return wii_commonkey_kor;
+            }
             if (File.Exists(Path.Combine(CURRENT_DIR, keyfile)) == true)
             {
                 // Read common key byte[]
@@ -3070,7 +3078,7 @@ namespace NUS_Downloader
             return Bytes;
         }
 
-        private void commonKeykeybinToolStripMenuItem_Click(object sender, EventArgs e)
+        /*private void commonKeykeybinToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BackgroundWorker keyFetcher = new BackgroundWorker();
             keyFetcher.DoWork += new DoWorkEventHandler(RetrieveCommonKey);
@@ -3129,7 +3137,7 @@ namespace NUS_Downloader
                 byte[] commonkey = HexStringToByteArray(htmlwithkey);
                 WriteCommonKey("kkey.bin", commonkey);
             }
-        }
+        }*/
 
         string CombinePaths(params string[] parts)
         {
