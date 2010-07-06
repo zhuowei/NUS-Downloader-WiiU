@@ -15,6 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Further modifications have been made for the purposes of NUS Downloader.
+ * See SVN changelog for further details.
+ */
+
+///////////////////////////////////////
+// NUS Downloader: NusClient.cs      //
+// $Rev::                          $ //
+// $Author::                       $ //
+// $Date::                         $ //
+///////////////////////////////////////
+
 using System;
 using System.ComponentModel;
 using System.IO;

@@ -63,9 +63,9 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.proxySettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.getCommonKeyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.commonKeykeybinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.koreanKeykkeybinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            //this.getCommonKeyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            //this.commonKeykeybinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            //this.koreanKeykkeybinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutNUSDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.proxyBox = new System.Windows.Forms.GroupBox();
@@ -339,7 +339,7 @@
             this.toolStripSeparator3,
             this.proxySettingsToolStripMenuItem,
             this.toolStripSeparator6,
-            this.getCommonKeyMenuItem,
+            //this.getCommonKeyMenuItem,
             this.toolStripSeparator5,
             this.aboutNUSDToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
@@ -373,7 +373,7 @@
             // 
             // getCommonKeyMenuItem
             // 
-            this.getCommonKeyMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            /*this.getCommonKeyMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.commonKeykeybinToolStripMenuItem,
             this.koreanKeykkeybinToolStripMenuItem});
             this.getCommonKeyMenuItem.Image = global::NUS_Downloader.Properties.Resources.key;
@@ -393,7 +393,7 @@
             this.koreanKeykkeybinToolStripMenuItem.Name = "koreanKeykkeybinToolStripMenuItem";
             this.koreanKeykkeybinToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.koreanKeykkeybinToolStripMenuItem.Text = "Korean Key (kkey.bin)";
-            this.koreanKeykkeybinToolStripMenuItem.Click += new System.EventHandler(this.koreanKeykkeybinToolStripMenuItem_Click);
+            this.koreanKeykkeybinToolStripMenuItem.Click += new System.EventHandler(this.koreanKeykkeybinToolStripMenuItem_Click);*/
             // 
             // toolStripSeparator5
             // 
@@ -893,11 +893,11 @@
         private System.Windows.Forms.TextBox ProxyPwdBox;
         private wyDay.Controls.Windows7ProgressBar dlprogress;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripMenuItem getCommonKeyMenuItem;
+        //private System.Windows.Forms.ToolStripMenuItem getCommonKeyMenuItem;
         private System.Windows.Forms.ContextMenuStrip C64MenuListDrop;
         private System.Windows.Forms.ComboBox consoleCBox;
-        private System.Windows.Forms.ToolStripMenuItem commonKeykeybinToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem koreanKeykkeybinToolStripMenuItem;
+        //private System.Windows.Forms.ToolStripMenuItem commonKeykeybinToolStripMenuItem;
+        //private System.Windows.Forms.ToolStripMenuItem koreanKeykkeybinToolStripMenuItem;
         private wmgCMS.WaterMarkTextBox titleidbox;
         private wmgCMS.WaterMarkTextBox titleversion;
         private System.Windows.Forms.Button scriptsbutton;
