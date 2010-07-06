@@ -114,6 +114,7 @@ namespace NUS_Downloader
         // Scripts Thread
         private BackgroundWorker scriptsWorker;
 
+        /*
         // Common Key hash
         private static byte[] wii_commonkey = new byte[16]
                                                 {
@@ -124,7 +125,7 @@ namespace NUS_Downloader
                                                          {
                                                              0x63, 0xb8, 0x2b, 0xb4, 0xf4, 0x61, 0x4e, 0x2e, 0x13, 0xf2, 0xfe, 0xfb, 0xba, 0x4c, 0x9b, 0x7e
                                                          };
-
+        */
         /*
         public struct WADHeader
         {
@@ -262,7 +263,7 @@ namespace NUS_Downloader
             {
                 WriteStatus("Korean Common Key detected.");
             }*/
-            WriteStatus("Common keys are compiled in, key.bin/kkey.bin not read.");
+            //WriteStatus("Common keys are compiled in, key.bin/kkey.bin not read.");
 
             // Check for DSi common key bin file...
             if (NUSDFileExists("dsikey.bin") == true)
@@ -1011,15 +1012,15 @@ namespace NUS_Downloader
                     if (cetkbuf[0x01F1] == 0x01)
                     {
                         WriteStatus("Key Type: Korean");
-                        keyBytes = LoadCommonKey("kkey.bin");
+                        keyBytes = libWiiSharp.CommonKey.GetKoreanKey();
                     }
                     else
                     {
                         WriteStatus("Key Type: Standard");
                         if (wiimode)
-                            keyBytes = LoadCommonKey("key.bin");
+                            keyBytes = libWiiSharp.CommonKey.GetStandardKey();
                         else
-                            keyBytes = LoadCommonKey("dsikey.bin");
+                            keyBytes = File.ReadAllBytes(Path.Combine(CURRENT_DIR, "dsikey.bin"));
                     }
 
                     initCrypt(iv, keyBytes);
@@ -1530,6 +1531,7 @@ namespace NUS_Downloader
             return sha.ComputeHash(data);
         }
 
+        /*
         /// <summary>
         /// Loads the common key from disc.
         /// </summary>
@@ -1552,8 +1554,9 @@ namespace NUS_Downloader
             }
             else
                 return null;
-        }
+        }*/
 
+        /*
         /// <summary>
         /// Writes/overwrites the common key onto disc.
         /// </summary>
@@ -1579,7 +1582,7 @@ namespace NUS_Downloader
                 WriteStatus(String.Format("Error: Couldn't write {0}: {1}", keyfile, e.Message));
             }
             return false;
-        }
+        }*/
 
         private void button4_Click(object sender, EventArgs e)
         {
