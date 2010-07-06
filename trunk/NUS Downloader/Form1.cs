@@ -867,6 +867,34 @@ namespace NUS_Downloader
 
         private void NUSDownloader_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            Control.CheckForIllegalCrossThreadCalls = false; // this function would need major rewriting to get rid of this...
+            if (!(script_mode))
+                WriteStatus("Starting NUS Download. Please be patient!");
+            SetEnableforDownload(false);
+            downloadstartbtn.Text = "Starting NUS Download!";
+
+            // WebClient configuration
+            WebClient nusWC = new WebClient();
+            nusWC = ConfigureWithProxy(nusWC);
+            nusWC.Headers.Add("User-Agent", "wii libnup/1.0"); // Set UserAgent to Wii value
+            
+            // Create\Configure NusClient
+            libWiiSharp.NusClient nusClient = new libWiiSharp.NusClient();
+            nusClient.ConfigureNusClient(nusWC);
+            nusClient.UseLocalFiles = localuse.Checked;
+            nusClient.ContinueWithoutTicket = true;
+            nusClient.Debug += new EventHandler<libWiiSharp.MessageEventArgs>(nusClient_Debug);
+
+            libWiiSharp.StoreType[] storeTypes = new libWiiSharp.StoreType[3];
+            if (packbox.Checked) storeTypes[0] = libWiiSharp.StoreType.WAD; else storeTypes[0] = libWiiSharp.StoreType.Empty;
+            if (decryptbox.Checked) storeTypes[1] = libWiiSharp.StoreType.DecryptedContent; else storeTypes[1] = libWiiSharp.StoreType.Empty;
+            if (keepenccontents.Checked) storeTypes[2] = libWiiSharp.StoreType.EncryptedContent; else storeTypes[2] = libWiiSharp.StoreType.Empty;
+
+            nusClient.DownloadTitle(titleidbox.Text, titleversion.Text, Path.Combine(CURRENT_DIR, "titles"), wadnamebox.Text, storeTypes);
+
+            WriteStatus("NUS Download Finished.");
+
+            /* THIS CODE WAD PRE-libWiiSharp
             // Preparations for Downloading
             Control.CheckForIllegalCrossThreadCalls = false; // this function would need major rewriting to get rid of this...
             if (!(script_mode))
@@ -958,12 +986,7 @@ namespace NUS_Downloader
             catch (Exception ex)
             {
                 //WriteStatus("Download Failed: cetk");
-                /*WriteStatus("You may be able to retrieve the contents by Ignoring the Ticket (Check below)");
-                SetEnableforDownload(true);
-                downloadstartbtn.Text = "Start NUS Download!";
-                dlprogress.Value = 0;
-                DeleteTitleDirectory();
-                return;*/
+                
                 
                 WriteStatus("Ticket not found! Continuing, however WAD packing and decryption are not possible!");
                 WriteStatus(" - Reason: " +
@@ -1148,12 +1171,7 @@ namespace NUS_Downloader
 
                     initCrypt(iv, titlekey);
 
-                    /* Create decrypted file
-                    string zeros = "000000";
-                    FileStream decfs = new FileStream(titledirectory + Path.DirectorySeparatorChar.ToString() + zeros + i.ToString("X2") + ".app", FileMode.Create);
-                    decfs.Write(Decrypt(contbuf), 0, int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber));
-                    decfs.Close();
-                    WriteStatus("  - Decrypted: " + zeros + i.ToString("X2") + ".app"); */
+                    
 
                     FileStream decfs =
                         new FileStream(
@@ -1191,7 +1209,12 @@ namespace NUS_Downloader
             if ((packbox.Checked == true) && (wiimode == true))
             {
                 PackWAD(titleid, tmdfull, titledirectory);
-            }
+            } */
+        }
+
+        void nusClient_Debug(object sender, libWiiSharp.MessageEventArgs e)
+        {
+            WriteStatus(e.Message);
         }
 
         private void NUSDownloader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
