@@ -48,7 +48,7 @@ namespace NUS_Downloader
 
         // TODO: Always remember to change version!
         private string version = "v2.0 Beta";
-        private WebClient generalWC = new WebClient();
+        
         private static RijndaelManaged rijndaelCipher;
         private static bool dsidecrypt = false;
 
@@ -409,7 +409,7 @@ namespace NUS_Downloader
             if (opentmd.ShowDialog() != DialogResult.Cancel)
             {
                 // Read the tmd as a stream...
-                byte[] tmd = FileLocationToByteArray(opentmd.FileName);
+                byte[] tmd = File.ReadAllBytes(opentmd.FileName);
                 WriteStatus("TMD Loaded (" + tmd.Length + " bytes)");
 
                 // Read ID...
@@ -813,7 +813,8 @@ namespace NUS_Downloader
         }
 
         private void button3_Click(object sender, EventArgs e)
-        {            if (titleidbox.Text == String.Empty)
+        {            
+            if (titleidbox.Text == String.Empty)
             {
                 // Prevent mass deletion and fail
                 WriteStatus("Please enter a Title ID!");
@@ -864,7 +865,6 @@ namespace NUS_Downloader
             if (!(script_mode))
                 WriteStatus("Starting NUS Download. Please be patient!");
             SetEnableforDownload(false);
-
             downloadstartbtn.Text = "Starting NUS Download!";
 
             // Creates the directory 
@@ -873,41 +873,51 @@ namespace NUS_Downloader
 
             // Wii / DSi
             bool wiimode = (consoleCBox.SelectedIndex == 0);
+            string activeNusUrl;
+            if (wiimode)
+                activeNusUrl = WII_NUS_URL;
+            else
+                activeNusUrl = DSI_NUS_URL;
 
             string titleid = titleidbox.Text;
+            string title_v = titleversion.Text;
 
-            // Set UserAgent to Wii value
-            generalWC.Headers.Add("User-Agent", "wii libnup/1.0");
+            // WebClient configuration
+            WebClient nusWC = new WebClient();
+            nusWC = ConfigureWithProxy(nusWC);
+            nusWC.Headers.Add("User-Agent", "wii libnup/1.0"); // Set UserAgent to Wii value
 
-            // Proxy
-            generalWC = ConfigureWithProxy(generalWC);
-
+            // Create\Configure NusClient
+            libWiiSharp.NusClient nusClient = new libWiiSharp.NusClient();
+            nusClient.ConfigureNusClient(nusWC);
+            nusClient.UseLocalFiles = localuse.Checked;
+            
             // Get placement directory early...
             string titledirectory;
             if (titleversion.Text == "")
                 titledirectory = Path.Combine(CURRENT_DIR, titleid);
             else
-                titledirectory = Path.Combine(CURRENT_DIR, (titleid + "v" + titleversion.Text));
+                titledirectory = Path.Combine(CURRENT_DIR, (titleid + "v" + title_v));
 
             if (script_mode)
                 titledirectory = Path.Combine(CURRENT_DIR, "output_" + Path.GetFileNameWithoutExtension(script_filename));
 
             downloadstartbtn.Text = "Prerequisites: (0/2)";
 
-            // Windows 7?
+            // Windows 7? Windows 7 Taskbar progress can be used.
             if (IsWin7())
-            {
-                // Windows 7 Taskbar progress can be used.
                 dlprogress.ShowInTaskbar = true;
-            }
 
             // Download TMD before the rest...
             string tmdfull = "tmd";
-            if (titleversion.Text != "")
-                tmdfull += "." + titleversion.Text;
+            if (String.IsNullOrEmpty(title_v) == false)
+                tmdfull += "." + title_v;
+
+            byte[] tmd;
             try
             {
-                DownloadNUSFile(titleid, tmdfull, titledirectory, 0, wiimode);
+                tmd = nusClient.DownloadTMD(titleid, title_v, activeNusUrl);
+                //DownloadNUSFile(titleid, tmdfull, titledirectory, 0, wiimode);
             }
             catch (Exception ex)
             {
@@ -930,11 +940,13 @@ namespace NUS_Downloader
                 wadnamebox.Enabled = false;
             }
 
-            // Download CETK after tmd...
-            bool ticket_exists = true;
+            // Download cetk (ticket) after tmd...
+            //bool ticket_exists = true;
+            byte[] cetkbuf = new byte[0];
             try
             {
-                DownloadNUSFile(titleid, "cetk", titledirectory, 0, wiimode);
+                cetkbuf = nusClient.DownloadTicket(titleid, activeNusUrl);
+                //DownloadNUSFile(titleid, "cetk", titledirectory, 0, wiimode);
             }
             catch (Exception ex)
             {
@@ -953,17 +965,18 @@ namespace NUS_Downloader
                 packbox.Checked = false;
                 decryptbox.Checked = false;
                 WAD_Saveas_Filename = String.Empty;
-                ticket_exists = false;
+                //ticket_exists = false;
             }
+
             downloadstartbtn.Text = "Prerequisites: (2/2)";
             dlprogress.Value = 100;
 
-            byte[] cetkbuf = new byte[0];
+            //byte[] cetkbuf = new byte[0];
             byte[] titlekey = new byte[0];
-            if (ticket_exists)
+            if ((cetkbuf.Length > 0) == true)
             {
                 // Create ticket file holder
-                cetkbuf = FileLocationToByteArray(Path.Combine(titledirectory, "cetk"));
+                //cetkbuf = FileLocationToByteArray(Path.Combine(titledirectory, "cetk"));
 
                 // Obtain TitleKey
                 titlekey = new byte[16];
@@ -1011,9 +1024,9 @@ namespace NUS_Downloader
             }
 
             // Read the tmd as a stream...
-            byte[] tmd = FileLocationToByteArray(Path.Combine(titledirectory, tmdfull));
+            //byte[] tmd = FileLocationToByteArray(Path.Combine(titledirectory, tmdfull));
 
-            if (ticket_exists == true)
+            if ((cetkbuf.Length > 0) == true)
             {
                 // Locate Certs **************************************
                 if (!(CertsValid()))
@@ -1028,24 +1041,21 @@ namespace NUS_Downloader
             }
 
             // Read Title Version...
-            string tmdversion = "";
-            for (int x = 476; x < 478; x++)
+            if (String.IsNullOrEmpty(title_v))
             {
-                tmdversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[x])));
+                string tmdversion = "";
+                for (int x = 476; x < 478; x++)
+                {
+                    tmdversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[x])));
+                }
+                titleversion.Text = Convert.ToString(int.Parse(tmdversion, System.Globalization.NumberStyles.HexNumber));
+                title_v = tmdversion;
             }
-            titleversion.Text = Convert.ToString(int.Parse(tmdversion, System.Globalization.NumberStyles.HexNumber));
 
             //Read System Version (Needed IOS)
             string sysversion = IOSNeededFromTMD(tmd);
             if (sysversion != "0")
                 WriteStatus("Requires: IOS" + sysversion);
-
-            // Renaming would be ideal, but gives too many permission errors...
-            /*if ((CURRENT_DIR + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString()) != titledirectory)
- 	        {
- 	                Directory.Move(titledirectory, CURRENT_DIR + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString());
- 	                titledirectory = CURRENT_DIR + titleid + "v" + titleversion.Text + Path.DirectorySeparatorChar.ToString();
-            } */
 
             // Read Content #...
             string contentstrnum = "";
@@ -1054,7 +1064,7 @@ namespace NUS_Downloader
                 contentstrnum += TrimLeadingZeros(Convert.ToString(tmd[x]));
             }
             WriteStatus("Content #: " + contentstrnum);
-            downloadstartbtn.Text = "Content: (0/" + contentstrnum + ")";
+            downloadstartbtn.Text = String.Format("Content: (0/{0})", contentstrnum);
             dlprogress.Value = 0;
 
             // Gather information...
@@ -1070,21 +1080,29 @@ namespace NUS_Downloader
             {
                 totalcontentsize += int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber);
             }
-            WriteStatus("Total Size: " + (long) totalcontentsize + " bytes");
+            WriteStatus("Total Size: " + (long)totalcontentsize + " bytes");
 
+            // Write files from NUS out...
+            File.WriteAllBytes(Path.Combine(titledirectory, tmdfull), tmd);
+            File.WriteAllBytes(Path.Combine(titledirectory, "cetk"), cetkbuf);
+
+            // Download each content
             for (int i = 0; i < tmdcontents.Length; i++)
             {
+                byte[] contbuf;
                 try
                 {
                     // If it exists we leave it...
-                    if ((localuse.Checked) && (File.Exists(Path.Combine(titledirectory, tmdcontents[i]))))
+                    if ((nusClient.UseLocalFiles) && (File.Exists(Path.Combine(titledirectory, tmdcontents[i]))))
                     {
                         WriteStatus("Leaving local " + tmdcontents[i] + ".");
+                        contbuf = File.ReadAllBytes(Path.Combine(titledirectory, tmdcontents[i]));
                     }
                     else
                     {
-                        DownloadNUSFile(titleid, tmdcontents[i], titledirectory,
-                                        int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber), wiimode);
+                        contbuf = nusClient.DownloadSingleContent(titleid, title_v, tmdcontents[i], activeNusUrl);
+                        //DownloadNUSFile(titleid, tmdcontents[i], titledirectory,
+                                        //int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber), wiimode);
                     }
                 }
                 catch (Exception ex)
@@ -1099,6 +1117,9 @@ namespace NUS_Downloader
                     return;
                 }
 
+                if (File.Exists(Path.Combine(titledirectory, tmdcontents[i])) == false)
+                    File.WriteAllBytes(Path.Combine(titledirectory, tmdcontents[i]), contbuf);
+
                 // Progress reporting advances...
                 downloadstartbtn.Text = String.Format("Content: ({0} / {1})", (i + 1), contentstrnum);
                 currentcontentlocation += int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber);
@@ -1107,8 +1128,8 @@ namespace NUS_Downloader
                 if (decryptbox.Checked == true)
                 {
                     // Create content file holder
-                    byte[] contbuf =
-                        FileLocationToByteArray(Path.Combine(titledirectory, tmdcontents[i]));
+                    //byte[] contbuf =
+                        //FileLocationToByteArray(Path.Combine(titledirectory, tmdcontents[i]));
 
                     // IV (00+IDX+more000)
                     byte[] iv = new byte[16];
@@ -1164,6 +1185,11 @@ namespace NUS_Downloader
             {
                 PackWAD(titleid, tmdfull, titledirectory);
             }
+        }
+
+        private void NUSDownloader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            WAD_Saveas_Filename = String.Empty;
 
             SetEnableforDownload(true);
             downloadstartbtn.Text = "Start NUS Download!";
@@ -1174,11 +1200,6 @@ namespace NUS_Downloader
 
             if (script_mode)
                 statusbox.Text = "";
-        }
-
-        private void NUSDownloader_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            WAD_Saveas_Filename = String.Empty;
         } 
 
         /// <summary>
@@ -1225,6 +1246,7 @@ namespace NUS_Downloader
                 Directory.Delete(titledirectory, true);
         }
 
+        /*
         /// <summary>
         /// Downloads the NUS file.
         /// </summary>
@@ -1252,7 +1274,7 @@ namespace NUS_Downloader
             // Download NUS file...
             generalWC.DownloadFile(nusfileurl, Path.Combine(placementdir, filename));
         }
-
+        */
         private void StatusChange(string status)
         {
             WriteStatus(status);
@@ -1293,8 +1315,8 @@ namespace NUS_Downloader
             packer.Certs = certsbuf;
 
             // Read TMD/TIK into Packer.
-            packer.Ticket = FileLocationToByteArray(Path.Combine(totaldirectory, "cetk"));
-            packer.TMD = FileLocationToByteArray(Path.Combine(totaldirectory, tmdfilename));
+            packer.Ticket = File.ReadAllBytes(Path.Combine(totaldirectory, "cetk"));
+            packer.TMD = File.ReadAllBytes(Path.Combine(totaldirectory, tmdfilename));
 
             // Get the TMD variables in here instead...
             int contentcount = ContentCount(packer.TMD);
@@ -1325,7 +1347,7 @@ namespace NUS_Downloader
             byte[][] contents_array = new byte[contentcount][];
             for (int a = 0; a < contentcount; a++)
             {
-                contents_array[a] = FileLocationToByteArray(Path.Combine(totaldirectory, contentnames[a]));
+                contents_array[a] = File.ReadAllBytes(Path.Combine(totaldirectory, contentnames[a]));
             }
             packer.Contents = contents_array;
 
@@ -1512,7 +1534,7 @@ namespace NUS_Downloader
             if (File.Exists(Path.Combine(CURRENT_DIR, keyfile)) == true)
             {
                 // Read common key byte[]
-                return FileLocationToByteArray(Path.Combine(CURRENT_DIR, keyfile));
+                return File.ReadAllBytes(Path.Combine(CURRENT_DIR, keyfile));
             }
             else
                 return null;
@@ -2188,7 +2210,8 @@ namespace NUS_Downloader
 
             return null;
         }
-
+        
+        /*
         /// <summary>
         /// Loads a file into a byte[]
         /// </summary>
@@ -2200,7 +2223,7 @@ namespace NUS_Downloader
             byte[] filebytearray = ReadFully(fs, 460);
             fs.Close();
             return filebytearray;
-        }
+        }*/
 
         /// <summary>
         /// Updates the name of the packed WAD in the textbox.
@@ -3234,12 +3257,13 @@ namespace NUS_Downloader
             WriteStatus("Special thanks to:");
             WriteStatus(" * Crediar for his wadmaker tool + source, and for the advice!");
             WriteStatus(" * SquidMan/Galaxy/comex/Xuzz for advice/sources.");
+            WriteStatus(" * Leathl for portions of libWiiSharp.");
             WriteStatus(" * Pasta for database compilation assistance.");
-            WriteStatus(" * #WiiDev for answering the tough questions.");
-            WriteStatus(" * Anyone who helped beta test on GBATemp!");
-            WriteStatus(" * Famfamfam for the Silk Icon Set.");
-            WriteStatus(" * Wyatt O'Day for the Windows7ProgressBar Control.");
             WriteStatus(" * Napo7 for testing proxy usage.");
+            WriteStatus(" * Wyatt O'Day for the Windows7ProgressBar Control.");
+            WriteStatus(" * Famfamfam for the Silk Icon Set.");
+            WriteStatus(" * #WiiDev for answering the tough questions.");
+            WriteStatus(" * Anyone who helped beta test!");
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
