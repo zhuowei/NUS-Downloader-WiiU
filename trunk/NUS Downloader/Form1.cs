@@ -890,7 +890,13 @@ namespace NUS_Downloader
             if (decryptbox.Checked) storeTypes[1] = libWiiSharp.StoreType.DecryptedContent; else storeTypes[1] = libWiiSharp.StoreType.Empty;
             if (keepenccontents.Checked) storeTypes[2] = libWiiSharp.StoreType.EncryptedContent; else storeTypes[2] = libWiiSharp.StoreType.Empty;
 
-            nusClient.DownloadTitle(titleidbox.Text, titleversion.Text, Path.Combine(CURRENT_DIR, "titles"), wadnamebox.Text, storeTypes);
+            string wadName;
+            if (String.IsNullOrEmpty(WAD_Saveas_Filename))
+                wadName = wadnamebox.Text;
+            else
+                wadName = WAD_Saveas_Filename;
+
+            nusClient.DownloadTitle(titleidbox.Text, titleversion.Text, Path.Combine(CURRENT_DIR, "titles"), wadName, storeTypes);
 
             WriteStatus("NUS Download Finished.");
 
@@ -1947,7 +1953,7 @@ namespace NUS_Downloader
         /// Mods WAD names to be official.
         /// </summary>
         /// <param name="titlename">The titlename.</param>
-        public void OfficialWADNaming(string titlename)
+        public string OfficialWADNaming(string titlename)
         {
             if (titlename == "MIOS")
                 wadnamebox.Text = "RVL-mios-[v].wad";
@@ -1970,6 +1976,8 @@ namespace NUS_Downloader
 
             if (titleversion.Text != "")
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
+
+            return wadnamebox.Text;
         }
 
         private void wwitem_regionclicked(object sender, ToolStripItemClickedEventArgs e)
@@ -3076,6 +3084,34 @@ namespace NUS_Downloader
                 // don't let the delete issue reappear...
                 if (string.IsNullOrEmpty(title_info[0]))
                     break;
+
+                // WebClient configuration
+                WebClient nusWC = new WebClient();
+                nusWC = ConfigureWithProxy(nusWC);
+                nusWC.Headers.Add("User-Agent", "wii libnup/1.0"); // Set UserAgent to Wii value
+
+                // Create\Configure NusClient
+                libWiiSharp.NusClient nusClient = new libWiiSharp.NusClient();
+                nusClient.ConfigureNusClient(nusWC);
+                nusClient.UseLocalFiles = localuse.Checked;
+                nusClient.ContinueWithoutTicket = true;
+                nusClient.Debug += new EventHandler<libWiiSharp.MessageEventArgs>(nusClient_Debug);
+
+                libWiiSharp.StoreType[] storeTypes = new libWiiSharp.StoreType[1];
+                // There's no harm in outputting everything i suppose
+                storeTypes[0] = libWiiSharp.StoreType.All;
+
+                int title_version = int.Parse(title_info[1], System.Globalization.NumberStyles.HexNumber);
+
+                string wadName = NameFromDatabase(title_info[0]);
+                if (wadName != null)
+                    wadName = OfficialWADNaming(wadName);
+                else
+                    wadName = title_info[0] + "-NUS-v" + title_version + ".wad";
+
+                nusClient.DownloadTitle(title_info[0], title_version.ToString(), Path.Combine(CURRENT_DIR, ("output_" + Path.GetFileNameWithoutExtension(script_filename))), wadName, storeTypes);
+
+                /*
                 SetTextThreadSafe(titleidbox, title_info[0]);
                 SetTextThreadSafe(titleversion,
                     Convert.ToString(256*
@@ -3093,12 +3129,13 @@ namespace NUS_Downloader
                 while (NUSDownloader.IsBusy)
                 {
                     Thread.Sleep(1000);
-                }
+                } */
             }
             script_mode = false;
             WriteStatus("Script completed!");
         }
 
+        /*
         public static string ByteArrayToHexString(byte[] Bytes)
         {
             StringBuilder Result = new StringBuilder();
@@ -3130,7 +3167,7 @@ namespace NUS_Downloader
             }
 
             return Bytes;
-        }
+        }*/
 
         /*private void commonKeykeybinToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -3318,8 +3355,8 @@ namespace NUS_Downloader
             WriteStatus("");
             WriteStatus("Special thanks to:");
             WriteStatus(" * Crediar for his wadmaker tool + source, and for the advice!");
+            WriteStatus(" * Leathl for libWiiSharp.");
             WriteStatus(" * SquidMan/Galaxy/comex/Xuzz for advice/sources.");
-            WriteStatus(" * Leathl for portions of libWiiSharp.");
             WriteStatus(" * Pasta for database compilation assistance.");
             WriteStatus(" * Napo7 for testing proxy usage.");
             WriteStatus(" * Wyatt O'Day for the Windows7ProgressBar Control.");
