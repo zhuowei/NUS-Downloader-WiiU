@@ -125,6 +125,18 @@ namespace libWiiSharp
         /// Grabs certificates from Ticket and Tmd.
         /// Ticket and Tmd must contain certs! (They do when they're downloaded from NUS!)
         /// </summary>
+        /// <param name="pathToTik"></param>
+        /// <param name="pathToTmd"></param>
+        /// <returns></returns>
+        public static CertificateChain FromTikTmd(string pathToTik, byte[] tmdFile)
+        {
+            return FromTikTmd(File.ReadAllBytes(pathToTik), tmdFile);
+        }
+
+        /// <summary>
+        /// Grabs certificates from Ticket and Tmd.
+        /// Ticket and Tmd must contain certs! (They do when they're downloaded from NUS!)
+        /// </summary>
         /// <param name="tikFile"></param>
         /// <param name="tmdFile"></param>
         /// <returns></returns>
@@ -207,6 +219,18 @@ namespace libWiiSharp
         public void LoadFromTikTmd(string pathToTik, string pathToTmd)
         {
             LoadFromTikTmd(File.ReadAllBytes(pathToTik), File.ReadAllBytes(pathToTmd));
+        }
+
+        /// <summary>
+        /// Grabs certificates from Ticket and Tmd.
+        /// Ticket and Tmd must contain certs! (They do when they're downloaded from NUS!)
+        /// </summary>
+        /// <param name="pathToTik"></param>
+        /// <param name="tmdFile"></param>
+        /// <returns></returns>
+        public void LoadFromTikTmd(string pathToTik, byte[] tmdFile)
+        {
+            LoadFromTikTmd(File.ReadAllBytes(pathToTik), tmdFile);
         }
 
         /// <summary>
