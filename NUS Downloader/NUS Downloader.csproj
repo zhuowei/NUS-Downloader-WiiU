@@ -83,6 +83,7 @@
     <Compile Include="Headers.cs" />
     <Compile Include="IosPatcher.cs" />
     <Compile Include="Lz77.cs" />
+    <Compile Include="MessageEventArgs.cs" />
     <Compile Include="NusClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
