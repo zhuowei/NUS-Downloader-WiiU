@@ -58,7 +58,7 @@ namespace NUS_Downloader
         private delegate void WriteStatusCallback(string Update);
         private delegate void BootChecksCallback();
         private delegate void SetEnableForDownloadCallback(bool enabled);
-        private delegate void SetTextThreadSafeCallback(System.Windows.Forms.Control what, string setto);
+        private delegate void SetPropertyThreadSafeCallback(System.ComponentModel.Component what, object setto, string property);
 
         // Images do not compare unless globalized...
         private Image green = Properties.Resources.bullet_green;
@@ -288,7 +288,7 @@ namespace NUS_Downloader
                 WriteStatus("Database.xml detected.");
                 WriteStatus(" - Version: " + version);
                 updateDatabaseToolStripMenuItem.Text = "Update Database";
-                databaseButton.Enabled = false;
+                //databaseButton.Enabled = false;
                 databaseButton.Text = "DB Loading";
                 // Load it up...
                 this.fds.RunWorkerAsync();
@@ -331,7 +331,7 @@ namespace NUS_Downloader
 
         private void DoAllDatabaseyStuff_Completed(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
-            this.databaseButton.Enabled = true;
+            //this.databaseButton.Enabled = true;
             this.databaseButton.Text = "Database...";
             if (this.KoreaMassUpdate.HasDropDownItems || this.PALMassUpdate.HasDropDownItems || this.NTSCMassUpdate.HasDropDownItems)
             {
@@ -849,13 +849,19 @@ namespace NUS_Downloader
 
         private void SetTextThreadSafe(System.Windows.Forms.Control what, string setto)
         {
+            SetPropertyThreadSafe(what, "Name", setto);
+        }
+
+        private void SetPropertyThreadSafe(System.ComponentModel.Component what, object setto, string property)
+        {
             if (this.InvokeRequired)
             {
-                SetTextThreadSafeCallback sttscb = new SetTextThreadSafeCallback(SetTextThreadSafe);
-                this.Invoke(sttscb, new object[] { what, setto });
+                SetPropertyThreadSafeCallback sptscb = new SetPropertyThreadSafeCallback(SetPropertyThreadSafe);
+                this.Invoke(sptscb, new object[] { what, setto, property });
                 return;
             }
-            what.Text = setto;
+            what.GetType().GetProperty(property).SetValue(what, setto, null);
+            //what.Text = setto;
         }
 
         private void NUSDownloader_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -1586,22 +1592,24 @@ namespace NUS_Downloader
         /// </summary>
         private void ClearDatabaseStrip()
         {
-            SystemMenuList.DropDownItems.Clear();
-            IOSMenuList.DropDownItems.Clear();
-            WiiWareMenuList.DropDownItems.Clear();
+            object[] thingstoclear = new object[] {
+                SystemMenuList, IOSMenuList, WiiWareMenuList, VCMenuList,
+                
+                // Now Virtual Console
+                C64MenuList, NeoGeoMenuList, NESMenuList,
+                SNESMenuList, N64MenuList, TurboGrafx16MenuList,
+                TurboGrafxCDMenuList, MSXMenuList, SegaMSMenuList,
+                GenesisMenuList, VCArcadeMenuList
+            };
 
-            // VC Games Sections...
-            C64MenuList.DropDownItems.Clear();
-            NeoGeoMenuList.DropDownItems.Clear();
-            NESMenuList.DropDownItems.Clear();
-            SNESMenuList.DropDownItems.Clear();
-            N64MenuList.DropDownItems.Clear();
-            TurboGrafx16MenuList.DropDownItems.Clear();
-            TurboGrafxCDMenuList.DropDownItems.Clear();
-            MSXMenuList.DropDownItems.Clear();
-            SegaMSMenuList.DropDownItems.Clear();
-            GenesisMenuList.DropDownItems.Clear();
-            VCArcadeMenuList.DropDownItems.Clear();
+            foreach (System.Windows.Forms.ToolStripMenuItem tsmiclear in thingstoclear)
+            {
+                if (tsmiclear.Name != "VCMenuList") // Don't clear the VC Menu...
+                    tsmiclear.DropDownItems.Clear();
+
+                if (tsmiclear.OwnerItem != VCMenuList) // and don't disable the VC menu subparts...
+                    tsmiclear.Enabled = false;
+            }
         }
 
         /// <summary>
@@ -1732,6 +1740,23 @@ namespace NUS_Downloader
                         }
                     }
                     AddToolStripItemToStrip(i, XMLToolStripItem, XMLAttributes);
+                }
+                // Now enable the specific toolbar
+                switch (XMLNodeTypes[i])
+                {
+                    case "IOS":
+                        //IOSMenuList.Enabled = true;
+                        SetPropertyThreadSafe(IOSMenuList, true, "Enabled");
+                        break;
+                    case "SYS":
+                        SetPropertyThreadSafe(SystemMenuList, true, "Enabled");
+                        break;
+                    case "VC":
+                        SetPropertyThreadSafe(VCMenuList, true, "Enabled");
+                        break;
+                    case "WW":
+                        SetPropertyThreadSafe(WiiWareMenuList, true, "Enabled");
+                        break;
                 }
             }
         }
@@ -2080,6 +2105,9 @@ namespace NUS_Downloader
             if (this.InvokeRequired)
             {
                 Debug.Write("TOLDYOUSO!");
+                BootChecksCallback bcc = new BootChecksCallback(LoadRegionCodes);
+                this.Invoke(bcc);
+                return;
             }
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load("database.xml");
@@ -2518,7 +2546,7 @@ namespace NUS_Downloader
             {
                 WriteStatus("Database successfully created!");
                 databaseButton.Visible = true;
-                databaseButton.Enabled = false;
+                //databaseButton.Enabled = false;
                 updateDatabaseToolStripMenuItem.Text = "Download Database";
             }
             else
