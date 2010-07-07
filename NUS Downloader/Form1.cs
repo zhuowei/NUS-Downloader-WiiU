@@ -158,6 +158,10 @@ namespace NUS_Downloader
         public Form1()
         {
             InitializeComponent();
+
+            System.Drawing.Size mysize = new System.Drawing.Size(280, this.decryptbox.Top + this.decryptbox.Height + 30);
+            this.MaximumSize = this.MinimumSize = this.Size = mysize;
+
             KoreaMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             NTSCMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             PALMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
@@ -2476,31 +2480,39 @@ namespace NUS_Downloader
 
         private WebClient ConfigureWithProxy(WebClient client)
         {
-            // Proxy
-            if (!(String.IsNullOrEmpty(proxy_url)))
-            {
-                WebProxy customproxy = new WebProxy();
-                customproxy.Address = new Uri(proxy_url);
-                if (String.IsNullOrEmpty(proxy_usr))
-                    customproxy.UseDefaultCredentials = true;
+                // Proxy
+                if (!(String.IsNullOrEmpty(proxy_url)))
+                {
+                    WebProxy customproxy = new WebProxy();
+                    customproxy.Address = new Uri(proxy_url);
+                    if (String.IsNullOrEmpty(proxy_usr))
+                        customproxy.UseDefaultCredentials = true;
+                    else
+                    {
+                        NetworkCredential cred = new NetworkCredential();
+                        cred.UserName = proxy_usr;
+
+                        if (!(String.IsNullOrEmpty(proxy_pwd)))
+                            cred.Password = proxy_pwd;
+
+                        customproxy.Credentials = cred;
+                    }
+                    client.Proxy = customproxy;
+                    WriteStatus("  - Custom proxy settings applied!");
+                }
                 else
                 {
-                    NetworkCredential cred = new NetworkCredential();
-                    cred.UserName = proxy_usr;
-
-                    if (!(String.IsNullOrEmpty(proxy_pwd)))
-                        cred.Password = proxy_pwd;
-
-                    customproxy.Credentials = cred;
+                    try
+                    {
+                    client.Proxy = WebRequest.GetSystemWebProxy();
+                    client.UseDefaultCredentials = true;
+                    }
+                    catch (NotImplementedException)
+                    {
+                        // Linux support
+                        WriteStatus("This operating system does not support automatic system proxy usage. Operating without a proxy...");
+                    }
                 }
-                client.Proxy = customproxy;
-                WriteStatus("  - Custom proxy settings applied!");
-            }
-            else
-            {
-                client.Proxy = WebRequest.GetSystemWebProxy();
-                client.UseDefaultCredentials = true;
-            }
             return client;
         }
 
@@ -3388,7 +3400,8 @@ namespace NUS_Downloader
         private void button3_MouseEnter(object sender, EventArgs e)
         {
             // expand clear button
-            button3.Location = new Point(194, 363);
+            //button3.Location = new Point(194, 363);
+            button3.Left -= 45;
             button3.Size = new System.Drawing.Size(68, 21);
             button3.Text = "Clear";
             button3.ImageAlign = ContentAlignment.MiddleLeft;
@@ -3397,7 +3410,8 @@ namespace NUS_Downloader
         private void button3_MouseLeave(object sender, EventArgs e)
         {
             // shrink clear button
-            button3.Location = new Point(239, 363);
+            //button3.Location = new Point(239, 363);
+            button3.Left += 45;
             button3.Size = new System.Drawing.Size(23, 21);
             button3.Text = String.Empty;
             button3.ImageAlign = ContentAlignment.MiddleCenter;
@@ -3405,7 +3419,8 @@ namespace NUS_Downloader
 
         private void saveaswadbtn_MouseEnter(object sender, EventArgs e)
         {
-            saveaswadbtn.Location = new Point(190, 433);
+            //saveaswadbtn.Location = new Point(190, 433);
+            saveaswadbtn.Left -= 40;
             saveaswadbtn.Size = new Size(72, 22);
             saveaswadbtn.Text = "Save As";
             saveaswadbtn.ImageAlign = ContentAlignment.MiddleLeft;
@@ -3413,7 +3428,8 @@ namespace NUS_Downloader
 
         private void saveaswadbtn_MouseLeave(object sender, EventArgs e)
         {
-            saveaswadbtn.Location = new Point(230, 433);
+            //saveaswadbtn.Location = new Point(230, 433);
+            saveaswadbtn.Left += 40;
             saveaswadbtn.Size = new Size(32, 22);
             saveaswadbtn.Text = String.Empty;
             saveaswadbtn.ImageAlign = ContentAlignment.MiddleCenter;

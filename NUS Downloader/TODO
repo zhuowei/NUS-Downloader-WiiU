@@ -5,7 +5,17 @@
 // $Date::                         $ //
 ///////////////////////////////////////
 
-Make more compatible with mono.
+Make more compatible with mono for Linux.
+Broken stuff:
+ - Downloading anything
+ - Bottom part of dialog cut off
+Working stuff:
+ - Displaying Form1
+ - Loading database
+ - Generating update scripts
+
+
+
 Finish scripting improvements.
 
 Routine:
