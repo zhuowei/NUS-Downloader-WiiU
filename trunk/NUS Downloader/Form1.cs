@@ -399,7 +399,7 @@ namespace NUS_Downloader
         private void button1_Click(object sender, EventArgs e)
         {
             // Show extras menu
-            extrasStrip.Show(Extrasbtn, 2, 2);
+            extrasStrip.Show(Extrasbtn, 2, (2+Extrasbtn.Height));
         }
 
         /// <summary>
@@ -413,63 +413,30 @@ namespace NUS_Downloader
             opentmd.Title = "Open TMD";
             if (opentmd.ShowDialog() != DialogResult.Cancel)
             {
-                // Read the tmd as a stream...
-                byte[] tmd = File.ReadAllBytes(opentmd.FileName);
-                WriteStatus("TMD Loaded (" + tmd.Length + " bytes)");
+                libWiiSharp.TMD tmdLocal = new libWiiSharp.TMD();
+                tmdLocal.LoadFile(opentmd.FileName);
+                WriteStatus(String.Format("TMD Loaded ({0} blocks)", tmdLocal.GetNandBlocks()));
 
-                // Read ID...
-                for (int x = 396; x < 404; x++)
-                {
-                    titleidbox.Text += MakeProperLength(ConvertToHex(Convert.ToString(tmd[x])));
+                titleidbox.Text = tmdLocal.TitleID.ToString("X16");
+                WriteStatus("Title ID: " + tmdLocal.TitleID.ToString("X16"));
+
+                titleversion.Text = tmdLocal.TitleVersion.ToString();
+                WriteStatus("Version: " + tmdLocal.TitleVersion);
+
+                if (tmdLocal.StartupIOS.ToString("X") != "0")
+                    WriteStatus("Requires: IOS" + int.Parse(tmdLocal.StartupIOS.ToString("X").Substring(7, 2).ToString(), System.Globalization.NumberStyles.HexNumber));
+                
+                WriteStatus("Content Count: " + tmdLocal.NumOfContents);
+
+                for (int a = 0; a < tmdLocal.Contents.Length; a++)
+			    {
+                    WriteStatus(String.Format("   Content {0}: {1} ({2} bytes)", a, tmdLocal.Contents[a].ContentID.ToString(), tmdLocal.Contents[a].Size.ToString()));
+                    WriteStatus(String.Format("    - Index: {0}", tmdLocal.Contents[a].Index.ToString()));
+                    WriteStatus(String.Format("    - Type: {0}", tmdLocal.Contents[a].Type.ToString()));
+                    WriteStatus(String.Format("    -  Hash: {0}...", DisplayBytes(tmdLocal.Contents[a].Hash, String.Empty).Substring(0, 8)));
                 }
-                WriteStatus("Title ID: " + titleidbox.Text);
 
-                // Show TitleID Type/likelyhood of NUS existance...
-                ReadIDType(titleidbox.Text);
-
-                // Read Title Version...
-                string tmdversion = "";
-                for (int x = 476; x < 478; x++)
-                {
-                    tmdversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[x])));
-                }
-                titleversion.Text = Convert.ToString(int.Parse(tmdversion, System.Globalization.NumberStyles.HexNumber));
-
-                // Read System Version (Needed IOS)
-                string sysversion = IOSNeededFromTMD(tmd);
-                if (sysversion != "0")
-                    WriteStatus("Requires: IOS" + sysversion);
-
-                // Read Content #...
-                int nbr_cont = ContentCount(tmd);
-                /*string contentstrnum = "";
-                for (int x = 478; x < 480; x++)
-                {
-                    contentstrnum += TrimLeadingZeros(Convert.ToString(tmd[x]));
-                }*/
-                WriteStatus("Content Count: " + nbr_cont);
-
-                string[] tmdcontents = GetContentNames(tmd, nbr_cont);
-                string[] tmdsizes = GetContentSizes(tmd, nbr_cont);
-                byte[] tmdhashes = GetContentHashes(tmd, nbr_cont);
-                byte[] tmdindices = GetContentIndices(tmd, nbr_cont);
-                int[] tmdtypes = GetContentTypes(tmd, nbr_cont);
-
-                // Loop through each content and display name, hash, index
-                for (int i = 0; i < nbr_cont; i++)
-                {
-                    WriteStatus("   Content " + (i + 1) + ": " + tmdcontents[i] + " (" +
-                                Convert.ToString(int.Parse(tmdsizes[i], System.Globalization.NumberStyles.HexNumber)) +
-                                " bytes)");
-                    byte[] hash = new byte[20];
-                    for (int x = 0; x < 20; x++)
-                    {
-                        hash[x] = tmdhashes[(i*20) + x];
-                    }
-                    WriteStatus("  - Hash: " + DisplayBytes(hash, "").Substring(0, 8) + "...");
-                    WriteStatus("  - Index: " + tmdindices[i]);
-                    WriteStatus("  - Shared: " + (tmdtypes[i] == 0x8001));
-                }
+                WriteStatus("TMD information parsed!");
             }
         }
 
@@ -1620,7 +1587,7 @@ namespace NUS_Downloader
         private void button4_Click(object sender, EventArgs e)
         {
             // Open Database button menu...
-            databaseStrip.Show(databaseButton, 2, 2);
+            databaseStrip.Show(databaseButton, 2, (2+databaseButton.Height));
         }
 
         /// <summary>
@@ -3256,7 +3223,7 @@ namespace NUS_Downloader
         private void scriptsbutton_Click(object sender, EventArgs e)
         {
             // Show scripts menu
-            scriptsStrip.Show(scriptsbutton, 2, 2);
+            scriptsStrip.Show(scriptsbutton, 2, (2+scriptsbutton.Height));
         }
 
         private void DatabaseEnabled(bool enabled)
