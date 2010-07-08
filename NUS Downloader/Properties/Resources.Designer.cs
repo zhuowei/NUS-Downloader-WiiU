@@ -60,6 +60,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap bin_closed {
+            get {
+                object obj = ResourceManager.GetObject("bin_closed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap box {
             get {
                 object obj = ResourceManager.GetObject("box", resourceCulture);
@@ -231,6 +238,13 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap script_go {
             get {
                 object obj = ResourceManager.GetObject("script_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap script_start {
+            get {
+                object obj = ResourceManager.GetObject("script_start", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -92,17 +92,17 @@
             this.europePALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.japanNTSCJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.koreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.iosPatchGroupBox = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.iosPatchesListBox = new System.Windows.Forms.CheckedListBox();
+            this.iosPatchGroupBoxOKbtn = new System.Windows.Forms.Button();
+            this.iosPatchCheckbox = new System.Windows.Forms.CheckBox();
             this.saveaswadbtn = new System.Windows.Forms.Button();
             this.keepenccontents = new System.Windows.Forms.CheckBox();
             this.clearButton = new System.Windows.Forms.Button();
             this.packbox = new System.Windows.Forms.CheckBox();
             this.decryptbox = new System.Windows.Forms.CheckBox();
             this.localuse = new System.Windows.Forms.CheckBox();
-            this.iosPatchCheckbox = new System.Windows.Forms.CheckBox();
-            this.iosPatchGroupBox = new System.Windows.Forms.GroupBox();
-            this.iosPatchGroupBoxOKbtn = new System.Windows.Forms.Button();
-            this.iosPatchesListBox = new System.Windows.Forms.CheckedListBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.titleversion = new wmgCMS.WaterMarkTextBox();
             this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
@@ -164,10 +164,10 @@
             // 
             this.wadnamebox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.wadnamebox.Enabled = false;
-            this.wadnamebox.Location = new System.Drawing.Point(116, 416);
+            this.wadnamebox.Location = new System.Drawing.Point(103, 416);
             this.wadnamebox.MaxLength = 99999;
             this.wadnamebox.Name = "wadnamebox";
-            this.wadnamebox.Size = new System.Drawing.Size(146, 20);
+            this.wadnamebox.Size = new System.Drawing.Size(159, 20);
             this.wadnamebox.TabIndex = 17;
             // 
             // databaseButton
@@ -341,7 +341,7 @@
             this.toolStripSeparator6,
             this.aboutNUSDToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(183, 82);
+            this.extrasStrip.Size = new System.Drawing.Size(183, 104);
             // 
             // loadInfoFromTMDToolStripMenuItem
             // 
@@ -647,6 +647,68 @@
             this.koreaToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.koreaToolStripMenuItem.Text = "KOREA";
             // 
+            // iosPatchGroupBox
+            // 
+            this.iosPatchGroupBox.Controls.Add(this.label2);
+            this.iosPatchGroupBox.Controls.Add(this.iosPatchesListBox);
+            this.iosPatchGroupBox.Controls.Add(this.iosPatchGroupBoxOKbtn);
+            this.iosPatchGroupBox.Location = new System.Drawing.Point(31, 187);
+            this.iosPatchGroupBox.Name = "iosPatchGroupBox";
+            this.iosPatchGroupBox.Size = new System.Drawing.Size(212, 115);
+            this.iosPatchGroupBox.TabIndex = 55;
+            this.iosPatchGroupBox.TabStop = false;
+            this.iosPatchGroupBox.Text = "IOS Patches";
+            this.iosPatchGroupBox.Visible = false;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 16);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(184, 26);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Patch the following bugs into any IOS\r\nI download:";
+            // 
+            // iosPatchesListBox
+            // 
+            this.iosPatchesListBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.iosPatchesListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.iosPatchesListBox.CheckOnClick = true;
+            this.iosPatchesListBox.FormattingEnabled = true;
+            this.iosPatchesListBox.Items.AddRange(new object[] {
+            "Trucha bug",
+            "ES_Identify",
+            "NAND permissions"});
+            this.iosPatchesListBox.Location = new System.Drawing.Point(6, 62);
+            this.iosPatchesListBox.Name = "iosPatchesListBox";
+            this.iosPatchesListBox.Size = new System.Drawing.Size(115, 45);
+            this.iosPatchesListBox.TabIndex = 1;
+            // 
+            // iosPatchGroupBoxOKbtn
+            // 
+            this.iosPatchGroupBoxOKbtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.iosPatchGroupBoxOKbtn.Location = new System.Drawing.Point(127, 84);
+            this.iosPatchGroupBoxOKbtn.Name = "iosPatchGroupBoxOKbtn";
+            this.iosPatchGroupBoxOKbtn.Size = new System.Drawing.Size(75, 23);
+            this.iosPatchGroupBoxOKbtn.TabIndex = 0;
+            this.iosPatchGroupBoxOKbtn.Text = "OK";
+            this.iosPatchGroupBoxOKbtn.UseVisualStyleBackColor = true;
+            this.iosPatchGroupBoxOKbtn.Click += new System.EventHandler(this.iosPatchGroupBoxOKbtn_Click);
+            // 
+            // iosPatchCheckbox
+            // 
+            this.iosPatchCheckbox.Enabled = false;
+            this.iosPatchCheckbox.Image = global::NUS_Downloader.Properties.Resources.bug_add;
+            this.iosPatchCheckbox.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.iosPatchCheckbox.Location = new System.Drawing.Point(12, 488);
+            this.iosPatchCheckbox.Name = "iosPatchCheckbox";
+            this.iosPatchCheckbox.Size = new System.Drawing.Size(104, 24);
+            this.iosPatchCheckbox.TabIndex = 54;
+            this.iosPatchCheckbox.Text = "Patch IOS...";
+            this.iosPatchCheckbox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iosPatchCheckbox.UseVisualStyleBackColor = true;
+            this.iosPatchCheckbox.CheckedChanged += new System.EventHandler(this.iosPatchCheckbox_CheckedChanged);
+            // 
             // saveaswadbtn
             // 
             this.saveaswadbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -690,7 +752,8 @@
             this.clearButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.clearButton.BackColor = System.Drawing.Color.Transparent;
             this.clearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.clearButton.Image = global::NUS_Downloader.Properties.Resources.picture_empty;
+            this.clearButton.Image = global::NUS_Downloader.Properties.Resources.bin_closed;
+            this.clearButton.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.clearButton.Location = new System.Drawing.Point(238, 360);
             this.clearButton.MaximumSize = new System.Drawing.Size(0, 24);
             this.clearButton.MinimumSize = new System.Drawing.Size(0, 24);
@@ -746,73 +809,13 @@
             this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
             // 
-            // iosPatchCheckbox
-            // 
-            this.iosPatchCheckbox.Image = global::NUS_Downloader.Properties.Resources.bug_add;
-            this.iosPatchCheckbox.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.iosPatchCheckbox.Location = new System.Drawing.Point(12, 488);
-            this.iosPatchCheckbox.Name = "iosPatchCheckbox";
-            this.iosPatchCheckbox.Size = new System.Drawing.Size(104, 24);
-            this.iosPatchCheckbox.TabIndex = 54;
-            this.iosPatchCheckbox.Text = "Patch IOS...";
-            this.iosPatchCheckbox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.iosPatchCheckbox.UseVisualStyleBackColor = true;
-            this.iosPatchCheckbox.CheckedChanged += new System.EventHandler(this.iosPatchCheckbox_CheckedChanged);
-            // 
-            // iosPatchGroupBox
-            // 
-            this.iosPatchGroupBox.Controls.Add(this.label2);
-            this.iosPatchGroupBox.Controls.Add(this.iosPatchesListBox);
-            this.iosPatchGroupBox.Controls.Add(this.iosPatchGroupBoxOKbtn);
-            this.iosPatchGroupBox.Location = new System.Drawing.Point(31, 146);
-            this.iosPatchGroupBox.Name = "iosPatchGroupBox";
-            this.iosPatchGroupBox.Size = new System.Drawing.Size(212, 142);
-            this.iosPatchGroupBox.TabIndex = 55;
-            this.iosPatchGroupBox.TabStop = false;
-            this.iosPatchGroupBox.Text = "IOS Patches";
-            this.iosPatchGroupBox.Visible = false;
-            // 
-            // iosPatchGroupBoxOKbtn
-            // 
-            this.iosPatchGroupBoxOKbtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.iosPatchGroupBoxOKbtn.Location = new System.Drawing.Point(131, 113);
-            this.iosPatchGroupBoxOKbtn.Name = "iosPatchGroupBoxOKbtn";
-            this.iosPatchGroupBoxOKbtn.Size = new System.Drawing.Size(75, 23);
-            this.iosPatchGroupBoxOKbtn.TabIndex = 0;
-            this.iosPatchGroupBoxOKbtn.Text = "OK";
-            this.iosPatchGroupBoxOKbtn.UseVisualStyleBackColor = true;
-            this.iosPatchGroupBoxOKbtn.Click += new System.EventHandler(this.iosPatchGroupBoxOKbtn_Click);
-            // 
-            // iosPatchesListBox
-            // 
-            this.iosPatchesListBox.BackColor = System.Drawing.SystemColors.Menu;
-            this.iosPatchesListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.iosPatchesListBox.FormattingEnabled = true;
-            this.iosPatchesListBox.Items.AddRange(new object[] {
-            "Trucha bug",
-            "ES_Identify",
-            "NAND permissions"});
-            this.iosPatchesListBox.Location = new System.Drawing.Point(6, 62);
-            this.iosPatchesListBox.Name = "iosPatchesListBox";
-            this.iosPatchesListBox.Size = new System.Drawing.Size(197, 45);
-            this.iosPatchesListBox.TabIndex = 1;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(184, 26);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Patch the following bugs into any IOS\r\nI download:";
-            // 
             // titleversion
             // 
-            this.titleversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.titleversion.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.titleversion.Location = new System.Drawing.Point(204, 38);
             this.titleversion.MaxLength = 8;
             this.titleversion.Name = "titleversion";
-            this.titleversion.Size = new System.Drawing.Size(58, 20);
+            this.titleversion.Size = new System.Drawing.Size(58, 21);
             this.titleversion.TabIndex = 50;
             this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.titleversion.WaterMarkColor = System.Drawing.Color.Silver;
@@ -821,11 +824,11 @@
             // 
             // titleidbox
             // 
-            this.titleidbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.titleidbox.Font = new System.Drawing.Font("Tahoma", 8.25F);
             this.titleidbox.Location = new System.Drawing.Point(12, 38);
             this.titleidbox.MaxLength = 16;
             this.titleidbox.Name = "titleidbox";
-            this.titleidbox.Size = new System.Drawing.Size(176, 20);
+            this.titleidbox.Size = new System.Drawing.Size(176, 21);
             this.titleidbox.TabIndex = 49;
             this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.titleidbox.WaterMarkColor = System.Drawing.Color.Silver;
