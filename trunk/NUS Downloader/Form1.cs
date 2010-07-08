@@ -888,7 +888,7 @@ namespace NUS_Downloader
             }
             catch (Exception ex)
             {
-                WriteStatus("Uhoh, the download bombed: " + ex.Message + " ):");
+                WriteStatus("Uhoh, the download bombed: \"" + ex.Message + " ):\"");
             }
 
             WriteStatus("NUS Download Finished.");
