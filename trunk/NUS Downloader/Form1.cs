@@ -396,7 +396,7 @@ namespace NUS_Downloader
             return Attributes[0].Value;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void extrasMenuButton_Click(object sender, EventArgs e)
         {
             // Show extras menu
             extrasStrip.Show(Extrasbtn, 2, (2+Extrasbtn.Height));
@@ -784,7 +784,7 @@ namespace NUS_Downloader
             return contentindices;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void DownloadBtn_Click(object sender, EventArgs e)
         {            
             if (titleidbox.Text == String.Empty)
             {
@@ -1584,7 +1584,7 @@ namespace NUS_Downloader
             return false;
         }*/
 
-        private void button4_Click(object sender, EventArgs e)
+        private void DatabaseButton_Click(object sender, EventArgs e)
         {
             // Open Database button menu...
             databaseStrip.Show(databaseButton, 2, (2+databaseButton.Height));
@@ -2171,7 +2171,7 @@ namespace NUS_Downloader
             return array;
         }
 
-        private void button3_Click_1(object sender, EventArgs e)
+        private void ClearStatusbox(object sender, EventArgs e)
         {
             // Clear Statusbox.text
             statusbox.Text = "";
@@ -2750,7 +2750,7 @@ namespace NUS_Downloader
             }
             string time = RemoveIllegalCharacters(DateTime.Now.ToShortTimeString());
             File.WriteAllText(
-                String.Format(Path.Combine(CURRENT_DIR, "scripts\\{0}_Update_{1}_{2}_{3} at {4}.nus"), RegionID,
+                String.Format(Path.Combine(CURRENT_DIR, Path.Combine("scripts","{0}_Update_{1}_{2}_{3} at {4}.nus")), RegionID,
                               DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Year, time), script_text);
             WriteStatus(" - Script written!");
             scriptsLocalMenuEntry.Enabled = false;
@@ -2994,7 +2994,7 @@ namespace NUS_Downloader
             proxyBox.Visible = true;
         }
 
-        private void button18_Click(object sender, EventArgs e)
+        private void SaveProxyPwdButton_Click(object sender, EventArgs e)
         {
             proxy_pwd = ProxyPwdBox.Text;
             ProxyVerifyBox.Visible = false;
@@ -3004,7 +3004,7 @@ namespace NUS_Downloader
         private void ProxyPwdBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))
-                button18_Click("LOLWUT", EventArgs.Empty);
+                SaveProxyPwdButton_Click("LOLWUT", EventArgs.Empty);
         }
 
         private void ProxyAssistBtn_Click(object sender, EventArgs e)
