@@ -133,7 +133,6 @@
             // statusbox
             // 
             this.statusbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.statusbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.statusbox.Location = new System.Drawing.Point(12, 116);
             this.statusbox.Multiline = true;
             this.statusbox.Name = "statusbox";
@@ -159,11 +158,10 @@
             // 
             this.wadnamebox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.wadnamebox.Enabled = false;
-            this.wadnamebox.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.wadnamebox.Location = new System.Drawing.Point(116, 416);
             this.wadnamebox.MaxLength = 99999;
             this.wadnamebox.Name = "wadnamebox";
-            this.wadnamebox.Size = new System.Drawing.Size(146, 18);
+            this.wadnamebox.Size = new System.Drawing.Size(146, 20);
             this.wadnamebox.TabIndex = 17;
             // 
             // databaseButton
@@ -477,10 +475,9 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox1.Location = new System.Drawing.Point(9, 72);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(197, 28);
+            this.checkBox1.Size = new System.Drawing.Size(228, 30);
             this.checkBox1.TabIndex = 35;
             this.checkBox1.Text = "I accept that by storing my password\r\nanyone can open the proxy file and view it." +
                 "";
@@ -647,15 +644,22 @@
             // 
             // saveaswadbtn
             // 
+            this.saveaswadbtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveaswadbtn.AutoSize = true;
+            this.saveaswadbtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.saveaswadbtn.BackColor = System.Drawing.Color.Transparent;
             this.saveaswadbtn.Enabled = false;
             this.saveaswadbtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.saveaswadbtn.Image = global::NUS_Downloader.Properties.Resources.disk;
-            this.saveaswadbtn.Location = new System.Drawing.Point(230, 433);
+            this.saveaswadbtn.Location = new System.Drawing.Point(238, 435);
+            this.saveaswadbtn.MaximumSize = new System.Drawing.Size(0, 24);
+            this.saveaswadbtn.MinimumSize = new System.Drawing.Size(0, 24);
             this.saveaswadbtn.Name = "saveaswadbtn";
-            this.saveaswadbtn.Size = new System.Drawing.Size(32, 22);
+            this.saveaswadbtn.Size = new System.Drawing.Size(24, 24);
             this.saveaswadbtn.TabIndex = 53;
-            this.saveaswadbtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.saveaswadbtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.saveaswadbtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.saveaswadbtn.UseVisualStyleBackColor = false;
             this.saveaswadbtn.Click += new System.EventHandler(this.saveaswadbtn_Click);
             this.saveaswadbtn.MouseEnter += new System.EventHandler(this.saveaswadbtn_MouseEnter);
@@ -669,26 +673,33 @@
             this.keepenccontents.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.keepenccontents.Location = new System.Drawing.Point(12, 437);
             this.keepenccontents.Name = "keepenccontents";
-            this.keepenccontents.Size = new System.Drawing.Size(165, 26);
+            this.keepenccontents.Size = new System.Drawing.Size(212, 26);
             this.keepenccontents.TabIndex = 52;
             this.keepenccontents.Text = "Keep Encrypted Contents";
-            this.keepenccontents.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.keepenccontents.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.keepenccontents.UseVisualStyleBackColor = true;
             // 
             // button3
             // 
+            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.button3.AutoSize = true;
+            this.button3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.button3.BackColor = System.Drawing.Color.Transparent;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.Image = global::NUS_Downloader.Properties.Resources.picture_empty;
-            this.button3.Location = new System.Drawing.Point(239, 363);
+            this.button3.Location = new System.Drawing.Point(238, 360);
+            this.button3.MaximumSize = new System.Drawing.Size(0, 24);
+            this.button3.MinimumSize = new System.Drawing.Size(0, 24);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(23, 21);
+            this.button3.Size = new System.Drawing.Size(24, 24);
             this.button3.TabIndex = 31;
             this.button3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.ClearStatusbox);
-            this.button3.MouseEnter += new System.EventHandler(this.button3_MouseEnter);
-            this.button3.MouseLeave += new System.EventHandler(this.button3_MouseLeave);
+            this.button3.MouseEnter += new System.EventHandler(this.clearButton_MouseEnter);
+            this.button3.MouseLeave += new System.EventHandler(this.clearButton_MouseLeave);
             // 
             // packbox
             // 
@@ -698,8 +709,8 @@
             this.packbox.Name = "packbox";
             this.packbox.Size = new System.Drawing.Size(98, 22);
             this.packbox.TabIndex = 6;
-            this.packbox.Text = "      Pack WAD";
-            this.packbox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.packbox.Text = "Pack WAD";
+            this.packbox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.packbox.UseVisualStyleBackColor = true;
             this.packbox.CheckedChanged += new System.EventHandler(this.packbox_CheckedChanged);
             this.packbox.EnabledChanged += new System.EventHandler(this.packbox_EnabledChanged);
@@ -710,17 +721,16 @@
             this.decryptbox.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.decryptbox.Location = new System.Drawing.Point(12, 462);
             this.decryptbox.Name = "decryptbox";
-            this.decryptbox.Size = new System.Drawing.Size(172, 26);
+            this.decryptbox.Size = new System.Drawing.Size(250, 26);
             this.decryptbox.TabIndex = 19;
             this.decryptbox.Text = "Create Decrypted Contents";
-            this.decryptbox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.decryptbox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.decryptbox.UseVisualStyleBackColor = true;
             // 
             // localuse
             // 
             this.localuse.Checked = true;
             this.localuse.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.localuse.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.localuse.Image = global::NUS_Downloader.Properties.Resources.drive_disk;
             this.localuse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.localuse.Location = new System.Drawing.Point(91, 390);
@@ -728,7 +738,7 @@
             this.localuse.Size = new System.Drawing.Size(171, 22);
             this.localuse.TabIndex = 8;
             this.localuse.Text = "Use Local Files If Available";
-            this.localuse.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
             // 
             // titleversion
@@ -767,25 +777,23 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(274, 491);
-            this.Controls.Add(this.saveaswadbtn);
             this.Controls.Add(this.ProxyVerifyBox);
             this.Controls.Add(this.proxyBox);
             this.Controls.Add(this.scriptsbutton);
             this.Controls.Add(this.titleversion);
+            this.Controls.Add(this.saveaswadbtn);
             this.Controls.Add(this.titleidbox);
             this.Controls.Add(this.dlprogress);
             this.Controls.Add(this.consoleCBox);
             this.Controls.Add(this.databaseButton);
             this.Controls.Add(this.keepenccontents);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.statusbox);
             this.Controls.Add(this.downloadstartbtn);
             this.Controls.Add(this.wadnamebox);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.Extrasbtn);
+            this.Controls.Add(this.statusbox);
             this.Controls.Add(this.packbox);
             this.Controls.Add(this.decryptbox);
             this.Controls.Add(this.localuse);
