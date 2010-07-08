@@ -59,6 +59,7 @@ namespace NUS_Downloader
         private delegate void BootChecksCallback();
         private delegate void SetEnableForDownloadCallback(bool enabled);
         private delegate void SetPropertyThreadSafeCallback(System.ComponentModel.Component what, object setto, string property);
+        private delegate string OfficialWADNamingCallback(string whut);
 
         // Images do not compare unless globalized...
         private Image green = Properties.Resources.bullet_green;
@@ -157,6 +158,7 @@ namespace NUS_Downloader
         // This is the standard entry to the GUI
         public Form1()
         {
+            this.Font = new System.Drawing.Font("Tahoma", 8);
             InitializeComponent();
 
             System.Drawing.Size mysize = new System.Drawing.Size(280, this.decryptbox.Top + this.decryptbox.Height + 30);
@@ -829,7 +831,14 @@ namespace NUS_Downloader
             if (this.InvokeRequired)
             {
                 SetPropertyThreadSafeCallback sptscb = new SetPropertyThreadSafeCallback(SetPropertyThreadSafe);
-                this.Invoke(sptscb, new object[] { what, setto, property });
+                try
+                {
+                    this.Invoke(sptscb, new object[] { what, setto, property });
+                }
+                catch (Exception)
+                {
+                    // FFFFF!
+                }
                 return;
             }
             what.GetType().GetProperty(property).SetValue(what, setto, null);
@@ -1927,28 +1936,37 @@ namespace NUS_Downloader
         public string OfficialWADNaming(string titlename)
         {
             if (titlename == "MIOS")
-                wadnamebox.Text = "RVL-mios-[v].wad";
+                titlename = "RVL-mios-[v].wad";
             else if (titlename.Contains("IOS"))
-                wadnamebox.Text = titlename + "-64-[v].wad";
+                titlename = titlename + "-64-[v].wad";
             else if (titlename.Contains("System Menu"))
-                wadnamebox.Text = "RVL-WiiSystemmenu-[v].wad";
+                titlename = "RVL-WiiSystemmenu-[v].wad";
             else if (titlename.Contains("System Menu"))
-                wadnamebox.Text = "RVL-WiiSystemmenu-[v].wad";
+                titlename = "RVL-WiiSystemmenu-[v].wad";
             else if (titlename == "BC")
-                wadnamebox.Text = "RVL-bc-[v].wad";
+                titlename = "RVL-bc-[v].wad";
             else if (titlename.Contains("Mii Channel"))
-                wadnamebox.Text = "RVL-NigaoeNR-[v].wad";
+                titlename = "RVL-NigaoeNR-[v].wad";
             else if (titlename.Contains("Shopping Channel"))
-                wadnamebox.Text = "RVL-Shopping-[v].wad";
+                titlename = "RVL-Shopping-[v].wad";
             else if (titlename.Contains("Weather Channel"))
-                wadnamebox.Text = "RVL-Weather-[v].wad";
+                titlename = "RVL-Weather-[v].wad";
             else
-                wadnamebox.Text = titlename + "-NUS-[v].wad";
+                titlename = titlename + "-NUS-[v].wad";
+
+            if (wadnamebox.InvokeRequired)
+            {
+                OfficialWADNamingCallback ownc = new OfficialWADNamingCallback(OfficialWADNaming);
+                wadnamebox.Invoke(ownc, new object[] { titlename });
+                return titlename;
+            }
+
+            wadnamebox.Text = titlename;
 
             if (titleversion.Text != "")
                 wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
 
-            return wadnamebox.Text;
+            return titlename;
         }
 
         private void wwitem_regionclicked(object sender, ToolStripItemClickedEventArgs e)
@@ -3364,42 +3382,38 @@ namespace NUS_Downloader
             WriteStatus("To delete all traces of proxy settings, delete the proxy.txt file!");
         }
 
-        private void button3_MouseEnter(object sender, EventArgs e)
+        private void clearButton_MouseEnter(object sender, EventArgs e)
         {
             // expand clear button
-            //button3.Location = new Point(194, 363);
-            button3.Left -= 45;
-            button3.Size = new System.Drawing.Size(68, 21);
+            /*button3.Left = 194;
+            button3.Size = new System.Drawing.Size(68, 21);*/
             button3.Text = "Clear";
-            button3.ImageAlign = ContentAlignment.MiddleLeft;
+            //button3.ImageAlign = ContentAlignment.MiddleLeft;
         }
 
-        private void button3_MouseLeave(object sender, EventArgs e)
+        private void clearButton_MouseLeave(object sender, EventArgs e)
         {
             // shrink clear button
-            //button3.Location = new Point(239, 363);
-            button3.Left += 45;
-            button3.Size = new System.Drawing.Size(23, 21);
+            /*button3.Left = 239;
+            button3.Size = new System.Drawing.Size(23, 21);*/
             button3.Text = String.Empty;
-            button3.ImageAlign = ContentAlignment.MiddleCenter;
+            //button3.ImageAlign = ContentAlignment.MiddleCenter;
         }
 
         private void saveaswadbtn_MouseEnter(object sender, EventArgs e)
         {
-            //saveaswadbtn.Location = new Point(190, 433);
-            saveaswadbtn.Left -= 40;
-            saveaswadbtn.Size = new Size(72, 22);
+            /*saveaswadbtn.Left = 190;
+            saveaswadbtn.Size = new Size(72, 22);*/
             saveaswadbtn.Text = "Save As";
-            saveaswadbtn.ImageAlign = ContentAlignment.MiddleLeft;
+            /*saveaswadbtn.ImageAlign = ContentAlignment.MiddleLeft;*/
         }
 
         private void saveaswadbtn_MouseLeave(object sender, EventArgs e)
         {
-            //saveaswadbtn.Location = new Point(230, 433);
-            saveaswadbtn.Left += 40;
-            saveaswadbtn.Size = new Size(32, 22);
+            /*saveaswadbtn.Left = 230;
+            saveaswadbtn.Size = new Size(32, 22);*/
             saveaswadbtn.Text = String.Empty;
-            saveaswadbtn.ImageAlign = ContentAlignment.MiddleCenter;
+            //saveaswadbtn.ImageAlign = ContentAlignment.MiddleCenter;
         }
 
         void nus_script_item_Click(object sender, EventArgs e)
