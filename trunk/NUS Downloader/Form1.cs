@@ -896,6 +896,54 @@ namespace NUS_Downloader
                 WriteStatus("Uhoh, the download bombed: \"" + ex.Message + " ):\"");
             }
 
+            if (iosPatchCheckbox.Checked == true) { // Apply patches then...
+                // Okay, it's checked.
+                libWiiSharp.IosPatcher iosp = new libWiiSharp.IosPatcher();
+                libWiiSharp.WAD ioswad = new libWiiSharp.WAD();
+                if (wadName.Contains(Path.DirectorySeparatorChar.ToString()) || wadName.Contains(Path.AltDirectorySeparatorChar.ToString()))
+                    ioswad.LoadFile(wadName);
+                else
+                    ioswad.LoadFile(Path.Combine(Path.Combine(Path.Combine(Path.Combine(CURRENT_DIR, "titles"), titleidbox.Text), nusClient.TitleVersion.ToString()), wadName));
+                try
+                {
+                    iosp.LoadIOS(ref ioswad);
+                }
+                catch (Exception)
+                {
+                    WriteStatus("NUS Download Finished.");
+                    return;
+                }
+                foreach (object checkItem in iosPatchesListBox.CheckedItems)
+                {
+                    // ensure not 'indeterminate'
+                    if (iosPatchesListBox.GetItemCheckState(iosPatchesListBox.Items.IndexOf(checkItem)).ToString() == "Checked") {
+                        switch (checkItem.ToString()) {
+                            case "Trucha bug":
+                                if (iosp.PatchFakeSigning() > 0)
+                                    WriteStatus(" - Patched in fake-signing");
+                                else
+                                    WriteStatus(" - Could not patch fake-signing");
+                                break;
+                            case "ES_Identify":
+                                if (iosp.PatchEsIdentify() > 0)
+                                    WriteStatus(" - Patched in ES_Identify");
+                                else
+                                    WriteStatus(" - Could not patch ES_Identify");
+                                break;
+                            case "NAND permissions":
+                                if (iosp.PatchNandPermissions() > 0)
+                                    WriteStatus(" - Patched in NAND permissions");
+                                else
+                                    WriteStatus(" - Could not patch NAND permissions");
+                                break;
+                        }
+                    }
+                    else {
+                    //    WriteStatus(iosPatchesListBox.GetItemCheckState(iosPatchesListBox.Items.IndexOf(checkItem)).ToString());
+                    }
+                }
+            }
+
             WriteStatus("NUS Download Finished.");
 
         }
@@ -1927,6 +1975,7 @@ namespace NUS_Downloader
             keepenccontents.Enabled = enabled;
             scriptsbutton.Enabled = enabled;
             consoleCBox.Enabled = enabled;
+            iosPatchCheckbox.Enabled = enabled;
         }
 
         /// <summary>
@@ -3095,6 +3144,31 @@ namespace NUS_Downloader
             // This prevents errors when exiting before the database is parsed.
             // This is also probably not the best way to accomplish this...
             Environment.Exit(0);
+        }
+
+        private void iosPatchCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (iosPatchCheckbox.Checked == true)
+            {
+                packbox.Enabled = false;
+                packbox.Checked = true;
+                SetAllEnabled(false);
+                iosPatchGroupBox.Visible = true;
+                iosPatchGroupBox.Enabled = true;
+                iosPatchesListBox.Enabled = true;
+                iosPatchGroupBoxOKbtn.Enabled = true;
+            }
+            else
+            {
+                packbox.Enabled = true;
+            }
+        }
+
+        private void iosPatchGroupBoxOKbtn_Click(object sender, EventArgs e)
+        {
+            SetAllEnabled(true);
+            iosPatchGroupBox.Visible = false;
+            packbox.Enabled = false;
         }
     }
 }

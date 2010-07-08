@@ -42,6 +42,10 @@ namespace libWiiSharp
         private bool useLocalFiles = false;
         private bool continueWithoutTicket = false;
 
+        private int titleversion;
+
+        public int TitleVersion { get { return titleversion; } }
+
         /// <summary>
         /// If true, existing local files will be used.
         /// </summary>
@@ -335,6 +339,8 @@ namespace libWiiSharp
 
             if (!Directory.Exists(Path.Combine(outputDir, tmd.TitleVersion.ToString()))) Directory.CreateDirectory(Path.Combine(outputDir, tmd.TitleVersion.ToString()));
             outputDir = Path.Combine(outputDir, tmd.TitleVersion.ToString());
+
+            this.titleversion = tmd.TitleVersion;
 
             File.WriteAllBytes(Path.Combine(outputDir, tmdFile), tmd.ToByteArray());
 
