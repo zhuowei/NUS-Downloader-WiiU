@@ -310,7 +310,6 @@ namespace libWiiSharp
             byte[] tmdFileWithCerts;
             try
             {
-                fireDebug(titleUrl + "/" + tmdFile);
                 tmdFileWithCerts = wcNus.DownloadData(titleUrl + tmdFile);
                 tmd = TMD.Load(tmdFileWithCerts);
             }
