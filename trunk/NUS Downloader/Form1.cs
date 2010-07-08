@@ -160,15 +160,14 @@ namespace NUS_Downloader
         {
             this.Font = new System.Drawing.Font("Tahoma", 8);
             InitializeComponent();
+            this.MaximumSize = this.MinimumSize = this.Size; // Lock size down PATCHOW :D
             if (Type.GetType("Mono.Runtime") != null)
             {
                 saveaswadbtn.Text = "Save As";
                 clearButton.Text = "Clear";
                 keepenccontents.Text = "Keep Enc. Contents";
+                clearButton.Left -= 41;
             }
-
-            System.Drawing.Size mysize = new System.Drawing.Size(280, this.decryptbox.Top + this.decryptbox.Height + 30);
-            this.MaximumSize = this.MinimumSize = this.Size = mysize;
 
             KoreaMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             NTSCMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
