@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="direction_down.ico" />
+    <None Include="Resources\script_start.png" />
     <None Include="Resources\package_green.png" />
     <None Include="Resources\package.png" />
     <None Include="Resources\picture_empty.png" />
@@ -152,6 +153,7 @@
     <None Include="Resources\box.png" />
     <None Include="Resources\disk.png" />
     <None Include="Resources\drive_disk.png" />
+    <None Include="Resources\bin_closed.png" />
     <Content Include="Resources\key.png" />
     <None Include="Resources\page_white_magnify.png" />
     <None Include="Resources\server_link.png" />

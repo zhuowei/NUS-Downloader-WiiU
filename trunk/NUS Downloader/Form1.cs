@@ -46,7 +46,6 @@ namespace NUS_Downloader
         // TODO: Always remember to change version!
         private string version = "v2.0 Beta";
         
-        private static RijndaelManaged rijndaelCipher;
         private static bool dsidecrypt = false;
 
         // Cross-thread Windows Formsing
@@ -64,35 +63,6 @@ namespace NUS_Downloader
         private Image redorb = Properties.Resources.bullet_red;
         private Image redgreen = Properties.Resources.bullet_redgreen;
         private Image redorange = Properties.Resources.bullet_redorange;
-
-        // Certs storage
-        private byte[] cert_CA = new byte[0x400];
-        private byte[] cert_CACP = new byte[0x300];
-        private byte[] cert_CAXS = new byte[0x300];
-
-        private byte[] cert_CA_sha1 = new byte[20]
-                                          {
-                                              0x5B, 0x7D, 0x3E, 0xE2, 0x87, 0x06, 0xAD, 0x8D, 0xA2, 0xCB, 0xD5, 0xA6, 0xB7,
-                                              0x5C, 0x15, 0xD0, 0xF9, 0xB6, 0xF3, 0x18
-                                          };
-
-        private byte[] cert_CACP_sha1 = new byte[20]
-                                            {
-                                                0x68, 0x24, 0xD6, 0xDA, 0x4C, 0x25, 0x18, 0x4F, 0x0D, 0x6D, 0xAF, 0x6E,
-                                                0xDB, 0x9C, 0x0F, 0xC5, 0x75, 0x22, 0xA4, 0x1C
-                                            };
-
-        private byte[] cert_CAXS_sha1 = new byte[20]
-                                            {
-                                                0x09, 0x78, 0x70, 0x45, 0x03, 0x71, 0x21, 0x47, 0x78, 0x24, 0xBC, 0x6A,
-                                                0x3E, 0x5E, 0x07, 0x61, 0x56, 0x57, 0x3F, 0x8A
-                                            };
-
-        private byte[] cert_total_sha1 = new byte[20]
-                                             {
-                                                 0xAC, 0xE0, 0xF1, 0x5D, 0x2A, 0x85, 0x1C, 0x38, 0x3F, 0xE4, 0x65, 0x7A,
-                                                 0xFC, 0x38, 0x40, 0xD6, 0xFF, 0xE3, 0x0A, 0xD0
-                                             };
 
         private string WAD_Saveas_Filename;
 
@@ -112,46 +82,6 @@ namespace NUS_Downloader
         // Scripts Thread
         private BackgroundWorker scriptsWorker;
 
-        /*
-        // Common Key hash
-        private static byte[] wii_commonkey = new byte[16]
-                                                {
-                                                    0xeb, 0xe4, 0x2a, 0x22, 0x5e, 0x85, 0x93, 0xe4, 0x48, 0xd9, 0xc5, 0x45, 0x73, 0x81, 0xaa, 0xf7
-                                                };
-
-        private static byte[] wii_commonkey_kor = new byte[16]
-                                                         {
-                                                             0x63, 0xb8, 0x2b, 0xb4, 0xf4, 0x61, 0x4e, 0x2e, 0x13, 0xf2, 0xfe, 0xfb, 0xba, 0x4c, 0x9b, 0x7e
-                                                         };
-        */
-        /*
-        public struct WADHeader
-        {
-            public int HeaderSize;
-            public int WadType;
-            public int CertChainSize;
-            public int Reserved;
-            public int TicketSize;
-            public int TMDSize;
-            public int DataSize;
-            public int FooterSize;
-        };*/
-
-        public struct TitleContent
-        {
-            public byte[] ContentID;
-            public byte[] Index;
-            public byte[] Type;
-            public byte[] Size;
-            public byte[] SHAHash;
-        } ;
-
-        public enum ContentTypes : int
-        {
-            Shared = 0x8001,
-            Normal = 0x0001
-        }
-
         // This is the standard entry to the GUI
         public Form1()
         {
@@ -165,6 +95,8 @@ namespace NUS_Downloader
                 keepenccontents.Text = "Keep Enc. Contents";
                 clearButton.Left -= 41;
             }
+            else
+                statusbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 7);
 
             KoreaMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             NTSCMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
@@ -234,44 +166,6 @@ namespace NUS_Downloader
                 this.Invoke(bcc);
                 return;
             }
-
-            // Check for Wii common key bin file...
-            /*if (NUSDFileExists("key.bin") == false)
-            {
-                WriteStatus("Common Key (key.bin) missing! Decryption disabled!");
-                WriteStatus(" - Try: Extras -> Retrieve Key -> Common Key");
-                decryptbox.Visible = false;
-            }
-            else
-            {
-                WriteStatus("Common Key detected.");
-                if ((Convert.ToBase64String(ComputeSHA(LoadCommonKey("key.bin")))) !=
-                    (Convert.ToBase64String(wii_commonkey_sha1)))
-                {
-                    // Hmm, seems to be a bad hash
-                    // Let's check if it matches the hex string version...
-                    if ((Convert.ToBase64String(ComputeSHA(LoadCommonKey("key.bin")))) !=
-                        (Convert.ToBase64String(wii_commonkey_sha1_asstring)))
-                        WriteStatus(" - (PS: Your common key isn't hashing right!)");
-                    else
-                    {
-                        WriteStatus(" - Converting your key.bin file to the correct format...");
-                        TextReader ckreader = new StreamReader(Path.Combine(CURRENT_DIR, "key.bin"));
-                        String ckashex = ckreader.ReadLine();
-                        ckreader.Close();
-                        File.Delete(Path.Combine(CURRENT_DIR, "key.bin"));
-                        WriteCommonKey("key.bin", HexStringToByteArray(ckashex));
-                    }
-                }
-            }
-
-
-            // Check for Wii KOR common key bin file...
-            if (NUSDFileExists("kkey.bin") == true)
-            {
-                WriteStatus("Korean Common Key detected.");
-            }*/
-            //WriteStatus("Common keys are compiled in, key.bin/kkey.bin not read.");
 
             // Check for DSi common key bin file...
             if (NUSDFileExists("dsikey.bin") == true)
@@ -434,7 +328,7 @@ namespace NUS_Downloader
 
                 for (int a = 0; a < tmdLocal.Contents.Length; a++)
 			    {
-                    WriteStatus(String.Format("   Content {0}: {1} ({2} bytes)", a, tmdLocal.Contents[a].ContentID.ToString(), tmdLocal.Contents[a].Size.ToString()));
+                    WriteStatus(String.Format("   Content {0}: {1} ({2} bytes)", a, tmdLocal.Contents[a].ContentID.ToString("X8"), tmdLocal.Contents[a].Size.ToString()));
                     WriteStatus(String.Format("    - Index: {0}", tmdLocal.Contents[a].Index.ToString()));
                     WriteStatus(String.Format("    - Type: {0}", tmdLocal.Contents[a].Type.ToString()));
                     WriteStatus(String.Format("    - Hash: {0}...", DisplayBytes(tmdLocal.Contents[a].Hash, String.Empty).Substring(0, 8)));
@@ -442,62 +336,6 @@ namespace NUS_Downloader
 
                 WriteStatus("TMD information parsed!");
             }
-        }
-
-        /// <summary>
-        /// Returns needed IOS from TMD.
-        /// </summary>
-        /// <param name="tmd">The TMD.</param>
-        /// <returns></returns>
-        private string IOSNeededFromTMD(byte[] tmd)
-        {
-            string sysversion = "";
-            for (int i = 0; i < 8; i++)
-                sysversion += MakeProperLength(ConvertToHex(Convert.ToString(tmd[0x184 + i])));
-            sysversion =
-                Convert.ToString(int.Parse(sysversion.Substring(14, 2), System.Globalization.NumberStyles.HexNumber));
-            return sysversion;
-        }
-
-        /// <summary>
-        /// Returns content count of TMD
-        /// </summary>
-        /// <param name="tmd">The TMD.</param>
-        /// <returns>int Count of Contents</returns>
-        private int ContentCount(byte[] tmd)
-        {
-            // nbr_cont (0xDE) len=0x02
-            int nbr_cont = 0;
-            nbr_cont = (tmd[0x1DE]*256) + tmd[0x1DF];
-            return nbr_cont;
-        }
-
-        /// <summary>
-        /// Gets a TMD Boot Index
-        /// </summary>
-        /// <param name="tmd">The TMD.</param>
-        /// <returns>int BootIndex</returns>
-        private int GetBootIndex(byte[] tmd)
-        {
-            // nbr_cont (0xE0) len=0x02
-            int bootidx = 0;
-            bootidx = (tmd[0x1E0]*256) + tmd[0x1E1];
-            return bootidx;
-        }
-
-        /// <summary>
-        /// Sets the Boot index of a TMD.
-        /// </summary>
-        /// <param name="tmd">The TMD.</param>
-        /// <param name="bootindex">Index to set it too</param>
-        /// <returns>Edited TMD</returns>
-        private byte[] SetBootIndex(byte[] tmd, int bootindex)
-        {
-            // nbr_cont (0xE0) len=0x02
-            byte[] bootbytes = NewIntegertoByteArray(bootindex, 2);
-            tmd[0x1E0] = bootbytes[0];
-            tmd[0x1E1] = bootbytes[1];
-            return tmd;
         }
 
         /// <summary>
@@ -523,82 +361,6 @@ namespace NUS_Downloader
             // Scroll to end of text box.
             statusbox.SelectionStart = statusbox.TextLength;
             statusbox.ScrollToCaret();
-        }
-
-        /// <summary>
-        /// Reads data from a stream until the end is reached. The
-        /// data is returned as a byte array. An IOException is
-        /// thrown if any of the underlying IO calls fail.
-        /// </summary>
-        /// <param name="stream">The stream to read data from</param>
-        /// <param name="initialLength">The initial buffer length</param>
-        public static byte[] ReadFully(Stream stream, int initialLength)
-        {
-            // If we've been passed an unhelpful initial length, just use 32K.
-            if (initialLength < 1)
-            {
-                initialLength = 32768;
-            }
-
-            byte[] buffer = new byte[initialLength];
-            int read = 0;
-
-            int chunk;
-            while ((chunk = stream.Read(buffer, read, buffer.Length - read)) > 0)
-            {
-                read += chunk;
-
-                // If we've reached the end of our buffer, check to see if there's
-                // any more information
-                if (read == buffer.Length)
-                {
-                    int nextByte = stream.ReadByte();
-
-                    // End of stream? If so, we're done
-                    if (nextByte == -1)
-                    {
-                        return buffer;
-                    }
-
-                    // Nope. Resize the buffer, put in the byte we've just
-                    // read, and continue
-                    byte[] newBuffer = new byte[buffer.Length*2];
-                    Array.Copy(buffer, newBuffer, buffer.Length);
-                    newBuffer[read] = (byte) nextByte;
-                    buffer = newBuffer;
-                    read++;
-                }
-            }
-            // Buffer is now too big. Shrink it.
-            byte[] ret = new byte[read];
-            Array.Copy(buffer, ret, read);
-            return ret;
-        }
-
-        /// <summary>
-        /// Makes a hex string the correct length.
-        /// </summary>
-        /// <param name="hex">The hex.</param>
-        /// <returns></returns>
-        private string MakeProperLength(string hex)
-        {
-            // If hex is like, 'A', makes it '0A', etc.
-            if (hex.Length == 1)
-                hex = "0" + hex;
-
-            return hex;
-        }
-
-        /// <summary>
-        /// Converts to hex.
-        /// </summary>
-        /// <param name="decval">The string.</param>
-        /// <returns>hex string</returns>
-        private string ConvertToHex(string decval)
-        {
-            // Convert text string to unsigned integer
-            int uiDecimal = System.Convert.ToInt32(decval);
-            return String.Format("{0:x2}", uiDecimal);
         }
 
         /// <summary>
@@ -642,150 +404,6 @@ namespace NUS_Downloader
                 WriteStatus("ID Type: 'Hidden' Channel. Unlikely NUS Content!");
             else
                 WriteStatus("ID Type: Unknown. Unlikely NUS Content!");
-        }
-
-        /// <summary>
-        /// Trims the leading zeros of a string.
-        /// </summary>
-        /// <param name="num">The string with leading zeros.</param>
-        /// <returns>no-0-string</returns>
-        private string TrimLeadingZeros(string num)
-        {
-            int startindex = 0;
-            for (int i = 0; i < num.Length; i++)
-            {
-                if ((num[i] == 0) || (num[i] == '0'))
-                    startindex += 1;
-                else
-                    break;
-            }
-
-            return num.Substring(startindex, (num.Length - startindex));
-        }
-
-        /// <summary>
-        /// Gets the content names in a TMD.
-        /// </summary>
-        /// <param name="tmdfile">The TMD.</param>
-        /// <param name="length">The TMD contentcount.</param>
-        /// <returns>Array of Content names</returns>
-        private string[] GetContentNames(byte[] tmdfile, int length)
-        {
-            string[] contentnames = new string[length];
-            int startoffset = 484;
-
-            for (int i = 0; i < length; i++)
-            {
-                contentnames[i] = MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 1]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 2]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 3])));
-                startoffset += 36;
-            }
-
-            return contentnames;
-        }
-
-        /// <summary>
-        /// Gets the content sizes in a TMD.
-        /// </summary>
-        /// <param name="tmdfile">The TMD.</param>
-        /// <param name="length">The TMD contentcount.</param>
-        /// <returns></returns>
-        private string[] GetContentSizes(byte[] tmdfile, int length)
-        {
-            string[] contentsizes = new string[length];
-            int startoffset = 492;
-
-            for (int i = 0; i < length; i++)
-            {
-                contentsizes[i] = MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 1]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 2]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 3]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 4]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 5]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 6]))) +
-                                  MakeProperLength(ConvertToHex(Convert.ToString(tmdfile[startoffset + 7])));
-                contentsizes[i] = TrimLeadingZeros(contentsizes[i]);
-                /*contentsizes[i] = Convert.ToString(tmdfile[startoffset]) +
-                    Convert.ToString(tmdfile[startoffset + 1]) +
-                    Convert.ToString(tmdfile[startoffset + 2]) +
-                    Convert.ToString(tmdfile[startoffset + 3]) +
-                    Convert.ToString(tmdfile[startoffset + 4]) +
-                    Convert.ToString(tmdfile[startoffset + 5]) +
-                    Convert.ToString(tmdfile[startoffset + 6]) +
-                    Convert.ToString(tmdfile[startoffset + 7]);
-                contentsizes[i] = TrimLeadingZeros(contentsizes[i]);  */
-                startoffset += 36;
-            }
-
-            return contentsizes;
-        }
-
-        /// <summary>
-        /// Gets the content hashes.
-        /// </summary>
-        /// <param name="tmdfile">The tmd.</param>
-        /// <param name="length">The content_count.</param>
-        /// <returns></returns>
-        private byte[] GetContentHashes(byte[] tmdfile, int length)
-        {
-            byte[] contenthashes = new byte[length*20];
-            int startoffset = 500;
-
-            for (int i = 0; i < length; i++)
-            {
-                for (int x = 0; x < 20; x++)
-                {
-                    contenthashes[(i*20) + x] = tmdfile[startoffset + x];
-                }
-                startoffset += 36;
-            }
-            return contenthashes;
-        }
-
-        /// <summary>
-        /// Gets the content types.
-        /// </summary>
-        /// <param name="tmdfile">The tmd.</param>
-        /// <param name="length">The content_count.</param>
-        /// <returns></returns>
-        private int[] GetContentTypes(byte[] tmdfile, int length)
-        {
-            int[] contenttypes = new int[length];
-            int startoffset = 0x1EA;
-
-            for (int i = 0; i < length; i++)
-            {
-                if (tmdfile[startoffset] == 0x80)
-                    contenttypes[i] = (int) ContentTypes.Shared;
-                else
-                    contenttypes[i] = (int) ContentTypes.Normal;
-                startoffset += 36;
-            }
-
-            return contenttypes;
-        }
-
-        /// <summary>
-        /// Gets the content indices.
-        /// </summary>
-        /// <param name="tmdfile">The tmd.</param>
-        /// <param name="length">The contentcount.</param>
-        /// <returns></returns>
-        private byte[] GetContentIndices(byte[] tmdfile, int length)
-        {
-            byte[] contentindices = new byte[length];
-            int startoffset = 0x1E9;
-
-            for (int i = 0; i < length; i++)
-            {
-                contentindices[i] = tmdfile[startoffset];
-                startoffset += 36;
-            }
-
-            return contentindices;
         }
 
         private void DownloadBtn_Click(object sender, EventArgs e)
@@ -971,177 +589,6 @@ namespace NUS_Downloader
 
             if (script_mode)
                 statusbox.Text = "";
-        } 
-
-        /// <summary>
-        /// Creates the title directory.
-        /// </summary>
-        private void CreateTitleDirectory()
-        {
-            // Get placement directory early...
-            string titledirectory;
-            if (titleversion.Text == "")
-                titledirectory = Path.Combine(CURRENT_DIR, titleidbox.Text);
-            else
-                titledirectory = Path.Combine(CURRENT_DIR, (titleidbox.Text + "v" + titleversion.Text));
-
-            // Keep local directory if present and checked out...
-            if ((localuse.Checked) && (Directory.Exists(titledirectory)))
-            {
-                //WriteStatus("Using Local Files");
-            }
-            else
-            {
-                if (Directory.Exists(titledirectory))
-                    Directory.Delete(titledirectory, true);
-
-                Directory.CreateDirectory(titledirectory);
-            }
-        }
-
-        /// <summary>
-        /// Deletes the title directory.
-        /// </summary>
-        private void DeleteTitleDirectory()
-        {
-            if (script_mode)
-                return;
-            // Get placement directory early...
-            string titledirectory;
-            if (titleversion.Text == "")
-                titledirectory = Path.Combine(CURRENT_DIR, titleidbox.Text);
-            else
-                titledirectory = Path.Combine(CURRENT_DIR, (titleidbox.Text + "v" + titleversion.Text));
-
-            if (Directory.Exists(titledirectory))
-                Directory.Delete(titledirectory, true);
-        }
-
-        /*
-        /// <summary>
-        /// Downloads the NUS file.
-        /// </summary>
-        /// <param name="titleid">The titleid.</param>
-        /// <param name="filename">The filename.</param>
-        /// <param name="placementdir">The placementdir.</param>
-        /// <param name="sizeinbytes">The sizeinbytes.</param>
-        /// <param name="iswiititle">if set to <c>true</c> [iswiititle].</param>
-        private void DownloadNUSFile(string titleid, string filename, string placementdir, int sizeinbytes,
-                                     bool iswiititle)
-        {
-            // Create NUS URL...
-            string nusfileurl;
-            if (iswiititle)
-                nusfileurl = CombinePaths(WII_NUS_URL, titleid, filename);
-            else
-                nusfileurl = CombinePaths(DSI_NUS_URL, titleid, filename);
-
-            WriteStatus("Grabbing " + filename + "...");
-
-            // State size of file...
-            if (sizeinbytes != 0)
-                statusbox.Text += " (" + Convert.ToString(sizeinbytes) + " bytes)";
-
-            // Download NUS file...
-            generalWC.DownloadFile(nusfileurl, Path.Combine(placementdir, filename));
-        }
-        */
-        private void StatusChange(string status)
-        {
-            WriteStatus(status);
-        }
-
-        /// <summary>
-        /// Packs the WAD.
-        /// </summary>
-        /// <param name="titleid">The titleid.</param>
-        /// <param name="tmdfilename">The tmdfilename.</param>
-        /// <param name="totaldirectory">The working directory.</param>
-        public void PackWAD(string titleid, string tmdfilename, string totaldirectory)
-        {
-            WriteStatus("Beginning WAD Pack...");
-
-            // Create instance of WAD Packing class
-            WADPacker packer = new WADPacker();
-            packer.StatusChanged += WriteStatus;
-
-            // Mash together certs into one array.
-            byte[] certsbuf = new byte[0xA00];
-            if (!(CertsValid()))
-            {
-                WriteStatus("Error: NUSD could not locate cached certs!");
-                return;
-            }
-            for (int c = 0; c < cert_CA.Length; c++)
-                certsbuf[c] = cert_CA[c];
-            for (int c = 0; c < cert_CACP.Length; c++)
-                certsbuf[c + 0x400] = cert_CACP[c];
-            for (int c = 0; c < cert_CAXS.Length; c++)
-                certsbuf[c + 0x700] = cert_CAXS[c];
-            if (!(TotalCertValid(certsbuf)))
-            {
-                WriteStatus("Error: Cert array did not hash properly!");
-                return;
-            }
-            packer.Certs = certsbuf;
-
-            // Read TMD/TIK into Packer.
-            packer.Ticket = File.ReadAllBytes(Path.Combine(totaldirectory, "cetk"));
-            packer.TMD = File.ReadAllBytes(Path.Combine(totaldirectory, tmdfilename));
-
-            // Get the TMD variables in here instead...
-            int contentcount = ContentCount(packer.TMD);
-            string[] contentnames = GetContentNames(packer.TMD, contentcount);
-
-            packer.tmdnames = GetContentNames(packer.TMD, contentcount);
-            packer.tmdsizes = GetContentSizes(packer.TMD, contentcount);
-
-            if (script_mode)
-                UpdatePackedName();
-
-            if (wadnamebox.Text.Contains("[v]") == true)
-                wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
-
-            if (!(String.IsNullOrEmpty(WAD_Saveas_Filename)))
-            {
-                packer.FileName = System.IO.Path.GetFileName(WAD_Saveas_Filename);
-                packer.Directory = WAD_Saveas_Filename.Replace(packer.FileName, "");
-            }
-            else
-            {
-                string wad_filename = Path.Combine(totaldirectory, RemoveIllegalCharacters(wadnamebox.Text));
-                packer.Directory = totaldirectory;
-                packer.FileName = System.IO.Path.GetFileName(wad_filename);
-            }
-
-            // Gather contents...
-            byte[][] contents_array = new byte[contentcount][];
-            for (int a = 0; a < contentcount; a++)
-            {
-                contents_array[a] = File.ReadAllBytes(Path.Combine(totaldirectory, contentnames[a]));
-            }
-            packer.Contents = contents_array;
-
-            // Send operations over to the packer...
-            packer.PackWAD();
-
-            // Delete contents now...
-            if (keepenccontents.Checked == false)
-            {
-                WriteStatus("Deleting contents...");
-                File.Delete(Path.Combine(totaldirectory, tmdfilename));
-                File.Delete(Path.Combine(totaldirectory, "cetk"));
-                for (int a = 0; a < contentnames.Length; a++)
-                    File.Delete(Path.Combine(totaldirectory, contentnames[a]));
-                WriteStatus(" - Contents have been deleted.");
-                string[] leftovers = Directory.GetFiles(totaldirectory);
-                if (leftovers.Length <= 0)
-                {
-                    WriteStatus(" - Title directory was empty; Deleted.");
-                    Directory.Delete(totaldirectory);
-                }
-                WriteStatus("All deletion completed.");
-            }
         }
 
         private void consoleCBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1184,12 +631,15 @@ namespace NUS_Downloader
                 wadnamebox.Enabled = false;
                 saveaswadbtn.Enabled = false;
                 wadnamebox.Text = String.Empty;
+                if (iosPatchCheckbox.Checked)
+                    iosPatchCheckbox.Checked = false;
             }
         }
 
         private void titleidbox_TextChanged(object sender, EventArgs e)
         {
             UpdatePackedName();
+            EnablePatchIOSBox();
         }
 
         private void titleversion_TextChanged(object sender, EventArgs e)
@@ -1197,74 +647,25 @@ namespace NUS_Downloader
             UpdatePackedName();
         }
 
-        /// <summary>
-        /// Inits the crypto stuffz.
-        /// </summary>
-        /// <param name="iv">The iv.</param>
-        /// <param name="key">The key.</param>
-        public void initCrypt(byte[] iv, byte[] key)
+        private void EnablePatchIOSBox()
         {
-            rijndaelCipher = new RijndaelManaged();
-            rijndaelCipher.Mode = CipherMode.CBC;
-            rijndaelCipher.Padding = PaddingMode.None;
-            rijndaelCipher.KeySize = 128;
-            rijndaelCipher.BlockSize = 128;
-            rijndaelCipher.Key = key;
-            rijndaelCipher.IV = iv;
+            iosPatchCheckbox.Enabled = TitleIsIOS(titleidbox.Text);
+            if (iosPatchCheckbox.Enabled == false)
+                iosPatchCheckbox.Checked = false;
         }
 
-        /// <summary>
-        /// Encrypts the specified plain bytes.
-        /// </summary>
-        /// <param name="plainBytes">The plain bytes.</param>
-        /// <returns></returns>
-        public byte[] Encrypt(byte[] plainBytes)
+        private bool TitleIsIOS(string titleid)
         {
-            ICryptoTransform transform = rijndaelCipher.CreateEncryptor();
-            using (MemoryStream ms = new MemoryStream(plainBytes))
-            {
-                using (CryptoStream cs = new CryptoStream(ms, transform, CryptoStreamMode.Read))
-                {
-                    return ReadFully(cs);
-                }
-            }
-        }
+            if (titleid.Length != 16)
+                return false;
 
-        /// <summary>
-        /// Decrypts the specified encrypted data.
-        /// </summary>
-        /// <param name="encryptedData">The encrypted data.</param>
-        /// <returns></returns>
-        public byte[] Decrypt(byte[] encryptedData)
-        {
-            ICryptoTransform transform = rijndaelCipher.CreateDecryptor();
-            using (MemoryStream ms = new MemoryStream(encryptedData))
-            {
-                using (CryptoStream cs = new CryptoStream(ms, transform, CryptoStreamMode.Read))
-                {
-                    return ReadFully(cs);
-                }
-            }
-        }
+            if ((titleid == "0000000100000001") || (titleid == "0000000100000002"))
+                return false;
 
-        /// <summary>
-        /// Reads the stream.
-        /// </summary>
-        /// <param name="stream">The stream.</param>
-        /// <returns></returns>
-        public byte[] ReadFully(Stream stream)
-        {
-            byte[] buffer = new byte[32768];
-            using (MemoryStream ms = new MemoryStream())
-            {
-                while (true)
-                {
-                    int read = stream.Read(buffer, 0, buffer.Length);
-                    if (read <= 0)
-                        return ms.ToArray();
-                    ms.Write(buffer, 0, read);
-                }
-            }
+            if (titleid.Substring(0, 14) == "00000001000000")
+                return true;
+
+            return false;
         }
 
         /// <summary>
@@ -1282,71 +683,6 @@ namespace NUS_Downloader
             }
             return output;
         }
-
-        /// <summary>
-        /// Computes the SHA-1 Hash.
-        /// </summary>
-        /// <param name="data">A byte[].</param>
-        /// <returns></returns>
-        public static byte[] ComputeSHA(byte[] data)
-        {
-            SHA1 sha = new SHA1CryptoServiceProvider();
-            // This is one implementation of the abstract class SHA1.
-            return sha.ComputeHash(data);
-        }
-
-        /*
-        /// <summary>
-        /// Loads the common key from disc.
-        /// </summary>
-        /// <param name="keyfile">The keyfile filename.</param>
-        /// <returns></returns>
-        public byte[] LoadCommonKey(string keyfile)
-        {
-            if (keyfile == "key.bin")
-            {
-                return wii_commonkey;
-            }
-            else if (keyfile == "kkey.bin")
-            {
-                return wii_commonkey_kor;
-            }
-            if (File.Exists(Path.Combine(CURRENT_DIR, keyfile)) == true)
-            {
-                // Read common key byte[]
-                return File.ReadAllBytes(Path.Combine(CURRENT_DIR, keyfile));
-            }
-            else
-                return null;
-        }*/
-
-        /*
-        /// <summary>
-        /// Writes/overwrites the common key onto disc.
-        /// </summary>
-        /// <param name="keyfile">The keyfile filename.</param>
-        /// <param name="commonkey">The byte array of the common key.</param>
-        /// <returns></returns>
-        public bool WriteCommonKey(string keyfile, byte[] commonkey)
-        {
-            if (File.Exists(Path.Combine(CURRENT_DIR, keyfile)) == true)
-            {
-                WriteStatus(String.Format("Overwriting old {0}...", keyfile));
-            }
-            try
-            {
-                FileStream fs = File.OpenWrite(Path.Combine(CURRENT_DIR, keyfile));
-                fs.Write(commonkey, 0, commonkey.Length);
-                fs.Close();
-                WriteStatus(String.Format("{0} written - Reloading...", keyfile));
-                return true;
-            }
-            catch (IOException e)
-            {
-                WriteStatus(String.Format("Error: Couldn't write {0}: {1}", keyfile, e.Message));
-            }
-            return false;
-        }*/
 
         private void DatabaseButton_Click(object sender, EventArgs e)
         {
@@ -1922,28 +1258,6 @@ namespace NUS_Downloader
             return databasestr;
         }
 
-        /// <summary>
-        /// Increments at an index.
-        /// </summary>
-        /// <param name="array">The array.</param>
-        /// <param name="index">The index.</param>
-        /// <returns></returns>
-        public static byte[] incrementAtIndex(byte[] array, int index)
-        {
-            if (array[index] == byte.MaxValue)
-            {
-                array[index] = 0;
-                if (index > 0)
-                    incrementAtIndex(array, index - 1);
-            }
-            else
-            {
-                array[index]++;
-            }
-
-            return array;
-        }
-
         private void ClearStatusbox(object sender, EventArgs e)
         {
             // Clear Statusbox.text
@@ -2025,20 +1339,6 @@ namespace NUS_Downloader
 
             return null;
         }
-        
-        /*
-        /// <summary>
-        /// Loads a file into a byte[]
-        /// </summary>
-        /// <param name="filename">The filename.</param>
-        /// <returns>byte[] of file contents</returns>
-        private byte[] FileLocationToByteArray(string filename)
-        {
-            FileStream fs = File.OpenRead(filename);
-            byte[] filebytearray = ReadFully(fs, 460);
-            fs.Close();
-            return filebytearray;
-        }*/
 
         /// <summary>
         /// Updates the name of the packed WAD in the textbox.
@@ -2073,91 +1373,6 @@ namespace NUS_Downloader
         }
 
         /// <summary>
-        /// Generates a ticket from TitleKey/ID
-        /// </summary>
-        /// <param name="EncTitleKey">The enc title key.</param>
-        /// <param name="TitleID">The title ID.</param>
-        /// <returns>New Ticket</returns>
-        private byte[] GenerateTicket(byte[] EncTitleKey, byte[] TitleID)
-        {
-            byte[] Ticket = new byte[0x2A4];
-
-            // RSA Signature Heading...
-            Ticket[1] = 0x01;
-            Ticket[3] = 0x01;
-
-            // Signature Issuer... (Root-CA00000001-XS00000003)
-            byte[] SignatureIssuer = new byte[0x1A]
-                                         {
-                                             0x52, 0x6F, 0x6F, 0x74, 0x2D, 0x43, 0x41, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30,
-                                             0x30, 0x31, 0x2D, 0x58, 0x53, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x30, 0x33
-                                         };
-            for (int a = 0; a < 0x40; a++)
-            {
-                Ticket[0x140 + a] = SignatureIssuer[a];
-            }
-
-            // Encrypted TitleKey...
-            for (int b = 0; b < 0x10; b++)
-            {
-                Ticket[0x1BF + b] = EncTitleKey[b];
-            }
-
-            // Ticket ID...
-            for (int c = 0; c < 0x08; c++)
-            {
-                Ticket[0x1D0 + c] = 0x49;
-            }
-
-            // Title ID...
-            for (int d = 0; d < 0x08; d++)
-            {
-                Ticket[0x1DC + d] = TitleID[d];
-            }
-
-            // Misc FF...
-            Ticket[0x1E4] = 0xFF;
-            Ticket[0x1E5] = 0xFF;
-            Ticket[0x1E6] = 0xFF;
-            Ticket[0x1E7] = 0xFF;
-
-            // Unknown 0x01...
-            Ticket[0x221] = 0x01;
-
-            // Misc FF...
-            for (int e = 0; e < 0x20; e++)
-            {
-                Ticket[0x222 + e] = 0xFF;
-            }
-
-            return Ticket;
-        }
-
-        /// <summary>
-        /// Checks for a hex string.
-        /// </summary>
-        /// <param name="test">The test string</param>
-        /// <returns>Whether string is hex or not.</returns>
-        public bool OnlyHexInString(string test)
-        {
-            return System.Text.RegularExpressions.Regex.IsMatch(test, @"\A\b[0-9a-fA-F]+\b\Z");
-        }
-
-        /// <summary>
-        /// Pads to multiple of....
-        /// </summary>
-        /// <param name="src">The binary.</param>
-        /// <param name="pad">The pad amount.</param>
-        /// <returns>Padded byte[]</returns>
-        private static byte[] PadToMultipleOf(byte[] src, int pad)
-        {
-            int len = (src.Length + pad - 1)/pad*pad;
-
-            Array.Resize(ref src, len);
-            return src;
-        }
-
-        /// <summary>
         /// Determines whether OS is win7.
         /// </summary>
         /// <returns>
@@ -2189,7 +1404,7 @@ namespace NUS_Downloader
             return resultArray;
         }
 
-
+        /*
         /// <summary>
         /// Does byte[] contain byte[]?
         /// </summary>
@@ -2217,7 +1432,7 @@ namespace NUS_Downloader
             }
 
             return offset;
-        }
+        }*/
 
         private WebClient ConfigureWithProxy(WebClient client)
         {
@@ -2535,97 +1750,6 @@ namespace NUS_Downloader
         }
 
         /// <summary>
-        /// Scans for certs in TMD/TIK.
-        /// </summary>
-        /// <param name="tmdortik">The tmdortik.</param>
-        private void ScanForCerts(byte[] tmdortik)
-        {
-            // For some reason a few 00s are cut off, so pad it up to be safe.
-            tmdortik = PadToMultipleOf(tmdortik, 16);
-
-            // Search for cert_CACP
-            if (!(tmdortik.Length < 0x300))
-                for (int a = 0; a < (tmdortik.Length - 0x300); a++)
-                {
-                    byte[] chunk = new byte[0x300];
-                    for (int b = 0; b < 0x300; b++)
-                    {
-                        chunk[b] = tmdortik[a + b];
-                    }
-                    if (Convert.ToBase64String(ComputeSHA(chunk)) == Convert.ToBase64String(cert_CACP_sha1))
-                    {
-                        cert_CACP = chunk;
-                        WriteStatus(" - Cert CA-CP Located!");
-                        break;
-                    }
-                }
-
-            // Search for cert_CAXS
-            if (!(tmdortik.Length < 0x300))
-                for (int a = 0; a < (tmdortik.Length - 0x300); a++)
-                {
-                    byte[] chunk = new byte[0x300];
-                    for (int b = 0; b < 0x300; b++)
-                    {
-                        chunk[b] = tmdortik[a + b];
-                    }
-                    if (Convert.ToBase64String(ComputeSHA(chunk)) == Convert.ToBase64String(cert_CAXS_sha1))
-                    {
-                        cert_CAXS = chunk;
-                        WriteStatus(" - Cert CA-XS Located!");
-                        break;
-                    }
-                }
-
-            // Search for cert_CA
-            if ((!(tmdortik.Length < 0x400)) &&
-                ((Convert.ToBase64String(ComputeSHA(cert_CA)) != Convert.ToBase64String(cert_CA_sha1))))
-            {
-                for (int a = 0; a < (tmdortik.Length - 0x400); a++)
-                {
-                    byte[] chunk = new byte[0x400];
-                    for (int b = 0; b < 0x400; b++)
-                    {
-                        chunk[b] = tmdortik[a + b];
-                    }
-                    if (Convert.ToBase64String(ComputeSHA(chunk)) == Convert.ToBase64String(cert_CA_sha1))
-                    {
-                        cert_CA = chunk;
-                        WriteStatus(" - Cert CA Located!");
-                        break;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Checks whether the certs are obtained.
-        /// </summary>
-        /// <returns></returns>
-        private bool CertsValid()
-        {
-            if (Convert.ToBase64String(ComputeSHA(cert_CA)) != Convert.ToBase64String(cert_CA_sha1))
-                return false;
-            if (Convert.ToBase64String(ComputeSHA(cert_CACP)) != Convert.ToBase64String(cert_CACP_sha1))
-                return false;
-            if (Convert.ToBase64String(ComputeSHA(cert_CAXS)) != Convert.ToBase64String(cert_CAXS_sha1))
-                return false;
-            return true;
-        }
-
-        /// <summary>
-        /// Checks the whole cert file for validity.
-        /// </summary>
-        /// <param name="cert_sys">The cert_sys.</param>
-        /// <returns>Valid Cert state.</returns>
-        private bool TotalCertValid(byte[] cert_sys)
-        {
-            if (Convert.ToBase64String(ComputeSHA(cert_sys)) != Convert.ToBase64String(cert_total_sha1))
-                return false;
-            return true;
-        }
-
-        /// <summary>
         /// Looks for a title's name by TitleID in Database.
         /// </summary>
         /// <param name="titleid">The titleid.</param>
@@ -2888,51 +2012,6 @@ namespace NUS_Downloader
             WriteStatus("Script completed!");
         }
 
-        /*
-        public static string ByteArrayToHexString(byte[] Bytes)
-        {
-            StringBuilder Result = new StringBuilder();
-            string HexAlphabet = "0123456789ABCDEF";
-
-            foreach (byte B in Bytes)
-            {
-                Result.Append(HexAlphabet[(int) (B >> 4)]);
-                Result.Append(HexAlphabet[(int) (B & 0xF)]);
-            }
-
-            return Result.ToString();
-        }
-
-        public static byte[] HexStringToByteArray(string Hex)
-        {
-            byte[] Bytes = new byte[Hex.Length/2];
-            int[] HexValue = new int[]
-                                 {
-                                     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
-                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x0B, 0x0C, 0x0D,
-                                     0x0E, 0x0F
-                                 };
-
-            for (int x = 0, i = 0; i < Hex.Length; i += 2, x += 1)
-            {
-                Bytes[x] = (byte) (HexValue[Char.ToUpper(Hex[i + 0]) - '0'] << 4 |
-                                   HexValue[Char.ToUpper(Hex[i + 1]) - '0']);
-            }
-
-            return Bytes;
-        }*/
-
-        string CombinePaths(params string[] parts)
-        {
-            string result = String.Empty;
-            foreach (string s in parts)
-            {
-                result = Path.Combine(result, s);
-            }
-            return result;
-        }
-
-
         private void scriptsbutton_Click(object sender, EventArgs e)
         {
             // Show scripts menu
@@ -2988,7 +2067,7 @@ namespace NUS_Downloader
                         FileInfo finfo = new FileInfo(nusscript);
                         ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
                         nus_script_item.Text = finfo.Name;
-                        nus_script_item.Image = Properties.Resources.script_go;
+                        nus_script_item.Image = Properties.Resources.script_start;
                         folder_item.DropDownItems.Add(nus_script_item);
 
                             nus_script_item.Click += new EventHandler(nus_script_item_Click);
@@ -3004,7 +2083,7 @@ namespace NUS_Downloader
                 FileInfo finfo = new FileInfo(nusscript);
                 ToolStripMenuItem nus_script_item = new ToolStripMenuItem();
                 nus_script_item.Text = finfo.Name;
-                nus_script_item.Image = Properties.Resources.script_go;
+                nus_script_item.Image = Properties.Resources.script_start;
                 scriptsLocalMenuEntry.DropDownItems.Add(nus_script_item);
 
                 nus_script_item.Click += new EventHandler(nus_script_item_Click);
@@ -3150,7 +2229,7 @@ namespace NUS_Downloader
         {
             if (iosPatchCheckbox.Checked == true)
             {
-                packbox.Enabled = false;
+                //packbox.Enabled = false;
                 packbox.Checked = true;
                 SetAllEnabled(false);
                 iosPatchGroupBox.Visible = true;
@@ -3160,7 +2239,7 @@ namespace NUS_Downloader
             }
             else
             {
-                packbox.Enabled = true;
+                //packbox.Enabled = true;
             }
         }
 
@@ -3168,7 +2247,7 @@ namespace NUS_Downloader
         {
             SetAllEnabled(true);
             iosPatchGroupBox.Visible = false;
-            packbox.Enabled = false;
+            //packbox.Enabled = false;
         }
     }
 }
