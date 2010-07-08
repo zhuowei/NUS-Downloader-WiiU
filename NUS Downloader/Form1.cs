@@ -41,9 +41,6 @@ namespace NUS_Downloader
 {
     public partial class Form1 : Form
     {
-        private const string WII_NUS_URL = "http://nus.cdn.shop.wii.com/ccs/download/";
-        private const string DSI_NUS_URL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
-
         private readonly string CURRENT_DIR = Directory.GetCurrentDirectory();
 
         // TODO: Always remember to change version!
@@ -440,7 +437,7 @@ namespace NUS_Downloader
                     WriteStatus(String.Format("   Content {0}: {1} ({2} bytes)", a, tmdLocal.Contents[a].ContentID.ToString(), tmdLocal.Contents[a].Size.ToString()));
                     WriteStatus(String.Format("    - Index: {0}", tmdLocal.Contents[a].Index.ToString()));
                     WriteStatus(String.Format("    - Type: {0}", tmdLocal.Contents[a].Type.ToString()));
-                    WriteStatus(String.Format("    -  Hash: {0}...", DisplayBytes(tmdLocal.Contents[a].Hash, String.Empty).Substring(0, 8)));
+                    WriteStatus(String.Format("    - Hash: {0}...", DisplayBytes(tmdLocal.Contents[a].Hash, String.Empty).Substring(0, 8)));
                 }
 
                 WriteStatus("TMD information parsed!");
@@ -868,7 +865,16 @@ namespace NUS_Downloader
             nusClient.ConfigureNusClient(nusWC);
             nusClient.UseLocalFiles = localuse.Checked;
             nusClient.ContinueWithoutTicket = true;
+
+            // Server
+            if (consoleCBox.SelectedIndex == 0)
+                nusClient.SetToWiiServer();
+            else if (consoleCBox.SelectedIndex == 1)
+                nusClient.SetToDSiServer();
+
+            // Events
             nusClient.Debug += new EventHandler<libWiiSharp.MessageEventArgs>(nusClient_Debug);
+            nusClient.Progress += new EventHandler<ProgressChangedEventArgs>(nusClient_Progress);
 
             libWiiSharp.StoreType[] storeTypes = new libWiiSharp.StoreType[3];
             if (packbox.Checked) storeTypes[0] = libWiiSharp.StoreType.WAD; else storeTypes[0] = libWiiSharp.StoreType.Empty;
@@ -892,6 +898,11 @@ namespace NUS_Downloader
 
             WriteStatus("NUS Download Finished.");
 
+        }
+
+        void nusClient_Progress(object sender, ProgressChangedEventArgs e)
+        {
+            dlprogress.Value = e.ProgressPercentage;
         }
 
         void nusClient_Debug(object sender, libWiiSharp.MessageEventArgs e)
