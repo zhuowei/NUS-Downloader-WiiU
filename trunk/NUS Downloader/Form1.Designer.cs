@@ -94,7 +94,7 @@
             this.koreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveaswadbtn = new System.Windows.Forms.Button();
             this.keepenccontents = new System.Windows.Forms.CheckBox();
-            this.button3 = new System.Windows.Forms.Button();
+            this.clearButton = new System.Windows.Forms.Button();
             this.packbox = new System.Windows.Forms.CheckBox();
             this.decryptbox = new System.Windows.Forms.CheckBox();
             this.localuse = new System.Windows.Forms.CheckBox();
@@ -477,10 +477,9 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(9, 72);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(228, 30);
+            this.checkBox1.Size = new System.Drawing.Size(199, 30);
             this.checkBox1.TabIndex = 35;
-            this.checkBox1.Text = "I accept that by storing my password\r\nanyone can open the proxy file and view it." +
-                "";
+            this.checkBox1.Text = "I understand that NUSD stores proxy\r\npasswords in plain text.";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
@@ -679,27 +678,27 @@
             this.keepenccontents.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.keepenccontents.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // clearButton
             // 
-            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.AutoSize = true;
-            this.button3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.button3.BackColor = System.Drawing.Color.Transparent;
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Image = global::NUS_Downloader.Properties.Resources.picture_empty;
-            this.button3.Location = new System.Drawing.Point(238, 360);
-            this.button3.MaximumSize = new System.Drawing.Size(0, 24);
-            this.button3.MinimumSize = new System.Drawing.Size(0, 24);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(24, 24);
-            this.button3.TabIndex = 31;
-            this.button3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.button3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.button3.UseVisualStyleBackColor = false;
-            this.button3.Click += new System.EventHandler(this.ClearStatusbox);
-            this.button3.MouseEnter += new System.EventHandler(this.clearButton_MouseEnter);
-            this.button3.MouseLeave += new System.EventHandler(this.clearButton_MouseLeave);
+            this.clearButton.AutoSize = true;
+            this.clearButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.clearButton.BackColor = System.Drawing.Color.Transparent;
+            this.clearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.clearButton.Image = global::NUS_Downloader.Properties.Resources.picture_empty;
+            this.clearButton.Location = new System.Drawing.Point(238, 360);
+            this.clearButton.MaximumSize = new System.Drawing.Size(0, 24);
+            this.clearButton.MinimumSize = new System.Drawing.Size(0, 24);
+            this.clearButton.Name = "clearButton";
+            this.clearButton.Size = new System.Drawing.Size(24, 24);
+            this.clearButton.TabIndex = 31;
+            this.clearButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.clearButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.clearButton.UseVisualStyleBackColor = false;
+            this.clearButton.Click += new System.EventHandler(this.ClearStatusbox);
+            this.clearButton.MouseEnter += new System.EventHandler(this.clearButton_MouseEnter);
+            this.clearButton.MouseLeave += new System.EventHandler(this.clearButton_MouseLeave);
             // 
             // packbox
             // 
@@ -729,15 +728,17 @@
             // 
             // localuse
             // 
+            this.localuse.AutoSize = true;
             this.localuse.Checked = true;
             this.localuse.CheckState = System.Windows.Forms.CheckState.Checked;
             this.localuse.Image = global::NUS_Downloader.Properties.Resources.drive_disk;
             this.localuse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.localuse.Location = new System.Drawing.Point(91, 390);
+            this.localuse.MinimumSize = new System.Drawing.Size(0, 22);
             this.localuse.Name = "localuse";
-            this.localuse.Size = new System.Drawing.Size(171, 22);
+            this.localuse.Size = new System.Drawing.Size(162, 22);
             this.localuse.TabIndex = 8;
-            this.localuse.Text = "Use Local Files If Available";
+            this.localuse.Text = "Use Local Files If Present";
             this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
             // 
@@ -791,7 +792,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.downloadstartbtn);
             this.Controls.Add(this.wadnamebox);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.clearButton);
             this.Controls.Add(this.Extrasbtn);
             this.Controls.Add(this.statusbox);
             this.Controls.Add(this.packbox);
@@ -848,7 +849,7 @@
         private System.Windows.Forms.ToolStripMenuItem TurboGrafxCDMenuList;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem RegionCodesList;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button clearButton;
         private System.Windows.Forms.ContextMenuStrip extrasStrip;
         private System.Windows.Forms.ToolStripMenuItem loadInfoFromTMDToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;

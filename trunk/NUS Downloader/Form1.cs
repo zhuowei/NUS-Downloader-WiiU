@@ -160,6 +160,12 @@ namespace NUS_Downloader
         {
             this.Font = new System.Drawing.Font("Tahoma", 8);
             InitializeComponent();
+            if (Type.GetType("Mono.Runtime") != null)
+            {
+                saveaswadbtn.Text = "Save As";
+                clearButton.Text = "Clear";
+                keepenccontents.Text = "Keep Enc. Contents";
+            }
 
             System.Drawing.Size mysize = new System.Drawing.Size(280, this.decryptbox.Top + this.decryptbox.Height + 30);
             this.MaximumSize = this.MinimumSize = this.Size = mysize;
@@ -3387,7 +3393,7 @@ namespace NUS_Downloader
             // expand clear button
             /*button3.Left = 194;
             button3.Size = new System.Drawing.Size(68, 21);*/
-            button3.Text = "Clear";
+            clearButton.Text = "Clear";
             //button3.ImageAlign = ContentAlignment.MiddleLeft;
         }
 
@@ -3396,7 +3402,8 @@ namespace NUS_Downloader
             // shrink clear button
             /*button3.Left = 239;
             button3.Size = new System.Drawing.Size(23, 21);*/
-            button3.Text = String.Empty;
+            if (Type.GetType ("Mono.Runtime") == null)
+                clearButton.Text = String.Empty;
             //button3.ImageAlign = ContentAlignment.MiddleCenter;
         }
 
@@ -3412,7 +3419,8 @@ namespace NUS_Downloader
         {
             /*saveaswadbtn.Left = 230;
             saveaswadbtn.Size = new Size(32, 22);*/
-            saveaswadbtn.Text = String.Empty;
+            if (Type.GetType("Mono.Runtime") == null)
+                saveaswadbtn.Text = String.Empty;
             //saveaswadbtn.ImageAlign = ContentAlignment.MiddleCenter;
         }
 
