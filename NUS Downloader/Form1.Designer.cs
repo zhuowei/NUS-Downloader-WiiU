@@ -117,7 +117,7 @@
             this.Extrasbtn.TabIndex = 0;
             this.Extrasbtn.Text = "Extras...";
             this.Extrasbtn.UseVisualStyleBackColor = true;
-            this.Extrasbtn.Click += new System.EventHandler(this.button1_Click);
+            this.Extrasbtn.Click += new System.EventHandler(this.extrasMenuButton_Click);
             // 
             // downloadstartbtn
             // 
@@ -128,7 +128,7 @@
             this.downloadstartbtn.TabIndex = 4;
             this.downloadstartbtn.Text = "Start NUS Download!";
             this.downloadstartbtn.UseVisualStyleBackColor = true;
-            this.downloadstartbtn.Click += new System.EventHandler(this.button3_Click);
+            this.downloadstartbtn.Click += new System.EventHandler(this.DownloadBtn_Click);
             // 
             // statusbox
             // 
@@ -175,7 +175,7 @@
             this.databaseButton.TabIndex = 20;
             this.databaseButton.Text = "Database...";
             this.databaseButton.UseVisualStyleBackColor = true;
-            this.databaseButton.Click += new System.EventHandler(this.button4_Click);
+            this.databaseButton.Click += new System.EventHandler(this.DatabaseButton_Click);
             // 
             // databaseStrip
             // 
@@ -496,7 +496,7 @@
             this.SaveProxyPwdBtn.TabIndex = 34;
             this.SaveProxyPwdBtn.Text = "Save (This Session Only)";
             this.SaveProxyPwdBtn.UseVisualStyleBackColor = true;
-            this.SaveProxyPwdBtn.Click += new System.EventHandler(this.button18_Click);
+            this.SaveProxyPwdBtn.Click += new System.EventHandler(this.SaveProxyPwdButton_Click);
             // 
             // label14
             // 
@@ -686,7 +686,7 @@
             this.button3.TabIndex = 31;
             this.button3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.button3.UseVisualStyleBackColor = false;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            this.button3.Click += new System.EventHandler(this.ClearStatusbox);
             this.button3.MouseEnter += new System.EventHandler(this.button3_MouseEnter);
             this.button3.MouseLeave += new System.EventHandler(this.button3_MouseLeave);
             // 
