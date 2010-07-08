@@ -34,7 +34,10 @@ namespace libWiiSharp
 
     public class NusClient : IDisposable
     {
-        private const string nusUrl = "http://nus.cdn.shop.wii.com/ccs/download/";
+        private const string WII_NUS_URL = "http://nus.cdn.shop.wii.com/ccs/download/";
+        private const string DSI_NUS_URL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
+
+        private string nusUrl = WII_NUS_URL;
         private WebClient wcNus = new WebClient();
         private bool useLocalFiles = false;
         private bool continueWithoutTicket = false;
@@ -80,6 +83,15 @@ namespace libWiiSharp
             wcNus = wcReady;
         }
 
+        public void SetToWiiServer()
+        {
+            nusUrl = WII_NUS_URL;
+        }
+
+        public void SetToDSiServer()
+        {
+            nusUrl = DSI_NUS_URL;
+        }
 
         /// <summary>
         /// Grabs a title from NUS, you can define several store types.
