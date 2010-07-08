@@ -99,6 +99,10 @@
             this.decryptbox = new System.Windows.Forms.CheckBox();
             this.localuse = new System.Windows.Forms.CheckBox();
             this.iosPatchCheckbox = new System.Windows.Forms.CheckBox();
+            this.iosPatchGroupBox = new System.Windows.Forms.GroupBox();
+            this.iosPatchGroupBoxOKbtn = new System.Windows.Forms.Button();
+            this.iosPatchesListBox = new System.Windows.Forms.CheckedListBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.titleversion = new wmgCMS.WaterMarkTextBox();
             this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
@@ -107,6 +111,7 @@
             this.proxyBox.SuspendLayout();
             this.ProxyVerifyBox.SuspendLayout();
             this.scriptsStrip.SuspendLayout();
+            this.iosPatchGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // Extrasbtn
@@ -752,6 +757,54 @@
             this.iosPatchCheckbox.Text = "Patch IOS...";
             this.iosPatchCheckbox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.iosPatchCheckbox.UseVisualStyleBackColor = true;
+            this.iosPatchCheckbox.CheckedChanged += new System.EventHandler(this.iosPatchCheckbox_CheckedChanged);
+            // 
+            // iosPatchGroupBox
+            // 
+            this.iosPatchGroupBox.Controls.Add(this.label2);
+            this.iosPatchGroupBox.Controls.Add(this.iosPatchesListBox);
+            this.iosPatchGroupBox.Controls.Add(this.iosPatchGroupBoxOKbtn);
+            this.iosPatchGroupBox.Location = new System.Drawing.Point(31, 146);
+            this.iosPatchGroupBox.Name = "iosPatchGroupBox";
+            this.iosPatchGroupBox.Size = new System.Drawing.Size(212, 142);
+            this.iosPatchGroupBox.TabIndex = 55;
+            this.iosPatchGroupBox.TabStop = false;
+            this.iosPatchGroupBox.Text = "IOS Patches";
+            this.iosPatchGroupBox.Visible = false;
+            // 
+            // iosPatchGroupBoxOKbtn
+            // 
+            this.iosPatchGroupBoxOKbtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.iosPatchGroupBoxOKbtn.Location = new System.Drawing.Point(131, 113);
+            this.iosPatchGroupBoxOKbtn.Name = "iosPatchGroupBoxOKbtn";
+            this.iosPatchGroupBoxOKbtn.Size = new System.Drawing.Size(75, 23);
+            this.iosPatchGroupBoxOKbtn.TabIndex = 0;
+            this.iosPatchGroupBoxOKbtn.Text = "OK";
+            this.iosPatchGroupBoxOKbtn.UseVisualStyleBackColor = true;
+            this.iosPatchGroupBoxOKbtn.Click += new System.EventHandler(this.iosPatchGroupBoxOKbtn_Click);
+            // 
+            // iosPatchesListBox
+            // 
+            this.iosPatchesListBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.iosPatchesListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.iosPatchesListBox.FormattingEnabled = true;
+            this.iosPatchesListBox.Items.AddRange(new object[] {
+            "Trucha bug",
+            "ES_Identify",
+            "NAND permissions"});
+            this.iosPatchesListBox.Location = new System.Drawing.Point(6, 62);
+            this.iosPatchesListBox.Name = "iosPatchesListBox";
+            this.iosPatchesListBox.Size = new System.Drawing.Size(197, 45);
+            this.iosPatchesListBox.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 16);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(184, 26);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Patch the following bugs into any IOS\r\nI download:";
             // 
             // titleversion
             // 
@@ -791,6 +844,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(274, 516);
+            this.Controls.Add(this.iosPatchGroupBox);
             this.Controls.Add(this.iosPatchCheckbox);
             this.Controls.Add(this.ProxyVerifyBox);
             this.Controls.Add(this.proxyBox);
@@ -825,6 +879,8 @@
             this.ProxyVerifyBox.ResumeLayout(false);
             this.ProxyVerifyBox.PerformLayout();
             this.scriptsStrip.ResumeLayout(false);
+            this.iosPatchGroupBox.ResumeLayout(false);
+            this.iosPatchGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -907,6 +963,10 @@
         private System.Windows.Forms.CheckBox keepenccontents;
         private System.Windows.Forms.Button saveaswadbtn;
         private System.Windows.Forms.CheckBox iosPatchCheckbox;
+        private System.Windows.Forms.GroupBox iosPatchGroupBox;
+        private System.Windows.Forms.CheckedListBox iosPatchesListBox;
+        private System.Windows.Forms.Button iosPatchGroupBoxOKbtn;
+        private System.Windows.Forms.Label label2;
     }
 }
 
