@@ -98,6 +98,7 @@
             this.packbox = new System.Windows.Forms.CheckBox();
             this.decryptbox = new System.Windows.Forms.CheckBox();
             this.localuse = new System.Windows.Forms.CheckBox();
+            this.iosPatchCheckbox = new System.Windows.Forms.CheckBox();
             this.titleversion = new wmgCMS.WaterMarkTextBox();
             this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
@@ -643,8 +644,7 @@
             // 
             // saveaswadbtn
             // 
-            this.saveaswadbtn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveaswadbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.saveaswadbtn.AutoSize = true;
             this.saveaswadbtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.saveaswadbtn.BackColor = System.Drawing.Color.Transparent;
@@ -670,7 +670,7 @@
             this.keepenccontents.CheckState = System.Windows.Forms.CheckState.Checked;
             this.keepenccontents.Image = global::NUS_Downloader.Properties.Resources.package;
             this.keepenccontents.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.keepenccontents.Location = new System.Drawing.Point(12, 437);
+            this.keepenccontents.Location = new System.Drawing.Point(12, 436);
             this.keepenccontents.Name = "keepenccontents";
             this.keepenccontents.Size = new System.Drawing.Size(212, 26);
             this.keepenccontents.TabIndex = 52;
@@ -680,8 +680,7 @@
             // 
             // clearButton
             // 
-            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.clearButton.AutoSize = true;
             this.clearButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.clearButton.BackColor = System.Drawing.Color.Transparent;
@@ -742,6 +741,18 @@
             this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
             // 
+            // iosPatchCheckbox
+            // 
+            this.iosPatchCheckbox.Image = global::NUS_Downloader.Properties.Resources.bug_add;
+            this.iosPatchCheckbox.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.iosPatchCheckbox.Location = new System.Drawing.Point(12, 488);
+            this.iosPatchCheckbox.Name = "iosPatchCheckbox";
+            this.iosPatchCheckbox.Size = new System.Drawing.Size(104, 24);
+            this.iosPatchCheckbox.TabIndex = 54;
+            this.iosPatchCheckbox.Text = "Patch IOS...";
+            this.iosPatchCheckbox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iosPatchCheckbox.UseVisualStyleBackColor = true;
+            // 
             // titleversion
             // 
             this.titleversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
@@ -778,7 +789,9 @@
             // 
             // Form1
             // 
-            this.ClientSize = new System.Drawing.Size(274, 491);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(274, 516);
+            this.Controls.Add(this.iosPatchCheckbox);
             this.Controls.Add(this.ProxyVerifyBox);
             this.Controls.Add(this.proxyBox);
             this.Controls.Add(this.scriptsbutton);
@@ -801,8 +814,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(280, 519);
-            this.MinimumSize = new System.Drawing.Size(280, 519);
             this.Name = "Form1";
             this.Text = "NUSD";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -895,6 +906,7 @@
         private System.Windows.Forms.Button SaveProxyPwdPermanentBtn;
         private System.Windows.Forms.CheckBox keepenccontents;
         private System.Windows.Forms.Button saveaswadbtn;
+        private System.Windows.Forms.CheckBox iosPatchCheckbox;
     }
 }
 
