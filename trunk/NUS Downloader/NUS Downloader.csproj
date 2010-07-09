@@ -72,6 +72,7 @@
     <Compile Include="CommonKey.cs" />
     <Compile Include="COMTypes.cs" />
     <Compile Include="ContentIndices.cs" />
+    <Compile Include="Database.cs" />
     <Compile Include="Form1.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Form</SubType>
