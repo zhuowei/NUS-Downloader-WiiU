@@ -1,15 +1,14 @@
-///////////////////////////////////////
-// NUS Downlodaer: TODO              //
-// $Rev::                          $ //
-// $Author::                       $ //
-// $Date::                         $ //
-///////////////////////////////////////
+///////////////////////////////////////////
+// NUS Downloader: TODO                  //
+// $Rev::                              $ //
+// $Author::                           $ //
+// $Date::                             $ //
+///////////////////////////////////////////
 
 Make more compatible with mono for Linux.
 Broken stuff:
- - Downloading anything
- - Bottom part of dialog cut off
 Working stuff:
+ - Downloading anything
  - Displaying Form1
  - Loading database
  - Generating update scripts

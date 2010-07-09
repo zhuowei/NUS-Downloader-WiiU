@@ -1,4 +1,11 @@
-﻿using System;
+﻿///////////////////////////////////////////
+// NUS Downloader: Database.cs           //
+// $Rev::                              $ //
+// $Author::                           $ //
+// $Date::                             $ //
+///////////////////////////////////////////
+
+using System;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml;
