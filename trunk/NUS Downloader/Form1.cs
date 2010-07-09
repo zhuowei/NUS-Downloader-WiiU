@@ -44,7 +44,12 @@ namespace NUS_Downloader
         private readonly string CURRENT_DIR = Directory.GetCurrentDirectory();
 
         // TODO: Always remember to change version!
+#if DEBUG
+        private static string svnversion = "$Rev$";
+        private string version = String.Format("SVN {0}", ((int.Parse(svnversion.Replace("$Rev$","")))+1));
+#else
         private string version = "v2.0 Beta";
+#endif
         
         private static bool dsidecrypt = false;
 
