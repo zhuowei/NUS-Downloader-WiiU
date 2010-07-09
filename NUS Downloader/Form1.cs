@@ -789,7 +789,15 @@ namespace NUS_Downloader
             ToolStripMenuItem[] systemItems = databaseObj.LoadSystemTitles();
             for (int a = 0; a < systemItems.Length; a++)
             {
-                systemItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(sysitem_versionclicked);
+                systemItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                for (int b = 0; b < systemItems[a].DropDownItems.Count; b++)
+                {
+                    ToolStripMenuItem syslowerentry = (ToolStripMenuItem)systemItems[a].DropDownItems[b];
+                    if (syslowerentry.DropDownItems.Count > 0)
+                    {
+                        syslowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                    }
+                }
                 AddToolStripItemToStrip(SystemMenuList, systemItems[a]);
                 //SystemMenuList.DropDownItems.Add(systemItems[a]);
             }
@@ -799,7 +807,7 @@ namespace NUS_Downloader
             ToolStripMenuItem[] iosItems = databaseObj.LoadIosTitles();
             for (int a = 0; a < iosItems.Length; a++)
             {
-                iosItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(sysitem_versionclicked);
+                iosItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
                 AddToolStripItemToStrip(IOSMenuList, iosItems[a]);
                 //IOSMenuList.DropDownItems.Add(iosItems[a]);
             }
@@ -811,7 +819,16 @@ namespace NUS_Downloader
             {
                 for (int b = 0; b < vcItems[a].Length; b++)
 			    {
-                    vcItems[a][b].DropDownItemClicked += new ToolStripItemClickedEventHandler(wwitem_regionclicked);
+                    vcItems[a][b].DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                    for (int c = 0; c < vcItems[a][b].DropDownItems.Count; c++)
+                    {
+                        ToolStripMenuItem lowerentry = (ToolStripMenuItem)vcItems[a][b].DropDownItems[c];
+                        if (lowerentry.DropDownItems.Count > 0)
+                        {
+                            lowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                        }
+                    }
+
                     AddToolStripItemToStrip((ToolStripMenuItem)VCMenuList.DropDownItems[a], vcItems[a][b]);
                     //tsmi.DropDownItems.Add(vcItems[a][b]);
                     
@@ -823,7 +840,15 @@ namespace NUS_Downloader
             ToolStripMenuItem[] wwItems = databaseObj.LoadWiiWareTitles();
             for (int a = 0; a < wwItems.Length; a++)
             {
-                wwItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(sysitem_versionclicked);
+                wwItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                for (int b = 0; b < wwItems[a].DropDownItems.Count; b++)
+                {
+                    ToolStripMenuItem lowerentry = (ToolStripMenuItem)wwItems[a].DropDownItems[b];
+                    if (lowerentry.DropDownItems.Count > 0)
+                    {
+                        lowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                    }
+                }
                 AddToolStripItemToStrip(WiiWareMenuList, wwItems[a]);
                 //WiiWareMenuList.DropDownItems.Add(wwItems[a]);
             }
@@ -1085,56 +1110,6 @@ namespace NUS_Downloader
             }*/
         }
 
-        private void deepitem_clicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            titleidbox.Text = e.ClickedItem.OwnerItem.OwnerItem.Text.Substring(0, 16);
-            titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.OwnerItem.Text.Substring(0, 2));
-
-            if (e.ClickedItem.Text != "Latest Version")
-            {
-                if (e.ClickedItem.Text.Contains("v"))
-                {
-                    if (e.ClickedItem.Text.Contains(" "))
-                        titleversion.Text = e.ClickedItem.Text.Substring(1, e.ClickedItem.Text.IndexOf(' ') - 1);
-                    else
-                        titleversion.Text = e.ClickedItem.Text.Substring(1, e.ClickedItem.Text.Length - 1);
-                }
-            }
-            else
-            {
-                titleversion.Text = "";
-            }
-
-            // Prepare StatusBox...
-            string titlename = e.ClickedItem.OwnerItem.OwnerItem.Text.Substring(19,
-                                                                                (e.ClickedItem.OwnerItem.OwnerItem.Text.
-                                                                                     Length - 19));
-            statusbox.Text = " --- " + titlename + " ---";
-
-            // Check if a ticket is present...
-            if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (orange) ||
-                (e.ClickedItem.OwnerItem.OwnerItem.Image) == (redorange))
-            {
-                //ignoreticket.Checked = true;
-                WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
-                packbox.Checked = false;
-                decryptbox.Checked = false;
-            }
-
-            // Change WAD name if packed is already checked...
-            if (packbox.Checked)
-            {
-                OfficialWADNaming(titlename);
-            }
-
-            // Check for danger item
-            if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (redgreen) ||
-                (e.ClickedItem.OwnerItem.OwnerItem.Image) == (redorange))
-            {
-                WriteStatus("\r\n" + e.ClickedItem.OwnerItem.OwnerItem.ToolTipText);
-            }
-        }
-
         /// <summary>
         /// Mods WAD names to be official.
         /// </summary>
@@ -1175,38 +1150,6 @@ namespace NUS_Downloader
             return titlename;
         }
 
-        private void wwitem_regionclicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            titleidbox.Text = e.ClickedItem.OwnerItem.Text.Substring(0, 16);
-            titleversion.Text = "";
-            titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.Text.Substring(0, 2));
-
-            // Prepare StatusBox...
-            string titlename = e.ClickedItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.Text.Length - 19));
-            statusbox.Text = " --- " + titlename + " ---";
-
-            // Check if a ticket is present...
-            if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
-            {
-                //ignoreticket.Checked = true;
-                WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
-                packbox.Checked = false;
-                decryptbox.Checked = false;
-            }
-
-            // Change WAD name if packed is already checked...
-            if (packbox.Checked)
-            {
-                OfficialWADNaming(titlename);
-            }
-
-            // Check for danger item
-            if ((e.ClickedItem.OwnerItem.Image) == (redgreen) || (e.ClickedItem.OwnerItem.Image) == (redorange))
-            {
-                WriteStatus("\r\n" + e.ClickedItem.OwnerItem.ToolTipText);
-            }
-        }
-
         private void upditem_itemclicked(object sender, ToolStripItemClickedEventArgs e)
         {
             WriteStatus("Preparing to run download script...");
@@ -1226,59 +1169,86 @@ namespace NUS_Downloader
             scripter.RunWorkerAsync();
         }
 
-
-        private void sysitem_versionclicked(object sender, ToolStripItemClickedEventArgs e)
+        public void DatabaseItem_Clicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            titleidbox.Text = e.ClickedItem.OwnerItem.Text.Substring(0, 16);
+            Regex IdandTitle = new Regex(@"[0-9A-Z]*\s-\s.*");
+            Regex RegionEntry = new Regex(@"[0-9A-Z][0-9A-Z] \(.*\)");
+            Regex VersionEntry = new Regex(@"v[0-9]*.*");
 
-            if (e.ClickedItem.Text != "Latest Version")
+            // This item is a Titleid - Descname entry
+            if (IdandTitle.IsMatch(e.ClickedItem.Text))
             {
-                if (e.ClickedItem.Text.Contains("v"))
+                string text = e.ClickedItem.Text.Replace(" - ", "~");
+                string[] values = text.Split('~');
+                titleidbox.Text = values[0];
+                statusbox.Text = String.Format(" --- {0} ---", values[1]);
+                titleversion.Text = String.Empty;
+
+                if ((e.ClickedItem.Image) == (orange) || (e.ClickedItem.Image) == (redorange))
                 {
-                    if (e.ClickedItem.Text.Contains(" "))
-                        titleversion.Text = e.ClickedItem.Text.Substring(1, e.ClickedItem.Text.IndexOf(' ') - 1);
-                    else
-                        titleversion.Text = e.ClickedItem.Text.Substring(1, e.ClickedItem.Text.Length - 1);
+                    WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
+                    packbox.Checked = false;
+                    decryptbox.Checked = false;
+                }
+
+                // Check for danger item
+                if ((e.ClickedItem.Image) == (redgreen) || (e.ClickedItem.Image) == (redorange))
+                    WriteStatus("\n" + e.ClickedItem.ToolTipText);
+            }
+
+            // Region ClickedItem
+            if (RegionEntry.IsMatch(e.ClickedItem.Text))
+            {
+                string text = e.ClickedItem.OwnerItem.Text.Replace(" - ", "~");
+                string[] values = text.Split('~');
+                titleidbox.Text = values[0];
+                statusbox.Text = String.Format(" --- {0} ---", values[1]);
+                titleversion.Text = String.Empty;
+
+                // Put 'XX' into title ID
+                titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.Text.Substring(0, 2));
+
+                if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
+                {
+                    WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
+                    packbox.Checked = false;
+                    decryptbox.Checked = false;
+                }
+
+                // Check for danger item
+                if ((e.ClickedItem.OwnerItem.Image) == (redgreen) || (e.ClickedItem.OwnerItem.Image) == (redorange))
+                    WriteStatus("\n" + e.ClickedItem.OwnerItem.ToolTipText);
+            }
+
+            // Version ClickedItem
+            if (VersionEntry.IsMatch(e.ClickedItem.Text) || e.ClickedItem.Text == "Latest Version")
+            {
+                if (RegionEntry.IsMatch(e.ClickedItem.OwnerItem.Text))
+                {
+                    string text = e.ClickedItem.OwnerItem.OwnerItem.Text.Replace(" - ", "~");
+                    string[] values = text.Split('~');
+                    titleidbox.Text = values[0];
+                    statusbox.Text = String.Format(" --- {0} ---", values[1]);
+
+                    // Put 'XX' into title ID
+                    titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.OwnerItem.Text.Substring(0, 2));
                 }
                 else
-                {
-                    // Apparently it's a region code..
-                    titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.Text.Substring(0, 2));
-                    titleversion.Text = "";
+                { 
+                    string text = e.ClickedItem.OwnerItem.Text.Replace(" - ", "~");
+                    string[] values = text.Split('~');
+                    titleidbox.Text = values[0];
+                    statusbox.Text = String.Format(" --- {0} ---", values[1]);
                 }
-            }
-            else
-            {
-                titleversion.Text = "";
-            }
 
-            // Prepare StatusBox...
-            string titlename = e.ClickedItem.OwnerItem.Text.Substring(19, (e.ClickedItem.OwnerItem.Text.Length - 19));
-            statusbox.Text = " --- " + titlename + " ---";
-
-            if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
-            {
-                //ignoreticket.Checked = true;
-                WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
-                packbox.Checked = false;
-                decryptbox.Checked = false;
-            }
-
-            // Change WAD name if packed is already checked...
-            if (packbox.Checked)
-            {
-                if (titlename.Contains("IOS"))
-                    wadnamebox.Text = titlename + "-64-[v].wad";
+                // Set version
+                if (e.ClickedItem.Text == "Latest Version")
+                    titleversion.Text = String.Empty;
                 else
-                    wadnamebox.Text = titlename + "-NUS-[v].wad";
-                if (titleversion.Text != "")
-                    wadnamebox.Text = wadnamebox.Text.Replace("[v]", "v" + titleversion.Text);
-            }
-
-            // Check for danger item
-            if ((e.ClickedItem.OwnerItem.Image) == (redgreen) || (e.ClickedItem.OwnerItem.Image) == (redorange))
-            {
-                WriteStatus("\n" + e.ClickedItem.OwnerItem.ToolTipText);
+                {
+                    string[] version = e.ClickedItem.Text.Replace("v", "").Split(' ');
+                    titleversion.Text = version[0];
+                }
             }
         }
 
