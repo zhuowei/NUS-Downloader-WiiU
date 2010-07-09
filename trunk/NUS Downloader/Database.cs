@@ -23,7 +23,7 @@ namespace NUS_Downloader
         private string[] VcConsoles = new string[11] { "C64", "GEN", "MSX", "N64", "NEO", "NES", 
             "SMS", "SNES", "TG16", "TGCD", "ARC" };
 
-        MemoryStream databaseStream;
+        private string databaseString;
 
         private Image green = Properties.Resources.bullet_green;
         private Image orange = Properties.Resources.bullet_orange;
@@ -34,42 +34,42 @@ namespace NUS_Downloader
         public void LoadDatabaseToStream(string databaseFile)
         {
             // Load database.xml into MemoryStream
-            string databasestr = File.ReadAllText(databaseFile);
-            System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
+            databaseString = File.ReadAllText(databaseFile);
+            /*System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
             byte[] databasebytes = encoding.GetBytes(databasestr);
 
             // Load the memory stream
             databaseStream = new MemoryStream(databasebytes);
-            databaseStream.Seek(0, SeekOrigin.Begin);
+            databaseStream.Seek(0, SeekOrigin.Begin);*/
         }
 
         public string GetDatabaseVersion()
         {
-            if (databaseStream.Length < 1)
+            if (databaseString.Length < 1)
             {
                 throw new Exception("Load the database into a memory stream first!");
             }
 
             XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(databaseStream);
+            xDoc.LoadXml(databaseString);
             XmlNodeList DatabaseList = xDoc.GetElementsByTagName("database");
             XmlAttributeCollection Attributes = DatabaseList[0].Attributes;
             return Attributes[0].Value;
         }
                         
-        public ToolStripItemCollection LoadSystemTitles()
+        public ToolStripMenuItem[] LoadSystemTitles()
         {
-            if (databaseStream.Length < 1)
+            if (databaseString.Length < 1)
             {
                 throw new Exception("Load the database into a memory stream first!");
             }
 
             XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(databaseStream);
-
-            ToolStripItemCollection systemTitleCollection = new ToolStripItemCollection(null, null);
+            xDoc.LoadXml(databaseString);
 
             XmlNodeList SystemTitlesXMLNodes = xDoc.GetElementsByTagName(SystemTag);
+
+            ToolStripMenuItem[] systemTitleCollection = new ToolStripMenuItem[SystemTitlesXMLNodes.Count];
 
             for (int x = 0; x < SystemTitlesXMLNodes.Count; x++)
             {
@@ -157,25 +157,23 @@ namespace NUS_Downloader
                     }
                 }
                 //AddToolStripItemToStrip(i, XMLToolStripItem, XMLAttributes);
-                systemTitleCollection.Add(XMLToolStripItem);
+                systemTitleCollection[x] = XMLToolStripItem;
             }
 
             return systemTitleCollection;
         }
 
-        public ToolStripItemCollection LoadIosTitles()
+        public ToolStripMenuItem[] LoadIosTitles()
         {
-            if (databaseStream.Length < 1)
+            if (databaseString.Length < 1)
             {
                 throw new Exception("Load the database into a memory stream first!");
             }
 
             XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(databaseStream);
-
-            ToolStripItemCollection iosTitleCollection = new ToolStripItemCollection(null, null);
-
+            xDoc.LoadXml(databaseString);
             XmlNodeList IosTitlesXMLNodes = xDoc.GetElementsByTagName(IosTag);
+            ToolStripMenuItem[] iosTitleCollection = new ToolStripMenuItem[IosTitlesXMLNodes.Count];
 
             for (int x = 0; x < IosTitlesXMLNodes.Count; x++)
             {
@@ -228,25 +226,28 @@ namespace NUS_Downloader
                         XMLToolStripItem.Text = descname; //Huh
                 }
                 
-                iosTitleCollection.Add(XMLToolStripItem);
+                iosTitleCollection[x] = XMLToolStripItem;
             }
 
             return iosTitleCollection;
         }
 
-        public ToolStripItemCollection[] LoadVirtualConsoleTitles()
+        public ToolStripMenuItem[][] LoadVirtualConsoleTitles()
         {
-            if (databaseStream.Length < 1)
+            if (databaseString.Length < 1)
             {
                 throw new Exception("Load the database into a memory stream first!");
             }
 
             XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(databaseStream);
-
-            ToolStripItemCollection[] vcTitleCollection = new ToolStripItemCollection[VcConsoles.Length];
-
+            xDoc.LoadXml(databaseString);
             XmlNodeList VirtualConsoleXMLNodes = xDoc.GetElementsByTagName(VcTag);
+            ToolStripMenuItem[][] vcTitleCollection = new ToolStripMenuItem[VcConsoles.Length][];
+
+            for (int j = 0; j < vcTitleCollection.Length; j++)
+            {
+                vcTitleCollection[j] = new ToolStripMenuItem[0];
+            }
 
             for (int x = 0; x < VirtualConsoleXMLNodes.Count; x++)
             {
@@ -337,26 +338,27 @@ namespace NUS_Downloader
                 for (int a = 0; a < VcConsoles.Length; a++)
 			    {
                     if (XMLAttributes[0].Value == VcConsoles[a])
-                        vcTitleCollection[a].Add(XMLToolStripItem);
+                    {
+                        Array.Resize(ref vcTitleCollection[a], vcTitleCollection[a].Length + 1);
+                        vcTitleCollection[a][vcTitleCollection[a].Length - 1] = XMLToolStripItem;
+                    }
 			    }
             }
 
             return vcTitleCollection;
         }
 
-        public ToolStripItemCollection LoadWiiWareTitles()
+        public ToolStripMenuItem[] LoadWiiWareTitles()
         {
-            if (databaseStream.Length < 1)
+            if (databaseString.Length < 1)
             {
                 throw new Exception("Load the database into a memory stream first!");
             }
 
             XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(databaseStream);
-
-            ToolStripItemCollection wwTitleCollection = new ToolStripItemCollection(null, null);
-
+            xDoc.LoadXml(databaseString);
             XmlNodeList WiiWareTitlesXMLNodes = xDoc.GetElementsByTagName(WwTag);
+            ToolStripMenuItem[] wwTitleCollection = new ToolStripMenuItem[WiiWareTitlesXMLNodes.Count];
 
             for (int x = 0; x < WiiWareTitlesXMLNodes.Count; x++)
             {
@@ -444,7 +446,7 @@ namespace NUS_Downloader
                     }
                 }
                 
-                wwTitleCollection.Add(XMLToolStripItem);
+                wwTitleCollection[x] = XMLToolStripItem;
             }
 
             return wwTitleCollection;
@@ -475,13 +477,13 @@ namespace NUS_Downloader
 		            <region index=12>58 (Some Homebrew)</region>
 	           </REGIONS>
             */
-            if (databaseStream.Length < 1)
+            if (databaseString.Length < 1)
             {
                 throw new Exception("Load the database into a memory stream first!");
             }
 
             XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(databaseStream);
+            xDoc.LoadXml(databaseString);
 
             XmlNodeList XMLRegionList = xDoc.GetElementsByTagName("REGIONS");
             XmlNodeList ChildrenOfTheNode = XMLRegionList[0].ChildNodes;
