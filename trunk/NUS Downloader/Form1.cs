@@ -43,14 +43,14 @@ namespace NUS_Downloader
     {
         private readonly string CURRENT_DIR = Directory.GetCurrentDirectory();
 
-        // TODO: Always remember to change version!
 #if DEBUG
         private static string svnversion = "$Rev$";
-        private string version = String.Format("SVN {0}", ((int.Parse(svnversion.Replace("$Rev$","")))+1));
+        private static string version = String.Format("SVN r{0}", ((int.Parse(svnversion.Replace("$"+"R"+"e"+"v"+": ","").Replace(" "+"$","")))+1));
 #else
+        // TODO: Always remember to change version!
         private string version = "v2.0 Beta";
 #endif
-        
+
         private static bool dsidecrypt = false;
 
         // Cross-thread Windows Formsing
@@ -92,6 +92,13 @@ namespace NUS_Downloader
         {
             this.Font = new System.Drawing.Font("Tahoma", 8);
             InitializeComponent();
+            if (version.StartsWith("SVN"))
+            {
+                WriteStatus("!!!!! THIS IS A DEBUG BUILD FROM SVN !!!!!");
+                WriteStatus("Features CAN and WILL be broken in this build");
+                WriteStatus("REMEMBER TO CHANGE TO THE RELEASE CONFIGURATION AND CHANGE VERSION NUMBER BEFORE BUILDING!");
+                WriteStatus("\n\n\n");
+            }
             this.MaximumSize = this.MinimumSize = this.Size; // Lock size down PATCHOW :D
             if (Type.GetType("Mono.Runtime") != null)
             {
@@ -2205,6 +2212,10 @@ namespace NUS_Downloader
             statusbox.Text = "";
             WriteStatus("NUS Downloader (NUSD)");
             WriteStatus("You are running version: " + version);
+            if (version.StartsWith("SVN"))
+            {
+                WriteStatus("THIS IS A DIRECT FROM SVN BUILD! DO NOT REPORT BROKEN FEATURES!");
+            }
             WriteStatus("This application created by WB3000");
             WriteStatus("Various sections contributed by lukegb");
             WriteStatus("");
