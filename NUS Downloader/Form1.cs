@@ -50,7 +50,7 @@ namespace NUS_Downloader
 
         // Cross-thread Windows Formsing
         private delegate void AddToolStripItemToStripCallback(
-            int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes);
+            ToolStripMenuItem menulist, ToolStripMenuItem additionitem);
         private delegate void WriteStatusCallback(string Update);
         private delegate void BootChecksCallback();
         private delegate void SetEnableForDownloadCallback(bool enabled);
@@ -183,6 +183,7 @@ namespace NUS_Downloader
                 databaseButton.Text = "Download DB"; */
                 DatabaseEnabled(false);
                 updateDatabaseToolStripMenuItem.Enabled = true;
+                updateDatabaseToolStripMenuItem.Visible = true;
                 updateDatabaseToolStripMenuItem.Text = "Download Database";
             }
             else
@@ -767,6 +768,58 @@ namespace NUS_Downloader
         /// </summary>
         private void FillDatabaseStrip(BackgroundWorker worker)
         {
+            // Something needs to be done to remove this i guess
+            //Control.CheckForIllegalCrossThreadCalls = false;
+
+            Database databaseObj = new Database();
+            databaseObj.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
+
+            ToolStripMenuItem[] systemItems = databaseObj.LoadSystemTitles();
+            for (int a = 0; a < systemItems.Length; a++)
+            {
+                systemItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(sysitem_versionclicked);
+                AddToolStripItemToStrip(SystemMenuList, systemItems[a]);
+                //SystemMenuList.DropDownItems.Add(systemItems[a]);
+            }
+            SetPropertyThreadSafe(SystemMenuList, true, "Enabled");
+            SetPropertyThreadSafe(SystemMenuList, true, "Visible");
+
+            ToolStripMenuItem[] iosItems = databaseObj.LoadIosTitles();
+            for (int a = 0; a < iosItems.Length; a++)
+            {
+                iosItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(sysitem_versionclicked);
+                AddToolStripItemToStrip(IOSMenuList, iosItems[a]);
+                //IOSMenuList.DropDownItems.Add(iosItems[a]);
+            }
+            SetPropertyThreadSafe(IOSMenuList, true, "Enabled");
+            SetPropertyThreadSafe(IOSMenuList, true, "Visible");
+
+            ToolStripMenuItem[][] vcItems = databaseObj.LoadVirtualConsoleTitles();
+            for (int a = 0; a < vcItems.Length; a++)
+            {
+                for (int b = 0; b < vcItems[a].Length; b++)
+			    {
+                    vcItems[a][b].DropDownItemClicked += new ToolStripItemClickedEventHandler(wwitem_regionclicked);
+                    AddToolStripItemToStrip((ToolStripMenuItem)VCMenuList.DropDownItems[a], vcItems[a][b]);
+                    //tsmi.DropDownItems.Add(vcItems[a][b]);
+                    
+			    }
+            }
+            SetPropertyThreadSafe(VCMenuList, true, "Enabled");
+            SetPropertyThreadSafe(VCMenuList, true, "Visible");
+
+            ToolStripMenuItem[] wwItems = databaseObj.LoadWiiWareTitles();
+            for (int a = 0; a < wwItems.Length; a++)
+            {
+                wwItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(sysitem_versionclicked);
+                AddToolStripItemToStrip(WiiWareMenuList, wwItems[a]);
+                //WiiWareMenuList.DropDownItems.Add(wwItems[a]);
+            }
+            SetPropertyThreadSafe(WiiWareMenuList, true, "Enabled");
+            SetPropertyThreadSafe(WiiWareMenuList, true, "Visible");
+
+
+            /*
             // Load database.xml into memorystream to perhaps reduce disk reads?
             string databasestr = File.ReadAllText(Path.Combine(CURRENT_DIR, "database.xml"));
             System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
@@ -899,7 +952,7 @@ namespace NUS_Downloader
                         SetPropertyThreadSafe(IOSMenuList, true, "Enabled");
                         break;
                     case "SYS":
-                        SetPropertyThreadSafe(SystemMenuList, true, "Enabled");
+                        
                         break;
                     case "VC":
                         SetPropertyThreadSafe(VCMenuList, true, "Enabled");
@@ -908,7 +961,7 @@ namespace NUS_Downloader
                         SetPropertyThreadSafe(WiiWareMenuList, true, "Enabled");
                         break;
                 }
-            }
+            }*/
         }
 
         /// <summary>
@@ -917,17 +970,20 @@ namespace NUS_Downloader
         /// <param name="type">The type.</param>
         /// <param name="additionitem">The additionitem.</param>
         /// <param name="attributes">The attributes.</param>
-        private void AddToolStripItemToStrip(int type, ToolStripMenuItem additionitem, XmlAttributeCollection attributes)
+        private void AddToolStripItemToStrip(ToolStripMenuItem menulist, ToolStripMenuItem additionitem)
         {
-            Debug.WriteLine(String.Format("Adding item (Type: {0})...", type));
-            // Check if thread-safe
+            Debug.WriteLine(String.Format("Adding item"));
+             
             if (this.InvokeRequired)
             {
                 Debug.WriteLine("InvokeRequired...");
                 AddToolStripItemToStripCallback atsitsc = new AddToolStripItemToStripCallback(AddToolStripItemToStrip);
-                this.Invoke(atsitsc, new object[] {type, additionitem, attributes});
+                this.Invoke(atsitsc, new object[] {menulist, additionitem});
                 return;
             }
+
+            menulist.DropDownItems.Add(additionitem);
+            /*
             // Deal with VC list depth...
             if (type == 2)
             {
@@ -1014,7 +1070,7 @@ namespace NUS_Downloader
                         break;
                 }
                 additionitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(sysitem_versionclicked);
-            }
+            }*/
         }
 
         private void deepitem_clicked(object sender, ToolStripItemClickedEventArgs e)
@@ -2069,7 +2125,8 @@ namespace NUS_Downloader
         {
             for (int a = 0; a < databaseStrip.Items.Count; a++)
             {
-                databaseStrip.Items[a].Enabled = false;
+                databaseStrip.Items[a].Enabled = enabled;
+                databaseStrip.Items[a].Visible = enabled;
             }
         }
 
