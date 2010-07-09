@@ -431,6 +431,7 @@ namespace libWiiSharp
 
                 fireDebug("   Creating WAD...");
                 WAD wad = WAD.Create(cert, tik, tmd, contents);
+                wadName = wadName.Replace("[v]", this.TitleVersion.ToString());
                 if (wadName.Contains(Path.DirectorySeparatorChar.ToString()) || wadName.Contains(Path.AltDirectorySeparatorChar.ToString()))
                     wad.Save(wadName);
                 else

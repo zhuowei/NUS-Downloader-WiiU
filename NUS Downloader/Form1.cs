@@ -1,9 +1,9 @@
-﻿///////////////////////////////////////
-// NUS Downloader: Form1.cs          //
-// $Rev::                          $ //
-// $Author::                       $ //
-// $Date::                         $ //
-///////////////////////////////////////
+﻿///////////////////////////////////////////
+// NUS Downloader: Form1.cs              //
+// $Rev::                              $ //
+// $Author::                           $ //
+// $Date::                             $ //
+///////////////////////////////////////////
 
 ///////////////////////////////////////
 // Copyright (C) 2010
@@ -515,9 +515,13 @@ namespace NUS_Downloader
             }
 
             if (iosPatchCheckbox.Checked == true) { // Apply patches then...
+                bool didpatch = false;
+                int noofpatches = 0;
+                string appendpatch = "";
                 // Okay, it's checked.
                 libWiiSharp.IosPatcher iosp = new libWiiSharp.IosPatcher();
                 libWiiSharp.WAD ioswad = new libWiiSharp.WAD();
+                wadName = wadName.Replace("[v]", nusClient.TitleVersion.ToString());
                 if (wadName.Contains(Path.DirectorySeparatorChar.ToString()) || wadName.Contains(Path.AltDirectorySeparatorChar.ToString()))
                     ioswad.LoadFile(wadName);
                 else
@@ -537,20 +541,47 @@ namespace NUS_Downloader
                     if (iosPatchesListBox.GetItemCheckState(iosPatchesListBox.Items.IndexOf(checkItem)).ToString() == "Checked") {
                         switch (checkItem.ToString()) {
                             case "Trucha bug":
-                                if (iosp.PatchFakeSigning() > 0)
-                                    WriteStatus(" - Patched in fake-signing");
+                                noofpatches = iosp.PatchFakeSigning();
+                                if (noofpatches > 0)
+                                {
+                                    WriteStatus(" - Patched in fake-signing:");
+                                    if (noofpatches > 1)
+                                        appendpatch = "es";
+                                    else
+                                        appendpatch = "";
+                                    WriteStatus(String.Format("     {0} patch{1} applied.", noofpatches, appendpatch));
+                                    didpatch = true;
+                                }
                                 else
                                     WriteStatus(" - Could not patch fake-signing");
                                 break;
                             case "ES_Identify":
-                                if (iosp.PatchEsIdentify() > 0)
+                                noofpatches = iosp.PatchEsIdentify();
+                                if (noofpatches > 0)
+                                {
                                     WriteStatus(" - Patched in ES_Identify");
+                                    if (noofpatches > 1)
+                                        appendpatch = "es";
+                                    else
+                                        appendpatch = "";
+                                    WriteStatus(String.Format("     {0} patch{1} applied.", noofpatches, appendpatch));
+                                    didpatch = true;
+                                }
                                 else
                                     WriteStatus(" - Could not patch ES_Identify");
                                 break;
                             case "NAND permissions":
-                                if (iosp.PatchNandPermissions() > 0)
+                                noofpatches = iosp.PatchNandPermissions();
+                                if (noofpatches > 0)
+                                {
                                     WriteStatus(" - Patched in NAND permissions");
+                                    if (noofpatches > 1)
+                                        appendpatch = "es";
+                                    else
+                                        appendpatch = "";
+                                    WriteStatus(String.Format("     {0} patch{1} applied.", noofpatches, appendpatch));
+                                    didpatch = true;
+                                }
                                 else
                                     WriteStatus(" - Could not patch NAND permissions");
                                 break;
@@ -558,6 +589,22 @@ namespace NUS_Downloader
                     }
                     else {
                     //    WriteStatus(iosPatchesListBox.GetItemCheckState(iosPatchesListBox.Items.IndexOf(checkItem)).ToString());
+                    }
+                }
+                if (didpatch)
+                {
+                    wadName = wadName.Replace(".wad",".patched.wad");
+                    try
+                    {
+                        if (wadName.Contains(Path.DirectorySeparatorChar.ToString()) || wadName.Contains(Path.AltDirectorySeparatorChar.ToString()))
+                            ioswad.Save(wadName);
+                        else
+                            ioswad.Save(Path.Combine(Path.Combine(Path.Combine(Path.Combine(CURRENT_DIR, "titles"), titleidbox.Text), nusClient.TitleVersion.ToString()), wadName));
+                        WriteStatus(String.Format("Patched WAD saved as: {0}", Path.GetFileName(wadName)));
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteStatus(String.Format("Couldn't save patched WAD: \"{0}\" :(",ex.Message));
                     }
                 }
             }
@@ -2247,6 +2294,9 @@ namespace NUS_Downloader
         {
             SetAllEnabled(true);
             iosPatchGroupBox.Visible = false;
+            if (iosPatchesListBox.CheckedIndices.Count == 0)
+                // Uncheck the checkbox to indicate no patches
+                iosPatchCheckbox.Checked = false;
             //packbox.Enabled = false;
         }
     }

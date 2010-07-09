@@ -1,4 +1,11 @@
-﻿namespace NUS_Downloader
+﻿///////////////////////////////////////////
+// NUS Downloader: Form1.Designer.cs     //
+// $Rev::                              $ //
+// $Author::                           $ //
+// $Date::                             $ //
+///////////////////////////////////////////
+
+namespace NUS_Downloader
 {
     partial class Form1
     {
