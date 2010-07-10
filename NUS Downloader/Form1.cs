@@ -56,7 +56,7 @@ namespace NUS_Downloader
         // Cross-thread Windows Formsing
         private delegate void AddToolStripItemToStripCallback(
             ToolStripMenuItem menulist, ToolStripMenuItem additionitem);
-        private delegate void WriteStatusCallback(string Update);
+        private delegate void WriteStatusCallback(string Update, Color writecolor);
         private delegate void BootChecksCallback();
         private delegate void SetEnableForDownloadCallback(bool enabled);
         private delegate void SetPropertyThreadSafeCallback(System.ComponentModel.Component what, object setto, string property);
@@ -87,18 +87,17 @@ namespace NUS_Downloader
         // Scripts Thread
         private BackgroundWorker scriptsWorker;
 
+        // Colours for status box
+        private System.Drawing.Color normalcolor = Color.FromName("Black");
+        private System.Drawing.Color warningcolor = Color.FromName("DarkGoldenrod");
+        private System.Drawing.Color errorcolor = Color.FromName("Crimson");
+        private System.Drawing.Color infocolor = Color.FromName("RoyalBlue");
+
         // This is the standard entry to the GUI
         public Form1()
         {
             this.Font = new System.Drawing.Font("Tahoma", 8);
             InitializeComponent();
-            if (version.StartsWith("SVN"))
-            {
-                WriteStatus("!!!!! THIS IS A DEBUG BUILD FROM SVN !!!!!");
-                WriteStatus("Features CAN and WILL be broken in this build");
-                WriteStatus("REMEMBER TO CHANGE TO THE RELEASE CONFIGURATION AND CHANGE VERSION NUMBER BEFORE BUILDING!");
-                WriteStatus("\n\n\n");
-            }
             this.MaximumSize = this.MinimumSize = this.Size; // Lock size down PATCHOW :D
             if (Type.GetType("Mono.Runtime") != null)
             {
@@ -109,7 +108,14 @@ namespace NUS_Downloader
             }
             else
                 statusbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 7);
-
+            statusbox.SelectionColor = statusbox.ForeColor = normalcolor;
+            if (version.StartsWith("SVN"))
+            {
+                WriteStatus("!!!!! THIS IS A DEBUG BUILD FROM SVN !!!!!", warningcolor);
+                WriteStatus("Features CAN and WILL be broken in this build", warningcolor);
+                WriteStatus("REMEMBER TO CHANGE TO THE RELEASE CONFIGURATION AND CHANGE VERSION NUMBER BEFORE BUILDING!", warningcolor);
+                WriteStatus("\r\n\r\n\r\n");
+            }
             KoreaMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             NTSCMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             PALMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
@@ -355,25 +361,42 @@ namespace NUS_Downloader
         /// Writes the status to the statusbox.
         /// </summary>
         /// <param name="Update">The update.</param>
-        public void WriteStatus(string Update)
+        /// <param name="writecolor">The color to use for writing text into the text box.</param>
+        public void WriteStatus(string Update, Color writecolor)
         {
             // Check if thread-safe
-            if (this.InvokeRequired)
+            if (statusbox.InvokeRequired)
             {
                 Debug.WriteLine("InvokeRequired...");
                 WriteStatusCallback wsc = new WriteStatusCallback(WriteStatus);
-                this.Invoke(wsc, new object[] {Update});
+                this.Invoke(wsc, new object[] { Update, writecolor });
                 return;
             }
             // Small function for writing text to the statusbox...
+            int startlen = statusbox.TextLength;
             if (statusbox.Text == "")
                 statusbox.Text = Update;
             else
-                statusbox.Text += "\r\n" + Update;
+                statusbox.AppendText("\r\n" + Update);
+            int endlen = statusbox.TextLength;
+
+            // Set the color
+            statusbox.Select(startlen, endlen - startlen);
+            statusbox.SelectionColor = writecolor;
 
             // Scroll to end of text box.
             statusbox.SelectionStart = statusbox.TextLength;
+            statusbox.SelectionLength = 0;
             statusbox.ScrollToCaret();
+        }
+
+        /// <summary>
+        /// Writes the status to the statusbox.
+        /// </summary>
+        /// <param name="Update">The update.</param>
+        public void WriteStatus(string Update)
+        {
+            WriteStatus(Update, normalcolor);
         }
 
         /// <summary>
@@ -402,13 +425,13 @@ namespace NUS_Downloader
              */
 
             if (ttlid.Substring(0, 8) == "00000001")
-                WriteStatus("ID Type: System Title. BE CAREFUL!");
+                WriteStatus("ID Type: System Title. BE CAREFUL!", warningcolor);
             else if ((ttlid.Substring(0, 8) == "00010000") || (ttlid.Substring(0, 8) == "00010004"))
                 WriteStatus("ID Type: Disc-Based Game. Unlikely NUS Content!");
             else if (ttlid.Substring(0, 8) == "00010001")
                 WriteStatus("ID Type: Downloaded Channel. Possible NUS Content.");
             else if (ttlid.Substring(0, 8) == "00010002")
-                WriteStatus("ID Type: System Channel. BE CAREFUL!");
+                WriteStatus("ID Type: System Channel. BE CAREFUL!", warningcolor);
             else if (ttlid.Substring(0, 8) == "00010004")
                 WriteStatus("ID Type: Game Channel. Unlikely NUS Content!");
             else if (ttlid.Substring(0, 8) == "00010005")
@@ -420,18 +443,18 @@ namespace NUS_Downloader
         }
 
         private void DownloadBtn_Click(object sender, EventArgs e)
-        {            
+        {
             if (titleidbox.Text == String.Empty)
             {
                 // Prevent mass deletion and fail
-                WriteStatus("Please enter a Title ID!");
+                WriteStatus("Please enter a Title ID!", errorcolor);
                 return;
             }
             else if (!(packbox.Checked) && !(decryptbox.Checked) && !(keepenccontents.Checked))
             {
                 // Prevent pointless running by n00bs.
-                WriteStatus("Running with your current settings will produce no output!");
-                WriteStatus(" - To amend this, look below and check an output type.");
+                WriteStatus("Running with your current settings will produce no output!", errorcolor);
+                WriteStatus(" - To amend this, look below and check an output type.", errorcolor);
                 return;
             }
             else if (!(script_mode))
@@ -447,7 +470,7 @@ namespace NUS_Downloader
                 }
             }
             else
-                SetTextThreadSafe(statusbox, statusbox.Text + "\r\n --- " + titleidbox.Text + " ---");
+                WriteStatus(" --- " + titleidbox.Text + " ---");
            
 
             // Running Downloads in background so no form freezing
@@ -482,7 +505,7 @@ namespace NUS_Downloader
         {
             Control.CheckForIllegalCrossThreadCalls = false; // this function would need major rewriting to get rid of this...
             if (!(script_mode))
-                WriteStatus("Starting NUS Download. Please be patient!");
+                WriteStatus("Starting NUS Download. Please be patient!", infocolor);
             SetEnableforDownload(false);
             downloadstartbtn.Text = "Starting NUS Download!";
 
@@ -524,7 +547,7 @@ namespace NUS_Downloader
             }
             catch (Exception ex)
             {
-                WriteStatus("Uhoh, the download bombed: \"" + ex.Message + " ):\"");
+                WriteStatus("Uhoh, the download bombed: \"" + ex.Message + " ):\"", errorcolor);
             }
 
             if (iosPatchCheckbox.Checked == true) { // Apply patches then...
@@ -545,7 +568,7 @@ namespace NUS_Downloader
                 }
                 catch (Exception)
                 {
-                    WriteStatus("NUS Download Finished.");
+                    WriteStatus("NUS Download Finished.", infocolor);
                     return;
                 }
                 foreach (object checkItem in iosPatchesListBox.CheckedItems)
@@ -557,7 +580,7 @@ namespace NUS_Downloader
                                 noofpatches = iosp.PatchFakeSigning();
                                 if (noofpatches > 0)
                                 {
-                                    WriteStatus(" - Patched in fake-signing:");
+                                    WriteStatus(" - Patched in fake-signing:", infocolor);
                                     if (noofpatches > 1)
                                         appendpatch = "es";
                                     else
@@ -566,13 +589,13 @@ namespace NUS_Downloader
                                     didpatch = true;
                                 }
                                 else
-                                    WriteStatus(" - Could not patch fake-signing");
+                                    WriteStatus(" - Could not patch fake-signing", errorcolor);
                                 break;
                             case "ES_Identify":
                                 noofpatches = iosp.PatchEsIdentify();
                                 if (noofpatches > 0)
                                 {
-                                    WriteStatus(" - Patched in ES_Identify");
+                                    WriteStatus(" - Patched in ES_Identify:", infocolor);
                                     if (noofpatches > 1)
                                         appendpatch = "es";
                                     else
@@ -581,13 +604,13 @@ namespace NUS_Downloader
                                     didpatch = true;
                                 }
                                 else
-                                    WriteStatus(" - Could not patch ES_Identify");
+                                    WriteStatus(" - Could not patch ES_Identify", errorcolor);
                                 break;
                             case "NAND permissions":
                                 noofpatches = iosp.PatchNandPermissions();
                                 if (noofpatches > 0)
                                 {
-                                    WriteStatus(" - Patched in NAND permissions");
+                                    WriteStatus(" - Patched in NAND permissions:", infocolor);
                                     if (noofpatches > 1)
                                         appendpatch = "es";
                                     else
@@ -596,7 +619,7 @@ namespace NUS_Downloader
                                     didpatch = true;
                                 }
                                 else
-                                    WriteStatus(" - Could not patch NAND permissions");
+                                    WriteStatus(" - Could not patch NAND permissions", errorcolor);
                                 break;
                         }
                     }
@@ -613,11 +636,11 @@ namespace NUS_Downloader
                             ioswad.Save(wadName);
                         else
                             ioswad.Save(Path.Combine(Path.Combine(Path.Combine(Path.Combine(CURRENT_DIR, "titles"), titleidbox.Text), nusClient.TitleVersion.ToString()), wadName));
-                        WriteStatus(String.Format("Patched WAD saved as: {0}", Path.GetFileName(wadName)));
+                        WriteStatus(String.Format("Patched WAD saved as: {0}", Path.GetFileName(wadName)), infocolor);
                     }
                     catch (Exception ex)
                     {
-                        WriteStatus(String.Format("Couldn't save patched WAD: \"{0}\" :(",ex.Message));
+                        WriteStatus(String.Format("Couldn't save patched WAD: \"{0}\" :(",ex.Message), errorcolor);
                     }
                 }
             }
@@ -1809,7 +1832,8 @@ namespace NUS_Downloader
                 WriteStatus(String.Format("    - {0} [v{1}]", TitleID, Version));
 
                 if ((NUSDFileExists("database.xml") == true) && ((!(String.IsNullOrEmpty(NameFromDatabase(TitleID))))))
-                    statusbox.Text += String.Format(" [{0}]", NameFromDatabase(TitleID));
+                    //statusbox.Text += String.Format(" [{0}]", NameFromDatabase(TitleID));
+                    WriteStatus(String.Format(" [{0}]", NameFromDatabase(TitleID)));
 
                 script_text += String.Format("{0} {1}\n", TitleID,
                                              DisplayBytes(NewIntegertoByteArray(Convert.ToInt32(Version), 2), ""));
