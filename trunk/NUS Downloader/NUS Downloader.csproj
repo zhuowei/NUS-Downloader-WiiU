@@ -121,7 +121,6 @@
     <Compile Include="TMD.cs" />
     <Compile Include="U8.cs" />
     <Compile Include="WAD.cs" />
-    <Compile Include="WADPacker.cs" />
     <Compile Include="WaterMarkTextBox.cs">
       <SubType>Component</SubType>
     </Compile>

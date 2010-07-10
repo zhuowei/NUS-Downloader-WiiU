@@ -38,7 +38,7 @@ using System.Diagnostics;
 
 namespace NUS_Downloader
 {
-    public partial class Form1 : Form
+     partial class Form1 : Form
     {
         private readonly string CURRENT_DIR = Directory.GetCurrentDirectory();
 
@@ -115,9 +115,10 @@ namespace NUS_Downloader
                 WriteStatus("REMEMBER TO CHANGE TO THE RELEASE CONFIGURATION AND CHANGE VERSION NUMBER BEFORE BUILDING!", warningcolor);
                 WriteStatus("\r\n");
             }
+            /*
             KoreaMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             NTSCMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
-            PALMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
+            PALMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);*/
 
             // Database BGLoader
             this.fds = new BackgroundWorker();
@@ -251,6 +252,7 @@ namespace NUS_Downloader
             ClearDatabaseStrip();
             FillDatabaseStrip(worker);
             LoadRegionCodes();
+            FillDatabaseScripts();
             ShowInnerToolTips(false);
         }
 
@@ -259,10 +261,11 @@ namespace NUS_Downloader
             //this.databaseButton.Enabled = true;
             this.databaseButton.Text = "Database...";
             this.databaseButton.Image = null;
+            /*
             if (this.KoreaMassUpdate.HasDropDownItems || this.PALMassUpdate.HasDropDownItems || this.NTSCMassUpdate.HasDropDownItems)
             {
                 this.scriptsbutton.Enabled = true;
-            }
+            }*/
         }
 
         private void DoAllDatabaseyStuff_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
@@ -1375,7 +1378,6 @@ namespace NUS_Downloader
             // TODO: make this check InvokeRequired...
             if (this.InvokeRequired)
             {
-                Debug.Write("TOLDYOUSO!"); 
                 BootChecksCallback bcc = new BootChecksCallback(LoadRegionCodes);
                 this.Invoke(bcc);
                 return;
@@ -1461,6 +1463,18 @@ namespace NUS_Downloader
                 try
                 {
                     ToolStripMenuItem menuitem = (ToolStripMenuItem) item;
+                    menuitem.DropDown.ShowItemToolTips = false;
+                }
+                catch (Exception)
+                {
+                    // Do nothing, some objects will not cast.
+                }
+            }
+            foreach (ToolStripItem item in scriptsStrip.Items)
+            {
+                try
+                {
+                    ToolStripMenuItem menuitem = (ToolStripMenuItem)item;
                     menuitem.DropDown.ShowItemToolTips = false;
                 }
                 catch (Exception)
@@ -1560,36 +1574,6 @@ namespace NUS_Downloader
             }
             return resultArray;
         }
-
-        /*
-        /// <summary>
-        /// Does byte[] contain byte[]?
-        /// </summary>
-        /// <param name="bigboy">The large byte[].</param>
-        /// <param name="littleman">Small byte[] which may be in large one.</param>
-        /// <returns>messed up int[] with offsets.</returns>
-        private int[] ByteArrayContainsByteArray(byte[] bigboy, byte[] littleman)
-        {
-            // bigboy.Contains(littleman);
-            // returns offset          { cnt , ofst };
-            int[] offset = new int[5];
-            for (int a = 0; a < (bigboy.Length - littleman.Length); a++)
-            {
-                int matches = 0;
-                for (int b = 0; b < littleman.Length; b++)
-                {
-                    if (bigboy[a + b] == littleman[b])
-                        matches += 1;
-                }
-                if (matches == littleman.Length)
-                {
-                    offset[offset[0] + 1] = a;
-                    offset[0] += 1;
-                }
-            }
-
-            return offset;
-        }*/
 
         private WebClient ConfigureWithProxy(WebClient client)
         {
@@ -2422,5 +2406,25 @@ namespace NUS_Downloader
                 iosPatchCheckbox.Checked = false;
             //packbox.Enabled = false;
         }
+
+        private void FillDatabaseScripts()
+        {
+            Database databaseObj = new Database();
+            databaseObj.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
+
+            ToolStripMenuItem[] scriptItems = databaseObj.LoadScripts();
+            for (int a = 0; a < scriptItems.Length; a++)
+            {
+                scriptItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(ScriptItem_Clicked);
+                
+                AddToolStripItemToStrip(scriptsDatabaseToolStripMenuItem, scriptItems[a]);
+                //SystemMenuList.DropDownItems.Add(systemItems[a]);
+            }
+            SetPropertyThreadSafe(scriptsDatabaseToolStripMenuItem, true, "Enabled");
+            SetPropertyThreadSafe(scriptsDatabaseToolStripMenuItem, true, "Visible");
+        }
+
+        public void ScriptItem_Clicked(object sender, ToolStripItemClickedEventArgs e)
+        { }
     }
 }

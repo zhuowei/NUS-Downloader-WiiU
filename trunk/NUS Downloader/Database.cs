@@ -19,6 +19,7 @@ namespace NUS_Downloader
         private string IosTag = "IOS";
         private string VcTag = "VC";
         private string WwTag = "WW";
+        private string UpdateTag = "UPD";
 
         private string[] VcConsoles = new string[11] { "C64", "GEN", "MSX", "N64", "NEO", "NES", 
             "SMS", "SNES", "TG16", "TGCD", "ARC" };
@@ -573,6 +574,48 @@ namespace NUS_Downloader
             }
 
             return regionItems;
+        }
+
+        public ToolStripMenuItem[] LoadScripts()
+        {
+            if (databaseString.Length < 1)
+            {
+                throw new Exception("Load the database into a memory stream first!");
+            }
+
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.LoadXml(databaseString);
+
+            XmlNodeList ScriptXMLNodes = xDoc.GetElementsByTagName(UpdateTag);
+
+            ToolStripMenuItem[] scriptCollection = new ToolStripMenuItem[ScriptXMLNodes.Count];
+
+            for (int x = 0; x < ScriptXMLNodes.Count; x++)
+            {
+                ToolStripMenuItem XMLToolStripItem = new ToolStripMenuItem();
+                XmlAttributeCollection XMLAttributes = ScriptXMLNodes[x].Attributes;
+                XmlNodeList ChildrenOfTheNode = ScriptXMLNodes[x].ChildNodes;
+
+                for (int z = 0; z < ChildrenOfTheNode.Count; z++)
+                {
+                    switch (ChildrenOfTheNode[z].Name)
+                    {
+                        case "name":
+                            XMLToolStripItem.Text = ChildrenOfTheNode[z].InnerText;
+                            break;
+                        case "script":
+                            XMLToolStripItem.ToolTipText = ChildrenOfTheNode[z].InnerText;
+                            break;
+                        default:
+                            break;
+                    }
+                    XMLToolStripItem.Image = Properties.Resources.script_start;
+                    
+                }
+                scriptCollection[x] = XMLToolStripItem;
+            }
+
+            return scriptCollection;
         }
     }
 }
