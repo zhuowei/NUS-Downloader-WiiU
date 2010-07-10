@@ -48,7 +48,6 @@ namespace NUS_Downloader
             this.IOSMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.VCMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.C64MenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.C64MenuListDrop = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.GenesisMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.MSXMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.N64MenuList = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,6 +110,10 @@ namespace NUS_Downloader
             this.titleversion = new wmgCMS.WaterMarkTextBox();
             this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
+            this.systemFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.iosFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vcFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wwFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -183,16 +186,20 @@ namespace NUS_Downloader
             // 
             this.databaseStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SystemMenuList,
+            this.systemFakeMenuItem,
             this.IOSMenuList,
+            this.iosFakeMenuItem,
             this.VCMenuList,
+            this.vcFakeMenuItem,
             this.WiiWareMenuList,
+            this.wwFakeMenuItem,
             this.toolStripSeparator1,
             this.RegionCodesList,
             this.toolStripSeparator4,
             this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(164, 148);
+            this.databaseStrip.Size = new System.Drawing.Size(164, 258);
             // 
             // SystemMenuList
             // 
@@ -227,16 +234,9 @@ namespace NUS_Downloader
             // 
             // C64MenuList
             // 
-            this.C64MenuList.DropDown = this.C64MenuListDrop;
             this.C64MenuList.Name = "C64MenuList";
             this.C64MenuList.Size = new System.Drawing.Size(194, 22);
             this.C64MenuList.Text = "Commodore 64";
-            // 
-            // C64MenuListDrop
-            // 
-            this.C64MenuListDrop.Name = "C64MenuListDrop";
-            this.C64MenuListDrop.OwnerItem = this.C64MenuList;
-            this.C64MenuListDrop.Size = new System.Drawing.Size(61, 4);
             // 
             // GenesisMenuList
             // 
@@ -837,6 +837,38 @@ namespace NUS_Downloader
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.TabIndex = 47;
             // 
+            // systemFakeMenuItem
+            // 
+            this.systemFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.systemFakeMenuItem.Name = "systemFakeMenuItem";
+            this.systemFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.systemFakeMenuItem.Text = "System";
+            this.systemFakeMenuItem.Visible = false;
+            // 
+            // iosFakeMenuItem
+            // 
+            this.iosFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.iosFakeMenuItem.Name = "iosFakeMenuItem";
+            this.iosFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.iosFakeMenuItem.Text = "IOS";
+            this.iosFakeMenuItem.Visible = false;
+            // 
+            // vcFakeMenuItem
+            // 
+            this.vcFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.vcFakeMenuItem.Name = "vcFakeMenuItem";
+            this.vcFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.vcFakeMenuItem.Text = "Virtual Console";
+            this.vcFakeMenuItem.Visible = false;
+            // 
+            // wwFakeMenuItem
+            // 
+            this.wwFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.wwFakeMenuItem.Name = "wwFakeMenuItem";
+            this.wwFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.wwFakeMenuItem.Text = "WiiWare";
+            this.wwFakeMenuItem.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -932,7 +964,6 @@ namespace NUS_Downloader
         private System.Windows.Forms.TextBox ProxyPwdBox;
         private wyDay.Controls.Windows7ProgressBar dlprogress;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ContextMenuStrip C64MenuListDrop;
         private System.Windows.Forms.ComboBox consoleCBox;
         private wmgCMS.WaterMarkTextBox titleidbox;
         private wmgCMS.WaterMarkTextBox titleversion;
@@ -960,6 +991,10 @@ namespace NUS_Downloader
         private System.Windows.Forms.Button iosPatchGroupBoxOKbtn;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel richPanel;
+        private System.Windows.Forms.ToolStripMenuItem systemFakeMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem iosFakeMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem vcFakeMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wwFakeMenuItem;
     }
 }
 

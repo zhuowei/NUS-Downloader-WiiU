@@ -61,13 +61,6 @@ namespace NUS_Downloader
         private delegate void SetPropertyThreadSafeCallback(System.ComponentModel.Component what, object setto, string property);
         private delegate string OfficialWADNamingCallback(string whut);
 
-        // Images do not compare unless globalized...
-        private Image green = Properties.Resources.bullet_green;
-        private Image orange = Properties.Resources.bullet_orange;
-        private Image redorb = Properties.Resources.bullet_red;
-        private Image redgreen = Properties.Resources.bullet_redgreen;
-        private Image redorange = Properties.Resources.bullet_redorange;
-
         private string WAD_Saveas_Filename;
 
         // TODO: OOP scripting
@@ -807,9 +800,9 @@ namespace NUS_Downloader
             {
                 if (tsmiclear.Name != "VCMenuList") // Don't clear the VC Menu...
                     tsmiclear.DropDownItems.Clear();
-
+                /*
                 if (tsmiclear.OwnerItem != VCMenuList) // and don't disable the VC menu subparts...
-                    tsmiclear.Enabled = false;
+                    tsmiclear.Enabled = false;*/
             }
         }
 
@@ -820,6 +813,17 @@ namespace NUS_Downloader
         {
             // Something needs to be done to remove this i guess
             //Control.CheckForIllegalCrossThreadCalls = false;
+
+            // Set fake items visible and real ones not. Only way to stop buggy enabled stuff.
+            SetPropertyThreadSafe(SystemMenuList, false, "Visible");
+            SetPropertyThreadSafe(IOSMenuList, false, "Visible");
+            SetPropertyThreadSafe(VCMenuList, false, "Visible");
+            SetPropertyThreadSafe(WiiWareMenuList, false, "Visible");
+
+            SetPropertyThreadSafe(systemFakeMenuItem, true, "Visible");
+            SetPropertyThreadSafe(iosFakeMenuItem, true, "Visible");
+            SetPropertyThreadSafe(vcFakeMenuItem, true, "Visible");
+            SetPropertyThreadSafe(wwFakeMenuItem, true, "Visible");
 
             Database databaseObj = new Database();
             databaseObj.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
@@ -839,7 +843,7 @@ namespace NUS_Downloader
                 AddToolStripItemToStrip(SystemMenuList, systemItems[a]);
                 //SystemMenuList.DropDownItems.Add(systemItems[a]);
             }
-            SetPropertyThreadSafe(SystemMenuList, true, "Enabled");
+            SetPropertyThreadSafe(systemFakeMenuItem, false, "Visible");
             SetPropertyThreadSafe(SystemMenuList, true, "Visible");
 
             worker.ReportProgress(25);
@@ -851,7 +855,7 @@ namespace NUS_Downloader
                 AddToolStripItemToStrip(IOSMenuList, iosItems[a]);
                 //IOSMenuList.DropDownItems.Add(iosItems[a]);
             }
-            SetPropertyThreadSafe(IOSMenuList, true, "Enabled");
+            SetPropertyThreadSafe(iosFakeMenuItem, false, "Visible");
             SetPropertyThreadSafe(IOSMenuList, true, "Visible");
 
             worker.ReportProgress(50);
@@ -879,7 +883,7 @@ namespace NUS_Downloader
                     }
 			    }
             }
-            SetPropertyThreadSafe(VCMenuList, true, "Enabled");
+            SetPropertyThreadSafe(vcFakeMenuItem, false, "Visible");
             SetPropertyThreadSafe(VCMenuList, true, "Visible");
 
             worker.ReportProgress(75);
@@ -899,7 +903,7 @@ namespace NUS_Downloader
                 AddToolStripItemToStrip(WiiWareMenuList, wwItems[a]);
                 //WiiWareMenuList.DropDownItems.Add(wwItems[a]);
             }
-            SetPropertyThreadSafe(WiiWareMenuList, true, "Enabled");
+            SetPropertyThreadSafe(wwFakeMenuItem, false, "Visible");
             SetPropertyThreadSafe(WiiWareMenuList, true, "Visible");
 
             worker.ReportProgress(100);
@@ -1482,33 +1486,6 @@ namespace NUS_Downloader
                     // Do nothing, some objects will not cast.
                 }
             }
-        }
-
-        /// <summary>
-        /// Selects the database item image.
-        /// </summary>
-        /// <param name="ticket">if set to <c>true</c> [ticket].</param>
-        /// <param name="danger">if set to <c>true</c> [danger].</param>
-        /// <returns>Correct Image</returns>
-        private System.Drawing.Image SelectItemImage(bool ticket, bool danger)
-        {
-            // All is good, go green...
-            if ((ticket) && (!danger))
-                return green;
-
-            // There's no ticket, but danger is clear...
-            if ((!ticket) && (!danger))
-                return orange;
-
-            // DANGER WILL ROBINSON...
-            if ((ticket) && (danger))
-                return redgreen;
-
-            // Double bad...
-            if ((!ticket) && (danger))
-                return redorange;
-
-            return null;
         }
 
         /// <summary>
@@ -2433,6 +2410,7 @@ namespace NUS_Downloader
         }
 
         public void ScriptItem_Clicked(object sender, ToolStripItemClickedEventArgs e)
-        { }
+        { //TODO 
+        }
     }
 }
