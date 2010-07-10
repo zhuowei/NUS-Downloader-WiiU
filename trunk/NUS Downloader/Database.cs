@@ -25,11 +25,11 @@ namespace NUS_Downloader
 
         private string databaseString;
 
-        private Image green = Properties.Resources.bullet_green;
-        private Image orange = Properties.Resources.bullet_orange;
-        private Image redorb = Properties.Resources.bullet_red;
-        private Image redgreen = Properties.Resources.bullet_redgreen;
-        private Image redorange = Properties.Resources.bullet_redorange;
+        public static Image green = Properties.Resources.bullet_green;
+        public static Image orange = Properties.Resources.bullet_orange;
+        public static Image redorb = Properties.Resources.bullet_red;
+        public static Image redgreen = Properties.Resources.bullet_redgreen;
+        public static Image redorange = Properties.Resources.bullet_redorange;
 
         public void LoadDatabaseToStream(string databaseFile)
         {
@@ -50,6 +50,15 @@ namespace NUS_Downloader
                 throw new Exception("Load the database into a memory stream first!");
             }
 
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.LoadXml(databaseString);
+            XmlNodeList DatabaseList = xDoc.GetElementsByTagName("database");
+            XmlAttributeCollection Attributes = DatabaseList[0].Attributes;
+            return Attributes[0].Value;
+        }
+
+        public static string GetDatabaseVersion(string databaseString)
+        {
             XmlDocument xDoc = new XmlDocument();
             xDoc.LoadXml(databaseString);
             XmlNodeList DatabaseList = xDoc.GetElementsByTagName("database");
@@ -527,6 +536,43 @@ namespace NUS_Downloader
                 return redorange;
 
             return null;
+        }
+
+        /// <summary>
+        /// Loads the region codes.
+        /// </summary>
+        public ToolStripMenuItem[] LoadRegionCodes()
+        {
+            /* TODO: make this check InvokeRequired...
+            if (this.InvokeRequired)
+            {
+                Debug.Write("TOLDYOUSO!");
+                BootChecksCallback bcc = new BootChecksCallback(LoadRegionCodes);
+                this.Invoke(bcc);
+                return;
+            }*/
+
+            if (databaseString.Length < 1)
+            {
+                throw new Exception("Load the database into a memory stream first!");
+            }
+
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.LoadXml(databaseString);
+
+            XmlNodeList XMLRegionList = xDoc.GetElementsByTagName("REGIONS");
+            XmlNodeList ChildrenOfTheNode = XMLRegionList[0].ChildNodes;
+
+            ToolStripMenuItem[] regionItems = new ToolStripMenuItem[ChildrenOfTheNode.Count];
+
+            // For each child node (region node)
+            for (int z = 0; z < ChildrenOfTheNode.Count; z++)
+            {
+                regionItems[z] = new ToolStripMenuItem();
+                regionItems[z].Text = ChildrenOfTheNode[z].InnerText;
+            }
+
+            return regionItems;
         }
     }
 }

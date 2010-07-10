@@ -36,7 +36,6 @@ using System.Threading;
 using System.Text;
 using System.Diagnostics;
 
-
 namespace NUS_Downloader
 {
     public partial class Form1 : Form
@@ -114,7 +113,7 @@ namespace NUS_Downloader
                 WriteStatus("!!!!! THIS IS A DEBUG BUILD FROM SVN !!!!!", warningcolor);
                 WriteStatus("Features CAN and WILL be broken in this build", warningcolor);
                 WriteStatus("REMEMBER TO CHANGE TO THE RELEASE CONFIGURATION AND CHANGE VERSION NUMBER BEFORE BUILDING!", warningcolor);
-                WriteStatus("\r\n\r\n\r\n");
+                WriteStatus("\r\n");
             }
             KoreaMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
             NTSCMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
@@ -206,12 +205,16 @@ namespace NUS_Downloader
             }
             else
             {
-                string version = GetDatabaseVersion("database.xml");
+                Database db = new Database();
+                db.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
+                string version = db.GetDatabaseVersion();
                 WriteStatus("Database.xml detected.");
                 WriteStatus(" - Version: " + version);
                 updateDatabaseToolStripMenuItem.Text = "Update Database";
                 //databaseButton.Enabled = false;
-                databaseButton.Text = "DB Loading";
+                //databaseButton.Text = "DB Loading";
+                databaseButton.Text = "  [    ]";
+                databaseButton.Image = Properties.Resources.arrow_ticker;
                 // Load it up...
                 this.fds.RunWorkerAsync();
             }
@@ -255,6 +258,7 @@ namespace NUS_Downloader
         {
             //this.databaseButton.Enabled = true;
             this.databaseButton.Text = "Database...";
+            this.databaseButton.Image = null;
             if (this.KoreaMassUpdate.HasDropDownItems || this.PALMassUpdate.HasDropDownItems || this.NTSCMassUpdate.HasDropDownItems)
             {
                 this.scriptsbutton.Enabled = true;
@@ -263,7 +267,14 @@ namespace NUS_Downloader
 
         private void DoAllDatabaseyStuff_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-            this.databaseButton.Text = "DB: " + e.ProgressPercentage + "%";
+            if (e.ProgressPercentage == 25)
+                databaseButton.Text = "  [.   ]";
+            else if (e.ProgressPercentage == 25)
+                databaseButton.Text = "  [..  ]";
+            else if (e.ProgressPercentage == 75)
+                databaseButton.Text = "  [... ]";
+            else if (e.ProgressPercentage == 100)
+                databaseButton.Text = "  [....]";
         }
 
         private void RunScriptOrganizer()
@@ -286,6 +297,7 @@ namespace NUS_Downloader
             }
         }
 
+        /*
         /// <summary>
         /// Gets the database version.
         /// </summary>
@@ -311,7 +323,7 @@ namespace NUS_Downloader
             XmlNodeList DatabaseList = xDoc.GetElementsByTagName("database");
             XmlAttributeCollection Attributes = DatabaseList[0].Attributes;
             return Attributes[0].Value;
-        }
+        }*/
 
         private void extrasMenuButton_Click(object sender, EventArgs e)
         {
@@ -827,6 +839,8 @@ namespace NUS_Downloader
             SetPropertyThreadSafe(SystemMenuList, true, "Enabled");
             SetPropertyThreadSafe(SystemMenuList, true, "Visible");
 
+            worker.ReportProgress(25);
+
             ToolStripMenuItem[] iosItems = databaseObj.LoadIosTitles();
             for (int a = 0; a < iosItems.Length; a++)
             {
@@ -837,6 +851,8 @@ namespace NUS_Downloader
             SetPropertyThreadSafe(IOSMenuList, true, "Enabled");
             SetPropertyThreadSafe(IOSMenuList, true, "Visible");
 
+            worker.ReportProgress(50);
+
             ToolStripMenuItem[][] vcItems = databaseObj.LoadVirtualConsoleTitles();
             for (int a = 0; a < vcItems.Length; a++)
             {
@@ -846,19 +862,24 @@ namespace NUS_Downloader
                     for (int c = 0; c < vcItems[a][b].DropDownItems.Count; c++)
                     {
                         ToolStripMenuItem lowerentry = (ToolStripMenuItem)vcItems[a][b].DropDownItems[c];
-                        if (lowerentry.DropDownItems.Count > 0)
-                        {
-                            lowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
-                        }
+                        lowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                        
+                        //Debug.WriteLine(a + " " + b + " " + c);
                     }
-
-                    AddToolStripItemToStrip((ToolStripMenuItem)VCMenuList.DropDownItems[a], vcItems[a][b]);
-                    //tsmi.DropDownItems.Add(vcItems[a][b]);
-                    
+                    try
+                    {
+                        AddToolStripItemToStrip((ToolStripMenuItem)VCMenuList.DropDownItems[a], vcItems[a][b]);
+                    }
+                    catch (Exception)
+                    {
+                        Debug.WriteLine(a + " " + b + "FAIL");
+                    }
 			    }
             }
             SetPropertyThreadSafe(VCMenuList, true, "Enabled");
             SetPropertyThreadSafe(VCMenuList, true, "Visible");
+
+            worker.ReportProgress(75);
 
             ToolStripMenuItem[] wwItems = databaseObj.LoadWiiWareTitles();
             for (int a = 0; a < wwItems.Length; a++)
@@ -878,7 +899,7 @@ namespace NUS_Downloader
             SetPropertyThreadSafe(WiiWareMenuList, true, "Enabled");
             SetPropertyThreadSafe(WiiWareMenuList, true, "Visible");
 
-
+            worker.ReportProgress(100);
             /*
             // Load database.xml into memorystream to perhaps reduce disk reads?
             string databasestr = File.ReadAllText(Path.Combine(CURRENT_DIR, "database.xml"));
@@ -1043,6 +1064,7 @@ namespace NUS_Downloader
             }
 
             menulist.DropDownItems.Add(additionitem);
+
             /*
             // Deal with VC list depth...
             if (type == 2)
@@ -1207,7 +1229,7 @@ namespace NUS_Downloader
                 statusbox.Text = String.Format(" --- {0} ---", values[1]);
                 titleversion.Text = String.Empty;
 
-                if ((e.ClickedItem.Image) == (orange) || (e.ClickedItem.Image) == (redorange))
+                if ((e.ClickedItem.Image) == (Database.orange) || (e.ClickedItem.Image) == (Database.redorange))
                 {
                     WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
                     packbox.Checked = false;
@@ -1215,7 +1237,7 @@ namespace NUS_Downloader
                 }
 
                 // Check for danger item
-                if ((e.ClickedItem.Image) == (redgreen) || (e.ClickedItem.Image) == (redorange))
+                if ((e.ClickedItem.Image) == (Database.redgreen) || (e.ClickedItem.Image) == (Database.redorange))
                     WriteStatus("\n" + e.ClickedItem.ToolTipText);
             }
 
@@ -1231,7 +1253,7 @@ namespace NUS_Downloader
                 // Put 'XX' into title ID
                 titleidbox.Text = titleidbox.Text.Replace("XX", e.ClickedItem.Text.Substring(0, 2));
 
-                if ((e.ClickedItem.OwnerItem.Image) == (orange) || (e.ClickedItem.OwnerItem.Image) == (redorange))
+                if ((e.ClickedItem.OwnerItem.Image) == (Database.orange) || (e.ClickedItem.OwnerItem.Image) == (Database.redorange))
                 {
                     WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
                     packbox.Checked = false;
@@ -1239,7 +1261,7 @@ namespace NUS_Downloader
                 }
 
                 // Check for danger item
-                if ((e.ClickedItem.OwnerItem.Image) == (redgreen) || (e.ClickedItem.OwnerItem.Image) == (redorange))
+                if ((e.ClickedItem.OwnerItem.Image) == (Database.redgreen) || (e.ClickedItem.OwnerItem.Image) == (Database.redorange))
                     WriteStatus("\n" + e.ClickedItem.OwnerItem.ToolTipText);
             }
 
@@ -1271,6 +1293,33 @@ namespace NUS_Downloader
                 {
                     string[] version = e.ClickedItem.Text.Replace("v", "").Split(' ');
                     titleversion.Text = version[0];
+                }
+
+                if (RegionEntry.IsMatch(e.ClickedItem.OwnerItem.Text))
+                {
+                    if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (Database.orange) || (e.ClickedItem.OwnerItem.OwnerItem.Image) == (Database.redorange))
+                    {
+                        WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
+                        packbox.Checked = false;
+                        decryptbox.Checked = false;
+                    }
+
+                    // Check for danger item
+                    if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (Database.redgreen) || (e.ClickedItem.OwnerItem.OwnerItem.Image) == (Database.redorange))
+                        WriteStatus("\n" + e.ClickedItem.OwnerItem.OwnerItem.ToolTipText);
+                }
+                else
+                {
+                    if ((e.ClickedItem.OwnerItem.Image) == (Database.orange) || (e.ClickedItem.OwnerItem.Image) == (Database.redorange))
+                    {
+                        WriteStatus("Note: This title has no ticket and cannot be packed/decrypted!");
+                        packbox.Checked = false;
+                        decryptbox.Checked = false;
+                    }
+
+                    // Check for danger item
+                    if ((e.ClickedItem.OwnerItem.Image) == (Database.redgreen) || (e.ClickedItem.OwnerItem.Image) == (Database.redorange))
+                        WriteStatus("\n" + e.ClickedItem.OwnerItem.ToolTipText);
                 }
             }
         }
@@ -1317,7 +1366,7 @@ namespace NUS_Downloader
 
             return "XX (Error)";
         }
-
+        
         /// <summary>
         /// Loads the region codes.
         /// </summary>
@@ -1326,23 +1375,23 @@ namespace NUS_Downloader
             // TODO: make this check InvokeRequired...
             if (this.InvokeRequired)
             {
-                Debug.Write("TOLDYOUSO!");
+                Debug.Write("TOLDYOUSO!"); 
                 BootChecksCallback bcc = new BootChecksCallback(LoadRegionCodes);
                 this.Invoke(bcc);
                 return;
             }
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load("database.xml");
 
-            XmlNodeList XMLRegionList = xDoc.GetElementsByTagName("REGIONS");
-            XmlNodeList ChildrenOfTheNode = XMLRegionList[0].ChildNodes;
+            Database databaseObj = new Database();
+            databaseObj.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
+
+            ToolStripMenuItem[] regionItems = databaseObj.LoadRegionCodes();
 
             // For each child node (region node)
-            for (int z = 0; z < ChildrenOfTheNode.Count; z++)
+            for (int z = 0; z < regionItems.Length; z++)
             {
-                RegionCodesList.DropDownItems.Add(ChildrenOfTheNode[z].InnerText);
+                RegionCodesList.DropDownItems.Add(regionItems[z].Text);
             }
-        }
+        } 
 
         private void RegionCodesList_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
@@ -1619,8 +1668,10 @@ namespace NUS_Downloader
         private void RetrieveNewDatabase_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
             string database = e.Result.ToString();
-            string currentversion = GetDatabaseVersion("database.xml");
-            string onlineversion = GetDatabaseVersion(database);
+            Database db = new Database();
+            db.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
+            string currentversion = db.GetDatabaseVersion();
+            string onlineversion = Database.GetDatabaseVersion(database);
             WriteStatus(" - Database successfully parsed!");
             WriteStatus("   - Current Database Version: " + currentversion);
             WriteStatus("   - Online Database Version: " + onlineversion);
@@ -2134,6 +2185,12 @@ namespace NUS_Downloader
                 databaseStrip.Items[a].Enabled = enabled;
                 databaseStrip.Items[a].Visible = enabled;
             }
+
+            for (int b = 0; b < VCMenuList.DropDownItems.Count; b++)
+            {
+                VCMenuList.DropDownItems[b].Enabled = true;
+                VCMenuList.DropDownItems[b].Visible = true;
+            }
         }
 
         void scriptsWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -2207,13 +2264,12 @@ namespace NUS_Downloader
             WriteStatus("NUS Downloader (NUSD)");
             WriteStatus("You are running version: " + version);
             if (version.StartsWith("SVN"))
-            {
-                WriteStatus("THIS IS A DIRECT FROM SVN BUILD! DO NOT REPORT BROKEN FEATURES!");
-            }
+                WriteStatus("SVN BUILD: DO NOT REPORT BROKEN FEATURES!");
+
             WriteStatus("This application created by WB3000");
             WriteStatus("Various sections contributed by lukegb");
-            WriteStatus("");
-
+            WriteStatus(String.Empty);
+            /*
             if (NUSDFileExists("key.bin") == false)
                 WriteStatus("Wii Decryption: Need (key.bin)");
             else
@@ -2223,7 +2279,7 @@ namespace NUS_Downloader
                 WriteStatus("Wii Korea Decryption: Need (kkey.bin)");
             else
                 WriteStatus("Wii Korea Decryption: OK");
-
+            */
             if (NUSDFileExists("dsikey.bin") == false)
                 WriteStatus("DSi Decryption: Need (dsikey.bin)");
             else

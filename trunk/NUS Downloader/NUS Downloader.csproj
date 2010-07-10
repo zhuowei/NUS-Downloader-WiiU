@@ -12,7 +12,7 @@
     <AssemblyName>NUS Downloader</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>direction_down.ico</ApplicationIcon>
+    <ApplicationIcon>Crystal_Clear_app_ark2.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ManifestCertificateThumbprint>5828AACDBD1A48E3768B7E0465E90D0E96E2BE4C</ManifestCertificateThumbprint>
     <ManifestKeyFile>NUS Downloader_TemporaryKey.pfx</ManifestKeyFile>
@@ -139,7 +139,7 @@
     <None Include="Resources\dsi.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="direction_down.ico" />
+    <Content Include="Crystal_Clear_app_ark2.ico" />
     <None Include="Resources\script_start.png" />
     <None Include="Resources\package_green.png" />
     <None Include="Resources\package.png" />
@@ -155,6 +155,7 @@
     <None Include="Resources\disk.png" />
     <None Include="Resources\drive_disk.png" />
     <None Include="Resources\bin_closed.png" />
+    <None Include="Resources\arrow_ticker.gif" />
     <Content Include="Resources\key.png" />
     <None Include="Resources\page_white_magnify.png" />
     <None Include="Resources\server_link.png" />
