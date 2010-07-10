@@ -39,7 +39,7 @@ namespace NUS_Downloader
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.Extrasbtn = new System.Windows.Forms.Button();
             this.downloadstartbtn = new System.Windows.Forms.Button();
-            this.statusbox = new System.Windows.Forms.TextBox();
+            this.statusbox = new System.Windows.Forms.RichTextBox();
             this.NUSDownloader = new System.ComponentModel.BackgroundWorker();
             this.label1 = new System.Windows.Forms.Label();
             this.wadnamebox = new System.Windows.Forms.TextBox();
@@ -145,12 +145,15 @@ namespace NUS_Downloader
             // 
             // statusbox
             // 
+            this.statusbox.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.statusbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.statusbox.Location = new System.Drawing.Point(12, 116);
-            this.statusbox.Multiline = true;
             this.statusbox.Name = "statusbox";
+            this.statusbox.ReadOnly = true;
+            this.statusbox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.statusbox.Size = new System.Drawing.Size(250, 268);
             this.statusbox.TabIndex = 5;
+            this.statusbox.Text = "";
             // 
             // NUSDownloader
             // 
@@ -348,7 +351,7 @@ namespace NUS_Downloader
             this.toolStripSeparator6,
             this.aboutNUSDToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(183, 104);
+            this.extrasStrip.Size = new System.Drawing.Size(183, 82);
             // 
             // loadInfoFromTMDToolStripMenuItem
             // 
@@ -900,7 +903,7 @@ namespace NUS_Downloader
 
         private System.Windows.Forms.Button Extrasbtn;
         private System.Windows.Forms.Button downloadstartbtn;
-        private System.Windows.Forms.TextBox statusbox;
+        private System.Windows.Forms.RichTextBox statusbox;
         private System.Windows.Forms.CheckBox packbox;
         private System.Windows.Forms.CheckBox localuse;
         private System.ComponentModel.BackgroundWorker NUSDownloader;
