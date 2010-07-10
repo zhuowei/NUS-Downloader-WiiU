@@ -34,6 +34,9 @@ namespace NUS_Downloader
 
         public void LoadDatabaseToStream(string databaseFile)
         {
+            // Does it exist?
+            if (!File.Exists(databaseFile))
+                throw new FileNotFoundException("I couldn't find the database file!", "database.xml");
             // Load database.xml into MemoryStream
             databaseString = File.ReadAllText(databaseFile);
             /*System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();

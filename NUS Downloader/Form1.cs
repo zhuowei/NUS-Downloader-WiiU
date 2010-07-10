@@ -1652,18 +1652,26 @@ namespace NUS_Downloader
         private void RetrieveNewDatabase_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
             string database = e.Result.ToString();
-            Database db = new Database();
-            db.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
-            string currentversion = db.GetDatabaseVersion();
-            string onlineversion = Database.GetDatabaseVersion(database);
-            WriteStatus(" - Database successfully parsed!");
-            WriteStatus("   - Current Database Version: " + currentversion);
-            WriteStatus("   - Online Database Version: " + onlineversion);
-
-            if (currentversion == onlineversion)
+            try
             {
-                WriteStatus(" - You have the latest database version!");
-                return;
+                Database db = new Database();
+                db.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
+                string currentversion = db.GetDatabaseVersion();
+                string onlineversion = Database.GetDatabaseVersion(database);
+                WriteStatus(" - Database successfully parsed!");
+                WriteStatus("   - Current Database Version: " + currentversion);
+                WriteStatus("   - Online Database Version: " + onlineversion);
+
+                if (currentversion == onlineversion)
+                {
+                    WriteStatus(" - You have the latest database version!");
+                    return;
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                WriteStatus(" - Database does not yet exist.");
+                WriteStatus("   - Online Database Version: " + Database.GetDatabaseVersion(database));
             }
 
             bool isCreation = false;
