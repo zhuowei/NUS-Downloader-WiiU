@@ -142,6 +142,16 @@ namespace NUS_Downloader
                 while (String.IsNullOrEmpty(proxy_pwd))
                     Thread.Sleep(1000);
 
+            if ((args.Length == 1) && (args[0] == "folderfix"))
+            { 
+                // Organizing folders from past NUSD releases...
+                BackgroundWorker folder_fixer = new BackgroundWorker();
+                folder_fixer.DoWork += new DoWorkEventHandler(ReorganizePreviousFolderStructure);
+                folder_fixer.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ReorganizePreviousFolderStructure_Completed);
+                WriteStatus("Organizing your old folder structure...");
+                folder_fixer.RunWorkerAsync();
+            }
+
             if ((args.Length == 1) && (File.Exists(args[0])))
             {
                 script_filename = args[0];
@@ -150,6 +160,8 @@ namespace NUS_Downloader
                 scripter.RunWorkerAsync();
             }
         }
+
+        
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -1060,11 +1072,11 @@ namespace NUS_Downloader
         /// <param name="attributes">The attributes.</param>
         private void AddToolStripItemToStrip(ToolStripMenuItem menulist, ToolStripMenuItem additionitem)
         {
-            Debug.WriteLine(String.Format("Adding item"));
+            //Debug.WriteLine(String.Format("Adding item"));
              
             if (this.InvokeRequired)
             {
-                Debug.WriteLine("InvokeRequired...");
+                //Debug.WriteLine("InvokeRequired...");
                 AddToolStripItemToStripCallback atsitsc = new AddToolStripItemToStripCallback(AddToolStripItemToStrip);
                 this.Invoke(atsitsc, new object[] {menulist, additionitem});
                 return;
@@ -2376,10 +2388,6 @@ namespace NUS_Downloader
                 iosPatchesListBox.Enabled = true;
                 iosPatchGroupBoxOKbtn.Enabled = true;
             }
-            else
-            {
-                //packbox.Enabled = true;
-            }
         }
 
         private void iosPatchGroupBoxOKbtn_Click(object sender, EventArgs e)
@@ -2389,11 +2397,11 @@ namespace NUS_Downloader
             if (iosPatchesListBox.CheckedIndices.Count == 0)
                 // Uncheck the checkbox to indicate no patches
                 iosPatchCheckbox.Checked = false;
-            //packbox.Enabled = false;
         }
 
         private void FillDatabaseScripts()
         {
+            SetPropertyThreadSafe(scriptsDatabaseToolStripMenuItem, false, "Visible");
             Database databaseObj = new Database();
             databaseObj.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
 
@@ -2405,12 +2413,42 @@ namespace NUS_Downloader
                 AddToolStripItemToStrip(scriptsDatabaseToolStripMenuItem, scriptItems[a]);
                 //SystemMenuList.DropDownItems.Add(systemItems[a]);
             }
+
             SetPropertyThreadSafe(scriptsDatabaseToolStripMenuItem, true, "Enabled");
             SetPropertyThreadSafe(scriptsDatabaseToolStripMenuItem, true, "Visible");
         }
 
         public void ScriptItem_Clicked(object sender, ToolStripItemClickedEventArgs e)
-        { //TODO 
+        {// STILL TODO
+            ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
+            string folderpath = "\000";
+            script_filename = folderpath;
+            BackgroundWorker scripter = new BackgroundWorker();
+            scripter.DoWork += new DoWorkEventHandler(RunScript);
+            scripter.RunWorkerAsync();
+        }
+
+        void ReorganizePreviousFolderStructure(object sender, DoWorkEventArgs e)
+        {
+            // 0000000000000000v000\* become titles\0000000000000000\v000\*
+            Regex TitleDirectoryRegex = new Regex(@"[a-zA-Z0-9]{16}v?([0-9]*)?");
+
+            if (Directory.Exists(Path.Combine(CURRENT_DIR, "titles")) == false)
+                Directory.CreateDirectory(Path.Combine(CURRENT_DIR, "titles"));
+
+            string[] directories = Directory.GetDirectories(CURRENT_DIR, "*", SearchOption.TopDirectoryOnly);
+            foreach (string directory in directories)
+            {
+                DirectoryInfo dinfo = new DirectoryInfo(directory);
+                if (TitleDirectoryRegex.IsMatch(dinfo.Name.ToString()) == false)
+                    break;
+            }
+
+        }
+
+        void ReorganizePreviousFolderStructure_Completed(object sender, RunWorkerCompletedEventArgs e)
+        {
+            
         }
     }
 }
