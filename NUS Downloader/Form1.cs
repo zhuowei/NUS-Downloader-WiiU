@@ -346,7 +346,7 @@ namespace NUS_Downloader
         {
             // Show dialog for opening TMD file...
             OpenFileDialog opentmd = new OpenFileDialog();
-            opentmd.Filter = "TMD Files|tmd";
+            opentmd.Filter = "TMD Files|*tmd*";
             opentmd.Title = "Open TMD";
             if (opentmd.ShowDialog() != DialogResult.Cancel)
             {
@@ -2442,13 +2442,81 @@ namespace NUS_Downloader
                 DirectoryInfo dinfo = new DirectoryInfo(directory);
                 if (TitleDirectoryRegex.IsMatch(dinfo.Name.ToString()) == false)
                     break;
+
+                // name is XXXXXXXXXXXXXXXXvYYYY
+                if (TitleDirectoryRegex.IsMatch(dinfo.Name.ToString()) && dinfo.Name.Contains("v"))
+                {
+                    string[] title_info = dinfo.Name.Split('v');
+                    string titleid_dir = Path.Combine(Path.Combine(CURRENT_DIR, "titles"), title_info[0]);
+                    string newfull_dir = Path.Combine(titleid_dir, String.Format("v{0}", title_info[1]));
+
+                    if (Directory.Exists(titleid_dir) == false)
+                        Directory.CreateDirectory(titleid_dir);
+
+                    if (Directory.Exists(newfull_dir) == false)
+                        Directory.CreateDirectory(newfull_dir);
+
+                    string[] files = Directory.GetFiles(directory, "*", SearchOption.TopDirectoryOnly);
+                    foreach (string file in files)
+                    {
+                        FileInfo titlefile = new FileInfo(file);
+                        titlefile.MoveTo(Path.Combine(newfull_dir, titlefile.Name));
+                    }
+
+                    if (dinfo.GetFiles().Length <= 0 || dinfo.GetDirectories().Length < 0)
+                        Directory.Delete(directory);
+
+
+                }
+                else // name is XXXXXXXXXXXXXXXX
+                {
+                    string titleid_dir = Path.Combine(Path.Combine(CURRENT_DIR, "titles"), dinfo.Name.ToString());
+
+                    libWiiSharp.TMD tmdfile = new libWiiSharp.TMD();
+                    int count = 0;
+
+                    string[] tmdfiles = Directory.GetFiles(directory, "*tmd*", SearchOption.TopDirectoryOnly);
+                    if (tmdfiles.Length > 1)
+                        break; //Too many TMD files ?
+
+                    foreach (string file in tmdfiles)
+                    {
+                        if (file.Contains("tmd"))
+                        {
+                            tmdfile.LoadFile(file);
+                            count++;
+                        }
+                    }
+                    if (count == 0)
+                        break;
+
+                    string version = tmdfile.TitleVersion.ToString();
+                    string newfull_dir = Path.Combine(titleid_dir, String.Format("v{0}", version));
+
+                    if (Directory.Exists(titleid_dir) == false)
+                        Directory.CreateDirectory(titleid_dir);
+
+                    if (Directory.Exists(newfull_dir) == false)
+                        Directory.CreateDirectory(newfull_dir);
+
+                    string[] files = Directory.GetFiles(directory, "*", SearchOption.TopDirectoryOnly);
+                    foreach (string file in files)
+                    {
+                        FileInfo titlefile = new FileInfo(file);
+                        titlefile.MoveTo(Path.Combine(newfull_dir, titlefile.Name));
+                    }
+
+                    if (dinfo.GetFiles().Length <= 0 || dinfo.GetDirectories().Length < 0)
+                        Directory.Delete(directory);
+
+                }
             }
 
         }
 
         void ReorganizePreviousFolderStructure_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            
+            WriteStatus(" - Operation complete!");
         }
     }
 }
