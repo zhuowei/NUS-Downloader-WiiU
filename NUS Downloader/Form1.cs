@@ -47,7 +47,7 @@ namespace NUS_Downloader
         private static string version = String.Format("SVN r{0}", ((int.Parse(svnversion.Replace("$"+"R"+"e"+"v"+": ","").Replace(" "+"$","")))+1));
 #else
         // TODO: Always remember to change version!
-        private string version = "v2.0 Beta";
+        private string version = "v2.0";
 #endif
 
         private static bool dsidecrypt = false;
@@ -88,8 +88,52 @@ namespace NUS_Downloader
         // This is the standard entry to the GUI
         public Form1()
         {
-            this.Font = new System.Drawing.Font("Tahoma", 8);
             InitializeComponent();
+
+            GUISetup();
+
+            BootChecks();
+        }
+
+        // CLI Mode
+        public Form1(string[] args)
+        {
+            InitializeComponent();
+            //Application.DoEvents();
+            Debug.WriteLine("CLI Parameters passed");
+
+            GUISetup();
+
+            BootChecks();
+
+            /* Fix proxy entry.
+            if (!(String.IsNullOrEmpty(proxy_url)))
+                while (String.IsNullOrEmpty(proxy_pwd))
+                    Thread.Sleep(1000);*/
+
+            if ((args.Length == 1) && (args[0] == "folderfix"))
+            { 
+                // Organizing folders from past NUSD releases...
+                BackgroundWorker folder_fixer = new BackgroundWorker();
+                folder_fixer.DoWork += new DoWorkEventHandler(ReorganizePreviousFolderStructure);
+                folder_fixer.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ReorganizePreviousFolderStructure_Completed);
+                Debug.WriteLine("folderfix active");
+                WriteStatus("Organizing your old folder structure...");
+                folder_fixer.RunWorkerAsync();
+            }
+
+            if ((args.Length == 1) && (File.Exists(args[0])))
+            {
+                script_filename = args[0];
+                BackgroundWorker scripter = new BackgroundWorker();
+                scripter.DoWork += new DoWorkEventHandler(RunScript);
+                scripter.RunWorkerAsync();
+            }
+        }
+
+        private void GUISetup()
+        {
+            this.Font = new System.Drawing.Font("Tahoma", 8);
             this.MaximumSize = this.MinimumSize = this.Size; // Lock size down PATCHOW :D
             if (Type.GetType("Mono.Runtime") != null)
             {
@@ -125,43 +169,7 @@ namespace NUS_Downloader
             this.scriptsWorker.DoWork += new DoWorkEventHandler(OrganizeScripts);
             this.scriptsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(scriptsWorker_RunWorkerCompleted);
             RunScriptOrganizer();
-
-            BootChecks();
         }
-
-        // CLI Mode
-        public Form1(string[] args)
-        {
-            InitializeComponent();
-            Application.DoEvents();
-
-            BootChecks();
-
-            // Fix proxy entry.
-            if (!(String.IsNullOrEmpty(proxy_url)))
-                while (String.IsNullOrEmpty(proxy_pwd))
-                    Thread.Sleep(1000);
-
-            if ((args.Length == 1) && (args[0] == "folderfix"))
-            { 
-                // Organizing folders from past NUSD releases...
-                BackgroundWorker folder_fixer = new BackgroundWorker();
-                folder_fixer.DoWork += new DoWorkEventHandler(ReorganizePreviousFolderStructure);
-                folder_fixer.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ReorganizePreviousFolderStructure_Completed);
-                WriteStatus("Organizing your old folder structure...");
-                folder_fixer.RunWorkerAsync();
-            }
-
-            if ((args.Length == 1) && (File.Exists(args[0])))
-            {
-                script_filename = args[0];
-                BackgroundWorker scripter = new BackgroundWorker();
-                scripter.DoWork += new DoWorkEventHandler(RunScript);
-                scripter.RunWorkerAsync();
-            }
-        }
-
-        
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -2437,18 +2445,18 @@ namespace NUS_Downloader
                 Directory.CreateDirectory(Path.Combine(CURRENT_DIR, "titles"));
 
             string[] directories = Directory.GetDirectories(CURRENT_DIR, "*", SearchOption.TopDirectoryOnly);
+            Debug.WriteLine("Dirs: " + directories.Length);
             foreach (string directory in directories)
             {
+                Debug.WriteLine("ff: " + directory);
                 DirectoryInfo dinfo = new DirectoryInfo(directory);
-                if (TitleDirectoryRegex.IsMatch(dinfo.Name.ToString()) == false)
-                    break;
 
                 // name is XXXXXXXXXXXXXXXXvYYYY
                 if (TitleDirectoryRegex.IsMatch(dinfo.Name.ToString()) && dinfo.Name.Contains("v"))
                 {
                     string[] title_info = dinfo.Name.Split('v');
                     string titleid_dir = Path.Combine(Path.Combine(CURRENT_DIR, "titles"), title_info[0]);
-                    string newfull_dir = Path.Combine(titleid_dir, String.Format("v{0}", title_info[1]));
+                    string newfull_dir = Path.Combine(titleid_dir, String.Format("{0}", title_info[1]));
 
                     if (Directory.Exists(titleid_dir) == false)
                         Directory.CreateDirectory(titleid_dir);
@@ -2460,15 +2468,16 @@ namespace NUS_Downloader
                     foreach (string file in files)
                     {
                         FileInfo titlefile = new FileInfo(file);
-                        titlefile.MoveTo(Path.Combine(newfull_dir, titlefile.Name));
+                        if (File.Exists(Path.Combine(newfull_dir, titlefile.Name)) == false)
+                            titlefile.MoveTo(Path.Combine(newfull_dir, titlefile.Name));
                     }
 
-                    if (dinfo.GetFiles().Length <= 0 || dinfo.GetDirectories().Length < 0)
+                    if (dinfo.GetFiles().Length <= 0 && dinfo.GetDirectories().Length <= 0)
                         Directory.Delete(directory);
 
 
                 }
-                else // name is XXXXXXXXXXXXXXXX
+                else if (TitleDirectoryRegex.IsMatch(dinfo.Name.ToString()))
                 {
                     string titleid_dir = Path.Combine(Path.Combine(CURRENT_DIR, "titles"), dinfo.Name.ToString());
 
@@ -2477,7 +2486,7 @@ namespace NUS_Downloader
 
                     string[] tmdfiles = Directory.GetFiles(directory, "*tmd*", SearchOption.TopDirectoryOnly);
                     if (tmdfiles.Length > 1)
-                        break; //Too many TMD files ?
+                        continue; //Too many TMD files ?
 
                     foreach (string file in tmdfiles)
                     {
@@ -2488,10 +2497,10 @@ namespace NUS_Downloader
                         }
                     }
                     if (count == 0)
-                        break;
+                        continue;
 
                     string version = tmdfile.TitleVersion.ToString();
-                    string newfull_dir = Path.Combine(titleid_dir, String.Format("v{0}", version));
+                    string newfull_dir = Path.Combine(titleid_dir, String.Format("{0}", version));
 
                     if (Directory.Exists(titleid_dir) == false)
                         Directory.CreateDirectory(titleid_dir);
@@ -2503,10 +2512,11 @@ namespace NUS_Downloader
                     foreach (string file in files)
                     {
                         FileInfo titlefile = new FileInfo(file);
-                        titlefile.MoveTo(Path.Combine(newfull_dir, titlefile.Name));
+                        if (File.Exists(Path.Combine(newfull_dir, titlefile.Name)) == false)
+                            titlefile.MoveTo(Path.Combine(newfull_dir, titlefile.Name));
                     }
 
-                    if (dinfo.GetFiles().Length <= 0 || dinfo.GetDirectories().Length < 0)
+                    if (dinfo.GetFiles().Length <= 0 && dinfo.GetDirectories().Length <= 0)
                         Directory.Delete(directory);
 
                 }
