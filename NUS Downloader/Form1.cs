@@ -1088,95 +1088,6 @@ namespace NUS_Downloader
             }
 
             menulist.DropDownItems.Add(additionitem);
-
-            /*
-            // Deal with VC list depth...
-            if (type == 2)
-            {
-                Debug.WriteLine("Adding:");
-                Debug.WriteLine(additionitem);
-                switch (attributes[0].Value)
-                {
-                    case "C64":
-                        C64MenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "NEO":
-                        NeoGeoMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "NES":
-                        NESMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "SNES":
-                        SNESMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "N64":
-                        N64MenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "TG16":
-                        TurboGrafx16MenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "TGCD":
-                        TurboGrafxCDMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "MSX":
-                        MSXMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "SMS":
-                        SegaMSMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "GEN":
-                        GenesisMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case "ARC":
-                        VCArcadeMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    default:
-                        break;
-                }
-                additionitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(wwitem_regionclicked);
-            }
-            else if (type == 4)
-            {
-                // I am a brand new combine harvester
-                //MassUpdateList.DropDownItems.Add(additionitem);
-                switch (attributes[0].Value)
-                {
-                    case "KOR":
-                        KoreaMassUpdate.DropDownItems.Add(additionitem);
-                        KoreaMassUpdate.Enabled = true;
-                        break;
-                    case "PAL":
-                        PALMassUpdate.DropDownItems.Add(additionitem);
-                        PALMassUpdate.Enabled = true;
-                        break;
-                    case "NTSC":
-                        NTSCMassUpdate.DropDownItems.Add(additionitem);
-                        NTSCMassUpdate.Enabled = true;
-                        break;
-                    default:
-                        Debug.WriteLine("Oops - database error");
-                        return;
-                }
-            }
-            else
-            {
-                // Add SYS, IOS, WW items
-                // I thought using index would work in .Items, but I 
-                // guess this switch will have to do...
-                switch (type)
-                {
-                    case 0:
-                        SystemMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case 1:
-                        IOSMenuList.DropDownItems.Add(additionitem);
-                        break;
-                    case 3:
-                        WiiWareMenuList.DropDownItems.Add(additionitem);
-                        break;
-                }
-                additionitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(sysitem_versionclicked);
-            }*/
         }
 
         /// <summary>
@@ -2084,7 +1995,13 @@ namespace NUS_Downloader
        /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
        private void RunScriptBg(object sender, System.ComponentModel.DoWorkEventArgs e)
        {
-           RunScript(e.Argument.ToString());
+           char ArgsSplitChar = ';';
+           string[] scriptArgs = e.Argument.ToString().Split(ArgsSplitChar);
+
+           if (scriptArgs.Length < 2)
+               RunScript(scriptArgs[0], "random");
+           else
+               RunScript(scriptArgs[0], scriptArgs[1]);
            /*
            script_mode = true;
            SetTextThreadSafe(statusbox, "");
@@ -2531,12 +2448,17 @@ namespace NUS_Downloader
             WriteStatus(" - Operation complete!");
         }
 
-        private void RunScript(string scriptstr)
+        private void RunScript(string scriptstr, string scriptname)
         {
             // Form and folder stuffs
             SetTextThreadSafe(statusbox, "");
             WriteStatus("Starting script download. Please be patient!");
-            string scriptdir = Path.Combine(Path.Combine(CURRENT_DIR, "scripts"), RandomString(7) + "_output"); //TODO: Nonrandom naming
+            string scriptdir;
+            if (scriptname == "random")
+                scriptdir = Path.Combine(Path.Combine(CURRENT_DIR, "scripts"), RandomString(7) + "_output");
+            else
+                scriptdir = Path.Combine(Path.Combine(CURRENT_DIR, "scripts"), scriptname + "_output");
+
             if (!File.Exists(scriptdir))
                 Directory.CreateDirectory(scriptdir);
 
@@ -2600,7 +2522,40 @@ namespace NUS_Downloader
                 buffer[i] = _chars[_rng.Next(_chars.Length)];
             }
             return new string(buffer);
+            
         }
 
+        void Form1_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            Debug.WriteLine("Delta: " + e.Delta.ToString());
+
+            if (SystemMenuList.DropDown.DisplayRectangle.Contains(e.Location) || SystemMenuList.DropDown.Bounds.Contains(e.Location))
+            {
+                if (e.Delta > 0) 
+                    System.Windows.Forms.SendKeys.Send("{UP}");
+                else 
+                    System.Windows.Forms.SendKeys.Send("{DOWN}");
+                //do what you want here
+            }
+
+            if (WiiWareMenuList.DropDown.DisplayRectangle.Contains(e.Location) || WiiWareMenuList.DropDown.Bounds.Contains(e.Location))
+            {
+                if (e.Delta > 0)
+                    System.Windows.Forms.SendKeys.Send("{UP}");
+                else
+                    System.Windows.Forms.SendKeys.Send("{DOWN}");
+                //do what you want here
+            }
+
+            if (VCMenuList.DropDown.DisplayRectangle.Contains(e.Location) || VCMenuList.DropDown.Bounds.Contains(e.Location))
+            {
+                if (e.Delta > 0)
+                    System.Windows.Forms.SendKeys.Send("{UP}");
+                else
+                    System.Windows.Forms.SendKeys.Send("{DOWN}");
+                //do what you want here
+            }
+            
+        }
     }
 }
