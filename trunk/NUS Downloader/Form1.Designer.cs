@@ -184,6 +184,7 @@ namespace NUS_Downloader
             // 
             // databaseStrip
             // 
+            this.databaseStrip.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.databaseStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SystemMenuList,
             this.systemFakeMenuItem,
@@ -199,34 +200,34 @@ namespace NUS_Downloader
             this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(164, 236);
+            this.databaseStrip.Size = new System.Drawing.Size(159, 236);
             // 
             // SystemMenuList
             // 
             this.SystemMenuList.AutoSize = false;
             this.SystemMenuList.Name = "SystemMenuList";
-            this.SystemMenuList.Size = new System.Drawing.Size(154, 22);
+            this.SystemMenuList.Size = new System.Drawing.Size(158, 22);
             this.SystemMenuList.Text = "System";
             // 
             // systemFakeMenuItem
             // 
             this.systemFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
             this.systemFakeMenuItem.Name = "systemFakeMenuItem";
-            this.systemFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.systemFakeMenuItem.Size = new System.Drawing.Size(158, 22);
             this.systemFakeMenuItem.Text = "System";
             this.systemFakeMenuItem.Visible = false;
             // 
             // IOSMenuList
             // 
             this.IOSMenuList.Name = "IOSMenuList";
-            this.IOSMenuList.Size = new System.Drawing.Size(163, 22);
+            this.IOSMenuList.Size = new System.Drawing.Size(158, 22);
             this.IOSMenuList.Text = "IOS";
             // 
             // iosFakeMenuItem
             // 
             this.iosFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
             this.iosFakeMenuItem.Name = "iosFakeMenuItem";
-            this.iosFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.iosFakeMenuItem.Size = new System.Drawing.Size(158, 22);
             this.iosFakeMenuItem.Text = "IOS";
             this.iosFakeMenuItem.Visible = false;
             // 
@@ -245,125 +246,126 @@ namespace NUS_Downloader
             this.TurboGrafxCDMenuList,
             this.VCArcadeMenuList});
             this.VCMenuList.Name = "VCMenuList";
-            this.VCMenuList.Size = new System.Drawing.Size(163, 22);
+            this.VCMenuList.Size = new System.Drawing.Size(158, 22);
             this.VCMenuList.Text = "Virtual Console";
             // 
             // C64MenuList
             // 
             this.C64MenuList.Name = "C64MenuList";
-            this.C64MenuList.Size = new System.Drawing.Size(194, 22);
+            this.C64MenuList.Size = new System.Drawing.Size(182, 22);
             this.C64MenuList.Text = "Commodore 64";
             // 
             // GenesisMenuList
             // 
             this.GenesisMenuList.Name = "GenesisMenuList";
-            this.GenesisMenuList.Size = new System.Drawing.Size(194, 22);
+            this.GenesisMenuList.Size = new System.Drawing.Size(182, 22);
             this.GenesisMenuList.Text = "Mega Drive/Genesis";
             // 
             // MSXMenuList
             // 
             this.MSXMenuList.Name = "MSXMenuList";
-            this.MSXMenuList.Size = new System.Drawing.Size(194, 22);
+            this.MSXMenuList.Size = new System.Drawing.Size(182, 22);
             this.MSXMenuList.Text = "MSX";
             // 
             // N64MenuList
             // 
             this.N64MenuList.Name = "N64MenuList";
-            this.N64MenuList.Size = new System.Drawing.Size(194, 22);
+            this.N64MenuList.Size = new System.Drawing.Size(182, 22);
             this.N64MenuList.Text = "Nintendo 64";
             // 
             // NeoGeoMenuList
             // 
             this.NeoGeoMenuList.Name = "NeoGeoMenuList";
-            this.NeoGeoMenuList.Size = new System.Drawing.Size(194, 22);
+            this.NeoGeoMenuList.Size = new System.Drawing.Size(182, 22);
             this.NeoGeoMenuList.Text = "NeoGeo";
             // 
             // NESMenuList
             // 
             this.NESMenuList.Name = "NESMenuList";
-            this.NESMenuList.Size = new System.Drawing.Size(194, 22);
+            this.NESMenuList.Size = new System.Drawing.Size(182, 22);
             this.NESMenuList.Text = "NES";
             // 
             // SegaMSMenuList
             // 
             this.SegaMSMenuList.Name = "SegaMSMenuList";
-            this.SegaMSMenuList.Size = new System.Drawing.Size(194, 22);
+            this.SegaMSMenuList.Size = new System.Drawing.Size(182, 22);
             this.SegaMSMenuList.Text = "Sega Master System";
             // 
             // SNESMenuList
             // 
             this.SNESMenuList.Name = "SNESMenuList";
-            this.SNESMenuList.Size = new System.Drawing.Size(194, 22);
+            this.SNESMenuList.Size = new System.Drawing.Size(182, 22);
             this.SNESMenuList.Text = "SNES";
             // 
             // TurboGrafx16MenuList
             // 
             this.TurboGrafx16MenuList.Name = "TurboGrafx16MenuList";
-            this.TurboGrafx16MenuList.Size = new System.Drawing.Size(194, 22);
+            this.TurboGrafx16MenuList.Size = new System.Drawing.Size(182, 22);
             this.TurboGrafx16MenuList.Text = "TruboGrafx-16";
             // 
             // TurboGrafxCDMenuList
             // 
             this.TurboGrafxCDMenuList.Name = "TurboGrafxCDMenuList";
-            this.TurboGrafxCDMenuList.Size = new System.Drawing.Size(194, 22);
+            this.TurboGrafxCDMenuList.Size = new System.Drawing.Size(182, 22);
             this.TurboGrafxCDMenuList.Text = "TurboGrafx-CD";
             // 
             // VCArcadeMenuList
             // 
             this.VCArcadeMenuList.Name = "VCArcadeMenuList";
-            this.VCArcadeMenuList.Size = new System.Drawing.Size(194, 22);
+            this.VCArcadeMenuList.Size = new System.Drawing.Size(182, 22);
             this.VCArcadeMenuList.Text = "Virtual Console Arcade";
             // 
             // vcFakeMenuItem
             // 
             this.vcFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
             this.vcFakeMenuItem.Name = "vcFakeMenuItem";
-            this.vcFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.vcFakeMenuItem.Size = new System.Drawing.Size(158, 22);
             this.vcFakeMenuItem.Text = "Virtual Console";
             this.vcFakeMenuItem.Visible = false;
             // 
             // WiiWareMenuList
             // 
             this.WiiWareMenuList.Name = "WiiWareMenuList";
-            this.WiiWareMenuList.Size = new System.Drawing.Size(163, 22);
+            this.WiiWareMenuList.Size = new System.Drawing.Size(158, 22);
             this.WiiWareMenuList.Text = "WiiWare";
             // 
             // wwFakeMenuItem
             // 
             this.wwFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
             this.wwFakeMenuItem.Name = "wwFakeMenuItem";
-            this.wwFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.wwFakeMenuItem.Size = new System.Drawing.Size(158, 22);
             this.wwFakeMenuItem.Text = "WiiWare";
             this.wwFakeMenuItem.Visible = false;
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(160, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(155, 6);
             // 
             // RegionCodesList
             // 
             this.RegionCodesList.Name = "RegionCodesList";
-            this.RegionCodesList.Size = new System.Drawing.Size(163, 22);
+            this.RegionCodesList.Size = new System.Drawing.Size(158, 22);
             this.RegionCodesList.Text = "Region Codes";
             this.RegionCodesList.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.RegionCodesList_DropDownItemClicked);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(160, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(155, 6);
             // 
             // updateDatabaseToolStripMenuItem
             // 
             this.updateDatabaseToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.database_save;
             this.updateDatabaseToolStripMenuItem.Name = "updateDatabaseToolStripMenuItem";
-            this.updateDatabaseToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.updateDatabaseToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.updateDatabaseToolStripMenuItem.Text = "Update Database";
             this.updateDatabaseToolStripMenuItem.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
             // 
             // extrasStrip
             // 
             this.extrasStrip.AllowMerge = false;
+            this.extrasStrip.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.extrasStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadInfoFromTMDToolStripMenuItem,
             this.toolStripSeparator3,
@@ -371,39 +373,39 @@ namespace NUS_Downloader
             this.toolStripSeparator6,
             this.aboutNUSDToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(183, 82);
+            this.extrasStrip.Size = new System.Drawing.Size(170, 82);
             // 
             // loadInfoFromTMDToolStripMenuItem
             // 
             this.loadInfoFromTMDToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.page_white_magnify;
             this.loadInfoFromTMDToolStripMenuItem.Name = "loadInfoFromTMDToolStripMenuItem";
-            this.loadInfoFromTMDToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.loadInfoFromTMDToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.loadInfoFromTMDToolStripMenuItem.Text = "Load Info from TMD";
             this.loadInfoFromTMDToolStripMenuItem.Click += new System.EventHandler(this.loadInfoFromTMDToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(179, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(166, 6);
             // 
             // proxySettingsToolStripMenuItem
             // 
             this.proxySettingsToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.server_link;
             this.proxySettingsToolStripMenuItem.Name = "proxySettingsToolStripMenuItem";
-            this.proxySettingsToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.proxySettingsToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.proxySettingsToolStripMenuItem.Text = "Proxy Settings";
             this.proxySettingsToolStripMenuItem.Click += new System.EventHandler(this.proxySettingsToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(179, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(166, 6);
             // 
             // aboutNUSDToolStripMenuItem
             // 
             this.aboutNUSDToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.information;
             this.aboutNUSDToolStripMenuItem.Name = "aboutNUSDToolStripMenuItem";
-            this.aboutNUSDToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.aboutNUSDToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.aboutNUSDToolStripMenuItem.Text = "About NUSD";
             this.aboutNUSDToolStripMenuItem.Click += new System.EventHandler(this.aboutNUSDToolStripMenuItem_Click);
             // 
@@ -576,6 +578,7 @@ namespace NUS_Downloader
             // 
             // scriptsStrip
             // 
+            this.scriptsStrip.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.scriptsStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.scriptsLocalMenuEntry,
             this.scriptsDatabaseToolStripMenuItem,
@@ -584,7 +587,7 @@ namespace NUS_Downloader
             this.emulateUpdate});
             this.scriptsStrip.Name = "scriptsStrip";
             this.scriptsStrip.ShowItemToolTips = false;
-            this.scriptsStrip.Size = new System.Drawing.Size(220, 120);
+            this.scriptsStrip.Size = new System.Drawing.Size(206, 98);
             // 
             // scriptsLocalMenuEntry
             // 
@@ -592,7 +595,7 @@ namespace NUS_Downloader
             this.scriptsLocalMenuEntry.Image = global::NUS_Downloader.Properties.Resources.script_code;
             this.scriptsLocalMenuEntry.Name = "scriptsLocalMenuEntry";
             this.scriptsLocalMenuEntry.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
-            this.scriptsLocalMenuEntry.Size = new System.Drawing.Size(219, 22);
+            this.scriptsLocalMenuEntry.Size = new System.Drawing.Size(205, 22);
             this.scriptsLocalMenuEntry.Text = "Scripts (Local)";
             // 
             // scriptsDatabaseToolStripMenuItem
@@ -600,21 +603,21 @@ namespace NUS_Downloader
             this.scriptsDatabaseToolStripMenuItem.Enabled = false;
             this.scriptsDatabaseToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_code_red;
             this.scriptsDatabaseToolStripMenuItem.Name = "scriptsDatabaseToolStripMenuItem";
-            this.scriptsDatabaseToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.scriptsDatabaseToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
             this.scriptsDatabaseToolStripMenuItem.Text = "Scripts (Database)";
             // 
             // loadNUSScriptToolStripMenuItem
             // 
             this.loadNUSScriptToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_go;
             this.loadNUSScriptToolStripMenuItem.Name = "loadNUSScriptToolStripMenuItem";
-            this.loadNUSScriptToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.loadNUSScriptToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
             this.loadNUSScriptToolStripMenuItem.Text = "Load NUS Script";
             this.loadNUSScriptToolStripMenuItem.Click += new System.EventHandler(this.loadNUSScriptToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(216, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(202, 6);
             // 
             // emulateUpdate
             // 
@@ -625,32 +628,32 @@ namespace NUS_Downloader
             this.koreaToolStripMenuItem});
             this.emulateUpdate.Image = global::NUS_Downloader.Properties.Resources.server_connect;
             this.emulateUpdate.Name = "emulateUpdate";
-            this.emulateUpdate.Size = new System.Drawing.Size(219, 22);
+            this.emulateUpdate.Size = new System.Drawing.Size(205, 22);
             this.emulateUpdate.Text = "Emulate Wii System Update";
             this.emulateUpdate.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.emulateUpdate_DropDownItemClicked);
             // 
             // uSANTSCToolStripMenuItem
             // 
             this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
-            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.uSANTSCToolStripMenuItem.Text = "USA";
             // 
             // europePALToolStripMenuItem
             // 
             this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
-            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.europePALToolStripMenuItem.Text = "EUROPE";
             // 
             // japanNTSCJToolStripMenuItem
             // 
             this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
-            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.japanNTSCJToolStripMenuItem.Text = "JAPAN";
             // 
             // koreaToolStripMenuItem
             // 
             this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
-            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.koreaToolStripMenuItem.Text = "KOREA";
             // 
             // iosPatchGroupBox
@@ -902,6 +905,7 @@ namespace NUS_Downloader
             this.Text = "NUSD";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.MouseWheel += new System.Windows.Forms.MouseEventHandler(Form1_MouseWheel);
             this.databaseStrip.ResumeLayout(false);
             this.extrasStrip.ResumeLayout(false);
             this.proxyBox.ResumeLayout(false);
