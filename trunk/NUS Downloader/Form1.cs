@@ -64,9 +64,9 @@ namespace NUS_Downloader
         private string WAD_Saveas_Filename;
 
         // TODO: OOP scripting
-        private string script_filename;
+        /*private string script_filename;
         private bool script_mode = false;
-        private string[] nusentries;
+        private string[] nusentries;*/
 
         // Proxy stuff...
         private string proxy_url;
@@ -124,10 +124,10 @@ namespace NUS_Downloader
 
             if ((args.Length == 1) && (File.Exists(args[0])))
             {
-                script_filename = args[0];
+                string script_content = File.ReadAllText(args[0]);
                 BackgroundWorker scripter = new BackgroundWorker();
-                scripter.DoWork += new DoWorkEventHandler(RunScript);
-                scripter.RunWorkerAsync();
+                scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
+                scripter.RunWorkerAsync(script_content);
             }
         }
 
@@ -484,7 +484,7 @@ namespace NUS_Downloader
                 WriteStatus("Running with your current settings will produce no output!", errorcolor);
                 WriteStatus(" - To amend this, look below and check an output type.", errorcolor);
                 return;
-            }
+            }/*
             else if (!(script_mode))
             {
                 try
@@ -496,7 +496,7 @@ namespace NUS_Downloader
                 {
                     SetTextThreadSafe(statusbox, " --- " + titleidbox.Text + " ---");
                 }
-            }
+            }*/
             else
                 WriteStatus(" --- " + titleidbox.Text + " ---");
            
@@ -532,8 +532,8 @@ namespace NUS_Downloader
         private void NUSDownloader_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             Control.CheckForIllegalCrossThreadCalls = false; // this function would need major rewriting to get rid of this...
-            if (!(script_mode))
-                WriteStatus("Starting NUS Download. Please be patient!", infocolor);
+            
+            WriteStatus("Starting NUS Download. Please be patient!", infocolor);
             SetEnableforDownload(false);
             downloadstartbtn.Text = "Starting NUS Download!";
 
@@ -575,7 +575,7 @@ namespace NUS_Downloader
             }
             catch (Exception ex)
             {
-                WriteStatus("Uhoh, the download bombed: \"" + ex.Message + " ):\"", errorcolor);
+                WriteStatus("Download failed: \"" + ex.Message + " ):\"", errorcolor);
             }
 
             if (iosPatchCheckbox.Checked == true) { // Apply patches then...
@@ -697,9 +697,6 @@ namespace NUS_Downloader
 
             if (IsWin7())
                 dlprogress.ShowInTaskbar = false;
-
-            if (script_mode)
-                statusbox.Text = "";
         }
 
         private void consoleCBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1221,13 +1218,14 @@ namespace NUS_Downloader
 
             return titlename;
         }
-
+         /*
         private void upditem_itemclicked(object sender, ToolStripItemClickedEventArgs e)
         {
             WriteStatus("Preparing to run download script...");
-            script_mode = true;
+            //script_mode = true;
             SetTextThreadSafe(statusbox, "");
-            WriteStatus("Starting script download. Please be patient!");
+            //WriteStatus("Starting script download. Please be patient!");
+
             string[] NUS_Entries = e.ClickedItem.AccessibleDescription.Split('\n');
                 // TODO: Find somewhere better to put this. AND FAST!
             for (int i = 0; i < NUS_Entries.Length; i++)
@@ -1239,7 +1237,7 @@ namespace NUS_Downloader
             BackgroundWorker scripter = new BackgroundWorker();
             scripter.DoWork += new DoWorkEventHandler(RunScript);
             scripter.RunWorkerAsync();
-        }
+        }*/
 
         public void DatabaseItem_Clicked(object sender, ToolStripItemClickedEventArgs e)
         {
@@ -1517,7 +1515,7 @@ namespace NUS_Downloader
 
             string title_name = null;
 
-            if ((titleidbox.Enabled == true || script_mode == true) && (packbox.Checked == true))
+            if ((titleidbox.Enabled == true) && (packbox.Checked == true))
             {
                 if (titleversion.Text != "")
                 {
@@ -2072,94 +2070,96 @@ namespace NUS_Downloader
 
             if (ofd.ShowDialog() != DialogResult.Cancel)
             {
-                script_filename = ofd.FileName;
+                string script_content = File.ReadAllText(ofd.FileName);
                 BackgroundWorker scripter = new BackgroundWorker();
-                scripter.DoWork += new DoWorkEventHandler(RunScript);
-                scripter.RunWorkerAsync();
+                scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
+                scripter.RunWorkerAsync(script_content);
             }
         }
+        
+       /// <summary>
+       /// Runs a NUS script (BG).
+       /// </summary>
+       /// <param name="sender">The sender.</param>
+       /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
+       private void RunScriptBg(object sender, System.ComponentModel.DoWorkEventArgs e)
+       {
+           RunScript(e.Argument.ToString());
+           /*
+           script_mode = true;
+           SetTextThreadSafe(statusbox, "");
+           WriteStatus("Starting script download. Please be patient!");
+           if (!File.Exists(Path.Combine(CURRENT_DIR, "output_" + Path.GetFileNameWithoutExtension(script_filename))))
+               Directory.CreateDirectory(Path.Combine(CURRENT_DIR, "output_" + Path.GetFileNameWithoutExtension(script_filename)));
+           string[] NUS_Entries;
+           if (script_filename != "\000")
+           {
+               NUS_Entries = File.ReadAllLines(script_filename);
+           }
+           else
+           {
+               NUS_Entries = nusentries;
+           }
+           WriteStatus(String.Format(" - Script loaded ({0} Titles)", NUS_Entries.Length));
 
-        /// <summary>
-        /// Runs a NUS script (BG).
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-        private void RunScript(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-            script_mode = true;
-            SetTextThreadSafe(statusbox, "");
-            WriteStatus("Starting script download. Please be patient!");
-            if (!File.Exists(Path.Combine(CURRENT_DIR, "output_" + Path.GetFileNameWithoutExtension(script_filename))))
-                Directory.CreateDirectory(Path.Combine(CURRENT_DIR, "output_" + Path.GetFileNameWithoutExtension(script_filename)));
-            string[] NUS_Entries;
-            if (script_filename != "\000")
-            {
-                NUS_Entries = File.ReadAllLines(script_filename);
-            }
-            else
-            {
-                NUS_Entries = nusentries;
-            }
-            WriteStatus(String.Format(" - Script loaded ({0} Titles)", NUS_Entries.Length));
+           for (int a = 0; a < NUS_Entries.Length; a++)
+           {
+               // Download the title
+               WriteStatus(String.Format("===== Running Download ({0}/{1}) =====", a + 1, NUS_Entries.Length));
+               string[] title_info = NUS_Entries[a].Split(' ');
+               // don't let the delete issue reappear...
+               if (string.IsNullOrEmpty(title_info[0]))
+                   break;
 
-            for (int a = 0; a < NUS_Entries.Length; a++)
-            {
-                // Download the title
-                WriteStatus(String.Format("===== Running Download ({0}/{1}) =====", a + 1, NUS_Entries.Length));
-                string[] title_info = NUS_Entries[a].Split(' ');
-                // don't let the delete issue reappear...
-                if (string.IsNullOrEmpty(title_info[0]))
-                    break;
+               // WebClient configuration
+               WebClient nusWC = new WebClient();
+               nusWC = ConfigureWithProxy(nusWC);
+               nusWC.Headers.Add("User-Agent", "wii libnup/1.0"); // Set UserAgent to Wii value
 
-                // WebClient configuration
-                WebClient nusWC = new WebClient();
-                nusWC = ConfigureWithProxy(nusWC);
-                nusWC.Headers.Add("User-Agent", "wii libnup/1.0"); // Set UserAgent to Wii value
+               // Create\Configure NusClient
+               libWiiSharp.NusClient nusClient = new libWiiSharp.NusClient();
+               nusClient.ConfigureNusClient(nusWC);
+               nusClient.UseLocalFiles = localuse.Checked;
+               nusClient.ContinueWithoutTicket = true;
+               nusClient.Debug += new EventHandler<libWiiSharp.MessageEventArgs>(nusClient_Debug);
 
-                // Create\Configure NusClient
-                libWiiSharp.NusClient nusClient = new libWiiSharp.NusClient();
-                nusClient.ConfigureNusClient(nusWC);
-                nusClient.UseLocalFiles = localuse.Checked;
-                nusClient.ContinueWithoutTicket = true;
-                nusClient.Debug += new EventHandler<libWiiSharp.MessageEventArgs>(nusClient_Debug);
+               libWiiSharp.StoreType[] storeTypes = new libWiiSharp.StoreType[1];
+               // There's no harm in outputting everything i suppose
+               storeTypes[0] = libWiiSharp.StoreType.All;
 
-                libWiiSharp.StoreType[] storeTypes = new libWiiSharp.StoreType[1];
-                // There's no harm in outputting everything i suppose
-                storeTypes[0] = libWiiSharp.StoreType.All;
+               int title_version = int.Parse(title_info[1], System.Globalization.NumberStyles.HexNumber);
 
-                int title_version = int.Parse(title_info[1], System.Globalization.NumberStyles.HexNumber);
+               string wadName = NameFromDatabase(title_info[0]);
+               if (wadName != null)
+                   wadName = OfficialWADNaming(wadName);
+               else
+                   wadName = title_info[0] + "-NUS-v" + title_version + ".wad";
 
-                string wadName = NameFromDatabase(title_info[0]);
-                if (wadName != null)
-                    wadName = OfficialWADNaming(wadName);
-                else
-                    wadName = title_info[0] + "-NUS-v" + title_version + ".wad";
+               nusClient.DownloadTitle(title_info[0], title_version.ToString(), Path.Combine(CURRENT_DIR, ("output_" + Path.GetFileNameWithoutExtension(script_filename))), wadName, storeTypes);
 
-                nusClient.DownloadTitle(title_info[0], title_version.ToString(), Path.Combine(CURRENT_DIR, ("output_" + Path.GetFileNameWithoutExtension(script_filename))), wadName, storeTypes);
+               /*
+               SetTextThreadSafe(titleidbox, title_info[0]);
+               SetTextThreadSafe(titleversion,
+                   Convert.ToString(256*
+                                    (byte.Parse(title_info[1].Substring(0, 2),
+                                                System.Globalization.NumberStyles.HexNumber))));
+               SetTextThreadSafe(titleversion,
+                   Convert.ToString(Convert.ToInt32(titleversion.Text) +
+                                    byte.Parse(title_info[1].Substring(2, 2),
+                                               System.Globalization.NumberStyles.HexNumber)));
 
-                /*
-                SetTextThreadSafe(titleidbox, title_info[0]);
-                SetTextThreadSafe(titleversion,
-                    Convert.ToString(256*
-                                     (byte.Parse(title_info[1].Substring(0, 2),
-                                                 System.Globalization.NumberStyles.HexNumber))));
-                SetTextThreadSafe(titleversion,
-                    Convert.ToString(Convert.ToInt32(titleversion.Text) +
-                                     byte.Parse(title_info[1].Substring(2, 2),
-                                                System.Globalization.NumberStyles.HexNumber)));
+               button3_Click("Scripter", EventArgs.Empty);
 
-                button3_Click("Scripter", EventArgs.Empty);
+               Thread.Sleep(1000);
 
-                Thread.Sleep(1000);
-
-                while (NUSDownloader.IsBusy)
-                {
-                    Thread.Sleep(1000);
-                } */
-            }
-            script_mode = false;
-            WriteStatus("Script completed!");
-        }
+               while (NUSDownloader.IsBusy)
+               {
+                   Thread.Sleep(1000);
+               } 
+           }
+           script_mode = false;
+           WriteStatus("Script completed!");*/
+       }
 
         private void scriptsbutton_Click(object sender, EventArgs e)
         {
@@ -2360,10 +2360,10 @@ namespace NUS_Downloader
                 folderpath = Path.Combine(tsmi.OwnerItem.Text, folderpath);
             }
             folderpath = Path.Combine(this.CURRENT_DIR, Path.Combine("scripts", Path.Combine(folderpath, tsmi.Text)));
-            script_filename = folderpath;
+            string script_content = File.ReadAllText(folderpath);
             BackgroundWorker scripter = new BackgroundWorker();
-            scripter.DoWork += new DoWorkEventHandler(RunScript);
-            scripter.RunWorkerAsync();
+            scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
+            scripter.RunWorkerAsync(script_content);
         }
 
         private void saveaswadbtn_Click(object sender, EventArgs e)
@@ -2416,7 +2416,7 @@ namespace NUS_Downloader
             ToolStripMenuItem[] scriptItems = databaseObj.LoadScripts();
             for (int a = 0; a < scriptItems.Length; a++)
             {
-                scriptItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(ScriptItem_Clicked);
+                scriptItems[a].Click += new EventHandler(ScriptItem_Clicked);
                 
                 AddToolStripItemToStrip(scriptsDatabaseToolStripMenuItem, scriptItems[a]);
                 //SystemMenuList.DropDownItems.Add(systemItems[a]);
@@ -2426,14 +2426,16 @@ namespace NUS_Downloader
             SetPropertyThreadSafe(scriptsDatabaseToolStripMenuItem, true, "Visible");
         }
 
-        public void ScriptItem_Clicked(object sender, ToolStripItemClickedEventArgs e)
-        {// STILL TODO
+        public void ScriptItem_Clicked(object sender, EventArgs e)
+        {
+            // Scripts from database are stored in tooltips...
             ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
-            string folderpath = "\000";
-            script_filename = folderpath;
+            string script_content = tsmi.ToolTipText;
+            // Debug.WriteLine(script_content);
+
             BackgroundWorker scripter = new BackgroundWorker();
-            scripter.DoWork += new DoWorkEventHandler(RunScript);
-            scripter.RunWorkerAsync();
+            scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
+            scripter.RunWorkerAsync(script_content);
         }
 
         void ReorganizePreviousFolderStructure(object sender, DoWorkEventArgs e)
@@ -2528,5 +2530,77 @@ namespace NUS_Downloader
         {
             WriteStatus(" - Operation complete!");
         }
+
+        private void RunScript(string scriptstr)
+        {
+            // Form and folder stuffs
+            SetTextThreadSafe(statusbox, "");
+            WriteStatus("Starting script download. Please be patient!");
+            string scriptdir = Path.Combine(Path.Combine(CURRENT_DIR, "scripts"), RandomString(7) + "_output"); //TODO: Nonrandom naming
+            if (!File.Exists(scriptdir))
+                Directory.CreateDirectory(scriptdir);
+
+            Debug.WriteLine(" - Output: " + scriptdir.Replace(CURRENT_DIR, ""));
+
+            // Parse entries
+            string[] NUS_Entries = scriptstr.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            
+            WriteStatus(String.Format(" - Script loaded ({0} Titles)", NUS_Entries.Length));
+
+            for (int a = 0; a < NUS_Entries.Length; a++)
+            {
+                // Download the title
+                WriteStatus(String.Format("===== Running Download ({0}/{1}) =====", a + 1, NUS_Entries.Length));
+                string[] title_info = NUS_Entries[a].Split(' ');
+                // don't let the delete issue reappear...
+                if (string.IsNullOrEmpty(title_info[0]))
+                    continue;
+
+                // WebClient configuration
+                WebClient nusWC = new WebClient();
+                nusWC = ConfigureWithProxy(nusWC);
+                nusWC.Headers.Add("User-Agent", "wii libnup/1.0"); // Set UserAgent to Wii value
+
+                // Create\Configure NusClient
+                libWiiSharp.NusClient nusClient = new libWiiSharp.NusClient();
+                nusClient.ConfigureNusClient(nusWC);
+                nusClient.UseLocalFiles = localuse.Checked;
+                nusClient.ContinueWithoutTicket = true;
+                nusClient.Debug += new EventHandler<libWiiSharp.MessageEventArgs>(nusClient_Debug);
+
+                libWiiSharp.StoreType[] storeTypes = new libWiiSharp.StoreType[1];
+                // There's no harm in outputting everything i suppose
+                storeTypes[0] = libWiiSharp.StoreType.All;
+
+                int title_version = int.Parse(title_info[1], System.Globalization.NumberStyles.HexNumber);
+
+                string wadName = NameFromDatabase(title_info[0]);
+                if (wadName != null)
+                    wadName = OfficialWADNaming(wadName);
+                else
+                    wadName = title_info[0] + "-NUS-v" + title_version + ".wad";
+
+                nusClient.DownloadTitle(title_info[0], title_version.ToString(), scriptdir, wadName, storeTypes);
+
+            }
+            WriteStatus("Script completed!");
+        }
+
+         // Random string function for temp foldernames in RunScript.
+         // Probably going to be removed TODO
+        private readonly Random _rng = new Random();
+        private const string _chars = "abcdefghijklmnopqrstuvwxyz";
+
+        private string RandomString(int size)
+        {
+            char[] buffer = new char[size];
+
+            for (int i = 0; i < size; i++)
+            {
+                buffer[i] = _chars[_rng.Next(_chars.Length)];
+            }
+            return new string(buffer);
+        }
+
     }
 }

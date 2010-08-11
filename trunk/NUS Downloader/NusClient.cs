@@ -360,8 +360,11 @@ namespace libWiiSharp
                     throw new Exception("Downloading Ticket Failed:\n" + ex.Message);
                 }
 
-                storeDecrypted = false;
-                storeWad = false;
+                if (!(File.Exists(Path.Combine(outputDir, "cetk"))))
+                {
+                    storeDecrypted = false;
+                    storeWad = false;
+                }
             }
 
             fireProgress(10);
@@ -409,7 +412,7 @@ namespace libWiiSharp
                     //Check SHA1
                     byte[] newSha = s.ComputeHash(decryptedContent);
                     if (!Shared.CompareByteArrays(newSha, tmd.Contents[i].Hash))
-                    { fireDebug(@"/!\ /!\ /!\ Hashes do not match /!\ /!\ /!\"); throw new Exception(string.Format("Content #{0}: Hashes do not match!", i)); }
+                    { fireDebug(@"/!\ /!\ Hashes do not match /!\ /!\"); throw new Exception(string.Format("Content #{0}: Hashes do not match!", i)); }
 
                     //Write Decrypted Content
                     File.WriteAllBytes(Path.Combine(outputDir, (tmd.Contents[i].ContentID.ToString("x8") + ".app")), decryptedContent);
