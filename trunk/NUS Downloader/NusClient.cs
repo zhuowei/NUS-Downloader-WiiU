@@ -370,8 +370,12 @@ namespace libWiiSharp
             fireProgress(10);
 
             // Parse Ticket
-            fireDebug("   Parsing Ticket...");
-            Ticket tik = Ticket.Load(Path.Combine(outputDir, "cetk"));
+            Ticket tik = new Ticket();
+            if (File.Exists(Path.Combine(outputDir, "cetk")))
+            {
+                fireDebug("   Parsing Ticket...");
+                tik = Ticket.Load(Path.Combine(outputDir, "cetk"));
+            }
 
             string[] encryptedContents = new string[tmd.NumOfContents];
 

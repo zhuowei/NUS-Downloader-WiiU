@@ -924,149 +924,6 @@ namespace NUS_Downloader
             SetPropertyThreadSafe(WiiWareMenuList, true, "Visible");
 
             worker.ReportProgress(100);
-            /*
-            // Load database.xml into memorystream to perhaps reduce disk reads?
-            string databasestr = File.ReadAllText(Path.Combine(CURRENT_DIR, "database.xml"));
-            System.Text.ASCIIEncoding encoding = new System.Text.ASCIIEncoding();
-            byte[] databasebytes = encoding.GetBytes(databasestr);
-
-            // Load the memory stream
-            MemoryStream databaseStream = new MemoryStream(databasebytes);
-            databaseStream.Seek(0, SeekOrigin.Begin);
-
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(databaseStream);
-
-            // Variables
-            string[] XMLNodeTypes = new string[5] {"SYS", "IOS", "VC", "WW", "UPD"};
-
-            int totalLength = xDoc.SelectNodes("/database/*").Count;
-            int rnt = 0;
-            // Loop through XMLNodeTypes
-            for (int i = 0; i < XMLNodeTypes.Length; i++)
-            {
-                XmlNodeList XMLSpecificNodeTypeList = xDoc.GetElementsByTagName(XMLNodeTypes[i]);
-
-                for (int x = 0; x < XMLSpecificNodeTypeList.Count; x++)
-                {
-                    ToolStripMenuItem XMLToolStripItem = new ToolStripMenuItem();
-                    XmlAttributeCollection XMLAttributes = XMLSpecificNodeTypeList[x].Attributes;
-
-                    string titleID = "";
-                    string updateScript;
-                    string descname = "";
-                    bool dangerous = false;
-                    bool ticket = true;
-
-                    // Okay, so now report the progress...
-                    rnt = rnt + 1;
-                    float currentProgress = ((float) rnt/(float) totalLength)*(float) 100;
-                    if (Convert.ToInt16(Math.Round(currentProgress))%10 == 0)
-                        worker.ReportProgress(Convert.ToInt16(Math.Round(currentProgress)));
-
-                    // Lol.
-                    XmlNodeList ChildrenOfTheNode = XMLSpecificNodeTypeList[x].ChildNodes;
-
-                    for (int z = 0; z < ChildrenOfTheNode.Count; z++)
-                    {
-                        switch (ChildrenOfTheNode[z].Name)
-                        {
-                            case "name":
-                                descname = ChildrenOfTheNode[z].InnerText;
-                                break;
-                            case "titleID":
-                                titleID = ChildrenOfTheNode[z].InnerText;
-                                break;
-                            case "titleIDs":
-                                updateScript = ChildrenOfTheNode[z].InnerText;
-                                XMLToolStripItem.AccessibleDescription = updateScript;
-                                    // TODO: Find somewhere better to put this. AND FAST.
-                                break;
-                            case "version":
-                                string[] versions = ChildrenOfTheNode[z].InnerText.Split(',');
-                                // Add to region things?
-                                if (XMLToolStripItem.DropDownItems.Count > 0)
-                                {
-                                    for (int b = 0; b < XMLToolStripItem.DropDownItems.Count; b++)
-                                    {
-                                        if (ChildrenOfTheNode[z].InnerText != "")
-                                        {
-                                            ToolStripMenuItem regitem =
-                                                (ToolStripMenuItem) XMLToolStripItem.DropDownItems[b];
-                                            regitem.DropDownItems.Add("Latest Version");
-                                            for (int y = 0; y < versions.Length; y++)
-                                            {
-                                                regitem.DropDownItems.Add("v" + versions[y]);
-                                            }
-                                            regitem.DropDownItemClicked +=
-                                                new ToolStripItemClickedEventHandler(deepitem_clicked);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    XMLToolStripItem.DropDownItems.Add("Latest Version");
-                                    if (ChildrenOfTheNode[z].InnerText != "")
-                                    {
-                                        for (int y = 0; y < versions.Length; y++)
-                                        {
-                                            XMLToolStripItem.DropDownItems.Add("v" + versions[y]);
-                                        }
-                                    }
-                                }
-                                break;
-                            case "region":
-                                string[] regions = ChildrenOfTheNode[z].InnerText.Split(',');
-                                if (ChildrenOfTheNode[z].InnerText != "")
-                                {
-                                    for (int y = 0; y < regions.Length; y++)
-                                    {
-                                        XMLToolStripItem.DropDownItems.Add(RegionFromIndex(Convert.ToInt32(regions[y]),
-                                                                                           xDoc));
-                                    }
-                                }
-                                break;
-                            default:
-                                break;
-                            case "ticket":
-                                ticket = Convert.ToBoolean(ChildrenOfTheNode[z].InnerText);
-                                break;
-                            case "danger":
-                                dangerous = true;
-                                XMLToolStripItem.ToolTipText = ChildrenOfTheNode[z].InnerText;
-                                break;
-                        }
-                        XMLToolStripItem.Image = SelectItemImage(ticket, dangerous);
-
-                        if (titleID != "")
-                        {
-                            XMLToolStripItem.Text = String.Format("{0} - {1}", titleID, descname);
-                        }
-                        else
-                        {
-                            XMLToolStripItem.Text = descname;
-                        }
-                    }
-                    AddToolStripItemToStrip(i, XMLToolStripItem, XMLAttributes);
-                }
-                // Now enable the specific toolbar
-                switch (XMLNodeTypes[i])
-                {
-                    case "IOS":
-                        //IOSMenuList.Enabled = true;
-                        SetPropertyThreadSafe(IOSMenuList, true, "Enabled");
-                        break;
-                    case "SYS":
-                        
-                        break;
-                    case "VC":
-                        SetPropertyThreadSafe(VCMenuList, true, "Enabled");
-                        break;
-                    case "WW":
-                        SetPropertyThreadSafe(WiiWareMenuList, true, "Enabled");
-                        break;
-                }
-            }*/
         }
 
         /// <summary>
@@ -1077,15 +934,52 @@ namespace NUS_Downloader
         /// <param name="attributes">The attributes.</param>
         private void AddToolStripItemToStrip(ToolStripMenuItem menulist, ToolStripMenuItem additionitem)
         {
+            //Control.CheckForIllegalCrossThreadCalls = false;
             //Debug.WriteLine(String.Format("Adding item"));
-             
+            
             if (this.InvokeRequired)
             {
                 //Debug.WriteLine("InvokeRequired...");
                 AddToolStripItemToStripCallback atsitsc = new AddToolStripItemToStripCallback(AddToolStripItemToStrip);
-                this.Invoke(atsitsc, new object[] {menulist, additionitem});
+                this.Invoke(atsitsc, new object[] { menulist, additionitem });
                 return;
             }
+            
+            // Do not sort IOS menu (alphabetization fail)
+            if (menulist.Text == IOSMenuList.Text)
+            {
+                menulist.DropDownItems.Add(additionitem);
+                return;
+            }
+            
+            if (menulist.DropDownItems.Count < 1)
+            {
+                menulist.DropDownItems.Add(additionitem);
+                return;
+            }
+
+            // Sorting of items by name 18 chars in...
+            //try
+            //{
+                for (int a = 0; a < menulist.DropDownItems.Count; a++)
+                {
+                    if (menulist.DropDownItems[a].Text
+                        .Substring(18, menulist.DropDownItems[a].Text.Length - 19)
+                        .CompareTo(additionitem.Text.Substring(18, additionitem.Text.Length - 19)) == 1)
+                    {
+                        menulist.DropDownItems.Insert((a), additionitem);
+                        return;
+                    }
+
+
+                }
+            //}
+            
+            //catch (Exception)
+            //{
+                //Debug.WriteLine("Tryfail at : " + additionitem.Text);
+                //menulist.DropDownItems.Add(additionitem);
+            //}
 
             menulist.DropDownItems.Add(additionitem);
         }
@@ -2529,33 +2423,33 @@ namespace NUS_Downloader
         {
             Debug.WriteLine("Delta: " + e.Delta.ToString());
 
-            if (SystemMenuList.DropDown.DisplayRectangle.Contains(e.Location) || SystemMenuList.DropDown.Bounds.Contains(e.Location))
-            {
-                if (e.Delta > 0) 
-                    System.Windows.Forms.SendKeys.Send("{UP}");
-                else 
-                    System.Windows.Forms.SendKeys.Send("{DOWN}");
-                //do what you want here
-            }
-
-            if (WiiWareMenuList.DropDown.DisplayRectangle.Contains(e.Location) || WiiWareMenuList.DropDown.Bounds.Contains(e.Location))
+            if (SystemMenuList.DropDown.DisplayRectangle.Contains(e.Location) || 
+                SystemMenuList.DropDown.Bounds.Contains(e.Location) ||
+                WiiWareMenuList.DropDown.DisplayRectangle.Contains(e.Location) ||
+                WiiWareMenuList.DropDown.Bounds.Contains(e.Location) ||
+                VCMenuList.DropDown.DisplayRectangle.Contains(e.Location) ||
+                VCMenuList.DropDown.Bounds.Contains(e.Location) ||
+                IOSMenuList.DropDown.DisplayRectangle.Contains(e.Location) ||
+                IOSMenuList.DropDown.Bounds.Contains(e.Location))
             {
                 if (e.Delta > 0)
+                {
                     System.Windows.Forms.SendKeys.Send("{UP}");
-                else
-                    System.Windows.Forms.SendKeys.Send("{DOWN}");
-                //do what you want here
-            }
-
-            if (VCMenuList.DropDown.DisplayRectangle.Contains(e.Location) || VCMenuList.DropDown.Bounds.Contains(e.Location))
-            {
-                if (e.Delta > 0)
                     System.Windows.Forms.SendKeys.Send("{UP}");
+                    System.Windows.Forms.SendKeys.Send("{UP}");
+                    System.Windows.Forms.SendKeys.Send("{UP}");
+                    System.Windows.Forms.SendKeys.Send("{UP}");
+                }
                 else
+                {
                     System.Windows.Forms.SendKeys.Send("{DOWN}");
-                //do what you want here
-            }
-            
+                    System.Windows.Forms.SendKeys.Send("{DOWN}");
+                    System.Windows.Forms.SendKeys.Send("{DOWN}");
+                    System.Windows.Forms.SendKeys.Send("{DOWN}");
+                    System.Windows.Forms.SendKeys.Send("{DOWN}");
+                }
+                
+            }            
         }
     }
 }
