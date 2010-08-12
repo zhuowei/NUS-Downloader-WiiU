@@ -246,7 +246,7 @@ namespace NUS_Downloader
             {
                 throw new Exception("Load the database into a memory stream first!");
             }
-
+            
             XmlDocument xDoc = new XmlDocument();
             xDoc.LoadXml(databaseString);
             XmlNodeList VirtualConsoleXMLNodes = xDoc.GetElementsByTagName(VcTag);

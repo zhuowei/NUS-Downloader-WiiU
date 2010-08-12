@@ -54,7 +54,7 @@ namespace NUS_Downloader
 
         // Cross-thread Windows Formsing
         private delegate void AddToolStripItemToStripCallback(
-            ToolStripMenuItem menulist, ToolStripMenuItem additionitem);
+            ToolStripMenuItem menulist, ToolStripMenuItem[] additionitems);
         private delegate void WriteStatusCallback(string Update, Color writecolor);
         private delegate void BootChecksCallback();
         private delegate void SetEnableForDownloadCallback(bool enabled);
@@ -285,7 +285,7 @@ namespace NUS_Downloader
         {
             if (e.ProgressPercentage == 25)
                 databaseButton.Text = "  [.   ]";
-            else if (e.ProgressPercentage == 25)
+            else if (e.ProgressPercentage == 50)
                 databaseButton.Text = "  [..  ]";
             else if (e.ProgressPercentage == 75)
                 databaseButton.Text = "  [... ]";
@@ -857,26 +857,37 @@ namespace NUS_Downloader
                         syslowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
                     }
                 }
-                AddToolStripItemToStrip(SystemMenuList, systemItems[a]);
+                //AddToolStripItemToStrip(SystemMenuList, systemItems[a]);
                 //SystemMenuList.DropDownItems.Add(systemItems[a]);
             }
+            Array.Sort(systemItems, delegate(ToolStripMenuItem tsmi1, ToolStripMenuItem tsmi2)
+            {
+                return tsmi1.Text
+                        .Substring(18, tsmi1.Text.Length - 19).CompareTo(tsmi2.Text.Substring(18, tsmi2.Text.Length - 19));
+            });
+            AddToolStripItemToStrip(SystemMenuList, systemItems);
+
             SetPropertyThreadSafe(systemFakeMenuItem, false, "Visible");
             SetPropertyThreadSafe(SystemMenuList, true, "Visible");
 
+            Debug.WriteLine("Database: SysTitles added");
             worker.ReportProgress(25);
 
             ToolStripMenuItem[] iosItems = databaseObj.LoadIosTitles();
             for (int a = 0; a < iosItems.Length; a++)
             {
                 iosItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
-                AddToolStripItemToStrip(IOSMenuList, iosItems[a]);
+                //AddToolStripItemToStrip(IOSMenuList, iosItems[a]);
                 //IOSMenuList.DropDownItems.Add(iosItems[a]);
             }
+            AddToolStripItemToStrip(IOSMenuList, iosItems);
+
             SetPropertyThreadSafe(iosFakeMenuItem, false, "Visible");
             SetPropertyThreadSafe(IOSMenuList, true, "Visible");
-
+            Debug.WriteLine("Database: IosTitles added");
             worker.ReportProgress(50);
-
+            
+            // This has been tested and is not the hanging code...
             ToolStripMenuItem[][] vcItems = databaseObj.LoadVirtualConsoleTitles();
             for (int a = 0; a < vcItems.Length; a++)
             {
@@ -887,24 +898,21 @@ namespace NUS_Downloader
                     {
                         ToolStripMenuItem lowerentry = (ToolStripMenuItem)vcItems[a][b].DropDownItems[c];
                         lowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
-                        
-                        //Debug.WriteLine(a + " " + b + " " + c);
-                    }
-                    try
-                    {
-                        AddToolStripItemToStrip((ToolStripMenuItem)VCMenuList.DropDownItems[a], vcItems[a][b]);
-                    }
-                    catch (Exception)
-                    {
-                        Debug.WriteLine(a + " " + b + "FAIL");
                     }
 			    }
+                Array.Sort(vcItems[a], delegate(ToolStripMenuItem tsmi1, ToolStripMenuItem tsmi2)
+                {
+                    return tsmi1.Text
+                            .Substring(18, tsmi1.Text.Length - 19).CompareTo(tsmi2.Text.Substring(18, tsmi2.Text.Length - 19));
+                });
+                AddToolStripItemToStrip((ToolStripMenuItem)VCMenuList.DropDownItems[a], vcItems[a]);
             }
+            
             SetPropertyThreadSafe(vcFakeMenuItem, false, "Visible");
             SetPropertyThreadSafe(VCMenuList, true, "Visible");
-
+            Debug.WriteLine("Database: VCTitles added");
             worker.ReportProgress(75);
-
+            
             ToolStripMenuItem[] wwItems = databaseObj.LoadWiiWareTitles();
             for (int a = 0; a < wwItems.Length; a++)
             {
@@ -916,13 +924,21 @@ namespace NUS_Downloader
                     {
                         lowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
                     }
+                    
                 }
-                AddToolStripItemToStrip(WiiWareMenuList, wwItems[a]);
+                //AddToolStripItemToStrip(WiiWareMenuList, wwItems[a]);
                 //WiiWareMenuList.DropDownItems.Add(wwItems[a]);
             }
+            Array.Sort(wwItems, delegate(ToolStripMenuItem tsmi1, ToolStripMenuItem tsmi2)
+            {
+                return tsmi1.Text
+                        .Substring(18, tsmi1.Text.Length - 19).CompareTo(tsmi2.Text.Substring(18, tsmi2.Text.Length - 19));
+            });
+            AddToolStripItemToStrip(WiiWareMenuList, wwItems);
+            
             SetPropertyThreadSafe(wwFakeMenuItem, false, "Visible");
             SetPropertyThreadSafe(WiiWareMenuList, true, "Visible");
-
+            Debug.WriteLine("Database: WiiWareTitles added");
             worker.ReportProgress(100);
         }
 
@@ -932,7 +948,8 @@ namespace NUS_Downloader
         /// <param name="type">The type.</param>
         /// <param name="additionitem">The additionitem.</param>
         /// <param name="attributes">The attributes.</param>
-        private void AddToolStripItemToStrip(ToolStripMenuItem menulist, ToolStripMenuItem additionitem)
+        // private void AddToolStripItemToStrip(ToolStripMenuItem menulist, ToolStripMenuItem additionitem)
+        private void AddToolStripItemToStrip(ToolStripMenuItem menulist, ToolStripMenuItem[] additionitems)
         {
             //Control.CheckForIllegalCrossThreadCalls = false;
             //Debug.WriteLine(String.Format("Adding item"));
@@ -941,10 +958,13 @@ namespace NUS_Downloader
             {
                 //Debug.WriteLine("InvokeRequired...");
                 AddToolStripItemToStripCallback atsitsc = new AddToolStripItemToStripCallback(AddToolStripItemToStrip);
-                this.Invoke(atsitsc, new object[] { menulist, additionitem });
+                this.Invoke(atsitsc, new object[] { menulist, additionitems });
                 return;
+
             }
-            
+
+            menulist.DropDownItems.AddRange(additionitems);
+            /*
             // Do not sort IOS menu (alphabetization fail)
             if (menulist.Text == IOSMenuList.Text)
             {
@@ -979,9 +999,9 @@ namespace NUS_Downloader
             //{
                 //Debug.WriteLine("Tryfail at : " + additionitem.Text);
                 //menulist.DropDownItems.Add(additionitem);
-            //}
+            //}*/
 
-            menulist.DropDownItems.Add(additionitem);
+            //menulist.DropDownItems.Add(additionitem);
         }
 
         /// <summary>
@@ -2229,10 +2249,10 @@ namespace NUS_Downloader
             {
                 scriptItems[a].Click += new EventHandler(ScriptItem_Clicked);
                 
-                AddToolStripItemToStrip(scriptsDatabaseToolStripMenuItem, scriptItems[a]);
+                //AddToolStripItemToStrip(scriptsDatabaseToolStripMenuItem, scriptItems[a]);
                 //SystemMenuList.DropDownItems.Add(systemItems[a]);
             }
-
+            AddToolStripItemToStrip(scriptsDatabaseToolStripMenuItem, scriptItems);
             SetPropertyThreadSafe(scriptsDatabaseToolStripMenuItem, true, "Enabled");
             SetPropertyThreadSafe(scriptsDatabaseToolStripMenuItem, true, "Visible");
         }
