@@ -109,8 +109,8 @@ namespace NUS_Downloader
             /* Fix proxy entry.
             if (!(String.IsNullOrEmpty(proxy_url)))
                 while (String.IsNullOrEmpty(proxy_pwd))
-                    Thread.Sleep(1000);*/
-
+                    Thread.Sleep(1000);
+            
             if ((args.Length == 1) && (args[0] == "folderfix"))
             { 
                 // Organizing folders from past NUSD releases...
@@ -120,11 +120,14 @@ namespace NUS_Downloader
                 Debug.WriteLine("folderfix active");
                 WriteStatus("Organizing your old folder structure...");
                 folder_fixer.RunWorkerAsync();
-            }
+            }*/
 
             if ((args.Length == 1) && (File.Exists(args[0])))
             {
                 string script_content = File.ReadAllText(args[0]);
+                FileInfo script_file = new FileInfo(args[0]);
+                script_content += String.Format(";{0}", script_file.Name.Replace("." + script_file.Extension, ""));
+                
                 BackgroundWorker scripter = new BackgroundWorker();
                 scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
                 scripter.RunWorkerAsync(script_content);
@@ -147,15 +150,11 @@ namespace NUS_Downloader
             statusbox.SelectionColor = statusbox.ForeColor = normalcolor;
             if (version.StartsWith("SVN"))
             {
-                WriteStatus("!!!!! THIS IS A DEBUG BUILD FROM SVN !!!!!", warningcolor);
-                WriteStatus("Features CAN and WILL be broken in this build", warningcolor);
-                WriteStatus("REMEMBER TO CHANGE TO THE RELEASE CONFIGURATION AND CHANGE VERSION NUMBER BEFORE BUILDING!", warningcolor);
+                WriteStatus("!!!!! THIS IS A DEBUG BUILD FROM SVN !!!!!");
+                WriteStatus("Features CAN and WILL be broken in this build!");
+                WriteStatus("Devs: REMEMBER TO CHANGE TO THE RELEASE CONFIGURATION AND CHANGE VERSION NUMBER BEFORE BUILDING!");
                 WriteStatus("\r\n");
             }
-            /*
-            KoreaMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
-            NTSCMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);
-            PALMassUpdate.DropDownItemClicked += new ToolStripItemClickedEventHandler(upditem_itemclicked);*/
 
             // Database BGLoader
             this.fds = new BackgroundWorker();
@@ -887,7 +886,6 @@ namespace NUS_Downloader
             Debug.WriteLine("Database: IosTitles added");
             worker.ReportProgress(50);
             
-            // This has been tested and is not the hanging code...
             ToolStripMenuItem[][] vcItems = databaseObj.LoadVirtualConsoleTitles();
             for (int a = 0; a < vcItems.Length; a++)
             {
@@ -1896,6 +1894,8 @@ namespace NUS_Downloader
             if (ofd.ShowDialog() != DialogResult.Cancel)
             {
                 string script_content = File.ReadAllText(ofd.FileName);
+                FileInfo script_file = new FileInfo(ofd.FileName);
+                script_content += String.Format(";{0}", script_file.Name.Replace("." + script_file.Extension, ""));
                 BackgroundWorker scripter = new BackgroundWorker();
                 scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
                 scripter.RunWorkerAsync(script_content);
@@ -1915,7 +1915,9 @@ namespace NUS_Downloader
            if (scriptArgs.Length < 2)
                RunScript(scriptArgs[0], "random");
            else
-               RunScript(scriptArgs[0], scriptArgs[1]);
+           {
+               RunScript(scriptArgs[0], RemoveIllegalCharacters(scriptArgs[1]));
+           }
            /*
            script_mode = true;
            SetTextThreadSafe(statusbox, "");
@@ -2192,6 +2194,7 @@ namespace NUS_Downloader
             }
             folderpath = Path.Combine(this.CURRENT_DIR, Path.Combine("scripts", Path.Combine(folderpath, tsmi.Text)));
             string script_content = File.ReadAllText(folderpath);
+            script_content += String.Format(";{0}", tsmi.Text.Replace(".nus", ""));
             BackgroundWorker scripter = new BackgroundWorker();
             scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
             scripter.RunWorkerAsync(script_content);
@@ -2262,7 +2265,7 @@ namespace NUS_Downloader
             // Scripts from database are stored in tooltips...
             ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
             string script_content = tsmi.ToolTipText;
-            // Debug.WriteLine(script_content);
+            script_content += String.Format(";{0}", tsmi.Text);
 
             BackgroundWorker scripter = new BackgroundWorker();
             scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
@@ -2376,12 +2379,11 @@ namespace NUS_Downloader
             if (!File.Exists(scriptdir))
                 Directory.CreateDirectory(scriptdir);
 
-            Debug.WriteLine(" - Output: " + scriptdir.Replace(CURRENT_DIR, ""));
-
             // Parse entries
             string[] NUS_Entries = scriptstr.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             
             WriteStatus(String.Format(" - Script loaded ({0} Titles)", NUS_Entries.Length));
+            WriteStatus(" - Output: " + scriptdir.Replace(CURRENT_DIR, ""));
 
             for (int a = 0; a < NUS_Entries.Length; a++)
             {
@@ -2441,7 +2443,7 @@ namespace NUS_Downloader
 
         void Form1_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            Debug.WriteLine("Delta: " + e.Delta.ToString());
+            //Debug.WriteLine("Delta: " + e.Delta.ToString());
 
             if (SystemMenuList.DropDown.DisplayRectangle.Contains(e.Location) || 
                 SystemMenuList.DropDown.Bounds.Contains(e.Location) ||
@@ -2471,5 +2473,45 @@ namespace NUS_Downloader
                 
             }            
         }
+
+        private void openNUSDDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Opens the directory NUSD is working in... (CURREND_DIR)
+            Process.Start(CURRENT_DIR);
+        }
+
+        private void mainPageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://www.wiibrew.org/wiki/NUS_Downloader");
+        }
+
+        private void databasePageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://www.wiibrew.org/wiki/NUS_Downloader/database");
+        }
+
+        private void extrasStrip_Opening(object sender, CancelEventArgs e)
+        {
+            // Show additional features based on held keys...
+            #if DEBUG
+            moreExtrasToolStripMenuItem.Visible = true;
+            #else
+            moreExtrasToolStripMenuItem.Visible = Control.ModifierKeys == Keys.Control; // If Ctrl Pressed.
+            #endif  
+        }
+
+        private void runFolderFixToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Run folderfix to make \titles\
+            // Organizing folders from past NUSD releases...
+            BackgroundWorker folder_fixer = new BackgroundWorker();
+            folder_fixer.DoWork += new DoWorkEventHandler(ReorganizePreviousFolderStructure);
+            folder_fixer.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ReorganizePreviousFolderStructure_Completed);
+            Debug.WriteLine("folderfix active");
+            WriteStatus("Organizing your old folder structure...");
+            folder_fixer.RunWorkerAsync();
+        }
+
+        
     }
 }
