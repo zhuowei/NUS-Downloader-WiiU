@@ -376,6 +376,10 @@ namespace libWiiSharp
                 fireDebug("   Parsing Ticket...");
                 tik = Ticket.Load(Path.Combine(outputDir, "cetk"));
             }
+            else
+            {
+                fireDebug("   Ticket Unavailable...");
+            }
 
             string[] encryptedContents = new string[tmd.NumOfContents];
 

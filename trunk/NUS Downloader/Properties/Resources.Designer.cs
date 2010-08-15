@@ -151,6 +151,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap folder {
+            get {
+                object obj = ResourceManager.GetObject("folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap folder_table {
             get {
                 object obj = ResourceManager.GetObject("folder_table", resourceCulture);
@@ -259,6 +266,13 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap server_link {
             get {
                 object obj = ResourceManager.GetObject("server_link", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap wrench {
+            get {
+                object obj = ResourceManager.GetObject("wrench", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

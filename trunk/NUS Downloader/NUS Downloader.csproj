@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Crystal_Clear_app_ark2.ico" />
+    <None Include="Resources\wrench.png" />
     <None Include="Resources\script_start.png" />
     <None Include="Resources\package_green.png" />
     <None Include="Resources\package.png" />
@@ -155,6 +156,7 @@
     <None Include="Resources\drive_disk.png" />
     <None Include="Resources\bin_closed.png" />
     <None Include="Resources\arrow_ticker.gif" />
+    <None Include="Resources\folder.png" />
     <Content Include="Resources\key.png" />
     <None Include="Resources\page_white_magnify.png" />
     <None Include="Resources\server_link.png" />
