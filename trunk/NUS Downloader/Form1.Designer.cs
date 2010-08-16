@@ -424,7 +424,7 @@ namespace NUS_Downloader
             // runFolderFixToolStripMenuItem
             // 
             this.runFolderFixToolStripMenuItem.Name = "runFolderFixToolStripMenuItem";
-            this.runFolderFixToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.runFolderFixToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.runFolderFixToolStripMenuItem.Text = "Run \'FolderFix\'";
             this.runFolderFixToolStripMenuItem.Click += new System.EventHandler(this.runFolderFixToolStripMenuItem_Click);
             // 
@@ -434,20 +434,20 @@ namespace NUS_Downloader
             this.mainPageToolStripMenuItem,
             this.databasePageToolStripMenuItem});
             this.wiiBrewToolStripMenuItem.Name = "wiiBrewToolStripMenuItem";
-            this.wiiBrewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.wiiBrewToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.wiiBrewToolStripMenuItem.Text = "WiiBrew";
             // 
             // mainPageToolStripMenuItem
             // 
             this.mainPageToolStripMenuItem.Name = "mainPageToolStripMenuItem";
-            this.mainPageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.mainPageToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.mainPageToolStripMenuItem.Text = "Main Page";
             this.mainPageToolStripMenuItem.Click += new System.EventHandler(this.mainPageToolStripMenuItem_Click);
             // 
             // databasePageToolStripMenuItem
             // 
             this.databasePageToolStripMenuItem.Name = "databasePageToolStripMenuItem";
-            this.databasePageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.databasePageToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.databasePageToolStripMenuItem.Text = "Database Page";
             this.databasePageToolStripMenuItem.Click += new System.EventHandler(this.databasePageToolStripMenuItem_Click);
             // 
@@ -960,7 +960,7 @@ namespace NUS_Downloader
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "NUSD";
+            this.Text = " ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseWheel);

@@ -104,7 +104,30 @@ namespace NUS_Downloader
 
             GUISetup();
 
-            BootChecks();
+            if ((args.Length == 1) && (File.Exists(args[0])))
+            {
+                BootChecks();
+
+                string script_content = File.ReadAllText(args[0]);
+                FileInfo script_file = new FileInfo(args[0]);
+                script_content += String.Format(";{0}", script_file.Name.Replace("." + script_file.Extension, ""));
+
+                BackgroundWorker scripter = new BackgroundWorker();
+                scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
+                scripter.RunWorkerAsync(script_content);
+            }
+            else if (args.Length >= 2)
+            {
+                RunCommandMode(args);
+                Environment.Exit(0);
+                //this.Close();
+            }
+            else
+            {
+                BootChecks();
+            }
+
+            
 
             /* Fix proxy entry.
             if (!(String.IsNullOrEmpty(proxy_url)))
@@ -122,15 +145,86 @@ namespace NUS_Downloader
                 folder_fixer.RunWorkerAsync();
             }*/
 
-            if ((args.Length == 1) && (File.Exists(args[0])))
+            
+        }
+
+        private void RunCommandMode(string[] args)
+        {
+            // CLI mode, inspired and taken from wiiNinja's mod.
+
+            // Initialize the checkboxes and radio boxes
+            packbox.Checked = false;  // Create wad - default OFF
+            localuse.Checked = true; // Use local content if already downloaded - default ON
+            decryptbox.Checked = false;
+            keepenccontents.Checked = false;
+            consoleCBox.SelectedIndex = 0; // 0 is Wii, 1 is DS
+
+            // Clear 3 items in ios patches list. This feature is not supported in the command line version at this time.
+            iosPatchCheckbox.Checked = false;
+            iosPatchesListBox.SetItemChecked(0, false);
+            iosPatchesListBox.SetItemChecked(1, false);
+            iosPatchesListBox.SetItemChecked(2, false);
+
+            Console.WriteLine("NUS Downloader - v{0}", version);
+            
+            if (args.Length < 2)
             {
-                string script_content = File.ReadAllText(args[0]);
-                FileInfo script_file = new FileInfo(args[0]);
-                script_content += String.Format(";{0}", script_file.Name.Replace("." + script_file.Extension, ""));
-                
-                BackgroundWorker scripter = new BackgroundWorker();
-                scripter.DoWork += new DoWorkEventHandler(RunScriptBg);
-                scripter.RunWorkerAsync(script_content);
+                Console.WriteLine("Usage:");
+                Console.WriteLine("    nusd <titleID> <titleVersion | *> [optionalArgs]");
+                Console.WriteLine("\nWhere:");
+                Console.WriteLine("    titleID = The ID of the title to be downloaded");
+                Console.WriteLine("    titleVersion = The version of the title to be downloaded");
+                Console.WriteLine("              Use \"*\" (no quotes) to get the latest version");
+                Console.WriteLine("    OptionalArgs:");
+                Console.WriteLine("        packwad = A wad file will be generated");
+                Console.WriteLine("        localuse = Use local contents if available");
+                Console.WriteLine("        decrypt = Create decrypted contents");
+                Console.WriteLine("        keepencrypt = Keep encrypted contents");
+            }
+            else
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    Console.WriteLine("{0}", args[i]);
+                    switch (i)
+                    {
+                        case 0:
+                            // First command line argument is ALWAYS the TitleID
+                            titleidbox.Text = args[i];
+                            break;
+
+                        case 1:
+                            // Second command line argument is ALWAYS the TitleVersion. 
+                            // User may specify a "*" to retrieve the latest version
+                            if (args[i] == "*")
+                                titleversion.Text = "";
+                            else
+                                titleversion.Text = args[i];
+                            break;
+
+                        default:
+                            // Any other arguments beyond the 2nd one are considered optional
+                            if (args[i] == "packwad")
+                                packbox.Checked = true;
+                            else if (args[i] == "localuse")
+                                localuse.Checked = true;
+                            else if (args[i] == "decrypt")
+                                decryptbox.Checked = true;
+                            else if (args[i] == "keepencrypt")
+                                keepenccontents.Checked = true;
+                            else
+                                Console.WriteLine("\n>>>> Warning: Unrecognized command line argument: {0}. This option is ignored...", args[i]);
+                            break;
+                    }
+                }
+
+                // Do this to set the wad file name
+                UpdatePackedName();
+
+                // Call to get the files from server
+                NUSDownloader_DoWork(null, null);
+
+                Console.WriteLine("\nSuccessfully downloaded the title {0} version {1}", args[0], args[1]);
             }
         }
 
@@ -167,7 +261,6 @@ namespace NUS_Downloader
             this.scriptsWorker = new BackgroundWorker();
             this.scriptsWorker.DoWork += new DoWorkEventHandler(OrganizeScripts);
             this.scriptsWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(scriptsWorker_RunWorkerCompleted);
-            RunScriptOrganizer();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -231,6 +324,9 @@ namespace NUS_Downloader
                 // Load it up...
                 this.fds.RunWorkerAsync();
             }
+
+            // Load scripts (local)
+            RunScriptOrganizer();
 
             // Check for Proxy Settings file...
             if (NUSDFileExists("proxy.txt") == true)
@@ -415,6 +511,9 @@ namespace NUS_Downloader
             statusbox.SelectionStart = statusbox.TextLength;
             statusbox.SelectionLength = 0;
             statusbox.ScrollToCaret();
+
+            // Also write to console
+            Console.WriteLine(Update);
         }
 
         /// <summary>
