@@ -110,9 +110,6 @@ namespace NUS_Downloader
             this.iosPatchGroupBoxOKbtn = new System.Windows.Forms.Button();
             this.richPanel = new System.Windows.Forms.Panel();
             this.databaseButton = new System.Windows.Forms.Button();
-            this.titleversion = new wmgCMS.WaterMarkTextBox();
-            this.titleidbox = new wmgCMS.WaterMarkTextBox();
-            this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
             this.saveaswadbtn = new System.Windows.Forms.Button();
             this.iosPatchCheckbox = new System.Windows.Forms.CheckBox();
             this.keepenccontents = new System.Windows.Forms.CheckBox();
@@ -120,6 +117,10 @@ namespace NUS_Downloader
             this.packbox = new System.Windows.Forms.CheckBox();
             this.decryptbox = new System.Windows.Forms.CheckBox();
             this.localuse = new System.Windows.Forms.CheckBox();
+            this.titleversion = new wmgCMS.WaterMarkTextBox();
+            this.titleidbox = new wmgCMS.WaterMarkTextBox();
+            this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
+            this.removeNUSDFilesFoldersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -414,7 +415,8 @@ namespace NUS_Downloader
             // 
             this.moreExtrasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runFolderFixToolStripMenuItem,
-            this.wiiBrewToolStripMenuItem});
+            this.wiiBrewToolStripMenuItem,
+            this.removeNUSDFilesFoldersToolStripMenuItem});
             this.moreExtrasToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.wrench;
             this.moreExtrasToolStripMenuItem.Name = "moreExtrasToolStripMenuItem";
             this.moreExtrasToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
@@ -424,7 +426,7 @@ namespace NUS_Downloader
             // runFolderFixToolStripMenuItem
             // 
             this.runFolderFixToolStripMenuItem.Name = "runFolderFixToolStripMenuItem";
-            this.runFolderFixToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.runFolderFixToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.runFolderFixToolStripMenuItem.Text = "Run \'FolderFix\'";
             this.runFolderFixToolStripMenuItem.Click += new System.EventHandler(this.runFolderFixToolStripMenuItem_Click);
             // 
@@ -434,7 +436,7 @@ namespace NUS_Downloader
             this.mainPageToolStripMenuItem,
             this.databasePageToolStripMenuItem});
             this.wiiBrewToolStripMenuItem.Name = "wiiBrewToolStripMenuItem";
-            this.wiiBrewToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.wiiBrewToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.wiiBrewToolStripMenuItem.Text = "WiiBrew";
             // 
             // mainPageToolStripMenuItem
@@ -783,40 +785,6 @@ namespace NUS_Downloader
             this.databaseButton.UseVisualStyleBackColor = true;
             this.databaseButton.Click += new System.EventHandler(this.DatabaseButton_Click);
             // 
-            // titleversion
-            // 
-            this.titleversion.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.titleversion.Location = new System.Drawing.Point(204, 38);
-            this.titleversion.MaxLength = 8;
-            this.titleversion.Name = "titleversion";
-            this.titleversion.Size = new System.Drawing.Size(58, 21);
-            this.titleversion.TabIndex = 50;
-            this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titleversion.WaterMarkColor = System.Drawing.Color.Silver;
-            this.titleversion.WaterMarkText = "Version";
-            this.titleversion.TextChanged += new System.EventHandler(this.titleversion_TextChanged);
-            // 
-            // titleidbox
-            // 
-            this.titleidbox.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            this.titleidbox.Location = new System.Drawing.Point(12, 38);
-            this.titleidbox.MaxLength = 16;
-            this.titleidbox.Name = "titleidbox";
-            this.titleidbox.Size = new System.Drawing.Size(176, 21);
-            this.titleidbox.TabIndex = 49;
-            this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titleidbox.WaterMarkColor = System.Drawing.Color.Silver;
-            this.titleidbox.WaterMarkText = "Title ID";
-            this.titleidbox.TextChanged += new System.EventHandler(this.titleidbox_TextChanged);
-            // 
-            // dlprogress
-            // 
-            this.dlprogress.ContainerControl = this;
-            this.dlprogress.Location = new System.Drawing.Point(12, 95);
-            this.dlprogress.Name = "dlprogress";
-            this.dlprogress.Size = new System.Drawing.Size(250, 15);
-            this.dlprogress.TabIndex = 47;
-            // 
             // saveaswadbtn
             // 
             this.saveaswadbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -930,6 +898,47 @@ namespace NUS_Downloader
             this.localuse.Text = "Use Local Files If Present";
             this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
+            // 
+            // titleversion
+            // 
+            this.titleversion.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.titleversion.Location = new System.Drawing.Point(204, 38);
+            this.titleversion.MaxLength = 8;
+            this.titleversion.Name = "titleversion";
+            this.titleversion.Size = new System.Drawing.Size(58, 21);
+            this.titleversion.TabIndex = 50;
+            this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titleversion.WaterMarkColor = System.Drawing.Color.Silver;
+            this.titleversion.WaterMarkText = "Version";
+            this.titleversion.TextChanged += new System.EventHandler(this.titleversion_TextChanged);
+            // 
+            // titleidbox
+            // 
+            this.titleidbox.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            this.titleidbox.Location = new System.Drawing.Point(12, 38);
+            this.titleidbox.MaxLength = 16;
+            this.titleidbox.Name = "titleidbox";
+            this.titleidbox.Size = new System.Drawing.Size(176, 21);
+            this.titleidbox.TabIndex = 49;
+            this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titleidbox.WaterMarkColor = System.Drawing.Color.Silver;
+            this.titleidbox.WaterMarkText = "Title ID";
+            this.titleidbox.TextChanged += new System.EventHandler(this.titleidbox_TextChanged);
+            // 
+            // dlprogress
+            // 
+            this.dlprogress.ContainerControl = this;
+            this.dlprogress.Location = new System.Drawing.Point(12, 95);
+            this.dlprogress.Name = "dlprogress";
+            this.dlprogress.Size = new System.Drawing.Size(250, 15);
+            this.dlprogress.TabIndex = 47;
+            // 
+            // removeNUSDFilesFoldersToolStripMenuItem
+            // 
+            this.removeNUSDFilesFoldersToolStripMenuItem.Name = "removeNUSDFilesFoldersToolStripMenuItem";
+            this.removeNUSDFilesFoldersToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.removeNUSDFilesFoldersToolStripMenuItem.Text = "Remove NUSD Files\\Folders";
+            this.removeNUSDFilesFoldersToolStripMenuItem.Click += new System.EventHandler(this.removeNUSDFilesFoldersToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -1064,6 +1073,7 @@ namespace NUS_Downloader
         private System.Windows.Forms.ToolStripMenuItem wiiBrewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mainPageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem databasePageToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeNUSDFilesFoldersToolStripMenuItem;
     }
 }
 

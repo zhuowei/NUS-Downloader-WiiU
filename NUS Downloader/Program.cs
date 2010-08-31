@@ -23,24 +23,26 @@ namespace NUS_Downloader
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread]
+        //[STAThread]
         static void Main(string[] args)
         {
-            Console.Title = "NUSD";
+            //Console.Title = "NUSD";
 
             // hide the console window                   
-            setConsoleWindowVisibility(false, Console.Title);
+            //setConsoleWindowVisibility(false, Console.Title);
             
             if (args.Length != 0)
             {
                 // hide the console window                   
-                setConsoleWindowVisibility(true, Console.Title);
+                //setConsoleWindowVisibility(true, Console.Title);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Form1(args));
             }
             else
             {
                 // hide the console window                   
-                setConsoleWindowVisibility(false, Console.Title);
+                //setConsoleWindowVisibility(false, Console.Title);
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

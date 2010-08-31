@@ -440,6 +440,14 @@ namespace NUS_Downloader
         {
             // Show extras menu
             extrasStrip.Show(Extrasbtn, 2, (2+Extrasbtn.Height));
+
+            
+            {
+                System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                timer.Interval = 52;
+                timer.Tick += new EventHandler(contextmenusTimer_Tick);
+                timer.Start();
+            }
         }
 
         /// <summary>
@@ -894,6 +902,52 @@ namespace NUS_Downloader
         {
             // Open Database button menu...
             databaseStrip.Show(databaseButton, 2, (2+databaseButton.Height));
+
+            //if (!e.Equals(EventArgs.Empty))
+            {
+                System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                timer.Interval = 50;
+                timer.Tick += new EventHandler(contextmenusTimer_Tick);
+                timer.Start();
+            }
+        }
+
+        void contextmenusTimer_Tick(object sender, EventArgs e)
+        {
+            if (SystemMenuList.Pressed || IOSMenuList.Pressed || VCMenuList.Pressed || WiiWareMenuList.Pressed
+                || RegionCodesList.Pressed || scriptsLocalMenuEntry.Pressed || scriptsDatabaseToolStripMenuItem.Pressed
+                || emulateUpdate.Pressed)
+                return;
+
+            if (databaseButton.ClientRectangle.Contains(databaseButton.PointToClient(MousePosition)) && ((System.Windows.Forms.Timer)sender).Interval != 50)
+            {
+                databaseStrip.Close();
+                scriptsStrip.Close();
+                extrasStrip.Close();
+                DatabaseButton_Click(sender, EventArgs.Empty);
+                ((System.Windows.Forms.Timer)sender).Stop();
+            }
+
+            if (scriptsbutton.ClientRectangle.Contains(scriptsbutton.PointToClient(MousePosition)) && ((System.Windows.Forms.Timer)sender).Interval != 51)
+            {
+                databaseStrip.Close();
+                scriptsStrip.Close();
+                extrasStrip.Close();
+                scriptsbutton_Click(sender, EventArgs.Empty);
+                ((System.Windows.Forms.Timer)sender).Stop();
+            }
+
+            if (Extrasbtn.ClientRectangle.Contains(Extrasbtn.PointToClient(MousePosition)) && ((System.Windows.Forms.Timer)sender).Interval != 52)
+            {
+                databaseStrip.Close();
+                scriptsStrip.Close();
+                extrasStrip.Close();
+                extrasMenuButton_Click(sender, EventArgs.Empty);
+                ((System.Windows.Forms.Timer)sender).Stop();
+            }
+
+
+            
         }
 
         /// <summary>
@@ -2097,6 +2151,14 @@ namespace NUS_Downloader
         {
             // Show scripts menu
             scriptsStrip.Show(scriptsbutton, 2, (2+scriptsbutton.Height));
+
+            //if (!e.Equals(EventArgs.Empty))
+            {
+                System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                timer.Interval = 51;
+                timer.Tick += new EventHandler(contextmenusTimer_Tick);
+                timer.Start();
+            }
         }
 
         private void DatabaseEnabled(bool enabled)
@@ -2611,6 +2673,31 @@ namespace NUS_Downloader
             folder_fixer.RunWorkerAsync();
         }
 
-        
+        private void removeNUSDFilesFoldersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Extras thing, remove all of NUSD files...
+            if (MessageBox.Show("This will delete all the files\folders you have downloaded from NUS! Are you sure you want to do this?", "Wait a second!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != System.Windows.Forms.DialogResult.Yes)
+                return;
+
+            if (Directory.Exists(Path.Combine(CURRENT_DIR, "titles")))
+                Directory.Delete(Path.Combine(CURRENT_DIR, "titles"), true);
+            if (Directory.Exists(Path.Combine(CURRENT_DIR, "scripts")))
+                Directory.Delete(Path.Combine(CURRENT_DIR, "scripts"), true);
+
+            if (File.Exists(Path.Combine(CURRENT_DIR, "database.xml")))
+                File.Delete(Path.Combine(CURRENT_DIR, "database.xml"));
+            if (File.Exists(Path.Combine(CURRENT_DIR, "olddatabase.xml")))
+                File.Delete(Path.Combine(CURRENT_DIR, "olddatabase.xml"));
+
+            if (File.Exists(Path.Combine(CURRENT_DIR, "proxy.txt")))
+                File.Delete(Path.Combine(CURRENT_DIR, "proxy.txt"));
+
+            if (File.Exists(Path.Combine(CURRENT_DIR, "key.bin")))
+                File.Delete(Path.Combine(CURRENT_DIR, "key.bin"));
+            if (File.Exists(Path.Combine(CURRENT_DIR, "kkey.bin")))
+                File.Delete(Path.Combine(CURRENT_DIR, "kkey.bin"));
+            if (File.Exists(Path.Combine(CURRENT_DIR, "dsikey.bin")))
+                File.Delete(Path.Combine(CURRENT_DIR, "dsikey.bin"));
+        }            
     }
 }
