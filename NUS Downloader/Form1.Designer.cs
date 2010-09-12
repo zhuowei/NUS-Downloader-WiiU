@@ -77,6 +77,7 @@ namespace NUS_Downloader
             this.wiiBrewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databasePageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeNUSDFilesFoldersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openNUSDDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutNUSDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.proxyBox = new System.Windows.Forms.GroupBox();
@@ -120,7 +121,6 @@ namespace NUS_Downloader
             this.titleversion = new wmgCMS.WaterMarkTextBox();
             this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
-            this.removeNUSDFilesFoldersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -136,7 +136,7 @@ namespace NUS_Downloader
             this.Extrasbtn.Location = new System.Drawing.Point(194, 5);
             this.Extrasbtn.Name = "Extrasbtn";
             this.Extrasbtn.Size = new System.Drawing.Size(68, 27);
-            this.Extrasbtn.TabIndex = 0;
+            this.Extrasbtn.TabIndex = 2;
             this.Extrasbtn.Text = "Extras...";
             this.Extrasbtn.UseVisualStyleBackColor = true;
             this.Extrasbtn.Click += new System.EventHandler(this.extrasMenuButton_Click);
@@ -147,7 +147,7 @@ namespace NUS_Downloader
             this.downloadstartbtn.Location = new System.Drawing.Point(12, 64);
             this.downloadstartbtn.Name = "downloadstartbtn";
             this.downloadstartbtn.Size = new System.Drawing.Size(250, 25);
-            this.downloadstartbtn.TabIndex = 4;
+            this.downloadstartbtn.TabIndex = 5;
             this.downloadstartbtn.Text = "Start NUS Download!";
             this.downloadstartbtn.UseVisualStyleBackColor = true;
             this.downloadstartbtn.Click += new System.EventHandler(this.DownloadBtn_Click);
@@ -161,7 +161,7 @@ namespace NUS_Downloader
             this.statusbox.ReadOnly = true;
             this.statusbox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.statusbox.Size = new System.Drawing.Size(252, 269);
-            this.statusbox.TabIndex = 5;
+            this.statusbox.TabIndex = 0;
             this.statusbox.Text = "";
             // 
             // NUSDownloader
@@ -176,7 +176,7 @@ namespace NUS_Downloader
             this.label1.Location = new System.Drawing.Point(194, 45);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(13, 13);
-            this.label1.TabIndex = 10;
+            this.label1.TabIndex = 0;
             this.label1.Text = "v";
             // 
             // wadnamebox
@@ -208,6 +208,8 @@ namespace NUS_Downloader
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
             this.databaseStrip.Size = new System.Drawing.Size(159, 236);
+            this.databaseStrip.Text = "Hidden";
+            this.databaseStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             // 
             // SystemMenuList
             // 
@@ -382,7 +384,9 @@ namespace NUS_Downloader
             this.openNUSDDirectoryToolStripMenuItem,
             this.aboutNUSDToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(178, 148);
+            this.extrasStrip.Size = new System.Drawing.Size(178, 126);
+            this.extrasStrip.Text = "Hidden";
+            this.extrasStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             this.extrasStrip.Opening += new System.ComponentModel.CancelEventHandler(this.extrasStrip_Opening);
             // 
             // loadInfoFromTMDToolStripMenuItem
@@ -452,6 +456,13 @@ namespace NUS_Downloader
             this.databasePageToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.databasePageToolStripMenuItem.Text = "Database Page";
             this.databasePageToolStripMenuItem.Click += new System.EventHandler(this.databasePageToolStripMenuItem_Click);
+            // 
+            // removeNUSDFilesFoldersToolStripMenuItem
+            // 
+            this.removeNUSDFilesFoldersToolStripMenuItem.Name = "removeNUSDFilesFoldersToolStripMenuItem";
+            this.removeNUSDFilesFoldersToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.removeNUSDFilesFoldersToolStripMenuItem.Text = "Remove NUSD Files\\Folders";
+            this.removeNUSDFilesFoldersToolStripMenuItem.Click += new System.EventHandler(this.removeNUSDFilesFoldersToolStripMenuItem_Click);
             // 
             // openNUSDDirectoryToolStripMenuItem
             // 
@@ -622,7 +633,7 @@ namespace NUS_Downloader
             this.consoleCBox.Location = new System.Drawing.Point(12, 389);
             this.consoleCBox.Name = "consoleCBox";
             this.consoleCBox.Size = new System.Drawing.Size(58, 21);
-            this.consoleCBox.TabIndex = 48;
+            this.consoleCBox.TabIndex = 6;
             this.consoleCBox.SelectedIndexChanged += new System.EventHandler(this.consoleCBox_SelectedIndexChanged);
             // 
             // scriptsbutton
@@ -631,7 +642,7 @@ namespace NUS_Downloader
             this.scriptsbutton.Location = new System.Drawing.Point(103, 5);
             this.scriptsbutton.Name = "scriptsbutton";
             this.scriptsbutton.Size = new System.Drawing.Size(85, 27);
-            this.scriptsbutton.TabIndex = 51;
+            this.scriptsbutton.TabIndex = 1;
             this.scriptsbutton.Text = "Scripts...";
             this.scriptsbutton.UseVisualStyleBackColor = true;
             this.scriptsbutton.Click += new System.EventHandler(this.scriptsbutton_Click);
@@ -647,7 +658,9 @@ namespace NUS_Downloader
             this.emulateUpdate});
             this.scriptsStrip.Name = "scriptsStrip";
             this.scriptsStrip.ShowItemToolTips = false;
-            this.scriptsStrip.Size = new System.Drawing.Size(206, 98);
+            this.scriptsStrip.Size = new System.Drawing.Size(206, 120);
+            this.scriptsStrip.Text = "Hidden";
+            this.scriptsStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             // 
             // scriptsLocalMenuEntry
             // 
@@ -779,7 +792,7 @@ namespace NUS_Downloader
             this.databaseButton.Location = new System.Drawing.Point(12, 5);
             this.databaseButton.Name = "databaseButton";
             this.databaseButton.Size = new System.Drawing.Size(85, 27);
-            this.databaseButton.TabIndex = 20;
+            this.databaseButton.TabIndex = 0;
             this.databaseButton.Text = "Database...";
             this.databaseButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.databaseButton.UseVisualStyleBackColor = true;
@@ -799,7 +812,7 @@ namespace NUS_Downloader
             this.saveaswadbtn.MinimumSize = new System.Drawing.Size(0, 24);
             this.saveaswadbtn.Name = "saveaswadbtn";
             this.saveaswadbtn.Size = new System.Drawing.Size(24, 24);
-            this.saveaswadbtn.TabIndex = 53;
+            this.saveaswadbtn.TabIndex = 11;
             this.saveaswadbtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.saveaswadbtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.saveaswadbtn.UseVisualStyleBackColor = false;
@@ -815,7 +828,7 @@ namespace NUS_Downloader
             this.iosPatchCheckbox.Location = new System.Drawing.Point(12, 488);
             this.iosPatchCheckbox.Name = "iosPatchCheckbox";
             this.iosPatchCheckbox.Size = new System.Drawing.Size(104, 24);
-            this.iosPatchCheckbox.TabIndex = 54;
+            this.iosPatchCheckbox.TabIndex = 10;
             this.iosPatchCheckbox.Text = "Patch IOS...";
             this.iosPatchCheckbox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.iosPatchCheckbox.UseVisualStyleBackColor = true;
@@ -830,7 +843,7 @@ namespace NUS_Downloader
             this.keepenccontents.Location = new System.Drawing.Point(12, 436);
             this.keepenccontents.Name = "keepenccontents";
             this.keepenccontents.Size = new System.Drawing.Size(195, 26);
-            this.keepenccontents.TabIndex = 52;
+            this.keepenccontents.TabIndex = 8;
             this.keepenccontents.Text = "Keep Encrypted Contents";
             this.keepenccontents.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.keepenccontents.UseVisualStyleBackColor = true;
@@ -849,7 +862,7 @@ namespace NUS_Downloader
             this.clearButton.MinimumSize = new System.Drawing.Size(0, 24);
             this.clearButton.Name = "clearButton";
             this.clearButton.Size = new System.Drawing.Size(24, 24);
-            this.clearButton.TabIndex = 31;
+            this.clearButton.TabIndex = 12;
             this.clearButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.clearButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.clearButton.UseVisualStyleBackColor = false;
@@ -864,7 +877,7 @@ namespace NUS_Downloader
             this.packbox.Location = new System.Drawing.Point(12, 414);
             this.packbox.Name = "packbox";
             this.packbox.Size = new System.Drawing.Size(98, 22);
-            this.packbox.TabIndex = 6;
+            this.packbox.TabIndex = 7;
             this.packbox.Text = "Pack WAD";
             this.packbox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.packbox.UseVisualStyleBackColor = true;
@@ -878,7 +891,7 @@ namespace NUS_Downloader
             this.decryptbox.Location = new System.Drawing.Point(12, 462);
             this.decryptbox.Name = "decryptbox";
             this.decryptbox.Size = new System.Drawing.Size(231, 26);
-            this.decryptbox.TabIndex = 19;
+            this.decryptbox.TabIndex = 9;
             this.decryptbox.Text = "Create Decrypted Contents (*.app)";
             this.decryptbox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.decryptbox.UseVisualStyleBackColor = true;
@@ -894,7 +907,7 @@ namespace NUS_Downloader
             this.localuse.MinimumSize = new System.Drawing.Size(0, 22);
             this.localuse.Name = "localuse";
             this.localuse.Size = new System.Drawing.Size(162, 22);
-            this.localuse.TabIndex = 8;
+            this.localuse.TabIndex = 12;
             this.localuse.Text = "Use Local Files If Present";
             this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
@@ -906,7 +919,7 @@ namespace NUS_Downloader
             this.titleversion.MaxLength = 8;
             this.titleversion.Name = "titleversion";
             this.titleversion.Size = new System.Drawing.Size(58, 21);
-            this.titleversion.TabIndex = 50;
+            this.titleversion.TabIndex = 4;
             this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.titleversion.WaterMarkColor = System.Drawing.Color.Silver;
             this.titleversion.WaterMarkText = "Version";
@@ -919,7 +932,7 @@ namespace NUS_Downloader
             this.titleidbox.MaxLength = 16;
             this.titleidbox.Name = "titleidbox";
             this.titleidbox.Size = new System.Drawing.Size(176, 21);
-            this.titleidbox.TabIndex = 49;
+            this.titleidbox.TabIndex = 3;
             this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.titleidbox.WaterMarkColor = System.Drawing.Color.Silver;
             this.titleidbox.WaterMarkText = "Title ID";
@@ -932,13 +945,6 @@ namespace NUS_Downloader
             this.dlprogress.Name = "dlprogress";
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.TabIndex = 47;
-            // 
-            // removeNUSDFilesFoldersToolStripMenuItem
-            // 
-            this.removeNUSDFilesFoldersToolStripMenuItem.Name = "removeNUSDFilesFoldersToolStripMenuItem";
-            this.removeNUSDFilesFoldersToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.removeNUSDFilesFoldersToolStripMenuItem.Text = "Remove NUSD Files\\Folders";
-            this.removeNUSDFilesFoldersToolStripMenuItem.Click += new System.EventHandler(this.removeNUSDFilesFoldersToolStripMenuItem_Click);
             // 
             // Form1
             // 

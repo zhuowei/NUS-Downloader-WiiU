@@ -439,6 +439,7 @@ namespace NUS_Downloader
         private void extrasMenuButton_Click(object sender, EventArgs e)
         {
             // Show extras menu
+            extrasStrip.Text = "Showing";
             extrasStrip.Show(Extrasbtn, 2, (2+Extrasbtn.Height));
 
             
@@ -901,6 +902,7 @@ namespace NUS_Downloader
         private void DatabaseButton_Click(object sender, EventArgs e)
         {
             // Open Database button menu...
+            databaseStrip.Text = "Showing";
             databaseStrip.Show(databaseButton, 2, (2+databaseButton.Height));
 
             //if (!e.Equals(EventArgs.Empty))
@@ -946,6 +948,11 @@ namespace NUS_Downloader
                 ((System.Windows.Forms.Timer)sender).Stop();
             }
 
+            //Debug.Write(((databaseStrip.Text == "Hidden").ToString() + (extrasStrip.Text == "Hidden").ToString() + (scriptsStrip.Text == "Hidden").ToString()));
+           
+
+            if ((databaseStrip.Visible == false) && (extrasStrip.Visible == false) && (scriptsStrip.Visible == false))
+                ((System.Windows.Forms.Timer)sender).Stop();
 
             
         }
@@ -2150,6 +2157,7 @@ namespace NUS_Downloader
         private void scriptsbutton_Click(object sender, EventArgs e)
         {
             // Show scripts menu
+            scriptsStrip.Text = "Showing";
             scriptsStrip.Show(scriptsbutton, 2, (2+scriptsbutton.Height));
 
             //if (!e.Equals(EventArgs.Empty))
@@ -2698,6 +2706,12 @@ namespace NUS_Downloader
                 File.Delete(Path.Combine(CURRENT_DIR, "kkey.bin"));
             if (File.Exists(Path.Combine(CURRENT_DIR, "dsikey.bin")))
                 File.Delete(Path.Combine(CURRENT_DIR, "dsikey.bin"));
-        }            
+        }
+
+        private void anyStrip_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+        {
+            ((ContextMenuStrip)sender).Text = "Hidden";
+            //Debug.Write(((ContextMenuStrip)sender).Name);
+        }
     }
 }
