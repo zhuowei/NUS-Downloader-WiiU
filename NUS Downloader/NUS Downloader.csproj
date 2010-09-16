@@ -160,6 +160,10 @@
     <None Include="Resources\bin_closed.png" />
     <None Include="Resources\arrow_ticker.gif" />
     <None Include="Resources\folder.png" />
+    <None Include="Resources\bullet_green-blue.png" />
+    <None Include="Resources\bullet_orange-blue.png" />
+    <None Include="Resources\bullet_redgreen-blue.png" />
+    <None Include="Resources\bullet_redorange-blue.png" />
     <Content Include="Resources\key.png" />
     <None Include="Resources\page_white_magnify.png" />
     <None Include="Resources\server_link.png" />

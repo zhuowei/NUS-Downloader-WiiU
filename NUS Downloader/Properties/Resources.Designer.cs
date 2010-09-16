@@ -95,9 +95,23 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap bullet_green_blue {
+            get {
+                object obj = ResourceManager.GetObject("bullet_green_blue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap bullet_orange {
             get {
                 object obj = ResourceManager.GetObject("bullet_orange", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap bullet_orange_blue {
+            get {
+                object obj = ResourceManager.GetObject("bullet_orange_blue", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -116,9 +130,23 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap bullet_redgreen_blue {
+            get {
+                object obj = ResourceManager.GetObject("bullet_redgreen_blue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap bullet_redorange {
             get {
                 object obj = ResourceManager.GetObject("bullet_redorange", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap bullet_redorange_blue {
+            get {
+                object obj = ResourceManager.GetObject("bullet_redorange_blue", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

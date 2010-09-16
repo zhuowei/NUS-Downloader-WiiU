@@ -121,6 +121,8 @@ namespace NUS_Downloader
             this.titleversion = new wmgCMS.WaterMarkTextBox();
             this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
+            this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.localTicketInventoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -384,7 +386,7 @@ namespace NUS_Downloader
             this.openNUSDDirectoryToolStripMenuItem,
             this.aboutNUSDToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(178, 126);
+            this.extrasStrip.Size = new System.Drawing.Size(178, 148);
             this.extrasStrip.Text = "Hidden";
             this.extrasStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             this.extrasStrip.Opening += new System.ComponentModel.CancelEventHandler(this.extrasStrip_Opening);
@@ -420,7 +422,8 @@ namespace NUS_Downloader
             this.moreExtrasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runFolderFixToolStripMenuItem,
             this.wiiBrewToolStripMenuItem,
-            this.removeNUSDFilesFoldersToolStripMenuItem});
+            this.removeNUSDFilesFoldersToolStripMenuItem,
+            this.databaseToolStripMenuItem});
             this.moreExtrasToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.wrench;
             this.moreExtrasToolStripMenuItem.Name = "moreExtrasToolStripMenuItem";
             this.moreExtrasToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
@@ -946,6 +949,21 @@ namespace NUS_Downloader
             this.dlprogress.Size = new System.Drawing.Size(250, 15);
             this.dlprogress.TabIndex = 47;
             // 
+            // databaseToolStripMenuItem
+            // 
+            this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.localTicketInventoryToolStripMenuItem});
+            this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
+            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.databaseToolStripMenuItem.Text = "Database";
+            // 
+            // localTicketInventoryToolStripMenuItem
+            // 
+            this.localTicketInventoryToolStripMenuItem.Name = "localTicketInventoryToolStripMenuItem";
+            this.localTicketInventoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.localTicketInventoryToolStripMenuItem.Text = "Local Ticket Inventory";
+            this.localTicketInventoryToolStripMenuItem.Click += new System.EventHandler(this.localTicketInventoryToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1080,6 +1098,8 @@ namespace NUS_Downloader
         private System.Windows.Forms.ToolStripMenuItem mainPageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem databasePageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeNUSDFilesFoldersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem databaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem localTicketInventoryToolStripMenuItem;
     }
 }
 

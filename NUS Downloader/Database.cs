@@ -28,9 +28,13 @@ namespace NUS_Downloader
 
         public static Image green = Properties.Resources.bullet_green;
         public static Image orange = Properties.Resources.bullet_orange;
-        public static Image redorb = Properties.Resources.bullet_red;
         public static Image redgreen = Properties.Resources.bullet_redgreen;
         public static Image redorange = Properties.Resources.bullet_redorange;
+
+        public static Image green_blue = Properties.Resources.bullet_green_blue;
+        public static Image orange_blue = Properties.Resources.bullet_orange_blue;
+        public static Image redgreen_blue = Properties.Resources.bullet_redgreen_blue;
+        public static Image redorange_blue = Properties.Resources.bullet_redorange_blue;
 
         public void LoadDatabaseToStream(string databaseFile)
         {

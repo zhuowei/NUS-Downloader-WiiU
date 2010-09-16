@@ -2713,5 +2713,43 @@ namespace NUS_Downloader
             ((ContextMenuStrip)sender).Text = "Hidden";
             //Debug.Write(((ContextMenuStrip)sender).Name);
         }
+
+        private void localTicketInventoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Alters icons if tickets exist locally...
+            WriteStatus("Adding ticket information to database entries...");
+            ToolStripMenuItem[] Lists = new ToolStripMenuItem[4] { SystemMenuList, IOSMenuList, VCMenuList, WiiWareMenuList };
+
+            for (int l = 0; l < Lists.Length; l++)
+            {
+                for (int a = 0; a < Lists[l].DropDownItems.Count; a++)
+                {
+                    if (Lists[l].DropDownItems[a].Text.Length < 16)
+                        continue;
+
+                    string itemTitleId = Lists[l].DropDownItems[a].Text.Substring(0, 16);
+                    string itemDir = Path.Combine(Path.Combine(CURRENT_DIR, "titles"), itemTitleId);
+
+                    if (Directory.Exists(itemDir) == false)
+                        continue;
+
+                    string[] files = Directory.GetFiles(itemDir, "cetk", SearchOption.AllDirectories);
+                    if (files.Length > 0)
+                    {
+                        if (Lists[l].DropDownItems[a].Image == Database.green)
+                            Lists[l].DropDownItems[a].Image = Database.green_blue;
+                        if (Lists[l].DropDownItems[a].Image == Database.orange)
+                            Lists[l].DropDownItems[a].Image = Database.orange_blue;
+                        if (Lists[l].DropDownItems[a].Image == Database.redorange)
+                            Lists[l].DropDownItems[a].Image = Database.redorange_blue;
+                        if (Lists[l].DropDownItems[a].Image == Database.redgreen)
+                            Lists[l].DropDownItems[a].Image = Database.redgreen_blue;
+                    }
+
+                
+                }
+            }
+            WriteStatus(" - Operation completed!");
+        }
     }
 }
