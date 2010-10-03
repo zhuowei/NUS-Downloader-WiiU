@@ -2751,5 +2751,11 @@ namespace NUS_Downloader
             }
             WriteStatus(" - Operation completed!");
         }
+
+        private void donateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //TODO: Organize how this will work...
+            Process.Start("http://wb3000.atspace.name/donations.html");
+        }
     }
 }
