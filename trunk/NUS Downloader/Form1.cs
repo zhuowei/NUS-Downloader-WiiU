@@ -962,6 +962,7 @@ namespace NUS_Downloader
         /// </summary>
         private void ClearDatabaseStrip()
         {
+            Control.CheckForIllegalCrossThreadCalls = false;
             object[] thingstoclear = new object[] {
                 SystemMenuList, IOSMenuList, WiiWareMenuList, VCMenuList,
                 
@@ -2745,8 +2746,6 @@ namespace NUS_Downloader
                         if (Lists[l].DropDownItems[a].Image == Database.redgreen)
                             Lists[l].DropDownItems[a].Image = Database.redgreen_blue;
                     }
-
-                
                 }
             }
             WriteStatus(" - Operation completed!");
