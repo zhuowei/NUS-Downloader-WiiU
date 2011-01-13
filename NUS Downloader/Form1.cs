@@ -99,7 +99,6 @@ namespace NUS_Downloader
         public Form1(string[] args)
         {
             InitializeComponent();
-            //Application.DoEvents();
             Debug.WriteLine("CLI Parameters passed");
 
             GUISetup();

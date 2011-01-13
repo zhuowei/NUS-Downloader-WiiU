@@ -371,10 +371,15 @@ namespace libWiiSharp
 
             // Parse Ticket
             Ticket tik = new Ticket();
+
             if (File.Exists(Path.Combine(outputDir, "cetk")))
             {
                 fireDebug("   Parsing Ticket...");
                 tik = Ticket.Load(Path.Combine(outputDir, "cetk"));
+
+                // DSi ticket? Must make sure to use DSi Key :D
+                if (nusUrl == DSI_NUS_URL)
+                    tik.DSiTicket = true;
             }
             else
             {
@@ -420,7 +425,10 @@ namespace libWiiSharp
                     //Check SHA1
                     byte[] newSha = s.ComputeHash(decryptedContent);
                     if (!Shared.CompareByteArrays(newSha, tmd.Contents[i].Hash))
-                    { fireDebug(@"/!\ /!\ Hashes do not match /!\ /!\"); throw new Exception(string.Format("Content #{0}: Hashes do not match!", i)); }
+                    { 
+                        fireDebug(@"/!\ /!\ Hashes do not match /!\ /!\"); 
+                        //throw new Exception(string.Format("Content #{0}: Hashes do not match!", i));
+                    }
 
                     //Write Decrypted Content
                     File.WriteAllBytes(Path.Combine(outputDir, (tmd.Contents[i].ContentID.ToString("x8") + ".app")), decryptedContent);

@@ -58,6 +58,8 @@ namespace libWiiSharp
         private uint timeLimit;
         private byte[] padding4 = new byte[88];
 
+        private bool dsitik = false;
+
         /// <summary>
         /// The Title Key the WADs content is encrypted with.
         /// </summary>
@@ -90,6 +92,11 @@ namespace libWiiSharp
         /// True if the Title Key was changed.
         /// </summary>
         public bool TitleKeyChanged { get { return titleKeyChanged; } }
+
+        /// <summary>
+        /// If true, the Ticket will utilize the DSi CommonKey.
+        /// </summary>
+        public bool DSiTicket { get { return dsitik; } set { dsitik = value; decryptTitleKey(); } }
 
 		#region IDisposable Members
         private bool isDisposed = false;
@@ -532,7 +539,14 @@ namespace libWiiSharp
 
         private void decryptTitleKey()
         {
-            byte[] ckey = (commonKeyIndex == 0x01) ? CommonKey.GetKoreanKey() : CommonKey.GetStandardKey();
+            byte[] ckey;
+            if (dsitik)
+            {
+                Console.WriteLine("dsi key in ya house!");
+                ckey = CommonKey.GetDSiKey();
+            }
+            else
+                ckey = (commonKeyIndex == 0x01) ? CommonKey.GetKoreanKey() : CommonKey.GetStandardKey();
             byte[] iv = BitConverter.GetBytes(Shared.Swap(titleId));
             Array.Resize(ref iv, 16);
 
@@ -560,7 +574,11 @@ namespace libWiiSharp
         private void encryptTitleKey()
         {
             commonKeyIndex = newKeyIndex;
-            byte[] ckey = (commonKeyIndex == 0x01) ? CommonKey.GetKoreanKey() : CommonKey.GetStandardKey();
+            byte[] ckey;
+            if (dsitik)
+                ckey = CommonKey.GetDSiKey();
+            else
+                ckey = (commonKeyIndex == 0x01) ? CommonKey.GetKoreanKey() : CommonKey.GetStandardKey();
             byte[] iv = BitConverter.GetBytes(Shared.Swap(titleId));
             Array.Resize(ref iv, 16);
 
