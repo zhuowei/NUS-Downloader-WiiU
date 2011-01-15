@@ -21,6 +21,9 @@ namespace NUS_Downloader
         private string WwTag = "WW";
         private string UpdateTag = "UPD";
 
+        private string DSiSystemTag = "DSISYSTEM";
+        private string DSiWareTag = "DSIWARE";
+
         private string[] VcConsoles = new string[11] { "C64", "GEN", "MSX", "N64", "NEO", "NES", 
             "SMS", "SNES", "TG16", "TGCD", "ARC" };
 
@@ -618,6 +621,214 @@ namespace NUS_Downloader
             }
 
             return scriptCollection;
+        }
+
+        public ToolStripMenuItem[] LoadDSiSystemTitles()
+        {
+            if (databaseString.Length < 1)
+            {
+                throw new Exception("Load the database into a memory stream first!");
+            }
+
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.LoadXml(databaseString);
+            XmlNodeList DSiSystemTitlesXMLNodes = xDoc.GetElementsByTagName(DSiSystemTag);
+            ToolStripMenuItem[] dsiSystemTitleCollection = new ToolStripMenuItem[DSiSystemTitlesXMLNodes.Count];
+
+            for (int x = 0; x < DSiSystemTitlesXMLNodes.Count; x++)
+            {
+                ToolStripMenuItem XMLToolStripItem = new ToolStripMenuItem();
+                XmlAttributeCollection XMLAttributes = DSiSystemTitlesXMLNodes[x].Attributes;
+
+                string titleID = "";
+                string descname = "";
+                bool dangerous = false;
+                bool ticket = true;
+
+                XmlNodeList ChildrenOfTheNode = DSiSystemTitlesXMLNodes[x].ChildNodes;
+
+                for (int z = 0; z < ChildrenOfTheNode.Count; z++)
+                {
+                    switch (ChildrenOfTheNode[z].Name)
+                    {
+                        case "name":
+                            descname = ChildrenOfTheNode[z].InnerText;
+                            break;
+                        case "titleID":
+                            titleID = ChildrenOfTheNode[z].InnerText;
+                            break;
+                        case "version":
+                            string[] versions = ChildrenOfTheNode[z].InnerText.Split(',');
+                            // Add to region things?
+                            if (XMLToolStripItem.DropDownItems.Count > 0)
+                            {
+                                for (int b = 0; b < XMLToolStripItem.DropDownItems.Count; b++)
+                                {
+                                    if (ChildrenOfTheNode[z].InnerText != "")
+                                    {
+                                        ToolStripMenuItem regitem =
+                                            (ToolStripMenuItem)XMLToolStripItem.DropDownItems[b];
+                                        regitem.DropDownItems.Add("Latest Version");
+                                        for (int y = 0; y < versions.Length; y++)
+                                        {
+                                            regitem.DropDownItems.Add("v" + versions[y]);
+                                        }
+                                        //regitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(deepitem_clicked);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                XMLToolStripItem.DropDownItems.Add("Latest Version");
+                                if (ChildrenOfTheNode[z].InnerText != "")
+                                {
+                                    for (int y = 0; y < versions.Length; y++)
+                                    {
+                                        XMLToolStripItem.DropDownItems.Add("v" + versions[y]);
+                                    }
+                                }
+                            }
+                            break;
+                        case "region":
+                            string[] regions = ChildrenOfTheNode[z].InnerText.Split(',');
+                            if (ChildrenOfTheNode[z].InnerText != "")
+                            {
+                                for (int y = 0; y < regions.Length; y++)
+                                {
+                                    XMLToolStripItem.DropDownItems.Add(RegionFromIndex(Convert.ToInt32(regions[y])));
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                        case "ticket":
+                            ticket = Convert.ToBoolean(ChildrenOfTheNode[z].InnerText);
+                            break;
+                        case "danger":
+                            dangerous = true;
+                            XMLToolStripItem.ToolTipText = ChildrenOfTheNode[z].InnerText;
+                            break;
+                    }
+                    XMLToolStripItem.Image = SelectItemImage(ticket, dangerous);
+
+                    if (titleID != "")
+                    {
+                        XMLToolStripItem.Text = String.Format("{0} - {1}", titleID, descname);
+                    }
+                    else
+                    {   // Wait what?
+                        XMLToolStripItem.Text = descname;
+                    }
+                }
+
+                dsiSystemTitleCollection[x] = XMLToolStripItem;
+            }
+
+            return dsiSystemTitleCollection;
+        }
+
+        public ToolStripMenuItem[] LoadDsiWareTitles()
+        {
+            if (databaseString.Length < 1)
+            {
+                throw new Exception("Load the database into a memory stream first!");
+            }
+
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.LoadXml(databaseString);
+            XmlNodeList DSiWareTitlesXMLNodes = xDoc.GetElementsByTagName(DSiWareTag);
+            ToolStripMenuItem[] DSiWareTitleCollection = new ToolStripMenuItem[DSiWareTitlesXMLNodes.Count];
+
+            for (int x = 0; x < DSiWareTitlesXMLNodes.Count; x++)
+            {
+                ToolStripMenuItem XMLToolStripItem = new ToolStripMenuItem();
+                XmlAttributeCollection XMLAttributes = DSiWareTitlesXMLNodes[x].Attributes;
+
+                string titleID = "";
+                string descname = "";
+                bool dangerous = false;
+                bool ticket = true;
+
+                XmlNodeList ChildrenOfTheNode = DSiWareTitlesXMLNodes[x].ChildNodes;
+
+                for (int z = 0; z < ChildrenOfTheNode.Count; z++)
+                {
+                    switch (ChildrenOfTheNode[z].Name)
+                    {
+                        case "name":
+                            descname = ChildrenOfTheNode[z].InnerText;
+                            break;
+                        case "titleID":
+                            titleID = ChildrenOfTheNode[z].InnerText;
+                            break;
+                        case "version":
+                            string[] versions = ChildrenOfTheNode[z].InnerText.Split(',');
+                            // Add to region things?
+                            if (XMLToolStripItem.DropDownItems.Count > 0)
+                            {
+                                for (int b = 0; b < XMLToolStripItem.DropDownItems.Count; b++)
+                                {
+                                    if (ChildrenOfTheNode[z].InnerText != "")
+                                    {
+                                        ToolStripMenuItem regitem =
+                                            (ToolStripMenuItem)XMLToolStripItem.DropDownItems[b];
+                                        regitem.DropDownItems.Add("Latest Version");
+                                        for (int y = 0; y < versions.Length; y++)
+                                        {
+                                            regitem.DropDownItems.Add("v" + versions[y]);
+                                        }
+                                        //regitem.DropDownItemClicked += new ToolStripItemClickedEventHandler(deepitem_clicked);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                XMLToolStripItem.DropDownItems.Add("Latest Version");
+                                if (ChildrenOfTheNode[z].InnerText != "")
+                                {
+                                    for (int y = 0; y < versions.Length; y++)
+                                    {
+                                        XMLToolStripItem.DropDownItems.Add("v" + versions[y]);
+                                    }
+                                }
+                            }
+                            break;
+                        case "region":
+                            string[] regions = ChildrenOfTheNode[z].InnerText.Split(',');
+                            if (ChildrenOfTheNode[z].InnerText != "")
+                            {
+                                for (int y = 0; y < regions.Length; y++)
+                                {
+                                    XMLToolStripItem.DropDownItems.Add(RegionFromIndex(Convert.ToInt32(regions[y])));
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                        case "ticket":
+                            ticket = Convert.ToBoolean(ChildrenOfTheNode[z].InnerText);
+                            break;
+                        case "danger":
+                            dangerous = true;
+                            XMLToolStripItem.ToolTipText = ChildrenOfTheNode[z].InnerText;
+                            break;
+                    }
+                    XMLToolStripItem.Image = SelectItemImage(ticket, dangerous);
+
+                    if (titleID != "")
+                    {
+                        XMLToolStripItem.Text = String.Format("{0} - {1}", titleID, descname);
+                    }
+                    else
+                    {   // Wait what?
+                        XMLToolStripItem.Text = descname;
+                    }
+                }
+
+                DSiWareTitleCollection[x] = XMLToolStripItem;
+            }
+
+            return DSiWareTitleCollection;
         }
     }
 }

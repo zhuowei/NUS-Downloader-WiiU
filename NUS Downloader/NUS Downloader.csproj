@@ -142,6 +142,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Crystal_Clear_app_ark2.ico" />
+    <None Include="Resources\wii16x16 copy.png" />
+    <None Include="Resources\wii16x16.png" />
     <None Include="Resources\money.png" />
     <None Include="Resources\wrench.png" />
     <None Include="Resources\script_start.png" />
@@ -165,6 +167,7 @@
     <None Include="Resources\bullet_orange-blue.png" />
     <None Include="Resources\bullet_redgreen-blue.png" />
     <None Include="Resources\bullet_redorange-blue.png" />
+    <None Include="Resources\dsi16x16.png" />
     <Content Include="Resources\key.png" />
     <None Include="Resources\page_white_magnify.png" />
     <None Include="Resources\server_link.png" />

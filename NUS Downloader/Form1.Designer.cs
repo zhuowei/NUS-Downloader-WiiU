@@ -44,23 +44,12 @@ namespace NUS_Downloader
             this.label1 = new System.Windows.Forms.Label();
             this.wadnamebox = new System.Windows.Forms.TextBox();
             this.databaseStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.SystemMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.IOSMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.VCMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.C64MenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.GenesisMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.MSXMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.N64MenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.NeoGeoMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.NESMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.SegaMSMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.SNESMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.TurboGrafx16MenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.TurboGrafxCDMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.VCArcadeMenuList = new System.Windows.Forms.ToolStripMenuItem();
-            this.WiiWareMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.dSiWareToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.RegionCodesList = new System.Windows.Forms.ToolStripMenuItem();
+            this.wiiRegionCodesMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.dsiRegionCodesMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.extrasStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -98,10 +87,28 @@ namespace NUS_Downloader
             this.packbox = new System.Windows.Forms.CheckBox();
             this.decryptbox = new System.Windows.Forms.CheckBox();
             this.localuse = new System.Windows.Forms.CheckBox();
+            this.SystemMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.systemFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.IOSMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.iosFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.VCMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.C64MenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.GenesisMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.MSXMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.N64MenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.NeoGeoMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.NESMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.SegaMSMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.SNESMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.TurboGrafx16MenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.TurboGrafxCDMenuList = new System.Windows.Forms.ToolStripMenuItem();
+            this.VCArcadeMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.vcFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.WiiWareMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.wwFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dsiSystemToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.dsiFakeSystemToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.dSiWareFakeToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.updateDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadInfoFromTMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.proxySettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -204,118 +211,32 @@ namespace NUS_Downloader
             this.vcFakeMenuItem,
             this.WiiWareMenuList,
             this.wwFakeMenuItem,
+            this.toolStripSeparator5,
+            this.dsiSystemToolStripMenu,
+            this.dsiFakeSystemToolStripMenu,
+            this.dSiWareToolStripMenu,
+            this.dSiWareFakeToolStripMenu,
             this.toolStripSeparator1,
             this.RegionCodesList,
             this.toolStripSeparator4,
             this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(159, 236);
+            this.databaseStrip.Size = new System.Drawing.Size(159, 352);
             this.databaseStrip.Text = "Hidden";
             this.databaseStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             // 
-            // SystemMenuList
+            // toolStripSeparator5
             // 
-            this.SystemMenuList.AutoSize = false;
-            this.SystemMenuList.Name = "SystemMenuList";
-            this.SystemMenuList.Size = new System.Drawing.Size(158, 22);
-            this.SystemMenuList.Text = "System";
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(155, 6);
             // 
-            // IOSMenuList
+            // dSiWareToolStripMenu
             // 
-            this.IOSMenuList.Name = "IOSMenuList";
-            this.IOSMenuList.Size = new System.Drawing.Size(158, 22);
-            this.IOSMenuList.Text = "IOS";
-            // 
-            // VCMenuList
-            // 
-            this.VCMenuList.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.C64MenuList,
-            this.GenesisMenuList,
-            this.MSXMenuList,
-            this.N64MenuList,
-            this.NeoGeoMenuList,
-            this.NESMenuList,
-            this.SegaMSMenuList,
-            this.SNESMenuList,
-            this.TurboGrafx16MenuList,
-            this.TurboGrafxCDMenuList,
-            this.VCArcadeMenuList});
-            this.VCMenuList.Name = "VCMenuList";
-            this.VCMenuList.Size = new System.Drawing.Size(158, 22);
-            this.VCMenuList.Text = "Virtual Console";
-            // 
-            // C64MenuList
-            // 
-            this.C64MenuList.Name = "C64MenuList";
-            this.C64MenuList.Size = new System.Drawing.Size(182, 22);
-            this.C64MenuList.Text = "Commodore 64";
-            // 
-            // GenesisMenuList
-            // 
-            this.GenesisMenuList.Name = "GenesisMenuList";
-            this.GenesisMenuList.Size = new System.Drawing.Size(182, 22);
-            this.GenesisMenuList.Text = "Mega Drive/Genesis";
-            // 
-            // MSXMenuList
-            // 
-            this.MSXMenuList.Name = "MSXMenuList";
-            this.MSXMenuList.Size = new System.Drawing.Size(182, 22);
-            this.MSXMenuList.Text = "MSX";
-            // 
-            // N64MenuList
-            // 
-            this.N64MenuList.Name = "N64MenuList";
-            this.N64MenuList.Size = new System.Drawing.Size(182, 22);
-            this.N64MenuList.Text = "Nintendo 64";
-            // 
-            // NeoGeoMenuList
-            // 
-            this.NeoGeoMenuList.Name = "NeoGeoMenuList";
-            this.NeoGeoMenuList.Size = new System.Drawing.Size(182, 22);
-            this.NeoGeoMenuList.Text = "NeoGeo";
-            // 
-            // NESMenuList
-            // 
-            this.NESMenuList.Name = "NESMenuList";
-            this.NESMenuList.Size = new System.Drawing.Size(182, 22);
-            this.NESMenuList.Text = "NES";
-            // 
-            // SegaMSMenuList
-            // 
-            this.SegaMSMenuList.Name = "SegaMSMenuList";
-            this.SegaMSMenuList.Size = new System.Drawing.Size(182, 22);
-            this.SegaMSMenuList.Text = "Sega Master System";
-            // 
-            // SNESMenuList
-            // 
-            this.SNESMenuList.Name = "SNESMenuList";
-            this.SNESMenuList.Size = new System.Drawing.Size(182, 22);
-            this.SNESMenuList.Text = "SNES";
-            // 
-            // TurboGrafx16MenuList
-            // 
-            this.TurboGrafx16MenuList.Name = "TurboGrafx16MenuList";
-            this.TurboGrafx16MenuList.Size = new System.Drawing.Size(182, 22);
-            this.TurboGrafx16MenuList.Text = "TruboGrafx-16";
-            // 
-            // TurboGrafxCDMenuList
-            // 
-            this.TurboGrafxCDMenuList.Name = "TurboGrafxCDMenuList";
-            this.TurboGrafxCDMenuList.Size = new System.Drawing.Size(182, 22);
-            this.TurboGrafxCDMenuList.Text = "TurboGrafx-CD";
-            // 
-            // VCArcadeMenuList
-            // 
-            this.VCArcadeMenuList.Name = "VCArcadeMenuList";
-            this.VCArcadeMenuList.Size = new System.Drawing.Size(182, 22);
-            this.VCArcadeMenuList.Text = "Virtual Console Arcade";
-            // 
-            // WiiWareMenuList
-            // 
-            this.WiiWareMenuList.Name = "WiiWareMenuList";
-            this.WiiWareMenuList.Size = new System.Drawing.Size(158, 22);
-            this.WiiWareMenuList.Text = "WiiWare";
+            this.dSiWareToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.dsi16x16;
+            this.dSiWareToolStripMenu.Name = "dSiWareToolStripMenu";
+            this.dSiWareToolStripMenu.Size = new System.Drawing.Size(158, 22);
+            this.dSiWareToolStripMenu.Text = "DSiWare";
             // 
             // toolStripSeparator1
             // 
@@ -324,10 +245,26 @@ namespace NUS_Downloader
             // 
             // RegionCodesList
             // 
+            this.RegionCodesList.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.wiiRegionCodesMenu,
+            this.dsiRegionCodesMenu});
             this.RegionCodesList.Name = "RegionCodesList";
             this.RegionCodesList.Size = new System.Drawing.Size(158, 22);
             this.RegionCodesList.Text = "Region Codes";
-            this.RegionCodesList.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.RegionCodesList_DropDownItemClicked);
+            // 
+            // wiiRegionCodesMenu
+            // 
+            this.wiiRegionCodesMenu.Name = "wiiRegionCodesMenu";
+            this.wiiRegionCodesMenu.Size = new System.Drawing.Size(89, 22);
+            this.wiiRegionCodesMenu.Text = "Wii";
+            this.wiiRegionCodesMenu.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.wiiRegionCodesMenu_DropDownItemClicked);
+            // 
+            // dsiRegionCodesMenu
+            // 
+            this.dsiRegionCodesMenu.Name = "dsiRegionCodesMenu";
+            this.dsiRegionCodesMenu.Size = new System.Drawing.Size(89, 22);
+            this.dsiRegionCodesMenu.Text = "DSi";
+            this.dsiRegionCodesMenu.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.dsiRegionCodesMenu_DropDownItemClicked);
             // 
             // toolStripSeparator4
             // 
@@ -348,7 +285,7 @@ namespace NUS_Downloader
             this.donateToolStripMenuItem,
             this.aboutNUSDToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(178, 170);
+            this.extrasStrip.Size = new System.Drawing.Size(178, 148);
             this.extrasStrip.Text = "Hidden";
             this.extrasStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             this.extrasStrip.Opening += new System.ComponentModel.CancelEventHandler(this.extrasStrip_Opening);
@@ -767,6 +704,14 @@ namespace NUS_Downloader
             this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
             // 
+            // SystemMenuList
+            // 
+            this.SystemMenuList.AutoSize = false;
+            this.SystemMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.SystemMenuList.Name = "SystemMenuList";
+            this.SystemMenuList.Size = new System.Drawing.Size(158, 22);
+            this.SystemMenuList.Text = "System";
+            // 
             // systemFakeMenuItem
             // 
             this.systemFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
@@ -774,6 +719,13 @@ namespace NUS_Downloader
             this.systemFakeMenuItem.Size = new System.Drawing.Size(158, 22);
             this.systemFakeMenuItem.Text = "System";
             this.systemFakeMenuItem.Visible = false;
+            // 
+            // IOSMenuList
+            // 
+            this.IOSMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.IOSMenuList.Name = "IOSMenuList";
+            this.IOSMenuList.Size = new System.Drawing.Size(158, 22);
+            this.IOSMenuList.Text = "IOS";
             // 
             // iosFakeMenuItem
             // 
@@ -783,6 +735,91 @@ namespace NUS_Downloader
             this.iosFakeMenuItem.Text = "IOS";
             this.iosFakeMenuItem.Visible = false;
             // 
+            // VCMenuList
+            // 
+            this.VCMenuList.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.C64MenuList,
+            this.GenesisMenuList,
+            this.MSXMenuList,
+            this.N64MenuList,
+            this.NeoGeoMenuList,
+            this.NESMenuList,
+            this.SegaMSMenuList,
+            this.SNESMenuList,
+            this.TurboGrafx16MenuList,
+            this.TurboGrafxCDMenuList,
+            this.VCArcadeMenuList});
+            this.VCMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.VCMenuList.Name = "VCMenuList";
+            this.VCMenuList.Size = new System.Drawing.Size(158, 22);
+            this.VCMenuList.Text = "Virtual Console";
+            // 
+            // C64MenuList
+            // 
+            this.C64MenuList.Name = "C64MenuList";
+            this.C64MenuList.Size = new System.Drawing.Size(182, 22);
+            this.C64MenuList.Text = "Commodore 64";
+            // 
+            // GenesisMenuList
+            // 
+            this.GenesisMenuList.Name = "GenesisMenuList";
+            this.GenesisMenuList.Size = new System.Drawing.Size(182, 22);
+            this.GenesisMenuList.Text = "Mega Drive/Genesis";
+            // 
+            // MSXMenuList
+            // 
+            this.MSXMenuList.Name = "MSXMenuList";
+            this.MSXMenuList.Size = new System.Drawing.Size(182, 22);
+            this.MSXMenuList.Text = "MSX";
+            // 
+            // N64MenuList
+            // 
+            this.N64MenuList.Name = "N64MenuList";
+            this.N64MenuList.Size = new System.Drawing.Size(182, 22);
+            this.N64MenuList.Text = "Nintendo 64";
+            // 
+            // NeoGeoMenuList
+            // 
+            this.NeoGeoMenuList.Name = "NeoGeoMenuList";
+            this.NeoGeoMenuList.Size = new System.Drawing.Size(182, 22);
+            this.NeoGeoMenuList.Text = "NeoGeo";
+            // 
+            // NESMenuList
+            // 
+            this.NESMenuList.Name = "NESMenuList";
+            this.NESMenuList.Size = new System.Drawing.Size(182, 22);
+            this.NESMenuList.Text = "NES";
+            // 
+            // SegaMSMenuList
+            // 
+            this.SegaMSMenuList.Name = "SegaMSMenuList";
+            this.SegaMSMenuList.Size = new System.Drawing.Size(182, 22);
+            this.SegaMSMenuList.Text = "Sega Master System";
+            // 
+            // SNESMenuList
+            // 
+            this.SNESMenuList.Name = "SNESMenuList";
+            this.SNESMenuList.Size = new System.Drawing.Size(182, 22);
+            this.SNESMenuList.Text = "SNES";
+            // 
+            // TurboGrafx16MenuList
+            // 
+            this.TurboGrafx16MenuList.Name = "TurboGrafx16MenuList";
+            this.TurboGrafx16MenuList.Size = new System.Drawing.Size(182, 22);
+            this.TurboGrafx16MenuList.Text = "TruboGrafx-16";
+            // 
+            // TurboGrafxCDMenuList
+            // 
+            this.TurboGrafxCDMenuList.Name = "TurboGrafxCDMenuList";
+            this.TurboGrafxCDMenuList.Size = new System.Drawing.Size(182, 22);
+            this.TurboGrafxCDMenuList.Text = "TurboGrafx-CD";
+            // 
+            // VCArcadeMenuList
+            // 
+            this.VCArcadeMenuList.Name = "VCArcadeMenuList";
+            this.VCArcadeMenuList.Size = new System.Drawing.Size(182, 22);
+            this.VCArcadeMenuList.Text = "Virtual Console Arcade";
+            // 
             // vcFakeMenuItem
             // 
             this.vcFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
@@ -791,6 +828,13 @@ namespace NUS_Downloader
             this.vcFakeMenuItem.Text = "Virtual Console";
             this.vcFakeMenuItem.Visible = false;
             // 
+            // WiiWareMenuList
+            // 
+            this.WiiWareMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.WiiWareMenuList.Name = "WiiWareMenuList";
+            this.WiiWareMenuList.Size = new System.Drawing.Size(158, 22);
+            this.WiiWareMenuList.Text = "WiiWare";
+            // 
             // wwFakeMenuItem
             // 
             this.wwFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
@@ -798,6 +842,29 @@ namespace NUS_Downloader
             this.wwFakeMenuItem.Size = new System.Drawing.Size(158, 22);
             this.wwFakeMenuItem.Text = "WiiWare";
             this.wwFakeMenuItem.Visible = false;
+            // 
+            // dsiSystemToolStripMenu
+            // 
+            this.dsiSystemToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.dsi16x16;
+            this.dsiSystemToolStripMenu.Name = "dsiSystemToolStripMenu";
+            this.dsiSystemToolStripMenu.Size = new System.Drawing.Size(158, 22);
+            this.dsiSystemToolStripMenu.Text = "System";
+            // 
+            // dsiFakeSystemToolStripMenu
+            // 
+            this.dsiFakeSystemToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.dsiFakeSystemToolStripMenu.Name = "dsiFakeSystemToolStripMenu";
+            this.dsiFakeSystemToolStripMenu.Size = new System.Drawing.Size(158, 22);
+            this.dsiFakeSystemToolStripMenu.Text = "System";
+            this.dsiFakeSystemToolStripMenu.Visible = false;
+            // 
+            // dSiWareFakeToolStripMenu
+            // 
+            this.dSiWareFakeToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.dSiWareFakeToolStripMenu.Name = "dSiWareFakeToolStripMenu";
+            this.dSiWareFakeToolStripMenu.Size = new System.Drawing.Size(158, 22);
+            this.dSiWareFakeToolStripMenu.Text = "DSiWare";
+            this.dSiWareFakeToolStripMenu.Visible = false;
             // 
             // updateDatabaseToolStripMenuItem
             // 
@@ -1111,6 +1178,13 @@ namespace NUS_Downloader
         private System.Windows.Forms.ToolStripMenuItem databaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem localTicketInventoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem donateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem dsiSystemToolStripMenu;
+        private System.Windows.Forms.ToolStripMenuItem dsiFakeSystemToolStripMenu;
+        private System.Windows.Forms.ToolStripMenuItem dSiWareToolStripMenu;
+        private System.Windows.Forms.ToolStripMenuItem dSiWareFakeToolStripMenu;
+        private System.Windows.Forms.ToolStripMenuItem wiiRegionCodesMenu;
+        private System.Windows.Forms.ToolStripMenuItem dsiRegionCodesMenu;
     }
 }
 
