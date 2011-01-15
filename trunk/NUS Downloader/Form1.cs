@@ -50,8 +50,6 @@ namespace NUS_Downloader
         private string version = "v2.0";
 #endif
 
-        private static bool dsidecrypt = false;
-
         // Cross-thread Windows Formsing
         private delegate void AddToolStripItemToStripCallback(
             ToolStripMenuItem menulist, ToolStripMenuItem[] additionitems);
@@ -73,8 +71,9 @@ namespace NUS_Downloader
         private string proxy_usr;
         private string proxy_pwd;
 
-        // Database thread
-        private BackgroundWorker fds;
+        // Database threads
+        private BackgroundWorker databaseWorker;
+        private BackgroundWorker dsiDatabaseWorker;
 
         // Scripts Thread
         private BackgroundWorker scriptsWorker;
@@ -124,27 +123,7 @@ namespace NUS_Downloader
             else
             {
                 BootChecks();
-            }
-
-            
-
-            /* Fix proxy entry.
-            if (!(String.IsNullOrEmpty(proxy_url)))
-                while (String.IsNullOrEmpty(proxy_pwd))
-                    Thread.Sleep(1000);
-            
-            if ((args.Length == 1) && (args[0] == "folderfix"))
-            { 
-                // Organizing folders from past NUSD releases...
-                BackgroundWorker folder_fixer = new BackgroundWorker();
-                folder_fixer.DoWork += new DoWorkEventHandler(ReorganizePreviousFolderStructure);
-                folder_fixer.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ReorganizePreviousFolderStructure_Completed);
-                Debug.WriteLine("folderfix active");
-                WriteStatus("Organizing your old folder structure...");
-                folder_fixer.RunWorkerAsync();
-            }*/
-
-            
+            }           
         }
 
         private void RunCommandMode(string[] args)
@@ -249,12 +228,19 @@ namespace NUS_Downloader
                 WriteStatus("\r\n");
             }
 
-            // Database BGLoader
-            this.fds = new BackgroundWorker();
-            this.fds.DoWork += new DoWorkEventHandler(DoAllDatabaseyStuff);
-            this.fds.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DoAllDatabaseyStuff_Completed);
-            this.fds.ProgressChanged += new ProgressChangedEventHandler(DoAllDatabaseyStuff_ProgressChanged);
-            this.fds.WorkerReportsProgress = true;
+            // Database BackgroundWorker
+            this.databaseWorker = new BackgroundWorker();
+            this.databaseWorker.DoWork += new DoWorkEventHandler(DoAllDatabaseyStuff);
+            this.databaseWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DoAllDatabaseyStuff_Completed);
+            this.databaseWorker.ProgressChanged += new ProgressChangedEventHandler(DoAllDatabaseyStuff_ProgressChanged);
+            this.databaseWorker.WorkerReportsProgress = true;
+
+            // DSi Database BackgroundWorker
+            this.dsiDatabaseWorker = new BackgroundWorker();
+            this.dsiDatabaseWorker.DoWork += new DoWorkEventHandler(DSiDatabaseWork);
+            this.dsiDatabaseWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DSiDatabaseWork_Completed);
+            this.dsiDatabaseWorker.ProgressChanged += new ProgressChangedEventHandler(DSiDatabaseWork_ProgressChanged);
+            this.dsiDatabaseWorker.WorkerReportsProgress = true;
 
             // Scripts BGLoader
             this.scriptsWorker = new BackgroundWorker();
@@ -289,20 +275,17 @@ namespace NUS_Downloader
                 return;
             }
 
-            // Check for DSi common key bin file...
+            /* Check for DSi common key bin file...
             if (NUSDFileExists("dsikey.bin") == true)
             {
                 WriteStatus("DSi Common Key detected.");
                 dsidecrypt = true;
-            }
-
+            }*/
+            /*
             // Check for database.xml
             if (NUSDFileExists("database.xml") == false)
             {
                 WriteStatus("Database.xml not found. Title database not usable!");
-                /*databaseButton.Click -= new System.EventHandler(this.button4_Click);
-                databaseButton.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
-                databaseButton.Text = "Download DB"; */
                 DatabaseEnabled(false);
                 updateDatabaseToolStripMenuItem.Enabled = true;
                 updateDatabaseToolStripMenuItem.Visible = true;
@@ -322,6 +305,59 @@ namespace NUS_Downloader
                 databaseButton.Image = Properties.Resources.arrow_ticker;
                 // Load it up...
                 this.fds.RunWorkerAsync();
+            }
+
+            // Check for database.xml
+            if (NUSDFileExists("dsidatabase.xml") == false)
+            {
+                WriteStatus("DSiDatabase.xml not found. DSi database not usable!");
+                DatabaseEnabled(false);
+                updateDatabaseToolStripMenuItem.Enabled = true;
+                updateDatabaseToolStripMenuItem.Visible = true;
+                updateDatabaseToolStripMenuItem.Text = "Download Database";
+            }
+            else
+            {
+                Database db = new Database();
+                db.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
+                string version = db.GetDatabaseVersion();
+                WriteStatus("Database.xml detected.");
+                WriteStatus(" - Version: " + version);
+                updateDatabaseToolStripMenuItem.Text = "Update Database";
+                //databaseButton.Enabled = false;
+                //databaseButton.Text = "DB Loading";
+                databaseButton.Text = "  [    ]";
+                databaseButton.Image = Properties.Resources.arrow_ticker;
+                // Load it up...
+                this.fds.RunWorkerAsync();
+            }*/
+
+            if (NUSDFileExists("database.xml") == true)
+            {
+                Database db = new Database();
+                db.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
+                string version = db.GetDatabaseVersion();
+                WriteStatus("Database.xml detected.");
+                WriteStatus(" - Version: " + version);
+                updateDatabaseToolStripMenuItem.Text = "Update Database";
+                databaseButton.Text = "  [    ]";
+                databaseButton.Image = Properties.Resources.arrow_ticker;
+                // Load it up...
+                this.databaseWorker.RunWorkerAsync();
+            }
+
+            if (NUSDFileExists("dsidatabase.xml") == true)
+            {
+                Database db = new Database();
+                db.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "dsidatabase.xml"));
+                string version = db.GetDatabaseVersion();
+                WriteStatus("DSiDatabase.xml detected.");
+                WriteStatus(" - Version: " + version);
+                updateDatabaseToolStripMenuItem.Text = "Update Database";
+                databaseButton.Text = "    [  ]";
+                databaseButton.Image = Properties.Resources.arrow_ticker;
+                // Load it up...
+                this.dsiDatabaseWorker.RunWorkerAsync();
             }
 
             // Load scripts (local)
@@ -818,14 +854,6 @@ namespace NUS_Downloader
                 // Cannot Pack WADs
                 packbox.Checked = false;
                 packbox.Enabled = false;
-
-                // Can decrypt if dsikey exists...
-                if (dsidecrypt == false)
-                {
-                    decryptbox.Checked = false;
-                    decryptbox.Enabled = false;
-                }
-
                 wadnamebox.Enabled = false;
                 wadnamebox.Text = "";
             }
@@ -969,7 +997,10 @@ namespace NUS_Downloader
                 C64MenuList, NeoGeoMenuList, NESMenuList,
                 SNESMenuList, N64MenuList, TurboGrafx16MenuList,
                 TurboGrafxCDMenuList, MSXMenuList, SegaMSMenuList,
-                GenesisMenuList, VCArcadeMenuList
+                GenesisMenuList, VCArcadeMenuList,
+
+                // DSi Entries
+                dsiSystemToolStripMenu, dSiWareToolStripMenu
             };
 
             foreach (System.Windows.Forms.ToolStripMenuItem tsmiclear in thingstoclear)
@@ -1101,6 +1132,74 @@ namespace NUS_Downloader
         }
 
         /// <summary>
+        /// Fills the database strip with the local database.xml file.
+        /// </summary>
+        private void FillDSiDatabaseStrip(BackgroundWorker worker)
+        {
+            // Set fake items visible and real ones not. Only way to stop buggy enabled stuff.
+            SetPropertyThreadSafe(dsiSystemToolStripMenu, false, "Visible");
+            SetPropertyThreadSafe(dSiWareToolStripMenu, false, "Visible");
+
+            SetPropertyThreadSafe(dsiFakeSystemToolStripMenu, true, "Visible");
+            SetPropertyThreadSafe(dSiWareFakeToolStripMenu, true, "Visible");
+
+            Database databaseObj = new Database();
+            databaseObj.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "dsidatabase.xml"));
+
+            ToolStripMenuItem[] systemItems = databaseObj.LoadDSiSystemTitles();
+            for (int a = 0; a < systemItems.Length; a++)
+            {
+                systemItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                for (int b = 0; b < systemItems[a].DropDownItems.Count; b++)
+                {
+                    ToolStripMenuItem syslowerentry = (ToolStripMenuItem)systemItems[a].DropDownItems[b];
+                    if (syslowerentry.DropDownItems.Count > 0)
+                    {
+                        syslowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                    }
+                }
+            }
+            Array.Sort(systemItems, delegate(ToolStripMenuItem tsmi1, ToolStripMenuItem tsmi2)
+            {
+                return tsmi1.Text
+                        .Substring(18, tsmi1.Text.Length - 19).CompareTo(tsmi2.Text.Substring(18, tsmi2.Text.Length - 19));
+            });
+            AddToolStripItemToStrip(dsiSystemToolStripMenu, systemItems);
+
+            SetPropertyThreadSafe(dsiFakeSystemToolStripMenu, false, "Visible");
+            SetPropertyThreadSafe(dsiSystemToolStripMenu, true, "Visible");
+
+            Debug.WriteLine("Database: DSiSysTitles added");
+            worker.ReportProgress(50);
+
+            ToolStripMenuItem[] dsiWareItems = databaseObj.LoadDsiWareTitles();
+            for (int a = 0; a < dsiWareItems.Length; a++)
+            {
+                dsiWareItems[a].DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                for (int b = 0; b < dsiWareItems[a].DropDownItems.Count; b++)
+                {
+                    ToolStripMenuItem lowerentry = (ToolStripMenuItem)dsiWareItems[a].DropDownItems[b];
+                    if (lowerentry.DropDownItems.Count > 0)
+                    {
+                        lowerentry.DropDownItemClicked += new ToolStripItemClickedEventHandler(DatabaseItem_Clicked);
+                    }
+
+                }
+            }
+            Array.Sort(dsiWareItems, delegate(ToolStripMenuItem tsmi1, ToolStripMenuItem tsmi2)
+            {
+                return tsmi1.Text
+                        .Substring(18, tsmi1.Text.Length - 19).CompareTo(tsmi2.Text.Substring(18, tsmi2.Text.Length - 19));
+            });
+            AddToolStripItemToStrip(dSiWareToolStripMenu, dsiWareItems);
+
+            SetPropertyThreadSafe(dSiWareFakeToolStripMenu, false, "Visible");
+            SetPropertyThreadSafe(dSiWareToolStripMenu, true, "Visible");
+            Debug.WriteLine("Database: DSiWareTitles added");
+            worker.ReportProgress(100);
+        }
+
+        /// <summary>
         /// Adds the tool strip item to strip.
         /// </summary>
         /// <param name="type">The type.</param>
@@ -1228,6 +1327,13 @@ namespace NUS_Downloader
             Regex RegionEntry = new Regex(@"[0-9A-Z][0-9A-Z] \(.*\)");
             Regex VersionEntry = new Regex(@"v[0-9]*.*");
 
+            object[] wiiMenuLists = new object[] {
+                SystemMenuList, IOSMenuList, WiiWareMenuList, VCMenuList
+            };
+            object[] dsiMenuLists = new object[] {
+                dsiSystemToolStripMenu, dSiWareToolStripMenu
+            };
+
             // This item is a Titleid - Descname entry
             if (IdandTitle.IsMatch(e.ClickedItem.Text))
             {
@@ -1247,6 +1353,18 @@ namespace NUS_Downloader
                 // Check for danger item
                 if ((e.ClickedItem.Image) == (Database.redgreen) || (e.ClickedItem.Image) == (Database.redorange))
                     WriteStatus("\n" + e.ClickedItem.ToolTipText);
+                
+                // Set server selection
+                foreach (System.Windows.Forms.ToolStripMenuItem tsmi in wiiMenuLists)
+                {
+                    if (tsmi.Name == e.ClickedItem.OwnerItem.Name)
+                        consoleCBox.SelectedIndex = 0;
+                }
+                foreach (System.Windows.Forms.ToolStripMenuItem tsmi in dsiMenuLists)
+                {
+                    if (tsmi.Name == e.ClickedItem.OwnerItem.Name)
+                        consoleCBox.SelectedIndex = 1;
+                }
             }
 
             // Region ClickedItem
@@ -1271,6 +1389,18 @@ namespace NUS_Downloader
                 // Check for danger item
                 if ((e.ClickedItem.OwnerItem.Image) == (Database.redgreen) || (e.ClickedItem.OwnerItem.Image) == (Database.redorange))
                     WriteStatus("\n" + e.ClickedItem.OwnerItem.ToolTipText);
+
+                // Set server selection
+                foreach (System.Windows.Forms.ToolStripMenuItem tsmi in wiiMenuLists)
+                {
+                    if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.Name)
+                        consoleCBox.SelectedIndex = 0;
+                }
+                foreach (System.Windows.Forms.ToolStripMenuItem tsmi in dsiMenuLists)
+                {
+                    if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.Name)
+                        consoleCBox.SelectedIndex = 1;
+                }
             }
 
             // Version ClickedItem
@@ -1315,6 +1445,18 @@ namespace NUS_Downloader
                     // Check for danger item
                     if ((e.ClickedItem.OwnerItem.OwnerItem.Image) == (Database.redgreen) || (e.ClickedItem.OwnerItem.OwnerItem.Image) == (Database.redorange))
                         WriteStatus("\n" + e.ClickedItem.OwnerItem.OwnerItem.ToolTipText);
+
+                    // Set server selection
+                    foreach (System.Windows.Forms.ToolStripMenuItem tsmi in wiiMenuLists)
+                    {
+                        if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.OwnerItem.Name)
+                            consoleCBox.SelectedIndex = 0;
+                    }
+                    foreach (System.Windows.Forms.ToolStripMenuItem tsmi in dsiMenuLists)
+                    {
+                        if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.OwnerItem.Name)
+                            consoleCBox.SelectedIndex = 1;
+                    }
                 }
                 else
                 {
@@ -1328,6 +1470,18 @@ namespace NUS_Downloader
                     // Check for danger item
                     if ((e.ClickedItem.OwnerItem.Image) == (Database.redgreen) || (e.ClickedItem.OwnerItem.Image) == (Database.redorange))
                         WriteStatus("\n" + e.ClickedItem.OwnerItem.ToolTipText);
+
+                    // Set server selection
+                    foreach (System.Windows.Forms.ToolStripMenuItem tsmi in wiiMenuLists)
+                    {
+                        if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.Name)
+                            consoleCBox.SelectedIndex = 0;
+                    }
+                    foreach (System.Windows.Forms.ToolStripMenuItem tsmi in dsiMenuLists)
+                    {
+                        if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.Name)
+                            consoleCBox.SelectedIndex = 1;
+                    }
                 }
             }
         }
@@ -1388,6 +1542,9 @@ namespace NUS_Downloader
                 return;
             }
 
+            wiiRegionCodesMenu.DropDownItems.Clear();
+            dsiRegionCodesMenu.DropDownItems.Clear();
+
             Database databaseObj = new Database();
             databaseObj.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
 
@@ -1396,15 +1553,20 @@ namespace NUS_Downloader
             // For each child node (region node)
             for (int z = 0; z < regionItems.Length; z++)
             {
-                RegionCodesList.DropDownItems.Add(regionItems[z].Text);
+                wiiRegionCodesMenu.DropDownItems.Add(regionItems[z].Text);
+            }
+
+            Database dsiDatabaseObj = new Database();
+            dsiDatabaseObj.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "dsidatabase.xml"));
+
+            ToolStripMenuItem[] dsiRegionItems = dsiDatabaseObj.LoadRegionCodes();
+
+            // For each child node (region node)
+            for (int z = 0; z < dsiRegionItems.Length; z++)
+            {
+                dsiRegionCodesMenu.DropDownItems.Add(dsiRegionItems[z].Text);
             }
         } 
-
-        private void RegionCodesList_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            if (titleidbox.Text.Length == 16)
-                titleidbox.Text = titleidbox.Text.Substring(0, 14) + e.ClickedItem.Text.Substring(0, 2);
-        }
 
         /// <summary>
         /// Removes the illegal characters.
@@ -1671,7 +1833,7 @@ namespace NUS_Downloader
             }
 
             // Load it up...
-            this.fds.RunWorkerAsync();
+            this.databaseWorker.RunWorkerAsync();
 
             if (isCreation)
             {
@@ -2754,6 +2916,46 @@ namespace NUS_Downloader
         {
             //TODO: Organize how this will work...
             Process.Start("http://wb3000.atspace.name/donations.html");
+        }
+
+        private void DSiDatabaseWork(object sender, System.ComponentModel.DoWorkEventArgs e) 
+        {
+            while (databaseWorker.IsBusy)
+            {
+                Thread.Sleep(1000);
+            }
+            BackgroundWorker worker = sender as BackgroundWorker;
+            FillDSiDatabaseStrip(worker);
+            LoadRegionCodes();
+            //FillDatabaseScripts();
+            ShowInnerToolTips(false);
+        }
+
+        private void DSiDatabaseWork_Completed(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            this.databaseButton.Text = "Database...";
+            this.databaseButton.Image = null;
+        }
+
+        private void DSiDatabaseWork_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            if (e.ProgressPercentage == 50)
+                databaseButton.Text = "    [. ]";
+            else if (e.ProgressPercentage == 100)
+                databaseButton.Text = "    [..]";
+            
+        }
+
+        private void wiiRegionCodesMenu_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (titleidbox.Text.Length == 16)
+                titleidbox.Text = titleidbox.Text.Substring(0, 14) + e.ClickedItem.Text.Substring(0, 2);
+        }
+
+        private void dsiRegionCodesMenu_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (titleidbox.Text.Length == 16)
+                titleidbox.Text = titleidbox.Text.Substring(0, 14) + e.ClickedItem.Text.Substring(0, 2);
         }
     }
 }

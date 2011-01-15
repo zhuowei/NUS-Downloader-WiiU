@@ -179,6 +179,13 @@ namespace NUS_Downloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap dsi16x16 {
+            get {
+                object obj = ResourceManager.GetObject("dsi16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap folder {
             get {
                 object obj = ResourceManager.GetObject("folder", resourceCulture);
@@ -301,6 +308,20 @@ namespace NUS_Downloader.Properties {
         internal static System.Drawing.Bitmap server_link {
             get {
                 object obj = ResourceManager.GetObject("server_link", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap wii16x16 {
+            get {
+                object obj = ResourceManager.GetObject("wii16x16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap wii16x16_copy {
+            get {
+                object obj = ResourceManager.GetObject("wii16x16 copy", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
