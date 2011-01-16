@@ -44,49 +44,6 @@ namespace NUS_Downloader
             this.label1 = new System.Windows.Forms.Label();
             this.wadnamebox = new System.Windows.Forms.TextBox();
             this.databaseStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.dSiWareToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.RegionCodesList = new System.Windows.Forms.ToolStripMenuItem();
-            this.wiiRegionCodesMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.dsiRegionCodesMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.extrasStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.proxyBox = new System.Windows.Forms.GroupBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.ProxyUser = new System.Windows.Forms.TextBox();
-            this.SaveProxyBtn = new System.Windows.Forms.Button();
-            this.ProxyURL = new System.Windows.Forms.TextBox();
-            this.ProxyVerifyBox = new System.Windows.Forms.GroupBox();
-            this.SaveProxyPwdPermanentBtn = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.SaveProxyPwdBtn = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.ProxyPwdBox = new System.Windows.Forms.TextBox();
-            this.consoleCBox = new System.Windows.Forms.ComboBox();
-            this.scriptsbutton = new System.Windows.Forms.Button();
-            this.scriptsStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.iosPatchGroupBox = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.iosPatchesListBox = new System.Windows.Forms.CheckedListBox();
-            this.iosPatchGroupBoxOKbtn = new System.Windows.Forms.Button();
-            this.richPanel = new System.Windows.Forms.Panel();
-            this.databaseButton = new System.Windows.Forms.Button();
-            this.titleversion = new wmgCMS.WaterMarkTextBox();
-            this.titleidbox = new wmgCMS.WaterMarkTextBox();
-            this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
-            this.saveaswadbtn = new System.Windows.Forms.Button();
-            this.iosPatchCheckbox = new System.Windows.Forms.CheckBox();
-            this.ProxyAssistBtn = new System.Windows.Forms.Button();
-            this.keepenccontents = new System.Windows.Forms.CheckBox();
-            this.clearButton = new System.Windows.Forms.Button();
-            this.packbox = new System.Windows.Forms.CheckBox();
-            this.decryptbox = new System.Windows.Forms.CheckBox();
-            this.localuse = new System.Windows.Forms.CheckBox();
             this.SystemMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.systemFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.IOSMenuList = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,12 +63,22 @@ namespace NUS_Downloader
             this.vcFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WiiWareMenuList = new System.Windows.Forms.ToolStripMenuItem();
             this.wwFakeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.dsiSystemToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.dsiFakeSystemToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.dSiWareToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.dSiWareFakeToolStripMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.RegionCodesList = new System.Windows.Forms.ToolStripMenuItem();
+            this.wiiRegionCodesMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.dsiRegionCodesMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.updateDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extrasStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.loadInfoFromTMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.proxySettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.moreExtrasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runFolderFixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wiiBrewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,14 +90,47 @@ namespace NUS_Downloader
             this.openNUSDDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutNUSDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.proxyBox = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.ProxyUser = new System.Windows.Forms.TextBox();
+            this.SaveProxyBtn = new System.Windows.Forms.Button();
+            this.ProxyAssistBtn = new System.Windows.Forms.Button();
+            this.ProxyURL = new System.Windows.Forms.TextBox();
+            this.ProxyVerifyBox = new System.Windows.Forms.GroupBox();
+            this.SaveProxyPwdPermanentBtn = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.SaveProxyPwdBtn = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.ProxyPwdBox = new System.Windows.Forms.TextBox();
+            this.consoleCBox = new System.Windows.Forms.ComboBox();
+            this.scriptsbutton = new System.Windows.Forms.Button();
+            this.scriptsStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.scriptsLocalMenuEntry = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptsDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadNUSScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.emulateUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.uSANTSCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.europePALToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.japanNTSCJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.koreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.iosPatchGroupBox = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.iosPatchesListBox = new System.Windows.Forms.CheckedListBox();
+            this.iosPatchGroupBoxOKbtn = new System.Windows.Forms.Button();
+            this.richPanel = new System.Windows.Forms.Panel();
+            this.databaseButton = new System.Windows.Forms.Button();
+            this.titleversion = new wmgCMS.WaterMarkTextBox();
+            this.titleidbox = new wmgCMS.WaterMarkTextBox();
+            this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
+            this.saveaswadbtn = new System.Windows.Forms.Button();
+            this.iosPatchCheckbox = new System.Windows.Forms.CheckBox();
+            this.keepenccontents = new System.Windows.Forms.CheckBox();
+            this.clearButton = new System.Windows.Forms.Button();
+            this.packbox = new System.Windows.Forms.CheckBox();
+            this.decryptbox = new System.Windows.Forms.CheckBox();
+            this.localuse = new System.Windows.Forms.CheckBox();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -222,26 +222,188 @@ namespace NUS_Downloader
             this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(159, 352);
+            this.databaseStrip.Size = new System.Drawing.Size(164, 352);
             this.databaseStrip.Text = "Hidden";
             this.databaseStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
+            // 
+            // SystemMenuList
+            // 
+            this.SystemMenuList.AutoSize = false;
+            this.SystemMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.SystemMenuList.Name = "SystemMenuList";
+            this.SystemMenuList.Size = new System.Drawing.Size(158, 22);
+            this.SystemMenuList.Text = "System";
+            // 
+            // systemFakeMenuItem
+            // 
+            this.systemFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.systemFakeMenuItem.Name = "systemFakeMenuItem";
+            this.systemFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.systemFakeMenuItem.Text = "System";
+            this.systemFakeMenuItem.Visible = false;
+            // 
+            // IOSMenuList
+            // 
+            this.IOSMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.IOSMenuList.Name = "IOSMenuList";
+            this.IOSMenuList.Size = new System.Drawing.Size(163, 22);
+            this.IOSMenuList.Text = "IOS";
+            // 
+            // iosFakeMenuItem
+            // 
+            this.iosFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.iosFakeMenuItem.Name = "iosFakeMenuItem";
+            this.iosFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.iosFakeMenuItem.Text = "IOS";
+            this.iosFakeMenuItem.Visible = false;
+            // 
+            // VCMenuList
+            // 
+            this.VCMenuList.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.C64MenuList,
+            this.GenesisMenuList,
+            this.MSXMenuList,
+            this.N64MenuList,
+            this.NeoGeoMenuList,
+            this.NESMenuList,
+            this.SegaMSMenuList,
+            this.SNESMenuList,
+            this.TurboGrafx16MenuList,
+            this.TurboGrafxCDMenuList,
+            this.VCArcadeMenuList});
+            this.VCMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.VCMenuList.Name = "VCMenuList";
+            this.VCMenuList.Size = new System.Drawing.Size(163, 22);
+            this.VCMenuList.Text = "Virtual Console";
+            // 
+            // C64MenuList
+            // 
+            this.C64MenuList.Name = "C64MenuList";
+            this.C64MenuList.Size = new System.Drawing.Size(182, 22);
+            this.C64MenuList.Text = "Commodore 64";
+            // 
+            // GenesisMenuList
+            // 
+            this.GenesisMenuList.Name = "GenesisMenuList";
+            this.GenesisMenuList.Size = new System.Drawing.Size(182, 22);
+            this.GenesisMenuList.Text = "Mega Drive/Genesis";
+            // 
+            // MSXMenuList
+            // 
+            this.MSXMenuList.Name = "MSXMenuList";
+            this.MSXMenuList.Size = new System.Drawing.Size(182, 22);
+            this.MSXMenuList.Text = "MSX";
+            // 
+            // N64MenuList
+            // 
+            this.N64MenuList.Name = "N64MenuList";
+            this.N64MenuList.Size = new System.Drawing.Size(182, 22);
+            this.N64MenuList.Text = "Nintendo 64";
+            // 
+            // NeoGeoMenuList
+            // 
+            this.NeoGeoMenuList.Name = "NeoGeoMenuList";
+            this.NeoGeoMenuList.Size = new System.Drawing.Size(182, 22);
+            this.NeoGeoMenuList.Text = "NeoGeo";
+            // 
+            // NESMenuList
+            // 
+            this.NESMenuList.Name = "NESMenuList";
+            this.NESMenuList.Size = new System.Drawing.Size(182, 22);
+            this.NESMenuList.Text = "NES";
+            // 
+            // SegaMSMenuList
+            // 
+            this.SegaMSMenuList.Name = "SegaMSMenuList";
+            this.SegaMSMenuList.Size = new System.Drawing.Size(182, 22);
+            this.SegaMSMenuList.Text = "Sega Master System";
+            // 
+            // SNESMenuList
+            // 
+            this.SNESMenuList.Name = "SNESMenuList";
+            this.SNESMenuList.Size = new System.Drawing.Size(182, 22);
+            this.SNESMenuList.Text = "SNES";
+            // 
+            // TurboGrafx16MenuList
+            // 
+            this.TurboGrafx16MenuList.Name = "TurboGrafx16MenuList";
+            this.TurboGrafx16MenuList.Size = new System.Drawing.Size(182, 22);
+            this.TurboGrafx16MenuList.Text = "TruboGrafx-16";
+            // 
+            // TurboGrafxCDMenuList
+            // 
+            this.TurboGrafxCDMenuList.Name = "TurboGrafxCDMenuList";
+            this.TurboGrafxCDMenuList.Size = new System.Drawing.Size(182, 22);
+            this.TurboGrafxCDMenuList.Text = "TurboGrafx-CD";
+            // 
+            // VCArcadeMenuList
+            // 
+            this.VCArcadeMenuList.Name = "VCArcadeMenuList";
+            this.VCArcadeMenuList.Size = new System.Drawing.Size(182, 22);
+            this.VCArcadeMenuList.Text = "Virtual Console Arcade";
+            // 
+            // vcFakeMenuItem
+            // 
+            this.vcFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.vcFakeMenuItem.Name = "vcFakeMenuItem";
+            this.vcFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.vcFakeMenuItem.Text = "Virtual Console";
+            this.vcFakeMenuItem.Visible = false;
+            // 
+            // WiiWareMenuList
+            // 
+            this.WiiWareMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.WiiWareMenuList.Name = "WiiWareMenuList";
+            this.WiiWareMenuList.Size = new System.Drawing.Size(163, 22);
+            this.WiiWareMenuList.Text = "WiiWare";
+            // 
+            // wwFakeMenuItem
+            // 
+            this.wwFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.wwFakeMenuItem.Name = "wwFakeMenuItem";
+            this.wwFakeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.wwFakeMenuItem.Text = "WiiWare";
+            this.wwFakeMenuItem.Visible = false;
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(155, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(160, 6);
+            // 
+            // dsiSystemToolStripMenu
+            // 
+            this.dsiSystemToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.dsi16x16;
+            this.dsiSystemToolStripMenu.Name = "dsiSystemToolStripMenu";
+            this.dsiSystemToolStripMenu.Size = new System.Drawing.Size(163, 22);
+            this.dsiSystemToolStripMenu.Text = "System";
+            // 
+            // dsiFakeSystemToolStripMenu
+            // 
+            this.dsiFakeSystemToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.dsiFakeSystemToolStripMenu.Name = "dsiFakeSystemToolStripMenu";
+            this.dsiFakeSystemToolStripMenu.Size = new System.Drawing.Size(163, 22);
+            this.dsiFakeSystemToolStripMenu.Text = "System";
+            this.dsiFakeSystemToolStripMenu.Visible = false;
             // 
             // dSiWareToolStripMenu
             // 
             this.dSiWareToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.dsi16x16;
             this.dSiWareToolStripMenu.Name = "dSiWareToolStripMenu";
-            this.dSiWareToolStripMenu.Size = new System.Drawing.Size(158, 22);
+            this.dSiWareToolStripMenu.Size = new System.Drawing.Size(163, 22);
             this.dSiWareToolStripMenu.Text = "DSiWare";
+            // 
+            // dSiWareFakeToolStripMenu
+            // 
+            this.dSiWareFakeToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
+            this.dSiWareFakeToolStripMenu.Name = "dSiWareFakeToolStripMenu";
+            this.dSiWareFakeToolStripMenu.Size = new System.Drawing.Size(163, 22);
+            this.dSiWareFakeToolStripMenu.Text = "DSiWare";
+            this.dSiWareFakeToolStripMenu.Visible = false;
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(155, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(160, 6);
             // 
             // RegionCodesList
             // 
@@ -249,7 +411,7 @@ namespace NUS_Downloader
             this.wiiRegionCodesMenu,
             this.dsiRegionCodesMenu});
             this.RegionCodesList.Name = "RegionCodesList";
-            this.RegionCodesList.Size = new System.Drawing.Size(158, 22);
+            this.RegionCodesList.Size = new System.Drawing.Size(163, 22);
             this.RegionCodesList.Text = "Region Codes";
             // 
             // wiiRegionCodesMenu
@@ -269,7 +431,15 @@ namespace NUS_Downloader
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(155, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(160, 6);
+            // 
+            // updateDatabaseToolStripMenuItem
+            // 
+            this.updateDatabaseToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.database_save;
+            this.updateDatabaseToolStripMenuItem.Name = "updateDatabaseToolStripMenuItem";
+            this.updateDatabaseToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.updateDatabaseToolStripMenuItem.Text = "Update Databases";
+            this.updateDatabaseToolStripMenuItem.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
             // 
             // extrasStrip
             // 
@@ -290,15 +460,120 @@ namespace NUS_Downloader
             this.extrasStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             this.extrasStrip.Opening += new System.ComponentModel.CancelEventHandler(this.extrasStrip_Opening);
             // 
+            // loadInfoFromTMDToolStripMenuItem
+            // 
+            this.loadInfoFromTMDToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.page_white_magnify;
+            this.loadInfoFromTMDToolStripMenuItem.Name = "loadInfoFromTMDToolStripMenuItem";
+            this.loadInfoFromTMDToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.loadInfoFromTMDToolStripMenuItem.Text = "Load Info from TMD";
+            this.loadInfoFromTMDToolStripMenuItem.Click += new System.EventHandler(this.loadInfoFromTMDToolStripMenuItem_Click);
+            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(174, 6);
             // 
+            // proxySettingsToolStripMenuItem
+            // 
+            this.proxySettingsToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.server_link;
+            this.proxySettingsToolStripMenuItem.Name = "proxySettingsToolStripMenuItem";
+            this.proxySettingsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.proxySettingsToolStripMenuItem.Text = "Proxy Settings";
+            this.proxySettingsToolStripMenuItem.Click += new System.EventHandler(this.proxySettingsToolStripMenuItem_Click);
+            // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(174, 6);
+            // 
+            // moreExtrasToolStripMenuItem
+            // 
+            this.moreExtrasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.runFolderFixToolStripMenuItem,
+            this.wiiBrewToolStripMenuItem,
+            this.removeNUSDFilesFoldersToolStripMenuItem,
+            this.databaseToolStripMenuItem});
+            this.moreExtrasToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.wrench;
+            this.moreExtrasToolStripMenuItem.Name = "moreExtrasToolStripMenuItem";
+            this.moreExtrasToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.moreExtrasToolStripMenuItem.Text = "More Extras...";
+            this.moreExtrasToolStripMenuItem.Visible = false;
+            // 
+            // runFolderFixToolStripMenuItem
+            // 
+            this.runFolderFixToolStripMenuItem.Name = "runFolderFixToolStripMenuItem";
+            this.runFolderFixToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.runFolderFixToolStripMenuItem.Text = "Run \'FolderFix\'";
+            this.runFolderFixToolStripMenuItem.Click += new System.EventHandler(this.runFolderFixToolStripMenuItem_Click);
+            // 
+            // wiiBrewToolStripMenuItem
+            // 
+            this.wiiBrewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mainPageToolStripMenuItem,
+            this.databasePageToolStripMenuItem});
+            this.wiiBrewToolStripMenuItem.Name = "wiiBrewToolStripMenuItem";
+            this.wiiBrewToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.wiiBrewToolStripMenuItem.Text = "WiiBrew";
+            // 
+            // mainPageToolStripMenuItem
+            // 
+            this.mainPageToolStripMenuItem.Name = "mainPageToolStripMenuItem";
+            this.mainPageToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.mainPageToolStripMenuItem.Text = "Main Page";
+            this.mainPageToolStripMenuItem.Click += new System.EventHandler(this.mainPageToolStripMenuItem_Click);
+            // 
+            // databasePageToolStripMenuItem
+            // 
+            this.databasePageToolStripMenuItem.Name = "databasePageToolStripMenuItem";
+            this.databasePageToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.databasePageToolStripMenuItem.Text = "Database Page";
+            this.databasePageToolStripMenuItem.Click += new System.EventHandler(this.databasePageToolStripMenuItem_Click);
+            // 
+            // removeNUSDFilesFoldersToolStripMenuItem
+            // 
+            this.removeNUSDFilesFoldersToolStripMenuItem.Name = "removeNUSDFilesFoldersToolStripMenuItem";
+            this.removeNUSDFilesFoldersToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.removeNUSDFilesFoldersToolStripMenuItem.Text = "Remove NUSD Files\\Folders";
+            this.removeNUSDFilesFoldersToolStripMenuItem.Click += new System.EventHandler(this.removeNUSDFilesFoldersToolStripMenuItem_Click);
+            // 
+            // databaseToolStripMenuItem
+            // 
+            this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.localTicketInventoryToolStripMenuItem});
+            this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
+            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.databaseToolStripMenuItem.Text = "Database";
+            // 
+            // localTicketInventoryToolStripMenuItem
+            // 
+            this.localTicketInventoryToolStripMenuItem.Name = "localTicketInventoryToolStripMenuItem";
+            this.localTicketInventoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.localTicketInventoryToolStripMenuItem.Text = "Local Ticket Inventory";
+            this.localTicketInventoryToolStripMenuItem.Click += new System.EventHandler(this.localTicketInventoryToolStripMenuItem_Click);
+            // 
+            // openNUSDDirectoryToolStripMenuItem
+            // 
+            this.openNUSDDirectoryToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.folder;
+            this.openNUSDDirectoryToolStripMenuItem.Name = "openNUSDDirectoryToolStripMenuItem";
+            this.openNUSDDirectoryToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.openNUSDDirectoryToolStripMenuItem.Text = "Open NUSD Directory";
+            this.openNUSDDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openNUSDDirectoryToolStripMenuItem_Click);
+            // 
+            // donateToolStripMenuItem
+            // 
+            this.donateToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.money;
+            this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
+            this.donateToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.donateToolStripMenuItem.Text = "Donate!";
+            this.donateToolStripMenuItem.Click += new System.EventHandler(this.donateToolStripMenuItem_Click);
+            // 
+            // aboutNUSDToolStripMenuItem
+            // 
+            this.aboutNUSDToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.information;
+            this.aboutNUSDToolStripMenuItem.Name = "aboutNUSDToolStripMenuItem";
+            this.aboutNUSDToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.aboutNUSDToolStripMenuItem.Text = "About NUSD";
+            this.aboutNUSDToolStripMenuItem.Click += new System.EventHandler(this.aboutNUSDToolStripMenuItem_Click);
             // 
             // proxyBox
             // 
@@ -353,6 +628,17 @@ namespace NUS_Downloader
             this.SaveProxyBtn.Text = "Save Proxy Settings";
             this.SaveProxyBtn.UseVisualStyleBackColor = true;
             this.SaveProxyBtn.Click += new System.EventHandler(this.SaveProxyBtn_Click);
+            // 
+            // ProxyAssistBtn
+            // 
+            this.ProxyAssistBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.ProxyAssistBtn.Image = global::NUS_Downloader.Properties.Resources.help;
+            this.ProxyAssistBtn.Location = new System.Drawing.Point(177, 79);
+            this.ProxyAssistBtn.Name = "ProxyAssistBtn";
+            this.ProxyAssistBtn.Size = new System.Drawing.Size(29, 26);
+            this.ProxyAssistBtn.TabIndex = 28;
+            this.ProxyAssistBtn.UseVisualStyleBackColor = true;
+            this.ProxyAssistBtn.Click += new System.EventHandler(this.ProxyAssistBtn_Click);
             // 
             // ProxyURL
             // 
@@ -471,10 +757,72 @@ namespace NUS_Downloader
             this.scriptsStrip.Text = "Hidden";
             this.scriptsStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             // 
+            // scriptsLocalMenuEntry
+            // 
+            this.scriptsLocalMenuEntry.Enabled = false;
+            this.scriptsLocalMenuEntry.Image = global::NUS_Downloader.Properties.Resources.script_code;
+            this.scriptsLocalMenuEntry.Name = "scriptsLocalMenuEntry";
+            this.scriptsLocalMenuEntry.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
+            this.scriptsLocalMenuEntry.Size = new System.Drawing.Size(205, 22);
+            this.scriptsLocalMenuEntry.Text = "Scripts (Local)";
+            // 
+            // scriptsDatabaseToolStripMenuItem
+            // 
+            this.scriptsDatabaseToolStripMenuItem.Enabled = false;
+            this.scriptsDatabaseToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_code_red;
+            this.scriptsDatabaseToolStripMenuItem.Name = "scriptsDatabaseToolStripMenuItem";
+            this.scriptsDatabaseToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.scriptsDatabaseToolStripMenuItem.Text = "Scripts (Database)";
+            // 
+            // loadNUSScriptToolStripMenuItem
+            // 
+            this.loadNUSScriptToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_go;
+            this.loadNUSScriptToolStripMenuItem.Name = "loadNUSScriptToolStripMenuItem";
+            this.loadNUSScriptToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
+            this.loadNUSScriptToolStripMenuItem.Text = "Load NUS Script";
+            this.loadNUSScriptToolStripMenuItem.Click += new System.EventHandler(this.loadNUSScriptToolStripMenuItem_Click);
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(202, 6);
+            // 
+            // emulateUpdate
+            // 
+            this.emulateUpdate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.uSANTSCToolStripMenuItem,
+            this.europePALToolStripMenuItem,
+            this.japanNTSCJToolStripMenuItem,
+            this.koreaToolStripMenuItem});
+            this.emulateUpdate.Image = global::NUS_Downloader.Properties.Resources.server_connect;
+            this.emulateUpdate.Name = "emulateUpdate";
+            this.emulateUpdate.Size = new System.Drawing.Size(205, 22);
+            this.emulateUpdate.Text = "Emulate Wii System Update";
+            this.emulateUpdate.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.emulateUpdate_DropDownItemClicked);
+            // 
+            // uSANTSCToolStripMenuItem
+            // 
+            this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
+            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.uSANTSCToolStripMenuItem.Text = "USA";
+            // 
+            // europePALToolStripMenuItem
+            // 
+            this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
+            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.europePALToolStripMenuItem.Text = "EUROPE";
+            // 
+            // japanNTSCJToolStripMenuItem
+            // 
+            this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
+            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.japanNTSCJToolStripMenuItem.Text = "JAPAN";
+            // 
+            // koreaToolStripMenuItem
+            // 
+            this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
+            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.koreaToolStripMenuItem.Text = "KOREA";
             // 
             // iosPatchGroupBox
             // 
@@ -615,17 +963,6 @@ namespace NUS_Downloader
             this.iosPatchCheckbox.UseVisualStyleBackColor = true;
             this.iosPatchCheckbox.CheckedChanged += new System.EventHandler(this.iosPatchCheckbox_CheckedChanged);
             // 
-            // ProxyAssistBtn
-            // 
-            this.ProxyAssistBtn.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ProxyAssistBtn.Image = global::NUS_Downloader.Properties.Resources.help;
-            this.ProxyAssistBtn.Location = new System.Drawing.Point(177, 79);
-            this.ProxyAssistBtn.Name = "ProxyAssistBtn";
-            this.ProxyAssistBtn.Size = new System.Drawing.Size(29, 26);
-            this.ProxyAssistBtn.TabIndex = 28;
-            this.ProxyAssistBtn.UseVisualStyleBackColor = true;
-            this.ProxyAssistBtn.Click += new System.EventHandler(this.ProxyAssistBtn_Click);
-            // 
             // keepenccontents
             // 
             this.keepenccontents.Checked = true;
@@ -703,343 +1040,6 @@ namespace NUS_Downloader
             this.localuse.Text = "Use Local Files If Present";
             this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
-            // 
-            // SystemMenuList
-            // 
-            this.SystemMenuList.AutoSize = false;
-            this.SystemMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
-            this.SystemMenuList.Name = "SystemMenuList";
-            this.SystemMenuList.Size = new System.Drawing.Size(158, 22);
-            this.SystemMenuList.Text = "System";
-            // 
-            // systemFakeMenuItem
-            // 
-            this.systemFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
-            this.systemFakeMenuItem.Name = "systemFakeMenuItem";
-            this.systemFakeMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.systemFakeMenuItem.Text = "System";
-            this.systemFakeMenuItem.Visible = false;
-            // 
-            // IOSMenuList
-            // 
-            this.IOSMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
-            this.IOSMenuList.Name = "IOSMenuList";
-            this.IOSMenuList.Size = new System.Drawing.Size(158, 22);
-            this.IOSMenuList.Text = "IOS";
-            // 
-            // iosFakeMenuItem
-            // 
-            this.iosFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
-            this.iosFakeMenuItem.Name = "iosFakeMenuItem";
-            this.iosFakeMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.iosFakeMenuItem.Text = "IOS";
-            this.iosFakeMenuItem.Visible = false;
-            // 
-            // VCMenuList
-            // 
-            this.VCMenuList.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.C64MenuList,
-            this.GenesisMenuList,
-            this.MSXMenuList,
-            this.N64MenuList,
-            this.NeoGeoMenuList,
-            this.NESMenuList,
-            this.SegaMSMenuList,
-            this.SNESMenuList,
-            this.TurboGrafx16MenuList,
-            this.TurboGrafxCDMenuList,
-            this.VCArcadeMenuList});
-            this.VCMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
-            this.VCMenuList.Name = "VCMenuList";
-            this.VCMenuList.Size = new System.Drawing.Size(158, 22);
-            this.VCMenuList.Text = "Virtual Console";
-            // 
-            // C64MenuList
-            // 
-            this.C64MenuList.Name = "C64MenuList";
-            this.C64MenuList.Size = new System.Drawing.Size(182, 22);
-            this.C64MenuList.Text = "Commodore 64";
-            // 
-            // GenesisMenuList
-            // 
-            this.GenesisMenuList.Name = "GenesisMenuList";
-            this.GenesisMenuList.Size = new System.Drawing.Size(182, 22);
-            this.GenesisMenuList.Text = "Mega Drive/Genesis";
-            // 
-            // MSXMenuList
-            // 
-            this.MSXMenuList.Name = "MSXMenuList";
-            this.MSXMenuList.Size = new System.Drawing.Size(182, 22);
-            this.MSXMenuList.Text = "MSX";
-            // 
-            // N64MenuList
-            // 
-            this.N64MenuList.Name = "N64MenuList";
-            this.N64MenuList.Size = new System.Drawing.Size(182, 22);
-            this.N64MenuList.Text = "Nintendo 64";
-            // 
-            // NeoGeoMenuList
-            // 
-            this.NeoGeoMenuList.Name = "NeoGeoMenuList";
-            this.NeoGeoMenuList.Size = new System.Drawing.Size(182, 22);
-            this.NeoGeoMenuList.Text = "NeoGeo";
-            // 
-            // NESMenuList
-            // 
-            this.NESMenuList.Name = "NESMenuList";
-            this.NESMenuList.Size = new System.Drawing.Size(182, 22);
-            this.NESMenuList.Text = "NES";
-            // 
-            // SegaMSMenuList
-            // 
-            this.SegaMSMenuList.Name = "SegaMSMenuList";
-            this.SegaMSMenuList.Size = new System.Drawing.Size(182, 22);
-            this.SegaMSMenuList.Text = "Sega Master System";
-            // 
-            // SNESMenuList
-            // 
-            this.SNESMenuList.Name = "SNESMenuList";
-            this.SNESMenuList.Size = new System.Drawing.Size(182, 22);
-            this.SNESMenuList.Text = "SNES";
-            // 
-            // TurboGrafx16MenuList
-            // 
-            this.TurboGrafx16MenuList.Name = "TurboGrafx16MenuList";
-            this.TurboGrafx16MenuList.Size = new System.Drawing.Size(182, 22);
-            this.TurboGrafx16MenuList.Text = "TruboGrafx-16";
-            // 
-            // TurboGrafxCDMenuList
-            // 
-            this.TurboGrafxCDMenuList.Name = "TurboGrafxCDMenuList";
-            this.TurboGrafxCDMenuList.Size = new System.Drawing.Size(182, 22);
-            this.TurboGrafxCDMenuList.Text = "TurboGrafx-CD";
-            // 
-            // VCArcadeMenuList
-            // 
-            this.VCArcadeMenuList.Name = "VCArcadeMenuList";
-            this.VCArcadeMenuList.Size = new System.Drawing.Size(182, 22);
-            this.VCArcadeMenuList.Text = "Virtual Console Arcade";
-            // 
-            // vcFakeMenuItem
-            // 
-            this.vcFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
-            this.vcFakeMenuItem.Name = "vcFakeMenuItem";
-            this.vcFakeMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.vcFakeMenuItem.Text = "Virtual Console";
-            this.vcFakeMenuItem.Visible = false;
-            // 
-            // WiiWareMenuList
-            // 
-            this.WiiWareMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
-            this.WiiWareMenuList.Name = "WiiWareMenuList";
-            this.WiiWareMenuList.Size = new System.Drawing.Size(158, 22);
-            this.WiiWareMenuList.Text = "WiiWare";
-            // 
-            // wwFakeMenuItem
-            // 
-            this.wwFakeMenuItem.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
-            this.wwFakeMenuItem.Name = "wwFakeMenuItem";
-            this.wwFakeMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.wwFakeMenuItem.Text = "WiiWare";
-            this.wwFakeMenuItem.Visible = false;
-            // 
-            // dsiSystemToolStripMenu
-            // 
-            this.dsiSystemToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.dsi16x16;
-            this.dsiSystemToolStripMenu.Name = "dsiSystemToolStripMenu";
-            this.dsiSystemToolStripMenu.Size = new System.Drawing.Size(158, 22);
-            this.dsiSystemToolStripMenu.Text = "System";
-            // 
-            // dsiFakeSystemToolStripMenu
-            // 
-            this.dsiFakeSystemToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
-            this.dsiFakeSystemToolStripMenu.Name = "dsiFakeSystemToolStripMenu";
-            this.dsiFakeSystemToolStripMenu.Size = new System.Drawing.Size(158, 22);
-            this.dsiFakeSystemToolStripMenu.Text = "System";
-            this.dsiFakeSystemToolStripMenu.Visible = false;
-            // 
-            // dSiWareFakeToolStripMenu
-            // 
-            this.dSiWareFakeToolStripMenu.Image = global::NUS_Downloader.Properties.Resources.arrow_ticker;
-            this.dSiWareFakeToolStripMenu.Name = "dSiWareFakeToolStripMenu";
-            this.dSiWareFakeToolStripMenu.Size = new System.Drawing.Size(158, 22);
-            this.dSiWareFakeToolStripMenu.Text = "DSiWare";
-            this.dSiWareFakeToolStripMenu.Visible = false;
-            // 
-            // updateDatabaseToolStripMenuItem
-            // 
-            this.updateDatabaseToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.database_save;
-            this.updateDatabaseToolStripMenuItem.Name = "updateDatabaseToolStripMenuItem";
-            this.updateDatabaseToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.updateDatabaseToolStripMenuItem.Text = "Update Database";
-            this.updateDatabaseToolStripMenuItem.Click += new System.EventHandler(this.updateDatabaseToolStripMenuItem_Click);
-            // 
-            // loadInfoFromTMDToolStripMenuItem
-            // 
-            this.loadInfoFromTMDToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.page_white_magnify;
-            this.loadInfoFromTMDToolStripMenuItem.Name = "loadInfoFromTMDToolStripMenuItem";
-            this.loadInfoFromTMDToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.loadInfoFromTMDToolStripMenuItem.Text = "Load Info from TMD";
-            this.loadInfoFromTMDToolStripMenuItem.Click += new System.EventHandler(this.loadInfoFromTMDToolStripMenuItem_Click);
-            // 
-            // proxySettingsToolStripMenuItem
-            // 
-            this.proxySettingsToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.server_link;
-            this.proxySettingsToolStripMenuItem.Name = "proxySettingsToolStripMenuItem";
-            this.proxySettingsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.proxySettingsToolStripMenuItem.Text = "Proxy Settings";
-            this.proxySettingsToolStripMenuItem.Click += new System.EventHandler(this.proxySettingsToolStripMenuItem_Click);
-            // 
-            // moreExtrasToolStripMenuItem
-            // 
-            this.moreExtrasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.runFolderFixToolStripMenuItem,
-            this.wiiBrewToolStripMenuItem,
-            this.removeNUSDFilesFoldersToolStripMenuItem,
-            this.databaseToolStripMenuItem});
-            this.moreExtrasToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.wrench;
-            this.moreExtrasToolStripMenuItem.Name = "moreExtrasToolStripMenuItem";
-            this.moreExtrasToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.moreExtrasToolStripMenuItem.Text = "More Extras...";
-            this.moreExtrasToolStripMenuItem.Visible = false;
-            // 
-            // runFolderFixToolStripMenuItem
-            // 
-            this.runFolderFixToolStripMenuItem.Name = "runFolderFixToolStripMenuItem";
-            this.runFolderFixToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.runFolderFixToolStripMenuItem.Text = "Run \'FolderFix\'";
-            this.runFolderFixToolStripMenuItem.Click += new System.EventHandler(this.runFolderFixToolStripMenuItem_Click);
-            // 
-            // wiiBrewToolStripMenuItem
-            // 
-            this.wiiBrewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mainPageToolStripMenuItem,
-            this.databasePageToolStripMenuItem});
-            this.wiiBrewToolStripMenuItem.Name = "wiiBrewToolStripMenuItem";
-            this.wiiBrewToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.wiiBrewToolStripMenuItem.Text = "WiiBrew";
-            // 
-            // mainPageToolStripMenuItem
-            // 
-            this.mainPageToolStripMenuItem.Name = "mainPageToolStripMenuItem";
-            this.mainPageToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.mainPageToolStripMenuItem.Text = "Main Page";
-            this.mainPageToolStripMenuItem.Click += new System.EventHandler(this.mainPageToolStripMenuItem_Click);
-            // 
-            // databasePageToolStripMenuItem
-            // 
-            this.databasePageToolStripMenuItem.Name = "databasePageToolStripMenuItem";
-            this.databasePageToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.databasePageToolStripMenuItem.Text = "Database Page";
-            this.databasePageToolStripMenuItem.Click += new System.EventHandler(this.databasePageToolStripMenuItem_Click);
-            // 
-            // removeNUSDFilesFoldersToolStripMenuItem
-            // 
-            this.removeNUSDFilesFoldersToolStripMenuItem.Name = "removeNUSDFilesFoldersToolStripMenuItem";
-            this.removeNUSDFilesFoldersToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.removeNUSDFilesFoldersToolStripMenuItem.Text = "Remove NUSD Files\\Folders";
-            this.removeNUSDFilesFoldersToolStripMenuItem.Click += new System.EventHandler(this.removeNUSDFilesFoldersToolStripMenuItem_Click);
-            // 
-            // databaseToolStripMenuItem
-            // 
-            this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.localTicketInventoryToolStripMenuItem});
-            this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
-            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.databaseToolStripMenuItem.Text = "Database";
-            // 
-            // localTicketInventoryToolStripMenuItem
-            // 
-            this.localTicketInventoryToolStripMenuItem.Name = "localTicketInventoryToolStripMenuItem";
-            this.localTicketInventoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.localTicketInventoryToolStripMenuItem.Text = "Local Ticket Inventory";
-            this.localTicketInventoryToolStripMenuItem.Click += new System.EventHandler(this.localTicketInventoryToolStripMenuItem_Click);
-            // 
-            // openNUSDDirectoryToolStripMenuItem
-            // 
-            this.openNUSDDirectoryToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.folder;
-            this.openNUSDDirectoryToolStripMenuItem.Name = "openNUSDDirectoryToolStripMenuItem";
-            this.openNUSDDirectoryToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.openNUSDDirectoryToolStripMenuItem.Text = "Open NUSD Directory";
-            this.openNUSDDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openNUSDDirectoryToolStripMenuItem_Click);
-            // 
-            // donateToolStripMenuItem
-            // 
-            this.donateToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.money;
-            this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
-            this.donateToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.donateToolStripMenuItem.Text = "Donate!";
-            this.donateToolStripMenuItem.Click += new System.EventHandler(this.donateToolStripMenuItem_Click);
-            // 
-            // aboutNUSDToolStripMenuItem
-            // 
-            this.aboutNUSDToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.information;
-            this.aboutNUSDToolStripMenuItem.Name = "aboutNUSDToolStripMenuItem";
-            this.aboutNUSDToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.aboutNUSDToolStripMenuItem.Text = "About NUSD";
-            this.aboutNUSDToolStripMenuItem.Click += new System.EventHandler(this.aboutNUSDToolStripMenuItem_Click);
-            // 
-            // scriptsLocalMenuEntry
-            // 
-            this.scriptsLocalMenuEntry.Enabled = false;
-            this.scriptsLocalMenuEntry.Image = global::NUS_Downloader.Properties.Resources.script_code;
-            this.scriptsLocalMenuEntry.Name = "scriptsLocalMenuEntry";
-            this.scriptsLocalMenuEntry.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
-            this.scriptsLocalMenuEntry.Size = new System.Drawing.Size(205, 22);
-            this.scriptsLocalMenuEntry.Text = "Scripts (Local)";
-            // 
-            // scriptsDatabaseToolStripMenuItem
-            // 
-            this.scriptsDatabaseToolStripMenuItem.Enabled = false;
-            this.scriptsDatabaseToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_code_red;
-            this.scriptsDatabaseToolStripMenuItem.Name = "scriptsDatabaseToolStripMenuItem";
-            this.scriptsDatabaseToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-            this.scriptsDatabaseToolStripMenuItem.Text = "Scripts (Database)";
-            // 
-            // loadNUSScriptToolStripMenuItem
-            // 
-            this.loadNUSScriptToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.script_go;
-            this.loadNUSScriptToolStripMenuItem.Name = "loadNUSScriptToolStripMenuItem";
-            this.loadNUSScriptToolStripMenuItem.Size = new System.Drawing.Size(205, 22);
-            this.loadNUSScriptToolStripMenuItem.Text = "Load NUS Script";
-            this.loadNUSScriptToolStripMenuItem.Click += new System.EventHandler(this.loadNUSScriptToolStripMenuItem_Click);
-            // 
-            // emulateUpdate
-            // 
-            this.emulateUpdate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.uSANTSCToolStripMenuItem,
-            this.europePALToolStripMenuItem,
-            this.japanNTSCJToolStripMenuItem,
-            this.koreaToolStripMenuItem});
-            this.emulateUpdate.Image = global::NUS_Downloader.Properties.Resources.server_connect;
-            this.emulateUpdate.Name = "emulateUpdate";
-            this.emulateUpdate.Size = new System.Drawing.Size(205, 22);
-            this.emulateUpdate.Text = "Emulate Wii System Update";
-            this.emulateUpdate.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.emulateUpdate_DropDownItemClicked);
-            // 
-            // uSANTSCToolStripMenuItem
-            // 
-            this.uSANTSCToolStripMenuItem.Name = "uSANTSCToolStripMenuItem";
-            this.uSANTSCToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
-            this.uSANTSCToolStripMenuItem.Text = "USA";
-            // 
-            // europePALToolStripMenuItem
-            // 
-            this.europePALToolStripMenuItem.Name = "europePALToolStripMenuItem";
-            this.europePALToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
-            this.europePALToolStripMenuItem.Text = "EUROPE";
-            // 
-            // japanNTSCJToolStripMenuItem
-            // 
-            this.japanNTSCJToolStripMenuItem.Name = "japanNTSCJToolStripMenuItem";
-            this.japanNTSCJToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
-            this.japanNTSCJToolStripMenuItem.Text = "JAPAN";
-            // 
-            // koreaToolStripMenuItem
-            // 
-            this.koreaToolStripMenuItem.Name = "koreaToolStripMenuItem";
-            this.koreaToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
-            this.koreaToolStripMenuItem.Text = "KOREA";
             // 
             // Form1
             // 

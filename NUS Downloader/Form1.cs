@@ -1754,7 +1754,7 @@ namespace NUS_Downloader
         }
 
         /// <summary>
-        /// Retrieves the new database via WiiBrew.
+        /// Retrieves the new database file.
         /// </summary>
         /// <returns>Database as a String</returns>
         private void RetrieveNewDatabase(object sender, DoWorkEventArgs e)
@@ -1763,42 +1763,53 @@ namespace NUS_Downloader
             WebClient databasedl = new WebClient();
 
             // Proxy
-            databasedl = ConfigureWithProxy(databasedl);
-
-            string wiibrewsource =
-                databasedl.DownloadString("http://www.wiibrew.org/wiki/NUS_Downloader/database?cachesmash=" +
+            //databasedl = ConfigureWithProxy(databasedl);
+ 
+            string databaseSource =
+                databasedl.DownloadString(e.Argument.ToString() + "?cachesmash=" +
                                           System.DateTime.Now.ToString());
 
             // Strip out HTML
-            wiibrewsource = Regex.Replace(wiibrewsource, @"<(.|\n)*?>", "");
+            databaseSource = Regex.Replace(databaseSource, @"<(.|\n)*?>", "");
 
             // Shrink to fix only the database
             string startofdatabase = "&lt;database v";
             string endofdatabase = "&lt;/database&gt;";
-            wiibrewsource = wiibrewsource.Substring(wiibrewsource.IndexOf(startofdatabase),
-                                                    wiibrewsource.Length - wiibrewsource.IndexOf(startofdatabase));
-            wiibrewsource = wiibrewsource.Substring(0, wiibrewsource.IndexOf(endofdatabase) + endofdatabase.Length);
+            databaseSource = databaseSource.Substring(databaseSource.IndexOf(startofdatabase),
+                                                    databaseSource.Length - databaseSource.IndexOf(startofdatabase));
+            databaseSource = databaseSource.Substring(0, databaseSource.IndexOf(endofdatabase) + endofdatabase.Length);
 
             // Fix ", <, >, and spaces
-            wiibrewsource = wiibrewsource.Replace("&lt;", "<");
-            wiibrewsource = wiibrewsource.Replace("&gt;", ">");
-            wiibrewsource = wiibrewsource.Replace("&quot;", '"'.ToString());
-            wiibrewsource = wiibrewsource.Replace("&nbsp;", " "); // Shouldn't occur, but they happen...
+            databaseSource = databaseSource.Replace("&lt;", "<");
+            databaseSource = databaseSource.Replace("&gt;", ">");
+            databaseSource = databaseSource.Replace("&quot;", '"'.ToString());
+            databaseSource = databaseSource.Replace("&nbsp;", " "); // Shouldn't occur, but they happen...
 
             // Return parsed xml database...
-            e.Result = wiibrewsource;
+            e.Result = databaseSource;
         }
 
         private void RetrieveNewDatabase_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
             string database = e.Result.ToString();
+
+            string databaseFilename = "";
+            if (database.Contains("DSISYSTEM"))
+            {
+                databaseFilename = "dsidatabase.xml";
+            }
+            else if (database.Contains("0000000100000002"))
+            {
+                databaseFilename = "database.xml";
+            }
+
             try
             {
                 Database db = new Database();
-                db.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, "database.xml"));
+                db.LoadDatabaseToStream(Path.Combine(CURRENT_DIR, databaseFilename));
                 string currentversion = db.GetDatabaseVersion();
                 string onlineversion = Database.GetDatabaseVersion(database);
-                WriteStatus(" - Database successfully parsed!");
+                WriteStatus(String.Format(" - Database successfully parsed! ({0})", databaseFilename));
                 WriteStatus("   - Current Database Version: " + currentversion);
                 WriteStatus("   - Online Database Version: " + onlineversion);
 
@@ -1815,15 +1826,15 @@ namespace NUS_Downloader
             }
 
             bool isCreation = false;
-            if (File.Exists("database.xml"))
+            if (File.Exists(databaseFilename))
             {
-                WriteStatus(" - Overwriting your current database.xml...");
-                WriteStatus(" - The old database will become 'olddatabase.xml' in case the new one is faulty.");
+                WriteStatus(" - Overwriting your current database...");
+                WriteStatus(" - The old database will become 'old*database.xml' in case the new one is faulty.");
 
-                string olddatabase = File.ReadAllText("database.xml");
-                File.WriteAllText("olddatabase.xml", olddatabase);
-                File.Delete("database.xml");
-                File.WriteAllText("database.xml", database);
+                string olddatabase = File.ReadAllText(databaseFilename);
+                File.WriteAllText("old" + databaseFilename, olddatabase);
+                File.Delete(databaseFilename);
+                File.WriteAllText(databaseFilename, database);
             }
             else
             {
@@ -1851,12 +1862,19 @@ namespace NUS_Downloader
         private void updateDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             statusbox.Text = "";
-            WriteStatus("Updating your database.xml from Wiibrew.org");
+            WriteStatus("Updating your databases from Wiibrew/DSibrew");
+
+            string[] wiibrewValues = new string[] { "http://www.wiibrew.org/wiki/NUS_Downloader/database", "http://www.dsibrew.org/wiki/NUS_Downloader/database" };
 
             BackgroundWorker dbFetcher = new BackgroundWorker();
             dbFetcher.DoWork += new DoWorkEventHandler(RetrieveNewDatabase);
             dbFetcher.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RetrieveNewDatabase_Completed);
-            dbFetcher.RunWorkerAsync();
+            dbFetcher.RunWorkerAsync(wiibrewValues[0]);
+
+            BackgroundWorker dbDsiFetcher = new BackgroundWorker();
+            dbDsiFetcher.DoWork += new DoWorkEventHandler(RetrieveNewDatabase);
+            dbDsiFetcher.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RetrieveNewDatabase_Completed);
+            dbDsiFetcher.RunWorkerAsync(wiibrewValues[1]);
         }
 
         private void loadInfoFromTMDToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2943,7 +2961,6 @@ namespace NUS_Downloader
                 databaseButton.Text = "    [. ]";
             else if (e.ProgressPercentage == 100)
                 databaseButton.Text = "    [..]";
-            
         }
 
         private void wiiRegionCodesMenu_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
