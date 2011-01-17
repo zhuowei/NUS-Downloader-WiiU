@@ -135,7 +135,7 @@ namespace NUS_Downloader
             localuse.Checked = true; // Use local content if already downloaded - default ON
             decryptbox.Checked = false;
             keepenccontents.Checked = false;
-            consoleCBox.SelectedIndex = 0; // 0 is Wii, 1 is DS
+            //consoleCBox.SelectedIndex = 0; // 0 is Wii, 1 is DS
 
             // Clear 3 items in ios patches list. This feature is not supported in the command line version at this time.
             iosPatchCheckbox.Checked = false;
@@ -252,7 +252,7 @@ namespace NUS_Downloader
         {
             this.Text = String.Format("NUSD - {0}", version); ;
             this.Size = this.MinimumSize;
-            consoleCBox.SelectedIndex = 0;
+            serverLbl.Text = "Wii";
         }
 
         private bool NUSDFileExists(string filename)
@@ -691,9 +691,9 @@ namespace NUS_Downloader
             nusClient.ContinueWithoutTicket = true;
 
             // Server
-            if (consoleCBox.SelectedIndex == 0)
+            if (serverLbl.Text == "Wii")
                 nusClient.SetToWiiServer();
-            else if (consoleCBox.SelectedIndex == 1)
+            else if (serverLbl.Text == "DSi")
                 nusClient.SetToDSiServer();
 
             // Events
@@ -839,24 +839,6 @@ namespace NUS_Downloader
 
             if (IsWin7())
                 dlprogress.ShowInTaskbar = false;
-        }
-
-        private void consoleCBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (consoleCBox.SelectedIndex == 0)
-            {
-                // Can pack WADs / Decrypt
-                packbox.Enabled = true;
-                decryptbox.Enabled = true;
-            }
-            if (consoleCBox.SelectedIndex == 1)
-            {
-                // Cannot Pack WADs
-                packbox.Checked = false;
-                packbox.Enabled = false;
-                wadnamebox.Enabled = false;
-                wadnamebox.Text = "";
-            }
         }
 
         private void packbox_CheckedChanged(object sender, EventArgs e)
@@ -1358,12 +1340,12 @@ namespace NUS_Downloader
                 foreach (System.Windows.Forms.ToolStripMenuItem tsmi in wiiMenuLists)
                 {
                     if (tsmi.Name == e.ClickedItem.OwnerItem.Name)
-                        consoleCBox.SelectedIndex = 0;
+                        serverLbl.Text = "Wii";
                 }
                 foreach (System.Windows.Forms.ToolStripMenuItem tsmi in dsiMenuLists)
                 {
                     if (tsmi.Name == e.ClickedItem.OwnerItem.Name)
-                        consoleCBox.SelectedIndex = 1;
+                        serverLbl.Text = "DSi";
                 }
             }
 
@@ -1394,12 +1376,12 @@ namespace NUS_Downloader
                 foreach (System.Windows.Forms.ToolStripMenuItem tsmi in wiiMenuLists)
                 {
                     if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.Name)
-                        consoleCBox.SelectedIndex = 0;
+                        serverLbl.Text = "Wii";
                 }
                 foreach (System.Windows.Forms.ToolStripMenuItem tsmi in dsiMenuLists)
                 {
                     if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.Name)
-                        consoleCBox.SelectedIndex = 1;
+                        serverLbl.Text = "DSi";
                 }
             }
 
@@ -1450,12 +1432,12 @@ namespace NUS_Downloader
                     foreach (System.Windows.Forms.ToolStripMenuItem tsmi in wiiMenuLists)
                     {
                         if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.OwnerItem.Name)
-                            consoleCBox.SelectedIndex = 0;
+                            serverLbl.Text = "Wii";
                     }
                     foreach (System.Windows.Forms.ToolStripMenuItem tsmi in dsiMenuLists)
                     {
                         if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.OwnerItem.Name)
-                            consoleCBox.SelectedIndex = 1;
+                            serverLbl.Text = "DSi";
                     }
                 }
                 else
@@ -1475,12 +1457,12 @@ namespace NUS_Downloader
                     foreach (System.Windows.Forms.ToolStripMenuItem tsmi in wiiMenuLists)
                     {
                         if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.Name)
-                            consoleCBox.SelectedIndex = 0;
+                            serverLbl.Text = "Wii";
                     }
                     foreach (System.Windows.Forms.ToolStripMenuItem tsmi in dsiMenuLists)
                     {
                         if (tsmi.Name == e.ClickedItem.OwnerItem.OwnerItem.Name)
-                            consoleCBox.SelectedIndex = 1;
+                            serverLbl.Text = "DSi";
                     }
                 }
             }
@@ -1614,7 +1596,7 @@ namespace NUS_Downloader
             decryptbox.Enabled = enabled;
             keepenccontents.Enabled = enabled;
             scriptsbutton.Enabled = enabled;
-            consoleCBox.Enabled = enabled;
+            serverLbl.Enabled = enabled;
             iosPatchCheckbox.Enabled = enabled;
         }
 
@@ -2898,7 +2880,7 @@ namespace NUS_Downloader
         {
             // Alters icons if tickets exist locally...
             WriteStatus("Adding ticket information to database entries...");
-            ToolStripMenuItem[] Lists = new ToolStripMenuItem[4] { SystemMenuList, IOSMenuList, VCMenuList, WiiWareMenuList };
+            ToolStripMenuItem[] Lists = new ToolStripMenuItem[6] { SystemMenuList, IOSMenuList, VCMenuList, WiiWareMenuList, dsiSystemToolStripMenu, dSiWareToolStripMenu };
 
             for (int l = 0; l < Lists.Length; l++)
             {
@@ -2973,6 +2955,51 @@ namespace NUS_Downloader
         {
             if (titleidbox.Text.Length == 16)
                 titleidbox.Text = titleidbox.Text.Substring(0, 14) + e.ClickedItem.Text.Substring(0, 2);
+        }
+
+        private void serverLbl_MouseEnter(object sender, EventArgs e)
+        {
+            serverLbl.Font = new Font(serverLbl.Font, FontStyle.Underline);
+        }
+
+        private void serverLbl_MouseLeave(object sender, EventArgs e)
+        {
+            serverLbl.Font = new Font(serverLbl.Font, FontStyle.Regular);
+        }
+
+        private void serverLbl_TextChanged(object sender, EventArgs e)
+        {
+            if (serverLbl.Text == "Wii")
+            {
+                // Can pack WADs / Decrypt
+                packbox.Enabled = true;
+            }
+            if (serverLbl.Text == "DSi")
+            {
+                // Cannot Pack WADs
+                packbox.Checked = false;
+                packbox.Enabled = false;
+                wadnamebox.Enabled = false;
+                wadnamebox.Text = "";
+            }
+        }
+
+        private void serverLbl_Click(object sender, EventArgs e)
+        {
+            // Switch what server is displayed in the label, when clicked.
+            string[] serverLblServers = new string[2] { "Wii", "DSi" };
+
+            for (int a = 0; a < serverLblServers.Length; a++)
+            {
+                if (serverLbl.Text == serverLblServers[a])
+                {
+                    if (serverLblServers.Length == (a + 1))
+                        serverLbl.Text = serverLblServers[0];
+                    else
+                        serverLbl.Text = serverLblServers[a+1];
+                    break;
+                }
+            }
         }
     }
 }

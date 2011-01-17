@@ -23,19 +23,34 @@ namespace libWiiSharp
         private static string koreanKey = "63b82bb4f4614e2e13f2fefbba4c9b7e";
         private static string dsiKey = "af1bf516a807d21aea45984f04742861";
 
+        private static string currentDir = System.IO.Directory.GetCurrentDirectory();
+
+        private static string standardKeyName = "key.bin";
+        private static string koreanKeyName = "kkey.bin";
+        private static string dsiKeyName = "dsikey.bin";
+
         public static byte[] GetStandardKey()
         {
-            return Shared.HexStringToByteArray(standardKey);
+            if (System.IO.File.Exists(System.IO.Path.Combine(currentDir, standardKeyName)))
+                return System.IO.File.ReadAllBytes(System.IO.Path.Combine(currentDir, standardKeyName));
+            else
+                return Shared.HexStringToByteArray(standardKey);
         }
 
         public static byte[] GetKoreanKey()
         {
-            return Shared.HexStringToByteArray(koreanKey);
+            if (System.IO.File.Exists(System.IO.Path.Combine(currentDir, koreanKeyName)))
+                return System.IO.File.ReadAllBytes(System.IO.Path.Combine(currentDir, koreanKeyName));
+            else
+                return Shared.HexStringToByteArray(koreanKey);
         }
 
         public static byte[] GetDSiKey()
         {
-            return Shared.HexStringToByteArray(dsiKey);
+            if (System.IO.File.Exists(System.IO.Path.Combine(currentDir, dsiKeyName)))
+                return System.IO.File.ReadAllBytes(System.IO.Path.Combine(currentDir, dsiKeyName));
+            else
+                return Shared.HexStringToByteArray(dsiKey);
         }
     }
 }
