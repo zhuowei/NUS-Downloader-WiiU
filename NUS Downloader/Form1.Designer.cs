@@ -103,7 +103,6 @@ namespace NUS_Downloader
             this.SaveProxyPwdBtn = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.ProxyPwdBox = new System.Windows.Forms.TextBox();
-            this.consoleCBox = new System.Windows.Forms.ComboBox();
             this.scriptsbutton = new System.Windows.Forms.Button();
             this.scriptsStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.scriptsLocalMenuEntry = new System.Windows.Forms.ToolStripMenuItem();
@@ -121,9 +120,6 @@ namespace NUS_Downloader
             this.iosPatchGroupBoxOKbtn = new System.Windows.Forms.Button();
             this.richPanel = new System.Windows.Forms.Panel();
             this.databaseButton = new System.Windows.Forms.Button();
-            this.titleversion = new wmgCMS.WaterMarkTextBox();
-            this.titleidbox = new wmgCMS.WaterMarkTextBox();
-            this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
             this.saveaswadbtn = new System.Windows.Forms.Button();
             this.iosPatchCheckbox = new System.Windows.Forms.CheckBox();
             this.keepenccontents = new System.Windows.Forms.CheckBox();
@@ -131,6 +127,10 @@ namespace NUS_Downloader
             this.packbox = new System.Windows.Forms.CheckBox();
             this.decryptbox = new System.Windows.Forms.CheckBox();
             this.localuse = new System.Windows.Forms.CheckBox();
+            this.titleidbox = new wmgCMS.WaterMarkTextBox();
+            this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
+            this.titleversion = new wmgCMS.WaterMarkTextBox();
+            this.serverLbl = new System.Windows.Forms.Label();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -183,7 +183,7 @@ namespace NUS_Downloader
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Location = new System.Drawing.Point(194, 45);
+            this.label1.Location = new System.Drawing.Point(159, 45);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(13, 13);
             this.label1.TabIndex = 0;
@@ -193,10 +193,10 @@ namespace NUS_Downloader
             // 
             this.wadnamebox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.wadnamebox.Enabled = false;
-            this.wadnamebox.Location = new System.Drawing.Point(103, 416);
+            this.wadnamebox.Location = new System.Drawing.Point(102, 390);
             this.wadnamebox.MaxLength = 99999;
             this.wadnamebox.Name = "wadnamebox";
-            this.wadnamebox.Size = new System.Drawing.Size(159, 20);
+            this.wadnamebox.Size = new System.Drawing.Size(161, 20);
             this.wadnamebox.TabIndex = 17;
             // 
             // databaseStrip
@@ -222,7 +222,7 @@ namespace NUS_Downloader
             this.updateDatabaseToolStripMenuItem});
             this.databaseStrip.Name = "databaseStrip";
             this.databaseStrip.ShowItemToolTips = false;
-            this.databaseStrip.Size = new System.Drawing.Size(164, 352);
+            this.databaseStrip.Size = new System.Drawing.Size(164, 330);
             this.databaseStrip.Text = "Hidden";
             this.databaseStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             // 
@@ -717,20 +717,6 @@ namespace NUS_Downloader
             this.ProxyPwdBox.UseSystemPasswordChar = true;
             this.ProxyPwdBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ProxyPwdBox_KeyPress);
             // 
-            // consoleCBox
-            // 
-            this.consoleCBox.DropDownWidth = 38;
-            this.consoleCBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.consoleCBox.FormattingEnabled = true;
-            this.consoleCBox.Items.AddRange(new object[] {
-            "Wii",
-            "DSi"});
-            this.consoleCBox.Location = new System.Drawing.Point(12, 389);
-            this.consoleCBox.Name = "consoleCBox";
-            this.consoleCBox.Size = new System.Drawing.Size(58, 21);
-            this.consoleCBox.TabIndex = 6;
-            this.consoleCBox.SelectedIndexChanged += new System.EventHandler(this.consoleCBox_SelectedIndexChanged);
-            // 
             // scriptsbutton
             // 
             this.scriptsbutton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -893,40 +879,6 @@ namespace NUS_Downloader
             this.databaseButton.UseVisualStyleBackColor = true;
             this.databaseButton.Click += new System.EventHandler(this.DatabaseButton_Click);
             // 
-            // titleversion
-            // 
-            this.titleversion.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.titleversion.Location = new System.Drawing.Point(204, 38);
-            this.titleversion.MaxLength = 8;
-            this.titleversion.Name = "titleversion";
-            this.titleversion.Size = new System.Drawing.Size(58, 21);
-            this.titleversion.TabIndex = 4;
-            this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titleversion.WaterMarkColor = System.Drawing.Color.Silver;
-            this.titleversion.WaterMarkText = "Version";
-            this.titleversion.TextChanged += new System.EventHandler(this.titleversion_TextChanged);
-            // 
-            // titleidbox
-            // 
-            this.titleidbox.Font = new System.Drawing.Font("Tahoma", 8.25F);
-            this.titleidbox.Location = new System.Drawing.Point(12, 38);
-            this.titleidbox.MaxLength = 16;
-            this.titleidbox.Name = "titleidbox";
-            this.titleidbox.Size = new System.Drawing.Size(176, 21);
-            this.titleidbox.TabIndex = 3;
-            this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.titleidbox.WaterMarkColor = System.Drawing.Color.Silver;
-            this.titleidbox.WaterMarkText = "Title ID";
-            this.titleidbox.TextChanged += new System.EventHandler(this.titleidbox_TextChanged);
-            // 
-            // dlprogress
-            // 
-            this.dlprogress.ContainerControl = this;
-            this.dlprogress.Location = new System.Drawing.Point(12, 95);
-            this.dlprogress.Name = "dlprogress";
-            this.dlprogress.Size = new System.Drawing.Size(250, 15);
-            this.dlprogress.TabIndex = 47;
-            // 
             // saveaswadbtn
             // 
             this.saveaswadbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -936,7 +888,7 @@ namespace NUS_Downloader
             this.saveaswadbtn.Enabled = false;
             this.saveaswadbtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.saveaswadbtn.Image = global::NUS_Downloader.Properties.Resources.disk;
-            this.saveaswadbtn.Location = new System.Drawing.Point(238, 435);
+            this.saveaswadbtn.Location = new System.Drawing.Point(239, 409);
             this.saveaswadbtn.MaximumSize = new System.Drawing.Size(0, 24);
             this.saveaswadbtn.MinimumSize = new System.Drawing.Size(0, 24);
             this.saveaswadbtn.Name = "saveaswadbtn";
@@ -954,7 +906,7 @@ namespace NUS_Downloader
             this.iosPatchCheckbox.Enabled = false;
             this.iosPatchCheckbox.Image = global::NUS_Downloader.Properties.Resources.bug_add;
             this.iosPatchCheckbox.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.iosPatchCheckbox.Location = new System.Drawing.Point(12, 488);
+            this.iosPatchCheckbox.Location = new System.Drawing.Point(11, 487);
             this.iosPatchCheckbox.Name = "iosPatchCheckbox";
             this.iosPatchCheckbox.Size = new System.Drawing.Size(104, 24);
             this.iosPatchCheckbox.TabIndex = 10;
@@ -969,9 +921,9 @@ namespace NUS_Downloader
             this.keepenccontents.CheckState = System.Windows.Forms.CheckState.Checked;
             this.keepenccontents.Image = global::NUS_Downloader.Properties.Resources.package;
             this.keepenccontents.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.keepenccontents.Location = new System.Drawing.Point(12, 436);
+            this.keepenccontents.Location = new System.Drawing.Point(11, 410);
             this.keepenccontents.Name = "keepenccontents";
-            this.keepenccontents.Size = new System.Drawing.Size(195, 26);
+            this.keepenccontents.Size = new System.Drawing.Size(177, 26);
             this.keepenccontents.TabIndex = 8;
             this.keepenccontents.Text = "Keep Encrypted Contents";
             this.keepenccontents.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1003,7 +955,7 @@ namespace NUS_Downloader
             // 
             this.packbox.Image = global::NUS_Downloader.Properties.Resources.box;
             this.packbox.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.packbox.Location = new System.Drawing.Point(12, 414);
+            this.packbox.Location = new System.Drawing.Point(11, 388);
             this.packbox.Name = "packbox";
             this.packbox.Size = new System.Drawing.Size(98, 22);
             this.packbox.TabIndex = 7;
@@ -1017,7 +969,7 @@ namespace NUS_Downloader
             // 
             this.decryptbox.Image = global::NUS_Downloader.Properties.Resources.package_green;
             this.decryptbox.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.decryptbox.Location = new System.Drawing.Point(12, 462);
+            this.decryptbox.Location = new System.Drawing.Point(11, 436);
             this.decryptbox.Name = "decryptbox";
             this.decryptbox.Size = new System.Drawing.Size(231, 26);
             this.decryptbox.TabIndex = 9;
@@ -1032,7 +984,7 @@ namespace NUS_Downloader
             this.localuse.CheckState = System.Windows.Forms.CheckState.Checked;
             this.localuse.Image = global::NUS_Downloader.Properties.Resources.drive_disk;
             this.localuse.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.localuse.Location = new System.Drawing.Point(91, 390);
+            this.localuse.Location = new System.Drawing.Point(11, 463);
             this.localuse.MinimumSize = new System.Drawing.Size(0, 22);
             this.localuse.Name = "localuse";
             this.localuse.Size = new System.Drawing.Size(162, 22);
@@ -1041,31 +993,79 @@ namespace NUS_Downloader
             this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
             // 
+            // titleidbox
+            // 
+            this.titleidbox.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            this.titleidbox.Location = new System.Drawing.Point(12, 38);
+            this.titleidbox.MaxLength = 16;
+            this.titleidbox.Name = "titleidbox";
+            this.titleidbox.Size = new System.Drawing.Size(141, 21);
+            this.titleidbox.TabIndex = 3;
+            this.titleidbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titleidbox.WaterMarkColor = System.Drawing.Color.Silver;
+            this.titleidbox.WaterMarkText = "Title ID";
+            this.titleidbox.TextChanged += new System.EventHandler(this.titleidbox_TextChanged);
+            // 
+            // dlprogress
+            // 
+            this.dlprogress.ContainerControl = this;
+            this.dlprogress.Location = new System.Drawing.Point(12, 95);
+            this.dlprogress.Name = "dlprogress";
+            this.dlprogress.Size = new System.Drawing.Size(250, 15);
+            this.dlprogress.TabIndex = 47;
+            // 
+            // titleversion
+            // 
+            this.titleversion.Font = new System.Drawing.Font("Tahoma", 8.25F);
+            this.titleversion.Location = new System.Drawing.Point(169, 38);
+            this.titleversion.MaxLength = 8;
+            this.titleversion.Name = "titleversion";
+            this.titleversion.Size = new System.Drawing.Size(58, 21);
+            this.titleversion.TabIndex = 4;
+            this.titleversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.titleversion.WaterMarkColor = System.Drawing.Color.Silver;
+            this.titleversion.WaterMarkText = "Version";
+            this.titleversion.TextChanged += new System.EventHandler(this.titleversion_TextChanged);
+            // 
+            // serverLbl
+            // 
+            this.serverLbl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.serverLbl.Location = new System.Drawing.Point(233, 38);
+            this.serverLbl.Name = "serverLbl";
+            this.serverLbl.Size = new System.Drawing.Size(29, 20);
+            this.serverLbl.TabIndex = 57;
+            this.serverLbl.Text = "Wii";
+            this.serverLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.serverLbl.TextChanged += new System.EventHandler(this.serverLbl_TextChanged);
+            this.serverLbl.Click += new System.EventHandler(this.serverLbl_Click);
+            this.serverLbl.MouseEnter += new System.EventHandler(this.serverLbl_MouseEnter);
+            this.serverLbl.MouseLeave += new System.EventHandler(this.serverLbl_MouseLeave);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(274, 516);
-            this.Controls.Add(this.saveaswadbtn);
+            this.Controls.Add(this.serverLbl);
             this.Controls.Add(this.iosPatchGroupBox);
-            this.Controls.Add(this.iosPatchCheckbox);
             this.Controls.Add(this.ProxyVerifyBox);
             this.Controls.Add(this.proxyBox);
             this.Controls.Add(this.scriptsbutton);
-            this.Controls.Add(this.titleversion);
             this.Controls.Add(this.titleidbox);
             this.Controls.Add(this.dlprogress);
-            this.Controls.Add(this.consoleCBox);
+            this.Controls.Add(this.titleversion);
             this.Controls.Add(this.databaseButton);
+            this.Controls.Add(this.iosPatchCheckbox);
+            this.Controls.Add(this.downloadstartbtn);
+            this.Controls.Add(this.clearButton);
             this.Controls.Add(this.keepenccontents);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.downloadstartbtn);
-            this.Controls.Add(this.wadnamebox);
-            this.Controls.Add(this.clearButton);
             this.Controls.Add(this.Extrasbtn);
-            this.Controls.Add(this.packbox);
-            this.Controls.Add(this.decryptbox);
-            this.Controls.Add(this.localuse);
+            this.Controls.Add(this.wadnamebox);
             this.Controls.Add(this.richPanel);
+            this.Controls.Add(this.decryptbox);
+            this.Controls.Add(this.packbox);
+            this.Controls.Add(this.saveaswadbtn);
+            this.Controls.Add(this.localuse);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -1137,7 +1137,6 @@ namespace NUS_Downloader
         private System.Windows.Forms.TextBox ProxyPwdBox;
         private wyDay.Controls.Windows7ProgressBar dlprogress;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ComboBox consoleCBox;
         private wmgCMS.WaterMarkTextBox titleidbox;
         private wmgCMS.WaterMarkTextBox titleversion;
         private System.Windows.Forms.Button scriptsbutton;
@@ -1185,6 +1184,7 @@ namespace NUS_Downloader
         private System.Windows.Forms.ToolStripMenuItem dSiWareFakeToolStripMenu;
         private System.Windows.Forms.ToolStripMenuItem wiiRegionCodesMenu;
         private System.Windows.Forms.ToolStripMenuItem dsiRegionCodesMenu;
+        private System.Windows.Forms.Label serverLbl;
     }
 }
 
