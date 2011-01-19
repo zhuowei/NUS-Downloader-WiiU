@@ -79,6 +79,7 @@ namespace NUS_Downloader
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.proxySettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.openNUSDDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moreExtrasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runFolderFixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.wiiBrewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -87,7 +88,6 @@ namespace NUS_Downloader
             this.removeNUSDFilesFoldersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.localTicketInventoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openNUSDDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutNUSDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.proxyBox = new System.Windows.Forms.GroupBox();
@@ -127,10 +127,11 @@ namespace NUS_Downloader
             this.packbox = new System.Windows.Forms.CheckBox();
             this.decryptbox = new System.Windows.Forms.CheckBox();
             this.localuse = new System.Windows.Forms.CheckBox();
+            this.serverLbl = new System.Windows.Forms.Label();
             this.titleidbox = new wmgCMS.WaterMarkTextBox();
             this.dlprogress = new wyDay.Controls.Windows7ProgressBar();
             this.titleversion = new wmgCMS.WaterMarkTextBox();
-            this.serverLbl = new System.Windows.Forms.Label();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.databaseStrip.SuspendLayout();
             this.extrasStrip.SuspendLayout();
             this.proxyBox.SuspendLayout();
@@ -229,7 +230,7 @@ namespace NUS_Downloader
             // SystemMenuList
             // 
             this.SystemMenuList.AutoSize = false;
-            this.SystemMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.SystemMenuList.Image = ((System.Drawing.Image)(resources.GetObject("SystemMenuList.Image")));
             this.SystemMenuList.Name = "SystemMenuList";
             this.SystemMenuList.Size = new System.Drawing.Size(158, 22);
             this.SystemMenuList.Text = "System";
@@ -244,7 +245,7 @@ namespace NUS_Downloader
             // 
             // IOSMenuList
             // 
-            this.IOSMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.IOSMenuList.Image = ((System.Drawing.Image)(resources.GetObject("IOSMenuList.Image")));
             this.IOSMenuList.Name = "IOSMenuList";
             this.IOSMenuList.Size = new System.Drawing.Size(163, 22);
             this.IOSMenuList.Text = "IOS";
@@ -271,7 +272,7 @@ namespace NUS_Downloader
             this.TurboGrafx16MenuList,
             this.TurboGrafxCDMenuList,
             this.VCArcadeMenuList});
-            this.VCMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.VCMenuList.Image = ((System.Drawing.Image)(resources.GetObject("VCMenuList.Image")));
             this.VCMenuList.Name = "VCMenuList";
             this.VCMenuList.Size = new System.Drawing.Size(163, 22);
             this.VCMenuList.Text = "Virtual Console";
@@ -352,7 +353,7 @@ namespace NUS_Downloader
             // 
             // WiiWareMenuList
             // 
-            this.WiiWareMenuList.Image = global::NUS_Downloader.Properties.Resources.wii16x16_copy;
+            this.WiiWareMenuList.Image = ((System.Drawing.Image)(resources.GetObject("WiiWareMenuList.Image")));
             this.WiiWareMenuList.Name = "WiiWareMenuList";
             this.WiiWareMenuList.Size = new System.Drawing.Size(163, 22);
             this.WiiWareMenuList.Text = "WiiWare";
@@ -453,9 +454,10 @@ namespace NUS_Downloader
             this.openNUSDDirectoryToolStripMenuItem,
             this.moreExtrasToolStripMenuItem,
             this.donateToolStripMenuItem,
+            this.toolStripSeparator7,
             this.aboutNUSDToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(178, 170);
+            this.extrasStrip.Size = new System.Drawing.Size(178, 154);
             this.extrasStrip.Text = "Hidden";
             this.extrasStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             this.extrasStrip.Opening += new System.ComponentModel.CancelEventHandler(this.extrasStrip_Opening);
@@ -485,6 +487,14 @@ namespace NUS_Downloader
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(174, 6);
+            // 
+            // openNUSDDirectoryToolStripMenuItem
+            // 
+            this.openNUSDDirectoryToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.folder;
+            this.openNUSDDirectoryToolStripMenuItem.Name = "openNUSDDirectoryToolStripMenuItem";
+            this.openNUSDDirectoryToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.openNUSDDirectoryToolStripMenuItem.Text = "Open NUSD Directory";
+            this.openNUSDDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openNUSDDirectoryToolStripMenuItem_Click);
             // 
             // moreExtrasToolStripMenuItem
             // 
@@ -551,20 +561,13 @@ namespace NUS_Downloader
             this.localTicketInventoryToolStripMenuItem.Text = "Local Ticket Inventory";
             this.localTicketInventoryToolStripMenuItem.Click += new System.EventHandler(this.localTicketInventoryToolStripMenuItem_Click);
             // 
-            // openNUSDDirectoryToolStripMenuItem
-            // 
-            this.openNUSDDirectoryToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.folder;
-            this.openNUSDDirectoryToolStripMenuItem.Name = "openNUSDDirectoryToolStripMenuItem";
-            this.openNUSDDirectoryToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.openNUSDDirectoryToolStripMenuItem.Text = "Open NUSD Directory";
-            this.openNUSDDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openNUSDDirectoryToolStripMenuItem_Click);
-            // 
             // donateToolStripMenuItem
             // 
             this.donateToolStripMenuItem.Image = global::NUS_Downloader.Properties.Resources.money;
             this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
             this.donateToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.donateToolStripMenuItem.Text = "Donate!";
+            this.donateToolStripMenuItem.Visible = false;
             this.donateToolStripMenuItem.Click += new System.EventHandler(this.donateToolStripMenuItem_Click);
             // 
             // aboutNUSDToolStripMenuItem
@@ -993,6 +996,20 @@ namespace NUS_Downloader
             this.localuse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.localuse.UseVisualStyleBackColor = true;
             // 
+            // serverLbl
+            // 
+            this.serverLbl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.serverLbl.Location = new System.Drawing.Point(233, 38);
+            this.serverLbl.Name = "serverLbl";
+            this.serverLbl.Size = new System.Drawing.Size(29, 20);
+            this.serverLbl.TabIndex = 57;
+            this.serverLbl.Text = "Wii";
+            this.serverLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.serverLbl.TextChanged += new System.EventHandler(this.serverLbl_TextChanged);
+            this.serverLbl.Click += new System.EventHandler(this.serverLbl_Click);
+            this.serverLbl.MouseEnter += new System.EventHandler(this.serverLbl_MouseEnter);
+            this.serverLbl.MouseLeave += new System.EventHandler(this.serverLbl_MouseLeave);
+            // 
             // titleidbox
             // 
             this.titleidbox.Font = new System.Drawing.Font("Tahoma", 8.25F);
@@ -1027,19 +1044,10 @@ namespace NUS_Downloader
             this.titleversion.WaterMarkText = "Version";
             this.titleversion.TextChanged += new System.EventHandler(this.titleversion_TextChanged);
             // 
-            // serverLbl
+            // toolStripSeparator7
             // 
-            this.serverLbl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.serverLbl.Location = new System.Drawing.Point(233, 38);
-            this.serverLbl.Name = "serverLbl";
-            this.serverLbl.Size = new System.Drawing.Size(29, 20);
-            this.serverLbl.TabIndex = 57;
-            this.serverLbl.Text = "Wii";
-            this.serverLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.serverLbl.TextChanged += new System.EventHandler(this.serverLbl_TextChanged);
-            this.serverLbl.Click += new System.EventHandler(this.serverLbl_Click);
-            this.serverLbl.MouseEnter += new System.EventHandler(this.serverLbl_MouseEnter);
-            this.serverLbl.MouseLeave += new System.EventHandler(this.serverLbl_MouseLeave);
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(174, 6);
             // 
             // Form1
             // 
@@ -1185,6 +1193,7 @@ namespace NUS_Downloader
         private System.Windows.Forms.ToolStripMenuItem wiiRegionCodesMenu;
         private System.Windows.Forms.ToolStripMenuItem dsiRegionCodesMenu;
         private System.Windows.Forms.Label serverLbl;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
     }
 }
 

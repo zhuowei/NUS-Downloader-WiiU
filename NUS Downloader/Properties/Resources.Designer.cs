@@ -319,13 +319,6 @@ namespace NUS_Downloader.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap wii16x16_copy {
-            get {
-                object obj = ResourceManager.GetObject("wii16x16 copy", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap wrench {
             get {
                 object obj = ResourceManager.GetObject("wrench", resourceCulture);

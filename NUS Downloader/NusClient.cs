@@ -37,6 +37,9 @@ namespace libWiiSharp
         private const string WII_NUS_URL = "http://nus.cdn.shop.wii.com/ccs/download/";
         private const string DSI_NUS_URL = "http://nus.cdn.t.shop.nintendowifi.net/ccs/download/";
 
+        private const string WII_USER_AGENT = "wii libnup/1.0";
+        private const string DSI_USER_AGENT = "Opera/9.50 (Nintendo; Opera/154; U; Nintendo DS; en)";
+
         private string nusUrl = WII_NUS_URL;
         private WebClient wcNus = new WebClient();
         private bool useLocalFiles = false;
@@ -90,11 +93,13 @@ namespace libWiiSharp
         public void SetToWiiServer()
         {
             nusUrl = WII_NUS_URL;
+            wcNus.Headers.Add("User-Agent", WII_USER_AGENT);
         }
 
         public void SetToDSiServer()
         {
             nusUrl = DSI_NUS_URL;
+            wcNus.Headers.Add("User-Agent", DSI_USER_AGENT);
         }
 
         /// <summary>
@@ -285,21 +290,21 @@ namespace libWiiSharp
                 switch (st)
                 {
                     case StoreType.DecryptedContent:
-                        fireDebug("    -> Storing Decrypted Content...");
+                        fireDebug("    [=] Storing Decrypted Content...");
                         storeDecrypted = true;
                         break;
                     case StoreType.EncryptedContent:
-                        fireDebug("    -> Storing Encrypted Content...");
+                        fireDebug("    [=] Storing Encrypted Content...");
                         storeEncrypted = true;
                         break;
                     case StoreType.WAD:
-                        fireDebug("    -> Storing WAD...");
+                        fireDebug("    [=] Storing WAD...");
                         storeWad = true;
                         break;
                     case StoreType.All:
-                        fireDebug("    -> Storing Decrypted Content...");
-                        fireDebug("    -> Storing Encrypted Content...");
-                        fireDebug("    -> Storing WAD...");
+                        fireDebug("    [=] Storing Decrypted Content...");
+                        fireDebug("    [=] Storing Encrypted Content...");
+                        fireDebug("    [=] Storing WAD...");
                         storeDecrypted = true;
                         storeEncrypted = true;
                         storeWad = true;
@@ -308,12 +313,12 @@ namespace libWiiSharp
                         break;
                 }
             }
-
-            fireDebug("   Checking for Internet connection...");
+            /*
+            fireDebug("  - Checking for Internet connection...");
             if (!CheckInet())
-            { fireDebug("   Connection not found..."); throw new Exception("You're not connected to the internet!"); }
-
-            //if (outputDir[outputDir.Length - 1] != Path.DirectorySeparatorChar) outputDir += Path.DirectorySeparatorChar;
+            { fireDebug("   + Connection not found..."); throw new Exception("You're not connected to the internet!"); }
+            */
+            
             if (!Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
             if (!Directory.Exists(Path.Combine(outputDir, titleId))) Directory.CreateDirectory(Path.Combine(outputDir, titleId));
             outputDir = Path.Combine(outputDir, titleId);
@@ -321,7 +326,7 @@ namespace libWiiSharp
             string tmdFile = "tmd" + (string.IsNullOrEmpty(titleVersion) ? string.Empty : string.Format(".{0}", titleVersion));
 
             //Download TMD
-            fireDebug("   Downloading TMD...");
+            fireDebug("  - Downloading TMD...");
             TMD tmd;
             byte[] tmdFileWithCerts;
             try
@@ -329,13 +334,13 @@ namespace libWiiSharp
                 tmdFileWithCerts = wcNus.DownloadData(titleUrl + tmdFile);
                 tmd = TMD.Load(tmdFileWithCerts);
             }
-            catch (Exception ex) { fireDebug("   Downloading TMD Failed..."); throw new Exception("Downloading TMD Failed:\n" + ex.Message); }
+            catch (Exception ex) { fireDebug("   + Downloading TMD Failed..."); throw new Exception("Downloading TMD Failed:\n" + ex.Message); }
 
             //Parse TMD
-            fireDebug("   Parsing TMD...");
+            fireDebug("  - Parsing TMD...");
 
-            if (string.IsNullOrEmpty(titleVersion)) { fireDebug("    -> Title Version: {0}", tmd.TitleVersion); }
-            fireDebug("    -> {0} Contents", tmd.NumOfContents);
+            if (string.IsNullOrEmpty(titleVersion)) { fireDebug("    + Title Version: {0}", tmd.TitleVersion); }
+            fireDebug("    + {0} Contents", tmd.NumOfContents);
 
             if (!Directory.Exists(Path.Combine(outputDir, tmd.TitleVersion.ToString()))) Directory.CreateDirectory(Path.Combine(outputDir, tmd.TitleVersion.ToString()));
             outputDir = Path.Combine(outputDir, tmd.TitleVersion.ToString());
@@ -347,7 +352,7 @@ namespace libWiiSharp
             fireProgress(5);
 
             //Download cetk
-            fireDebug("   Downloading Ticket...");
+            fireDebug("  - Downloading Ticket...");
             try
             {
                 wcNus.DownloadFile(Path.Combine(titleUrl, "cetk"), Path.Combine(outputDir, "cetk"));
@@ -356,7 +361,7 @@ namespace libWiiSharp
             {
                 if (!continueWithoutTicket || !storeEncrypted)
                 {
-                    fireDebug("   Downloading Ticket Failed...");
+                    fireDebug("   + Downloading Ticket Failed...");
                     throw new Exception("Downloading Ticket Failed:\n" + ex.Message);
                 }
 
@@ -374,7 +379,7 @@ namespace libWiiSharp
 
             if (File.Exists(Path.Combine(outputDir, "cetk")))
             {
-                fireDebug("   Parsing Ticket...");
+                fireDebug("   + Parsing Ticket...");
                 tik = Ticket.Load(Path.Combine(outputDir, "cetk"));
 
                 // DSi ticket? Must make sure to use DSi Key :D
@@ -383,7 +388,7 @@ namespace libWiiSharp
             }
             else
             {
-                fireDebug("   Ticket Unavailable...");
+                fireDebug("   + Ticket Unavailable...");
             }
 
             string[] encryptedContents = new string[tmd.NumOfContents];
@@ -391,11 +396,11 @@ namespace libWiiSharp
             //Download Content
             for (int i = 0; i < tmd.NumOfContents; i++)
             {
-                fireDebug("   Downloading Content #{0} of {1}... ({2} bytes)", i + 1, tmd.NumOfContents, tmd.Contents[i].Size);
+                fireDebug("  - Downloading Content #{0} of {1}... ({2} bytes)", i + 1, tmd.NumOfContents, tmd.Contents[i].Size);
                 fireProgress(((i + 1) * 60 / tmd.NumOfContents) + 10);
 
                 if (useLocalFiles && File.Exists(Path.Combine(outputDir, tmd.Contents[i].ContentID.ToString("x8"))))
-                { fireDebug("   Using Local File, Skipping..."); continue; }
+                { fireDebug("   + Using Local File, Skipping..."); continue; }
 
                 try
                 {
@@ -404,7 +409,7 @@ namespace libWiiSharp
 
                     encryptedContents[i] = tmd.Contents[i].ContentID.ToString("x8");
                 }
-                catch (Exception ex) { fireDebug("   Downloading Content #{0} of {1} failed...", i + 1, tmd.NumOfContents); throw new Exception("Downloading Content Failed:\n" + ex.Message); }
+                catch (Exception ex) { fireDebug("  - Downloading Content #{0} of {1} failed...", i + 1, tmd.NumOfContents); throw new Exception("Downloading Content Failed:\n" + ex.Message); }
             }
 
             //Decrypt Content
@@ -414,7 +419,7 @@ namespace libWiiSharp
 
                 for (int i = 0; i < tmd.NumOfContents; i++)
                 {
-                    fireDebug("   Decrypting Content #{0} of {1}...", i + 1, tmd.NumOfContents);
+                    fireDebug("  - Decrypting Content #{0} of {1}...", i + 1, tmd.NumOfContents);
                     fireProgress(((i + 1) * 20 / tmd.NumOfContents) + 75);
 
                     //Decrypt Content
@@ -426,7 +431,7 @@ namespace libWiiSharp
                     byte[] newSha = s.ComputeHash(decryptedContent);
                     if (!Shared.CompareByteArrays(newSha, tmd.Contents[i].Hash))
                     { 
-                        fireDebug(@"/!\ /!\ Hashes do not match /!\ /!\"); 
+                        fireDebug(@"   + Hashes do not match! (Invalid Output)"); 
                         //throw new Exception(string.Format("Content #{0}: Hashes do not match!", i));
                     }
 
@@ -440,7 +445,7 @@ namespace libWiiSharp
             //Pack Wad
             if (storeWad)
             {
-                fireDebug("   Building Certificate Chain...");
+                fireDebug("  - Building Certificate Chain...");
                 CertificateChain cert = CertificateChain.FromTikTmd(Path.Combine(outputDir, "cetk"), tmdFileWithCerts);
 
                 byte[][] contents = new byte[tmd.NumOfContents][];
@@ -448,7 +453,7 @@ namespace libWiiSharp
                 for (int i = 0; i < tmd.NumOfContents; i++)
                     contents[i] = File.ReadAllBytes(Path.Combine(outputDir, (tmd.Contents[i].ContentID.ToString("x8") + ".app")));
 
-                fireDebug("   Creating WAD...");
+                fireDebug("  - Creating WAD...");
                 WAD wad = WAD.Create(cert, tik, tmd, contents);
                 wad.RemoveFooter();
                 wadName = wadName.Replace("[v]", this.TitleVersion.ToString());
@@ -461,26 +466,26 @@ namespace libWiiSharp
             //Delete not wanted files
             if (!storeEncrypted)
             {
-                fireDebug("   Deleting Encrypted Contents...");
+                fireDebug("  - Deleting Encrypted Contents...");
                 for (int i = 0; i < encryptedContents.Length; i++)
                     if (File.Exists(Path.Combine(outputDir, encryptedContents[i]))) File.Delete(Path.Combine(outputDir, encryptedContents[i]));
             }
 
             if (storeWad && !storeDecrypted)
             {
-                fireDebug("   Deleting Decrypted Contents...");
+                fireDebug("  - Deleting Decrypted Contents...");
                 for (int i = 0; i < encryptedContents.Length; i++)
                     if (File.Exists(Path.Combine(outputDir, (encryptedContents[i] + ".app")))) File.Delete(Path.Combine(outputDir, (encryptedContents[i] + ".app")));
             }
 
             if (!storeDecrypted && !storeEncrypted)
             {
-                fireDebug("   Deleting TMD and Ticket...");
+                fireDebug("  - Deleting TMD and Ticket...");
                 File.Delete(Path.Combine(outputDir, tmdFile));
                 File.Delete(Path.Combine(outputDir, "cetk"));
             }
 
-            fireDebug("Downloading Title {0} v{1} Finished...", titleId, (string.IsNullOrEmpty(titleVersion)) ? "[Latest]" : titleVersion);
+            fireDebug("Downloading Title {0} v{1} Finished...", titleId, tmd.TitleVersion /*(string.IsNullOrEmpty(titleVersion)) ? "[Latest]" : titleVersion*/);
             fireProgress(100);
         }
 
