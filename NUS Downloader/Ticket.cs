@@ -542,8 +542,7 @@ namespace libWiiSharp
             byte[] ckey;
             if (dsitik)
             {
-                Console.WriteLine("dsi key in ya house!");
-                ckey = CommonKey.GetDSiKey();
+                    ckey = CommonKey.GetDSiKey();
             }
             else
                 ckey = (commonKeyIndex == 0x01) ? CommonKey.GetKoreanKey() : CommonKey.GetStandardKey();
