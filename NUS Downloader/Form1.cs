@@ -47,7 +47,7 @@ namespace NUS_Downloader
         private static string version = String.Format("SVN r{0}", ((int.Parse(svnversion.Replace("$"+"R"+"e"+"v"+": ","").Replace(" "+"$","")))+1));
 #else
         // TODO: Always remember to change version!
-        private string version = "v2.0";
+        private string version = "v1.9";
 #endif
 
         // Cross-thread Windows Formsing
@@ -2420,28 +2420,30 @@ namespace NUS_Downloader
                 WriteStatus("SVN BUILD: DO NOT REPORT BROKEN FEATURES!");
 
             WriteStatus("This application created by WB3000");
-            WriteStatus("Various sections contributed by lukegb");
+            WriteStatus("Various contributions by lukegb");
             WriteStatus(String.Empty);
-            /*
+            
             if (NUSDFileExists("key.bin") == false)
-                WriteStatus("Wii Decryption: Need (key.bin)");
-            else
-                WriteStatus("Wii Decryption: OK");
+                WriteStatus("Wii Decryption: Local (key.bin)");
+            
 
             if (NUSDFileExists("kkey.bin") == false)
-                WriteStatus("Wii Korea Decryption: Need (kkey.bin)");
-            else
-                WriteStatus("Wii Korea Decryption: OK");
-            */
+                WriteStatus("Wii Korea Decryption: Local (kkey.bin)");
+            
+            
             if (NUSDFileExists("dsikey.bin") == false)
-                WriteStatus("DSi Decryption: Need (dsikey.bin)");
-            else
-                WriteStatus("DSi Decryption: OK");
+                WriteStatus("DSi Decryption: Local (dsikey.bin)");
+            
 
             if (NUSDFileExists("database.xml") == false)
-                WriteStatus("Database: Need (database.xml)");
+                WriteStatus("Database (Wii): Need (database.xml)");
             else
-                WriteStatus("Database: OK");
+                WriteStatus("Database (Wii): OK");
+
+            if (NUSDFileExists("dsidatabase.xml") == false)
+                WriteStatus("Database (DSi): Need (dsidatabase.xml)");
+            else
+                WriteStatus("Database (DSi): OK");
 
             if (IsWin7())
                 WriteStatus("Windows 7 Features: Enabled");
@@ -2450,13 +2452,12 @@ namespace NUS_Downloader
             WriteStatus("Special thanks to:");
             WriteStatus(" * Crediar for his wadmaker tool + source, and for the advice!");
             WriteStatus(" * Leathl for libWiiSharp.");
-            WriteStatus(" * SquidMan/Galaxy/comex/Xuzz for advice/sources.");
-            WriteStatus(" * Pasta for database compilation assistance.");
-            WriteStatus(" * Napo7 for testing proxy usage.");
+            WriteStatus(" * SquidMan/Galaxy/comex/Xuzz/#WiiDev for advice.");
+            WriteStatus(" * Pasta for impressive database contributions.");
+            WriteStatus(" * Napo7 for testing proxy settings.");
             WriteStatus(" * Wyatt O'Day for the Windows7ProgressBar Control.");
             WriteStatus(" * Famfamfam for the Silk Icon Set.");
-            WriteStatus(" * #WiiDev for answering the tough questions.");
-            WriteStatus(" * Anyone who helped beta test!");
+            WriteStatus(" * Anyone who has helped beta test!");
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -2856,6 +2857,8 @@ namespace NUS_Downloader
 
             if (File.Exists(Path.Combine(CURRENT_DIR, "database.xml")))
                 File.Delete(Path.Combine(CURRENT_DIR, "database.xml"));
+            if (File.Exists(Path.Combine(CURRENT_DIR, "dsidatabase.xml")))
+                File.Delete(Path.Combine(CURRENT_DIR, "dsidatabase.xml"));
             if (File.Exists(Path.Combine(CURRENT_DIR, "olddatabase.xml")))
                 File.Delete(Path.Combine(CURRENT_DIR, "olddatabase.xml"));
 
