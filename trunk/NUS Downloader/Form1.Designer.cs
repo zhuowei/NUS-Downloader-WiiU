@@ -450,12 +450,12 @@ namespace NUS_Downloader
             this.toolStripSeparator3,
             this.proxySettingsToolStripMenuItem,
             this.toolStripSeparator6,
-            this.moreExtrasToolStripMenuItem,
             this.openNUSDDirectoryToolStripMenuItem,
+            this.moreExtrasToolStripMenuItem,
             this.donateToolStripMenuItem,
             this.aboutNUSDToolStripMenuItem});
             this.extrasStrip.Name = "extrasStrip";
-            this.extrasStrip.Size = new System.Drawing.Size(178, 148);
+            this.extrasStrip.Size = new System.Drawing.Size(178, 170);
             this.extrasStrip.Text = "Hidden";
             this.extrasStrip.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.anyStrip_Closed);
             this.extrasStrip.Opening += new System.ComponentModel.CancelEventHandler(this.extrasStrip_Opening);
