@@ -638,10 +638,10 @@ namespace NUS_Downloader
                 {
                     SetTextThreadSafe(statusbox, " --- " + titleidbox.Text + " ---");
                 }
-            }*/
+            }
             else
-                WriteStatus(" --- " + titleidbox.Text + " ---");
-           
+                WriteStatus(" --- " + titleidbox.Text + " ---");*/
+
 
             // Running Downloads in background so no form freezing
             NUSDownloader.RunWorkerAsync();
@@ -682,7 +682,6 @@ namespace NUS_Downloader
             // WebClient configuration
             WebClient nusWC = new WebClient();
             nusWC = ConfigureWithProxy(nusWC);
-            nusWC.Headers.Add("User-Agent", "wii libnup/1.0"); // Set UserAgent to Wii value
             
             // Create\Configure NusClient
             libWiiSharp.NusClient nusClient = new libWiiSharp.NusClient();
@@ -1741,7 +1740,7 @@ namespace NUS_Downloader
         /// <returns>Database as a String</returns>
         private void RetrieveNewDatabase(object sender, DoWorkEventArgs e)
         {
-            // Retrieve Wiibrew database page source code
+            // Retrieve Wiibrew/DSiBrew database page source code
             WebClient databasedl = new WebClient();
 
             // Proxy
@@ -1811,7 +1810,7 @@ namespace NUS_Downloader
             if (File.Exists(databaseFilename))
             {
                 WriteStatus(" - Overwriting your current database...");
-                WriteStatus(" - The old database will become 'old*database.xml' in case the new one is faulty.");
+                WriteStatus(String.Format(" - The old database will become 'old{0}' in case the new one is faulty.", databaseFilename));
 
                 string olddatabase = File.ReadAllText(databaseFilename);
                 File.WriteAllText("old" + databaseFilename, olddatabase);
@@ -1820,8 +1819,8 @@ namespace NUS_Downloader
             }
             else
             {
-                WriteStatus(" - database.xml has been created.");
-                File.WriteAllText("database.xml", database);
+                WriteStatus(String.Format(" - {0} has been created.", databaseFilename));
+                File.WriteAllText(databaseFilename, database);
                 isCreation = true;
             }
 
@@ -2423,15 +2422,15 @@ namespace NUS_Downloader
             WriteStatus("Various contributions by lukegb");
             WriteStatus(String.Empty);
             
-            if (NUSDFileExists("key.bin") == false)
+            if (NUSDFileExists("key.bin") == true)
                 WriteStatus("Wii Decryption: Local (key.bin)");
-            
 
-            if (NUSDFileExists("kkey.bin") == false)
+
+            if (NUSDFileExists("kkey.bin") == true)
                 WriteStatus("Wii Korea Decryption: Local (kkey.bin)");
-            
-            
-            if (NUSDFileExists("dsikey.bin") == false)
+
+
+            if (NUSDFileExists("dsikey.bin") == true)
                 WriteStatus("DSi Decryption: Local (dsikey.bin)");
             
 
