@@ -84,6 +84,9 @@ namespace NUS_Downloader
         private System.Drawing.Color errorcolor = Color.FromName("Crimson");
         private System.Drawing.Color infocolor = Color.FromName("RoyalBlue");
 
+        // Statuses of disabled things
+        private bool[] disabledStorage = new bool[13];
+
         // This is the standard entry to the GUI
         public Form1()
         {
@@ -1584,19 +1587,52 @@ namespace NUS_Downloader
                 return;
             }
             // Disable things the user should not mess with during download...
-            downloadstartbtn.Enabled = enabled;
-            titleidbox.Enabled = enabled;
-            titleversion.Enabled = enabled;
-            Extrasbtn.Enabled = enabled;
-            databaseButton.Enabled = enabled;
-            packbox.Enabled = enabled;
-            localuse.Enabled = enabled;
-            saveaswadbtn.Enabled = enabled;
-            decryptbox.Enabled = enabled;
-            keepenccontents.Enabled = enabled;
-            scriptsbutton.Enabled = enabled;
-            serverLbl.Enabled = enabled;
-            iosPatchCheckbox.Enabled = enabled;
+            if (enabled)
+            { // we're enabling things that were enabled BEFORE:
+                downloadstartbtn.Enabled = disabledStorage[0];
+                titleidbox.Enabled = disabledStorage[1];
+                titleversion.Enabled = disabledStorage[2];
+                Extrasbtn.Enabled = disabledStorage[3];
+                databaseButton.Enabled = disabledStorage[4];
+                packbox.Enabled = disabledStorage[5];
+                localuse.Enabled = disabledStorage[6];
+                saveaswadbtn.Enabled = disabledStorage[7];
+                decryptbox.Enabled = disabledStorage[8];
+                keepenccontents.Enabled = disabledStorage[9];
+                scriptsbutton.Enabled = disabledStorage[10];
+                serverLbl.Enabled = disabledStorage[11];
+                iosPatchCheckbox.Enabled = disabledStorage[12];
+            }
+            else
+            {
+                disabledStorage[0] = downloadstartbtn.Enabled;
+                disabledStorage[1] = titleidbox.Enabled;
+                disabledStorage[2] = titleversion.Enabled;
+                disabledStorage[3] = Extrasbtn.Enabled;
+                disabledStorage[4] = databaseButton.Enabled;
+                disabledStorage[5] = packbox.Enabled;
+                disabledStorage[6] = localuse.Enabled;
+                disabledStorage[7] = saveaswadbtn.Enabled;
+                disabledStorage[8] = decryptbox.Enabled;
+                disabledStorage[9] = keepenccontents.Enabled;
+                disabledStorage[10] = scriptsbutton.Enabled;
+                disabledStorage[11] = serverLbl.Enabled;
+                disabledStorage[12] = iosPatchCheckbox.Enabled;
+
+                downloadstartbtn.Enabled = enabled;
+                titleidbox.Enabled = enabled;
+                titleversion.Enabled = enabled;
+                Extrasbtn.Enabled = enabled;
+                databaseButton.Enabled = enabled;
+                packbox.Enabled = enabled;
+                localuse.Enabled = enabled;
+                saveaswadbtn.Enabled = enabled;
+                decryptbox.Enabled = enabled;
+                keepenccontents.Enabled = enabled;
+                scriptsbutton.Enabled = enabled;
+                serverLbl.Enabled = enabled;
+                iosPatchCheckbox.Enabled = enabled;
+            }
         }
 
         /// <summary>
