@@ -1873,10 +1873,11 @@ namespace NUS_Downloader
         {
             System.Net.HttpWebRequest req =
                 (System.Net.HttpWebRequest)
-                System.Net.HttpWebRequest.Create("http://nus.shop.wii.com:80/nus/services/NetUpdateSOAP");
+                System.Net.HttpWebRequest.Create("http://nus.shop.wii.com/nus/services/NetUpdateSOAP");
+
             req.Method = "POST";
             req.UserAgent = "wii libnup/1.0";
-            req.Headers.Add("SOAPAction", '"' + "urn:nus.wsapi.broadon.com/" + '"');
+            req.Headers.Add("SOAPAction", '"' + "urn:nus.wsapi.broadon.com/GetSystemUpdate" + '"');
 
             // Proxy
             if (!(String.IsNullOrEmpty(proxy_url)))
@@ -1904,19 +1905,20 @@ namespace NUS_Downloader
                 req.UseDefaultCredentials = true;
             }
 
-            Stream writeStream = req.GetRequestStream();
-
             UTF8Encoding encoding = new UTF8Encoding();
             byte[] bytes = encoding.GetBytes(soap_xml);
+
             req.ContentType = "text/xml; charset=utf-8";
-            //req.ContentLength = bytes.Length;
+            req.ContentLength = bytes.Length;
+
+            Stream writeStream = req.GetRequestStream();
             writeStream.Write(bytes, 0, bytes.Length);
             writeStream.Close();
             Application.DoEvents();
             try
             {
                 string result;
-                System.Net.HttpWebResponse resp = (System.Net.HttpWebResponse) req.GetResponse();
+                System.Net.HttpWebResponse resp = (System.Net.HttpWebResponse)req.GetResponse();
 
                 using (Stream responseStream = resp.GetResponseStream())
                 {
@@ -1932,8 +1934,9 @@ namespace NUS_Downloader
             catch (Exception ex)
             {
                 req.Abort();
-
-                return ex.Message.ToString();
+                WriteStatus(" --- An Error Occurred: " + ex.Message.ToString());
+                return null; // Ugh.
+                //return ex.Message.ToString();
             }
         }
 
@@ -1945,9 +1948,12 @@ namespace NUS_Downloader
 
             scriptsStrip.Close();
 
-            string deviceID = "4362227770";
+            /*string deviceID = "4362227774";
             string messageID = "13198105123219138";
-            string attr = "2";
+            string attr = "2";*/
+            string deviceID = "4362227770";
+            string messageID = "13198105123219038";
+            string attr = "1";
 
             string RegionID = e.ClickedItem.Text.Substring(0, 3);
             if (RegionID == "JAP") // Japan fix, only region not w/ 1st 3 letters same as ID.
@@ -1960,19 +1966,34 @@ namespace NUS_Downloader
             RegionID: EUR, Country: EU; 
             RegionID: KOR, Country: KO; */
 
-            string soap_req = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"" +
+            string soap_req = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                              "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"" +
                               " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"" +
                               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
-                              "<soapenv:Body>\n<GetSystemUpdateRequest xmlns=\"urn:nus.wsapi.broadon.com\">\n" +
-                              "<Version>1.0</Version>\n<MessageId>" + messageID + "</MessageId>\n<DeviceId>" + deviceID +
-                              "</DeviceId>\n" +
-                              "<RegionId>" + RegionID + "</RegionId>\n<CountryCode>" + CountryCode +
-                              "</CountryCode>\n<TitleVersion>\n<TitleId>0000000100000001</TitleId>\n" +
-                              "<Version>2</Version>\n</TitleVersion>\n<TitleVersion>\n<TitleId>0000000100000002</TitleId>\n" +
-                              "<Version>33</Version>\n</TitleVersion>\n<TitleVersion>\n<TitleId>0000000100000009</TitleId>\n" +
-                              "<Version>516</Version>\n</TitleVersion>\n<Attribute>" + attr +
-                              "</Attribute>\n<AuditData></AuditData>\n" +
-                              "</GetSystemUpdateRequest>\n</soapenv:Body>\n</soapenv:Envelope>";
+                                "<soapenv:Body>\n" +
+                                  "<GetSystemUpdateRequest xmlns=\"urn:nus.wsapi.broadon.com\">\n" +
+                                  "<Version>1.0</Version>\n" +
+                                  "<MessageId>" + messageID + "</MessageId>\n" +
+                                  "<DeviceId>" + deviceID + "</DeviceId>\n" +
+                                  "<RegionId>" + RegionID + "</RegionId>\n" +
+                                  "<CountryCode>" + CountryCode + "</CountryCode>\n" +
+                                  "<TitleVersion>\n" +
+                                     "<TitleId>0000000100000001</TitleId>\n" +
+                                     "<Version>2</Version>\n"+
+                                  "</TitleVersion>\n" +
+                                  "<TitleVersion>\n" + 
+                                     "<TitleId>0000000100000002</TitleId>\n" +
+                                     "<Version>33</Version>\n"+
+                                  "</TitleVersion>\n" +
+                                  "<TitleVersion>\n" +
+                                     "<TitleId>0000000100000009</TitleId>\n" +
+                                     "<Version>516</Version>\n" + 
+                                  "</TitleVersion>\n" + 
+                                  "<Attribute>" + attr + "</Attribute>\n" + 
+                                  "<AuditData></AuditData>\n" +
+                                  "</GetSystemUpdateRequest>\n" + 
+                                  "</soapenv:Body>\n" + 
+                              "</soapenv:Envelope>";
 
             WriteStatus(" - Sending SOAP Request to NUS...");
             WriteStatus("   - Region: " + RegionID);
@@ -2432,7 +2453,6 @@ namespace NUS_Downloader
 
             if (NUSDFileExists("dsikey.bin") == true)
                 WriteStatus("DSi Decryption: Local (dsikey.bin)");
-            
 
             if (NUSDFileExists("database.xml") == false)
                 WriteStatus("Database (Wii): Need (database.xml)");

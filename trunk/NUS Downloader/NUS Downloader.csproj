@@ -17,7 +17,7 @@
     <ManifestCertificateThumbprint>1555E408E7D4078FB64D4CC67B4156C20E540209</ManifestCertificateThumbprint>
     <ManifestKeyFile>NUS Downloader_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <TargetZone>LocalIntranet</TargetZone>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <FileUpgradeFlags>
@@ -51,6 +51,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -144,7 +145,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Crystal_Clear_app_ark2.ico" />
-    <None Include="Resources\wii16x16 copy.png" />
     <None Include="Resources\wii16x16.png" />
     <None Include="Resources\money.png" />
     <None Include="Resources\wrench.png" />
