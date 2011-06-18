@@ -331,7 +331,7 @@ namespace libWiiSharp
         {
             int i, p, cmp;
             cmp = 1;
-            p = N + 1 + (textBuffer[r] == 0xffff ? 0 : textBuffer[r]);
+            p = N + 1 + (textBuffer[r] == 0xffff ? 0 : (int)textBuffer[r]);
             rightSon[r] = leftSon[r] = N; matchLength = 0;
 
             for (; ; )

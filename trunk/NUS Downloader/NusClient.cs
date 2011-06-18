@@ -456,7 +456,9 @@ namespace libWiiSharp
                 fireDebug("  - Creating WAD...");
                 WAD wad = WAD.Create(cert, tik, tmd, contents);
                 wad.RemoveFooter();
-                wadName = wadName.Replace("[v]", this.TitleVersion.ToString());
+                wadName = wadName.Replace("[v]", "v" + this.TitleVersion.ToString()); // fix by madri2
+                if (Path.DirectorySeparatorChar.ToString() != "/" && Path.AltDirectorySeparatorChar.ToString() != "/")
+                    wadName = wadName.Replace("/", "");
                 if (wadName.Contains(Path.DirectorySeparatorChar.ToString()) || wadName.Contains(Path.AltDirectorySeparatorChar.ToString()))
                     wad.Save(wadName);
                 else
