@@ -826,7 +826,7 @@ namespace libWiiSharp
 
                     int size = u8Nodes.Count + 2;
                     for (int j = 0; j < dirEntries.Length; j++)
-                        if (dirEntries[j].Contains(dirEntries[i] + "\\")) size++;
+                        if (dirEntries[j].Contains(dirEntries[i] + System.IO.Path.DirectorySeparatorChar.ToString())) size++;
 
                     tempNode.SizeOfData = (uint)size;
                 }
