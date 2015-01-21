@@ -22,6 +22,7 @@ namespace libWiiSharp
         private static string standardKey = "ebe42a225e8593e448d9c5457381aaf7";
         private static string koreanKey = "63b82bb4f4614e2e13f2fefbba4c9b7e";
         private static string dsiKey = "af1bf516a807d21aea45984f04742861";
+        private static string wiiuKey = "WII U COMMON KEY HERE!! Search on the internet.";
 
         private static string currentDir = System.IO.Directory.GetCurrentDirectory();
 
@@ -31,18 +32,24 @@ namespace libWiiSharp
 
         public static byte[] GetStandardKey()
         {
+            /*
             if (System.IO.File.Exists(System.IO.Path.Combine(currentDir, standardKeyName)))
                 return System.IO.File.ReadAllBytes(System.IO.Path.Combine(currentDir, standardKeyName));
             else
                 return Shared.HexStringToByteArray(standardKey);
+            */
+            return Shared.HexStringToByteArray(wiiuKey);
         }
 
         public static byte[] GetKoreanKey()
         {
+            /*
             if (System.IO.File.Exists(System.IO.Path.Combine(currentDir, koreanKeyName)))
                 return System.IO.File.ReadAllBytes(System.IO.Path.Combine(currentDir, koreanKeyName));
             else
                 return Shared.HexStringToByteArray(koreanKey);
+            */
+            return GetStandardKey();
         }
 
         public static byte[] GetDSiKey()

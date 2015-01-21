@@ -581,6 +581,7 @@ namespace libWiiSharp
             numOfContents = Shared.Swap(BitConverter.ToUInt16(temp, 2));
             bootIndex = Shared.Swap(BitConverter.ToUInt16(temp, 4));
             padding3 = Shared.Swap(BitConverter.ToUInt16(temp, 6));
+            tmdFile.Position = 0xb04;
 
             contents = new List<TMD_Content>();
 
@@ -603,6 +604,8 @@ namespace libWiiSharp
                 tmdFile.Read(tempContent.Hash, 0, tempContent.Hash.Length);
 
                 contents.Add(tempContent);
+                byte[] paddingcontent = new byte[12];
+                tmdFile.Read(paddingcontent, 0, 12);
             }
 
             fireDebug("Pasing TMD Finished...");
