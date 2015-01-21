@@ -42,7 +42,7 @@ namespace NUS_Downloader
     {
         private readonly string CURRENT_DIR = Directory.GetCurrentDirectory();
 
-#if DEBUG
+#if false
         private static string svnversion = "$Rev$";
         private static string version = String.Format("SVN r{0}", ((int.Parse(svnversion.Replace("$"+"R"+"e"+"v"+": ","").Replace(" "+"$","")))+1));
 #else
